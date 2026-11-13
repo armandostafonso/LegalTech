@@ -1,91 +1,331 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-PT" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Anonimizador de PDF — LegalTech</title>
 <style>
-  :root{
-    --bg:#f3f4f6; --card:#ffffff; --ink:#1b2430; --muted:#5b6675; --line:#d8dde4;
-    --accent:#1f3a5f; --accent-ink:#ffffff; --soft:#eef2f7;
-    --warn-bg:#fff5dc; --warn-ink:#5f4300; --err:#a12626; --ok:#1d6b3a;
+  :root {
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --primary: #1e293b;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --soft: #f1f5f9;
+    --warn-bg: #fffbeb;
+    --warn-border: #fde68a;
+    --warn-text: #92400e;
+    --danger-bg: #fef2f2;
+    --danger-border: #fecaca;
+    --danger-text: #991b1b;
+    --success-bg: #f0fdf4;
+    --success-border: #bbf7d0;
+    --nav-bg: #0f172a;
+    --nav-text: #cbd5e1;
+    --nav-active-bg: #2563eb;
+    --nav-active-text: #ffffff;
+    --nav-inactive-border: #334155;
+    --nav-hover-bg: #334155;
+    --nav-hover-text: #ffffff;
+    --drop-bg: #f8fafc;
   }
-  @media (prefers-color-scheme:dark){
-    :root{
-      --bg:#14181e; --card:#1c2229; --ink:#e6eaf0; --muted:#9aa5b4; --line:#323b46;
-      --accent:#7fa6d9; --accent-ink:#0f1722; --soft:#232b34;
-      --warn-bg:#3a2f12; --warn-ink:#f1d9a0; --err:#ff8a8a; --ok:#7fd49a;
-    }
+
+  [data-theme="dark"] {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --primary: #f8fafc;
+    --accent: #3b82f6;
+    --accent-hover: #60a5fa;
+    --border: #334155;
+    --text: #cbd5e1;
+    --muted: #94a3b8;
+    --soft: #334155;
+    --warn-bg: #422006;
+    --warn-border: #78350f;
+    --warn-text: #fde68a;
+    --danger-bg: #450a0a;
+    --danger-border: #7f1d1d;
+    --danger-text: #fecaca;
+    --success-bg: #052e16;
+    --success-border: #14532d;
+    --nav-bg: #020617;
+    --nav-text: #94a3b8;
+    --nav-active-bg: #3b82f6;
+    --nav-active-text: #ffffff;
+    --nav-inactive-border: #1e293b;
+    --nav-hover-bg: #1e293b;
+    --nav-hover-text: #f8fafc;
+    --drop-bg: #0f172a;
   }
-  *{box-sizing:border-box}
-  html{-webkit-text-size-adjust:100%}
-  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; transition: background-color 0.3s, color 0.3s; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding-bottom: 48px;
+    transition: background-color 0.3s, color 0.3s;
+  }
 
   /* Barra de navegação superior */
-  .topbar{background:var(--card);border-bottom:1px solid var(--line);padding:0 16px}
-  .topbar-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;min-height:54px;gap:16px;flex-wrap:wrap}
-  .brand{font-weight:700;font-size:1rem;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px}
-  .nav-links{display:flex;align-items:center;gap:8px}
-  .nav-link{text-decoration:none;font-size:.9rem;font-weight:500;padding:6px 12px;border-radius:6px;color:var(--muted);transition:background .15s,color .15s}
-  .nav-link:hover{background:var(--soft);color:var(--ink)}
-  .nav-link.active{background:var(--soft);color:var(--accent);font-weight:600}
+  .top-nav {
+    background: var(--nav-bg);
+    padding: 10px 16px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    position: relative;
+    transition: background-color 0.3s;
+  }
 
-  main{max-width:760px;margin:0 auto;padding:28px 16px 56px}
-  header{margin-bottom:20px}
-  h1{font-size:1.5rem;margin:0 0 6px;letter-spacing:-.01em}
-  header p{margin:0;color:var(--muted);font-size:.95rem}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px}
-  h2{font-size:1.05rem;margin:0 0 14px;display:flex;align-items:center;gap:10px}
-  .n{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--accent-ink);align-items:center;justify-content:center;font-size:.85rem;font-weight:600}
-  .drop{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;border:2px dashed var(--line);border-radius:10px;padding:26px 16px;cursor:pointer;background:var(--soft);transition:border-color .15s}
-  .drop:hover,.drop.over{border-color:var(--accent)}
-  .drop input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
-  .drop:focus-within{outline:2px solid var(--accent);outline-offset:2px}
-  .muted{color:var(--muted);font-size:.9rem}
-  fieldset{border:0;padding:0;margin:18px 0 0}
-  legend{font-weight:600;font-size:.92rem;margin-bottom:8px;padding:0}
-  .opt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:8px;margin-bottom:8px;cursor:pointer}
-  .opt:has(input:checked){border-color:var(--accent);background:var(--soft)}
-  .opt small{display:block;color:var(--muted)}
-  .opt input,.check input{margin-top:5px}
-  .check{display:flex;gap:10px;align-items:flex-start;margin-top:14px;cursor:pointer}
-  .note{font-size:.85rem;color:var(--muted);margin:6px 0 0}
-  .note.warn{background:var(--warn-bg);color:var(--warn-ink);padding:8px 10px;border-radius:6px}
-  details{margin-top:14px}
-  summary{cursor:pointer;font-size:.92rem;font-weight:600}
-  textarea{width:100%;min-height:74px;margin-top:6px;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font:.88rem/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;resize:vertical}
-  label.lbl{display:block;font-size:.88rem;margin-top:12px}
-  button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--accent);padding:11px 20px}
-  button.primary{background:var(--accent);color:var(--accent-ink);font-weight:600;width:100%}
-  button.primary:disabled{opacity:.45;cursor:not-allowed}
-  button.ghost{background:transparent;color:var(--accent);padding:6px 12px;font-size:.88rem}
-  .bar{height:10px;background:var(--soft);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:16px}
-  .bar>div{height:100%;width:0;background:var(--accent);transition:width .2s}
-  #status{margin:8px 0 0;font-size:.9rem;color:var(--muted)}
-  .msg.err{color:var(--err);margin:12px 0 0;font-weight:500}
-  .warnlist{margin:10px 0 0;padding-left:18px;font-size:.9rem;color:var(--warn-ink);background:var(--warn-bg);border-radius:6px;padding-top:8px;padding-bottom:8px;padding-right:12px}
-  .warnlist:empty{display:none}
-  #summary{margin:0}
-  .maptools{display:flex;gap:8px;margin:10px 0 4px}
-  #mapList{margin:8px 0 0;max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:6px;padding:8px 10px;font:.85rem/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--soft)}
-  #mapList div{word-break:break-word}
-  footer{font-size:.82rem;color:var(--muted);margin-top:12px}
-  .dev-credit{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-weight:600;color:var(--ink);opacity:.85}
-  [hidden]{display:none !important}
+  .nav-links {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+
+  .nav-inactive {
+    background: transparent;
+    color: var(--nav-text);
+    border: 1px solid var(--nav-inactive-border);
+  }
+
+  .nav-inactive:hover {
+    background: var(--nav-hover-bg);
+    color: var(--nav-hover-text);
+  }
+
+  .nav-active {
+    background: var(--nav-active-bg) !important;
+    color: var(--nav-active-text) !important;
+    border: 1px solid transparent;
+  }
+
+  .theme-toggle {
+    background: transparent;
+    border: 1px solid var(--nav-inactive-border);
+    color: var(--nav-text);
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+    position: absolute;
+    right: 16px;
+  }
+  
+  @media (max-width: 768px) {
+    .theme-toggle {
+        position: static;
+        margin-left: auto;
+    }
+    .top-nav {
+        justify-content: space-between;
+    }
+  }
+
+  .theme-toggle:hover {
+    background: var(--nav-hover-bg);
+    color: var(--nav-hover-text);
+  }
+
+  main { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+  
+  header {
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+  }
+
+  header h1 {
+    font-size: 1.45rem;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+  }
+
+  header p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-top: 4px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+
+  .card h2 {
+    font-size: 1.02rem;
+    margin: 0 0 14px 0;
+    color: var(--primary);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .n {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #ffffff;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .drop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    text-align: center;
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 26px 16px;
+    cursor: pointer;
+    background: var(--drop-bg);
+    transition: border-color 0.15s, background-color 0.3s;
+  }
+
+  .drop:hover, .drop.over { border-color: var(--accent); }
+  .drop input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+  .drop:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+  
+  .muted { color: var(--muted); font-size: 0.9rem; }
+  
+  fieldset { border: 0; padding: 0; margin: 18px 0 0; }
+  legend { font-weight: 600; font-size: 0.84rem; margin-bottom: 8px; padding: 0; color: var(--primary); }
+  
+  .opt {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+  }
+  
+  .opt:has(input:checked) { border-color: var(--accent); background: var(--soft); }
+  .opt b { font-size: 0.88rem; color: var(--text); font-weight: 600;}
+  .opt small { display: block; color: var(--muted); font-size: 0.76rem; margin-top: 2px;}
+  .opt input, .check input { margin-top: 3px; }
+  
+  .check { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; cursor: pointer; }
+  .check b { font-size: 0.88rem; color: var(--text); font-weight: 600;}
+  
+  .note { font-size: 0.76rem; color: var(--muted); margin: 6px 0 0; }
+  .note.warn { background: var(--warn-bg); color: var(--warn-text); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--warn-border);}
+  
+  details { margin-top: 14px; }
+  summary { cursor: pointer; font-size: 0.84rem; font-weight: 600; color: var(--primary); outline: none;}
+  
+  textarea {
+    width: 100%;
+    min-height: 74px;
+    margin-top: 6px;
+    padding: 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--card);
+    color: var(--text);
+    font: 0.81rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    resize: vertical;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  }
+  textarea:focus { outline: 2px solid var(--accent); border-color: transparent; }
+  
+  label.lbl { display: block; font-size: 0.84rem; font-weight: 600; margin-top: 12px; color: var(--primary); }
+  
+  button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--accent); padding: 11px 20px; transition: background-color 0.15s;}
+  button.primary { background: var(--accent); color: #ffffff; font-weight: 600; width: 100%; border: none;}
+  button.primary:hover:not(:disabled) { background: var(--accent-hover); }
+  button.primary:disabled { opacity: 0.45; cursor: not-allowed; }
+  
+  button.ghost { background: transparent; color: var(--accent); padding: 6px 12px; font-size: 0.82rem; font-weight: 600; border-color: transparent;}
+  button.ghost:hover { background: var(--soft); }
+  
+  .bar { height: 8px; background: var(--soft); border-radius: 6px; overflow: hidden; margin-top: 16px; }
+  .bar > div { height: 100%; width: 0; background: var(--accent); transition: width 0.2s; }
+  
+  #status { margin: 8px 0 0; font-size: 0.84rem; color: var(--muted); }
+  .msg.err { background: var(--danger-bg); color: var(--danger-text); padding: 10px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; margin-top: 12px; border: 1px solid var(--danger-border);}
+  
+  .warnlist { margin: 10px 0 0; padding-left: 18px; font-size: 0.84rem; color: var(--warn-text); background: var(--warn-bg); border-radius: 6px; padding-top: 8px; padding-bottom: 8px; padding-right: 12px; border: 1px solid var(--warn-border);}
+  .warnlist:empty { display: none; }
+  
+  #summary { margin: 0; font-size: 0.88rem;}
+  
+  .maptools { display: flex; gap: 8px; margin: 10px 0 4px; }
+  
+  #mapList {
+    margin: 8px 0 0;
+    max-height: 300px;
+    overflow: auto;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    font: 0.81rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: var(--soft);
+    color: var(--text);
+  }
+  #mapList div { word-break: break-word; }
+  
+  .rodape { font-size: 0.76rem; color: var(--muted); margin-top: 20px; text-align: center; }
+  .dev-credit { margin-top: 8px; font-weight: 600; color: var(--primary); }
+  [hidden] { display: none !important; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 </head>
 <body>
 
-<nav class="topbar" aria-label="Ferramentas LegalTech">
-  <div class="topbar-inner">
-    <a href="index.html" class="brand">⚖️ LegalTech</a>
-    <div class="nav-links">
-      <a href="index.html" class="nav-link active" aria-current="page">Anonimizador de PDF</a>
-      <a href="citacheck.html" class="nav-link">Cita-Check (Prazos e Dilações)</a>
-    </div>
+<nav class="top-nav">
+  <div class="nav-links">
+    <a href="index.html" class="nav-active">Anonimizador PDF</a>
+    <a href="citacheck.html" class="nav-inactive">Cita-Check (Prazos e Dilações)</a>
   </div>
+  <button id="themeToggle" class="theme-toggle" aria-label="Mudar tema">
+    <span id="themeIcon">🌙</span> Tema Escuro
+  </button>
 </nav>
 
 <main>
@@ -105,13 +345,13 @@
     <fieldset>
       <legend>Modo de expurgo</legend>
       <label class="opt"><input type="radio" name="modo" value="label" checked>
-        <span><b>Etiqueta sobre fundo branco</b><small>Cobre o dado e escreve por cima [PESSOA_1], [EMPRESA_1], [PROC_1], [ID_1], [LOCAL_1].</small></span></label>
+        <div><b>Etiqueta sobre fundo claro</b><small>Cobre o dado e escreve por cima [PESSOA_1], [EMPRESA_1], [PROC_1], [ID_1], [LOCAL_1].</small></div></label>
       <label class="opt"><input type="radio" name="modo" value="black">
-        <span><b>Tarja preta</b><small>Cobre o dado com um retângulo preto.</small></span></label>
+        <div><b>Tarja preta</b><small>Cobre o dado com um retângulo preto.</small></div></label>
     </fieldset>
 
     <label class="check"><input type="checkbox" id="raster">
-      <span><b>Eliminar o texto original (converter as páginas em imagem)</b></span></label>
+      <div><b>Eliminar o texto original (converter as páginas em imagem)</b></div></label>
     <p class="note warn" id="rasterNote">Sem esta opção, o texto original continua dentro do PDF, apenas coberto, e pode ser selecionado, copiado ou extraído. Com a opção ativa, o aspeto mantém-se, mas o PDF deixa de ter texto pesquisável e o ficheiro fica maior.</p>
 
     <details>
@@ -148,14 +388,46 @@
     </details>
   </section>
 
-  <footer>
-    A deteção automática não é infalível. Verificar sempre o PDF antes de o divulgar. A alteração do ficheiro invalida assinaturas digitais criptográficas; a imagem da assinatura mantém-se.
-    <div class="dev-credit">@developed by Armando Afonso</div>
-  </footer>
+  <div class="rodape">
+    <p>A deteção automática não é infalível. Verificar sempre o PDF antes de o divulgar. A alteração do ficheiro invalida assinaturas digitais criptográficas; a imagem da assinatura mantém-se.</p>
+    <p class="dev-credit">@developed by Armando Afonso</p>
+  </div>
 </main>
 
 <script type="module">
 'use strict';
+
+/* ===================== GESTÃO DO TEMA (DARK/LIGHT MODE) ===================== */
+const themeToggleBtn = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+const htmlEl = document.documentElement;
+
+function setTheme(theme) {
+  htmlEl.setAttribute('data-theme', theme);
+  localStorage.setItem('legaltech_theme', theme);
+  if (theme === 'dark') {
+    themeIcon.textContent = '☀️';
+    themeToggleBtn.innerHTML = '<span id="themeIcon">☀️</span> Tema Claro';
+  } else {
+    themeIcon.textContent = '🌙';
+    themeToggleBtn.innerHTML = '<span id="themeIcon">🌙</span> Tema Escuro';
+  }
+}
+
+// Verifica a preferência guardada ou a preferência do sistema
+const savedTheme = localStorage.getItem('legaltech_theme');
+if (savedTheme) {
+  setTheme(savedTheme);
+} else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  setTheme('dark');
+} else {
+  setTheme('light');
+}
+
+themeToggleBtn.addEventListener('click', () => {
+  const currentTheme = htmlEl.getAttribute('data-theme');
+  setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+});
 
 /* ===================== NÚCLEO (sem dependências do DOM) ===================== */
 /* BEGIN CORE */
