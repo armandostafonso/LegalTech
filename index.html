@@ -1,1235 +1,1324 @@
 <!DOCTYPE html>
-<html lang="pt-PT" data-theme="light">
+<html lang="pt-PT" data-theme="dark">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Anonimizador de PDF — LegalTech</title>
-<style>
-  :root {
-    --bg: #f8fafc;
-    --card: #ffffff;
-    --primary: #1e293b;
-    --accent: #2563eb;
-    --accent-hover: #1d4ed8;
-    --border: #e2e8f0;
-    --text: #0f172a;
-    --muted: #64748b;
-    --soft: #f1f5f9;
-    --warn-bg: #fffbeb;
-    --warn-border: #fde68a;
-    --warn-text: #92400e;
-    --danger-bg: #fef2f2;
-    --danger-border: #fecaca;
-    --danger-text: #991b1b;
-    --success-bg: #f0fdf4;
-    --success-border: #bbf7d0;
-    --nav-bg: #0f172a;
-    --nav-text: #cbd5e1;
-    --nav-active-bg: #2563eb;
-    --nav-active-text: #ffffff;
-    --nav-inactive-border: #334155;
-    --nav-hover-bg: #334155;
-    --nav-hover-text: #ffffff;
-    --drop-bg: #f8fafc;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Anonimizador RGPD v2.0 | LegalTech Suite</title>
 
-  [data-theme="dark"] {
-    --bg: #0f172a;
-    --card: #1e293b;
-    --primary: #f8fafc;
-    --accent: #3b82f6;
-    --accent-hover: #60a5fa;
-    --border: #334155;
-    --text: #cbd5e1;
-    --muted: #94a3b8;
-    --soft: #334155;
-    --warn-bg: #422006;
-    --warn-border: #78350f;
-    --warn-text: #fde68a;
-    --danger-bg: #450a0a;
-    --danger-border: #7f1d1d;
-    --danger-text: #fecaca;
-    --success-bg: #052e16;
-    --success-border: #14532d;
-    --nav-bg: #020617;
-    --nav-text: #94a3b8;
-    --nav-active-bg: #3b82f6;
-    --nav-active-text: #ffffff;
-    --nav-inactive-border: #1e293b;
-    --nav-hover-bg: #1e293b;
-    --nav-hover-text: #f8fafc;
-    --drop-bg: #0f172a;
-  }
+  <!-- PDF.js (Leitura, Coordenadas e Renderização) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- pdf-lib (Construção e Exportação de PDF Client-Side) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { -webkit-text-size-adjust: 100%; transition: background-color 0.3s, color 0.3s; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: var(--bg);
-    color: var(--text);
-    line-height: 1.5;
-    padding-bottom: 48px;
-    transition: background-color 0.3s, color 0.3s;
-  }
-
-  /* Barra de navegação superior */
-  .top-nav {
-    background: var(--nav-bg);
-    padding: 10px 16px;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    position: relative;
-    transition: background-color 0.3s;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .nav-links a {
-    text-decoration: none;
-    padding: 6px 14px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: all 0.15s;
-  }
-
-  .nav-inactive {
-    background: transparent;
-    color: var(--nav-text);
-    border: 1px solid var(--nav-inactive-border);
-  }
-
-  .nav-inactive:hover {
-    background: var(--nav-hover-bg);
-    color: var(--nav-hover-text);
-  }
-
-  .nav-active {
-    background: var(--nav-active-bg) !important;
-    color: var(--nav-active-text) !important;
-    border: 1px solid transparent;
-  }
-
-  .theme-toggle {
-    background: transparent;
-    border: 1px solid var(--nav-inactive-border);
-    color: var(--nav-text);
-    cursor: pointer;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.15s;
-    position: absolute;
-    right: 16px;
-  }
-  
-  @media (max-width: 768px) {
-    .theme-toggle {
-        position: static;
-        margin-left: auto;
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --danger: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --border: #334155;
+      --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+      --radius: 10px;
     }
+
+    [data-theme="light"] {
+      --bg-primary: #f1f5f9;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --danger: #dc2626;
+      --success: #059669;
+      --warning: #d97706;
+      --border: #cbd5e1;
+      --card-shadow: 0 4px 15px -2px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    /* NAVBAR UNIFICADA (Sem referência a CEJ) */
     .top-nav {
-        justify-content: space-between;
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-wrap: wrap;
+      gap: 0.75rem;
     }
-  }
 
-  .theme-toggle:hover {
-    background: var(--nav-hover-bg);
-    color: var(--nav-hover-text);
-  }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.05rem;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
 
-  main { max-width: 760px; margin: 0 auto; padding: 0 16px; }
-  
-  header {
-    margin-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 14px;
-  }
+    .badge-client {
+      font-size: 0.7rem;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
 
-  header h1 {
-    font-size: 1.45rem;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 0;
-  }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
 
-  header p {
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin-top: 4px;
-  }
+    .nav-item {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
 
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-    transition: background-color 0.3s, border-color 0.3s;
-  }
+    .nav-item:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
+    }
 
-  .card h2 {
-    font-size: 1.02rem;
-    margin: 0 0 14px 0;
-    color: var(--primary);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+    .nav-item.active {
+      color: #ffffff;
+      background: var(--accent);
+    }
 
-  .n {
-    display: inline-flex;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #ffffff;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
+    .theme-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.4rem 0.65rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
 
-  .drop {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    text-align: center;
-    border: 2px dashed var(--border);
-    border-radius: 10px;
-    padding: 26px 16px;
-    cursor: pointer;
-    background: var(--drop-bg);
-    transition: border-color 0.15s, background-color 0.3s;
-  }
+    /* WORKSPACE */
+    .workspace-container {
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      flex: 1;
+    }
 
-  .drop:hover, .drop.over { border-color: var(--accent); }
-  .drop input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-  .drop:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
-  
-  .muted { color: var(--muted); font-size: 0.9rem; }
-  
-  fieldset { border: 0; padding: 0; margin: 18px 0 0; }
-  legend { font-weight: 600; font-size: 0.84rem; margin-bottom: 8px; padding: 0; color: var(--primary); }
-  
-  .opt {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: background-color 0.15s, border-color 0.15s;
-  }
-  
-  .opt:has(input:checked) { border-color: var(--accent); background: var(--soft); }
-  .opt b { font-size: 0.88rem; color: var(--text); font-weight: 600;}
-  .opt small { display: block; color: var(--muted); font-size: 0.76rem; margin-top: 2px;}
-  .opt input, .check input { margin-top: 3px; }
-  
-  .check { display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; cursor: pointer; }
-  .check b { font-size: 0.88rem; color: var(--text); font-weight: 600;}
-  
-  .note { font-size: 0.76rem; color: var(--muted); margin: 6px 0 0; }
-  .note.warn { background: var(--warn-bg); color: var(--warn-text); padding: 8px 10px; border-radius: 6px; border: 1px solid var(--warn-border);}
-  
-  details { margin-top: 14px; }
-  summary { cursor: pointer; font-size: 0.84rem; font-weight: 600; color: var(--primary); outline: none;}
-  
-  textarea {
-    width: 100%;
-    min-height: 74px;
-    margin-top: 6px;
-    padding: 9px 11px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: var(--card);
-    color: var(--text);
-    font: 0.81rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    resize: vertical;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-  }
-  textarea:focus { outline: 2px solid var(--accent); border-color: transparent; }
-  
-  label.lbl { display: block; font-size: 0.84rem; font-weight: 600; margin-top: 12px; color: var(--primary); }
-  
-  button { font: inherit; cursor: pointer; border-radius: 8px; border: 1px solid var(--accent); padding: 11px 20px; transition: background-color 0.15s;}
-  button.primary { background: var(--accent); color: #ffffff; font-weight: 600; width: 100%; border: none;}
-  button.primary:hover:not(:disabled) { background: var(--accent-hover); }
-  button.primary:disabled { opacity: 0.45; cursor: not-allowed; }
-  
-  button.ghost { background: transparent; color: var(--accent); padding: 6px 12px; font-size: 0.82rem; font-weight: 600; border-color: transparent;}
-  button.ghost:hover { background: var(--soft); }
-  
-  .bar { height: 8px; background: var(--soft); border-radius: 6px; overflow: hidden; margin-top: 16px; }
-  .bar > div { height: 100%; width: 0; background: var(--accent); transition: width 0.2s; }
-  
-  #status { margin: 8px 0 0; font-size: 0.84rem; color: var(--muted); }
-  .msg.err { background: var(--danger-bg); color: var(--danger-text); padding: 10px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; margin-top: 12px; border: 1px solid var(--danger-border);}
-  
-  .warnlist { margin: 10px 0 0; padding-left: 18px; font-size: 0.84rem; color: var(--warn-text); background: var(--warn-bg); border-radius: 6px; padding-top: 8px; padding-bottom: 8px; padding-right: 12px; border: 1px solid var(--warn-border);}
-  .warnlist:empty { display: none; }
-  
-  #summary { margin: 0; font-size: 0.88rem;}
-  
-  .maptools { display: flex; gap: 8px; margin: 10px 0 4px; }
-  
-  #mapList {
-    margin: 8px 0 0;
-    max-height: 300px;
-    overflow: auto;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px;
-    font: 0.81rem/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    background: var(--soft);
-    color: var(--text);
-  }
-  #mapList div { word-break: break-word; }
-  
-  .rodape { font-size: 0.76rem; color: var(--muted); margin-top: 20px; text-align: center; }
-  .dev-credit { margin-top: 8px; font-weight: 600; color: var(--primary); }
-  [hidden] { display: none !important; }
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    .card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+    }
+
+    /* BARRA DE UPLOAD E SEGURANÇA */
+    .upload-bar {
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .file-input-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: 7px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .btn-danger-outline {
+      background: transparent;
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .security-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      font-size: 0.84rem;
+    }
+
+    .option-check {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .option-check input {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+    }
+
+    .security-warning {
+      width: 100%;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--warning);
+      color: var(--warning);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      display: none;
+    }
+
+    /* GRELHA PRINCIPAL: SIDEBAR + CANVAS */
+    .review-grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      .review-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* PAINEL LATERAL DE DETEÇÕES */
+    .detections-panel {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 175px);
+      min-height: 520px;
+      overflow: hidden;
+    }
+
+    @media (max-width: 980px) {
+      .detections-panel {
+        height: 460px;
+      }
+    }
+
+    .panel-header {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-header h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .badge-count {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 0.75rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+
+    .manual-add-bar {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 0.45rem;
+    }
+
+    .manual-add-bar input {
+      flex: 1;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    .filter-toolbar {
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .link-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.78rem;
+    }
+
+    .detections-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .detection-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.55rem 0.65rem;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--bg-primary);
+      cursor: pointer;
+      transition: all 0.12s;
+      font-size: 0.83rem;
+    }
+
+    .detection-item.ignored {
+      opacity: 0.45;
+      text-decoration: line-through;
+    }
+
+    .detection-item input[type="checkbox"] {
+      margin-top: 0.15rem;
+      accent-color: var(--accent);
+      width: 15px;
+      height: 15px;
+    }
+
+    .det-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .det-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.2rem;
+    }
+
+    .det-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .tag-NIF, .tag-CC, .tag-NISS, .tag-IBAN { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .tag-DATA { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .tag-MATRICULA { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .tag-MORADA, .tag-CP { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+    .tag-PESSOA, .tag-MAGISTRADO, .tag-NER { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+    .tag-CONTACTO { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
+    .tag-MANUAL { background: rgba(148, 163, 184, 0.25); color: #cbd5e1; }
+
+    .det-text {
+      font-weight: 600;
+      word-break: break-word;
+      color: var(--text-primary);
+    }
+
+    .panel-footer {
+      padding: 0.85rem 1rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    /* PAINEL DIREITO: CANVAS E OCULTAÇÃO MANUAL */
+    .canvas-panel {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .canvas-toolbar {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg-secondary);
+    }
+
+    .page-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .draw-hint {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .canvas-viewport {
+      background: #090d16;
+      padding: 1.25rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow: auto;
+      max-height: calc(100vh - 235px);
+      min-height: 500px;
+    }
+
+    .canvas-stage {
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      line-height: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    #pdf-canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    #overlay-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+      touch-action: none; /* Impede scroll no iPad/iPhone ao desenhar tarja */
+    }
+
+    .status-bar {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-msg {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+  </style>
 </head>
 <body>
 
-<nav class="top-nav">
-  <div class="nav-links">
-    <a href="index.html" class="nav-active">Anonimizador PDF</a>
-    <a href="citacheck.html" class="nav-inactive">Cita-Check (Prazos e Dilações)</a>
-  </div>
-  <button id="themeToggle" class="theme-toggle" aria-label="Mudar tema">
-    <span id="themeIcon">🌙</span> Tema Escuro
-  </button>
-</nav>
-
-<main>
-  <header>
-    <h1>Anonimizador de PDF</h1>
-    <p>Expurgo visual de peças processuais e despachos judiciais. O PDF é processado neste browser e o seu conteúdo não é enviado para nenhum servidor.</p>
-  </header>
-
-  <section class="card" aria-labelledby="s1">
-    <h2 id="s1"><span class="n">1</span>Selecionar o ficheiro</h2>
-    <label class="drop" id="drop" for="file">
-      <input id="file" type="file" accept="application/pdf,.pdf">
-      <strong id="dropText">Arrastar o PDF para aqui ou clicar para escolher</strong>
-      <span id="fileInfo" class="muted"></span>
-    </label>
-
-    <fieldset>
-      <legend>Modo de expurgo</legend>
-      <label class="opt"><input type="radio" name="modo" value="label" checked>
-        <div><b>Etiqueta sobre fundo claro</b><small>Cobre o dado e escreve por cima [PESSOA_1], [EMPRESA_1], [PROC_1], [ID_1], [LOCAL_1].</small></div></label>
-      <label class="opt"><input type="radio" name="modo" value="black">
-        <div><b>Tarja preta</b><small>Cobre o dado com um retângulo preto.</small></div></label>
-    </fieldset>
-
-    <label class="check"><input type="checkbox" id="raster">
-      <div><b>Eliminar o texto original (converter as páginas em imagem)</b></div></label>
-    <p class="note warn" id="rasterNote">Sem esta opção, o texto original continua dentro do PDF, apenas coberto, e pode ser selecionado, copiado ou extraído. Com a opção ativa, o aspeto mantém-se, mas o PDF deixa de ter texto pesquisável e o ficheiro fica maior.</p>
-
-    <details>
-      <summary>Opções avançadas</summary>
-      <label class="lbl" for="hideTerms">Termos a ocultar além dos detetados (um por linha; prefixo opcional PESSOA:, EMPRESA:, LOCAL:, ID: ou PROC:)</label>
-      <textarea id="hideTerms" placeholder="PESSOA: Maria da Silva&#10;Rua das Flores"></textarea>
-      <label class="lbl" for="keepTerms">Termos a preservar (um por linha)</label>
-      <textarea id="keepTerms" placeholder="Câmara Municipal do Porto"></textarea>
-    </details>
-  </section>
-
-  <section class="card" aria-labelledby="s2">
-    <h2 id="s2"><span class="n">2</span>Processar</h2>
-    <button id="go" class="primary" type="button" disabled>Processar e descarregar</button>
-    <div id="progWrap" hidden>
-      <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="barBox"><div id="bar"></div></div>
-      <p id="status" role="status"></p>
+  <!-- NAVBAR UNIFICADA -->
+  <nav class="top-nav">
+    <a href="index.html" class="nav-brand">
+      <span>⚖️</span>
+      <span>LegalTech <strong>Suite</strong></span>
+      <span class="badge-client">100% Client-Side • RGPD</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-item active">Anonimizador PDF</a>
+      <a href="citacheck.html" class="nav-item">Cita-Check (CPC/CPTA)</a>
+      <button id="theme-toggle" class="theme-btn" title="Alternar Modo Claro/Escuro">🌓</button>
     </div>
-    <p id="error" class="msg err" role="alert" hidden></p>
-  </section>
+  </nav>
 
-  <section class="card" id="result" hidden>
-    <h2>Resultado</h2>
-    <p id="summary"></p>
-    <ul id="warnings" class="warnlist"></ul>
-    <details>
-      <summary>Mapa de correspondência</summary>
-      <p class="note">O mapa contém os dados originais. Não o guardar nem o enviar junto com o PDF anonimizado.</p>
-      <div class="maptools">
-        <button type="button" class="ghost" id="copyMap">Copiar</button>
-        <button type="button" class="ghost" id="saveMap">Guardar em .txt</button>
+  <main class="workspace-container">
+    <!-- BARRA DE CARREGAMENTO E OPÇÕES DE SEGURANÇA -->
+    <section class="upload-bar card">
+      <div class="file-input-group">
+        <label for="pdf-upload" class="btn btn-primary">
+          📄 Carregar PDF
+        </label>
+        <!-- onclick="this.value=null" resolve o bug de selecionar o mesmo PDF 2x seguidas -->
+        <input type="file" id="pdf-upload" accept="application/pdf" onclick="this.value=null" hidden />
+        <button id="btn-run-ner" class="btn btn-secondary" disabled title="Executa modelo NER local com janela deslizante de 150 chars">
+          🧠 Deteção IA Profunda (NER)
+        </button>
+        <span id="status-text" class="status-bar">Nenhum documento carregado.</span>
       </div>
-      <div id="mapList"></div>
-    </details>
-  </section>
 
-  <div class="rodape">
-    <p>A deteção automática não é infalível. Verificar sempre o PDF antes de o divulgar. A alteração do ficheiro invalida assinaturas digitais criptográficas; a imagem da assinatura mantém-se.</p>
-    <p class="dev-credit">@developed by Armando Afonso</p>
-  </div>
-</main>
+      <div class="security-options">
+        <label class="option-check" title="Converte as páginas em imagem rasterizada no PDF final para destruir a camada de texto selecionável por baixo das tarjas">
+          <input type="checkbox" id="opt-secure-raster" checked />
+          <span>🔒 <strong>Tarja Preta Segura</strong> (Destruir texto oculto)</span>
+        </label>
 
-<script type="module">
-'use strict';
+        <label class="option-check" title="Estampa 'CÓPIA ANONIMIZADA' na diagonal em todas as páginas">
+          <input type="checkbox" id="opt-watermark" checked />
+          <span>💧 Marca de Água ("CÓPIA ANONIMIZADA")</span>
+        </label>
+      </div>
 
-/* ===================== GESTÃO DO TEMA (DARK/LIGHT MODE) ===================== */
-const themeToggleBtn = document.getElementById('themeToggle');
-const themeIcon = document.getElementById('themeIcon');
-const htmlEl = document.documentElement;
+      <div id="security-warning" class="security-warning">
+        ⚠️ <strong>Aviso de Segurança RGPD:</strong> Ao desativar a "Tarja Preta Segura", o PDF manterá a camada de texto original por baixo dos retângulos (qualquer pessoa poderá copiar e colar o texto oculto). Recomendamos manter o modo seguro ativado.
+      </div>
+    </section>
 
-function setTheme(theme) {
-  htmlEl.setAttribute('data-theme', theme);
-  localStorage.setItem('legaltech_theme', theme);
-  if (theme === 'dark') {
-    themeIcon.textContent = '☀️';
-    themeToggleBtn.innerHTML = '<span id="themeIcon">☀️</span> Tema Claro';
-  } else {
-    themeIcon.textContent = '🌙';
-    themeToggleBtn.innerHTML = '<span id="themeIcon">🌙</span> Tema Escuro';
-  }
-}
+    <!-- GRELHA DE TRABALHO -->
+    <section class="review-grid">
+      
+      <!-- COLUNA ESQUERDA: LISTA DE REVISÃO COM CHECKBOXES -->
+      <aside class="detections-panel card">
+        <div class="panel-header">
+          <h3>1. Revisão de Ocorrências</h3>
+          <span id="det-counter" class="badge-count">0 ativas</span>
+        </div>
 
-// Verifica a preferência guardada ou a preferência do sistema
-const savedTheme = localStorage.getItem('legaltech_theme');
-if (savedTheme) {
-  setTheme(savedTheme);
-} else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-  setTheme('dark');
-} else {
-  setTheme('light');
-}
+        <!-- Adicionar termo manual em todas as páginas -->
+        <div class="manual-add-bar">
+          <input type="text" id="custom-term" placeholder="Ocultar palavra/nome no PDF..." />
+          <button id="btn-add-term" class="btn btn-secondary" disabled>➕</button>
+        </div>
 
-themeToggleBtn.addEventListener('click', () => {
-  const currentTheme = htmlEl.getAttribute('data-theme');
-  setTheme(currentTheme === 'dark' ? 'light' : 'dark');
-});
+        <div class="filter-toolbar">
+          <div>
+            <button id="btn-check-all" class="link-btn">Marcar tudo</button>
+            <span style="margin: 0 4px; color: var(--text-secondary)">|</span>
+            <button id="btn-uncheck-all" class="link-btn">Desmarcar tudo</button>
+          </div>
+          <label class="option-check" style="font-size: 0.76rem;">
+            <input type="checkbox" id="filter-current-page" />
+            <span>Só pág. atual</span>
+          </label>
+        </div>
 
-/* ===================== NÚCLEO (sem dependências do DOM) ===================== */
-/* BEGIN CORE */
-const CFG = {
-  pdfjsWorker: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
-  cmaps: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
-  fonts: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/standard_fonts/',
-  transformers: 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2',
-  model: 'Xenova/bert-base-multilingual-cased-ner-hrl',
-  minScore: 0.75,
-  chunkChars: 700,
-  rasterScale: 2.5,
-  rasterMaxPixels: 20e6
-};
+        <div id="detections-list" class="detections-list">
+          <p class="empty-msg">Carregue uma sentença, articulado ou despacho em PDF para rever as entidades detetadas antes de exportar.</p>
+        </div>
 
-const NER_CAT = { PER: 'PESSOA', ORG: 'EMPRESA', LOC: 'LOCAL' };
+        <div class="panel-footer">
+          <button id="btn-export" class="btn btn-success" style="width: 100%; padding: 0.7rem;" disabled>
+            ⬇️ Descarregar PDF Anonimizado
+          </button>
+        </div>
+      </aside>
 
-const WL_ACRONYMS = ['CPTA','CPPT','LGT','CPC','CRP','CPA','CC','CIVA','CIRS','CIRC',
-  'STA','TCAN','TCAS','STJ','TC','TJUE','TEDH','CAAD',
-  'TAF','AT','MP','RGIT','CIMI','CIMT','EBF','IRS','IRC','IVA','IMI','IMT','CPP','CP'];
+      <!-- COLUNA DIREITA: PREVIEW DO PDF + CLICK & DRAG MANUAL -->
+      <section class="canvas-panel card">
+        <div class="canvas-toolbar">
+          <div class="page-controls">
+            <button id="btn-prev" class="btn btn-secondary" disabled>◀</button>
+            <span id="page-info">Página 0 / 0</span>
+            <button id="btn-next" class="btn btn-secondary" disabled>▶</button>
+          </div>
 
-const WL_PHRASES = ['Autoridade Tributária e Aduaneira','Autoridade Tributária','Ministério Público','Fazenda Pública',
-  'Estado Português','Tribunal Administrativo e Fiscal','Tribunal Central Administrativo Norte','Tribunal Central Administrativo Sul',
-  'Supremo Tribunal Administrativo','Supremo Tribunal de Justiça','Tribunal Constitucional','Tribunal de Justiça da União Europeia',
-  'Tribunal Europeu dos Direitos do Homem','Centro de Arbitragem Administrativa','Despacho Saneador','Valor da Causa','Sentença',
-  'Juiz de Direito','Juíza de Direito','Juiz Desembargador','Juíza Desembargadora','Juiz Conselheiro','Juíza Conselheira',
-  'República Portuguesa','Diário da República','União Europeia','Portugal'];
+          <div class="draw-hint">
+            <span>✏️ <strong>Ocultação Manual:</strong> Arraste o dedo/rato sobre o documento para desenhar uma tarja.</span>
+            <button id="btn-undo-box" class="btn btn-danger-outline" style="padding: 0.3rem 0.6rem; font-size: 0.78rem;" disabled>
+              ↩️ Desfazer Tarja Manual
+            </button>
+          </div>
+        </div>
 
-const MESES = 'janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro';
-const NUM = '(?:\\d{1,3}(?:[.\\u00a0 ]\\d{3})+|\\d+)(?:,\\d{1,2})?';
+        <div class="canvas-viewport">
+          <div id="canvas-stage" class="canvas-stage">
+            <canvas id="pdf-canvas"></canvas>
+            <canvas id="overlay-canvas"></canvas>
+          </div>
+        </div>
+      </section>
 
-/* título do juiz (ou do relator) + nome imediatamente a seguir: protege o conjunto, não só o título */
-const JUDGE_WORDS = 'Ju[ií]za|Juiz|Desembargadora|Desembargador|Conselheira|Conselheiro|Relatora|Relator';
-const JUDGE_TITLE = '(?:Mm[oa]?\\.?\\s+)?(?:' + JUDGE_WORDS + ')(?:\\s+(?:de\\s+Direito|' + JUDGE_WORDS + '))*';
-const NAME_CONN = '(?:de|da|do|dos|das|e)';
-const NAME_WORD = '\\p{Lu}[\\p{L}\'\\-]+';
-const NAME_CORE = '(?:' + NAME_CONN + '\\s+)?' + NAME_WORD + '(?:\\s+(?:' + NAME_CONN + '\\s+)?' + NAME_WORD + '){0,5}';
-const NAME_TAIL = '(?:\\s*[,:]?\\s*(?:Dr\\.?|Dra\\.?|Doutor(?:a)?|Mestre|Mtre\\.?|Exmo\\.?|Exma\\.?)?' +
-  '\\s*(' + NAME_CORE + '))?';
-const RE_JUDGE = new RegExp(JUDGE_TITLE + NAME_TAIL, 'gu');
-/* nome isolado do magistrado, sem título antes, para o reconhecer em assinaturas e noutras menções soltas */
-const RE_JUDGE_NAME_ALONE = new RegExp('(' + NAME_CORE + ')\\s*[,\\n]?\\s*(?:' + JUDGE_TITLE + ')', 'gu');
+    </section>
+  </main>
 
-function extractJudgeNames(text){
-  const names = [];
-  const add = m => { if (m && validName(m)) names.push(m.trim().replace(/\s+/g, ' ')); };
-  for (const m of text.matchAll(new RegExp(RE_JUDGE.source, 'gu'))) add(m[1]);
-  for (const m of text.matchAll(new RegExp(RE_JUDGE_NAME_ALONE.source, 'gu'))) add(m[1]);
-  return names;
-}
+  <script>
+    /********************************************************************
+     * 1. TEMA DARK / LIGHT PERSISTENTE (localStorage)
+     ********************************************************************/
+    const themeToggle = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('legaltech_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
 
-const RE_PROTECT = [
-  RE_JUDGE,
-  /Tribunal\s+(?:Administrativo\s+e\s+Fiscal|Tributário|Central\s+Administrativo(?:\s+(?:Norte|Sul))?|Judicial|da\s+Relação|Constitucional)(?:\s+(?:de|do|da|dos|das)\s+\p{Lu}[\p{L}\-]+)?/gu,
-  /TRIBUNAL\s+(?:ADMINISTRATIVO\s+E\s+FISCAL|TRIBUTÁRIO|CENTRAL\s+ADMINISTRATIVO(?:\s+(?:NORTE|SUL))?)(?:\s+(?:DE|DO|DA|DOS|DAS)\s+\p{Lu}[\p{L}\-]+)?/gu,
-  new RegExp('\\b\\d{1,2}\\s+de\\s+(?:' + MESES + ')\\s+de\\s+\\d{4}\\b', 'giu'),
-  /\b\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{2,4}\b/g,
-  /\b\d{4}-\d{2}-\d{2}\b/g,
-  new RegExp('(?:€|EUR)\\s*' + NUM + '|' + NUM + '\\s*(?:€|euros?\\b|EUR\\b)', 'giu')
-];
-
-const RE = {
-  proc:   /\b\d{1,6}\/\d{2}\.\d[A-Z][A-Z0-9]{1,6}(?:-[A-Z0-9]{1,5})?\b/g,
-  iban:   /\bPT\s?\d{2}(?:\s?\d){21}\b/g,
-  email:  /[A-Za-z0-9._%+\-]+@[A-Za-z0-9\-]+(?:\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}/g,
-  tel:    /(?:\+|00)351[\s.\-]?\d{3}[\s.\-]?\d{3}[\s.\-]?\d{3}(?!\d)|(?<![\d\/])[29]\d{2}[\s\-]\d{3}[\s\-]\d{3}(?!\d)/g,
-  cc:     /\b\d{8}\s?\d\s?[A-Z]{2}\d\b/g,
-  nif:    /(?<![\d.,\/])\d{9}(?!\d|[.,\/]\d)/g,
-  niss:   /(?<![\d.,\/])\d{11}(?!\d|[.,\/]\d)/g,
-  postal: /\b\d{4}-\d{3}\b/g
-};
-
-class UserError extends Error {}
-class Cancelled extends Error {}
-
-function escRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
-function overlaps(a0, a1, b0, b1){ return a0 < b1 && b0 < a1; }
-
-/* ---- medição de texto (substituível em testes) ---- */
-let measureImpl = (str, family) => {
-  if (!measureImpl._ctx) measureImpl._ctx = document.createElement('canvas').getContext('2d');
-  const c = measureImpl._ctx;
-  c.font = '100px sans-serif';
-  c.font = '100px ' + (family ? family + ', ' : '') + 'sans-serif';
-  return c.measureText(str).width;
-};
-function setMeasure(fn){ measureImpl = fn; }
-
-/* ---- zonas protegidas (lista branca, datas, valores) ---- */
-function buildProtectors(extraKeep){
-  const list = RE_PROTECT.slice();
-  list.push(new RegExp('(?<![\\p{L}\\d])(?:' + WL_ACRONYMS.join('|') + ')(?![\\p{L}\\d])', 'gu'));
-  const phr = WL_PHRASES.concat(extraKeep || []).map(p => p.trim()).filter(Boolean)
-    .sort((a, b) => b.length - a.length)
-    .map(p => escRe(p).replace(/\s+/g, '\\s+'));
-  list.push(new RegExp('(?<![\\p{L}\\d])(?:' + phr.join('|') + ')(?![\\p{L}\\d])', 'giu'));
-  return list;
-}
-
-function protectedZones(text, protectors){
-  const z = [];
-  for (const re of protectors) {
-    for (const m of text.matchAll(re)) {
-      if (m[0].length) z.push([m.index, m.index + m[0].length]);
-    }
-  }
-  return z;
-}
-
-function subtractZones(c, zones){
-  const hit = zones.filter(z => overlaps(c.s, c.e, z[0], z[1]));
-  if (!hit.length) return [c];
-  if (c.cat !== 'PESSOA') return [];
-  let segs = [[c.s, c.e]];
-  for (const [zs, ze] of hit) {
-    const next = [];
-    for (const [a, b] of segs) {
-      if (ze <= a || zs >= b) { next.push([a, b]); continue; }
-      if (zs > a) next.push([a, zs]);
-      if (ze < b) next.push([ze, b]);
-    }
-    segs = next;
-  }
-  return segs.map(([a, b]) => Object.assign({}, c, { s: a, e: b }));
-}
-
-function trimNonAlnum(text, s, e){
-  while (s < e && !/[\p{L}\d]/u.test(text[s])) s++;
-  while (e > s && !/[\p{L}\d]/u.test(text[e - 1])) e--;
-  return [s, e];
-}
-
-function validName(t){
-  return t.length >= 3 && /\p{Lu}/u.test(t) && !/^[\d\s.,\-\/]+$/.test(t);
-}
-
-/* ---- deteção por regras ---- */
-function detectRegex(text, zones){
-  const out = [];
-  const add = (re, cat, protect) => {
-    for (const m of text.matchAll(re)) {
-      const c = { s: m.index, e: m.index + m[0].length, cat, src: 'regex' };
-      if (protect && zones.some(z => overlaps(c.s, c.e, z[0], z[1]))) continue;
-      out.push(c);
-    }
-  };
-  add(RE.proc, 'PROC', false);
-  add(RE.iban, 'ID', false);
-  add(RE.email, 'EMAIL', false);
-  add(RE.tel, 'TEL', true);
-  add(RE.cc, 'ID', false);
-  add(RE.nif, 'ID', true);
-  add(RE.niss, 'ID', true);
-  add(RE.postal, 'LOCAL', false);
-  return out;
-}
-
-function parseHide(lines){
-  return lines.map(l => l.trim()).filter(Boolean).map(l => {
-    const m = /^(PESSOA|EMPRESA|LOCAL|ID|PROC)\s*:\s*(.+)$/i.exec(l);
-    return m ? { cat: m[1].toUpperCase(), term: m[2].trim() } : { cat: 'OUTRO', term: l };
-  });
-}
-
-function detectCustom(text, hide){
-  const out = [];
-  for (const h of hide) {
-    if (!h.term) continue;
-    const re = new RegExp('(?<![\\p{L}\\d])' + escRe(h.term).replace(/\s+/g, '\\s+') + '(?![\\p{L}\\d])', 'giu');
-    for (const m of text.matchAll(re)) out.push({ s: m.index, e: m.index + m[0].length, cat: h.cat, src: 'custom' });
-  }
-  return out;
-}
-
-/* ---- texto da página e mapa de itens ---- */
-function buildPageText(tc){
-  let text = '';
-  const items = [];
-  let prev = null;
-  for (const it of tc.items) {
-    if (typeof it.str !== 'string' || !it.str) continue;
-    const [a, b, c, d, e, f] = it.transform;
-    const h = it.height || Math.hypot(c, d) || Math.hypot(a, b) || 10;
-    const rec = { str: it.str, a, b, e, f, w: it.width, h, font: it.fontName, start: 0 };
-    if (prev) {
-      const len = Math.hypot(prev.a, prev.b) || 1;
-      const ux = prev.a / len, uy = prev.b / len;
-      const dx = e - prev.e, dy = f - prev.f;
-      const along = dx * ux + dy * uy - prev.w;
-      const perp = Math.abs(-dx * uy + dy * ux);
-      const ref = Math.max(prev.h, h);
-      let sep = '';
-      if (perp > 0.5 * ref) sep = '\n';
-      else if (along > 0.12 * ref) sep = ' ';
-      if (sep === ' ' && (/\s$/.test(prev.str) || /^\s/.test(it.str))) sep = '';
-      text += sep;
-    }
-    rec.start = text.length;
-    text += it.str;
-    items.push(rec);
-    prev = rec;
-  }
-  return { text, items, styles: tc.styles || {} };
-}
-
-/* ---- NER: agregação de tokens e mapeamento para posições no texto ---- */
-function aggregate(toks){
-  const ents = [];
-  let cur = null;
-  for (const t of toks) {
-    const m = /^(?:B|I)-(PER|ORG|LOC)$/.exec(t.entity || '');
-    if (!m) { cur = null; continue; }
-    const type = m[1];
-    const isB = t.entity.startsWith('B-');
-    const sub = typeof t.word === 'string' && t.word.startsWith('##');
-    const piece = sub ? t.word.slice(2) : String(t.word);
-    const adjacent = cur && cur.type === type && t.index === cur.last + 1;
-    if (adjacent && sub) cur.words[cur.words.length - 1] += piece;
-    else if (adjacent && !isB) cur.words.push(piece);
-    else { cur = { type, words: [piece], scores: [], last: t.index }; ents.push(cur); }
-    cur.last = t.index;
-    cur.scores.push(t.score);
-  }
-  return ents;
-}
-
-function splitChunks(text, max){
-  const out = [];
-  let start = 0;
-  while (start < text.length) {
-    let end = Math.min(text.length, start + max);
-    if (end < text.length) {
-      const nl = text.lastIndexOf('\n', end);
-      if (nl > start + max * 0.4) end = nl;
-      else {
-        const sp = text.lastIndexOf(' ', end);
-        if (sp > start + max * 0.4) end = sp;
-      }
-    }
-    out.push({ s: start, t: text.slice(start, end) });
-    start = end + (/\s/.test(text[end] || '') ? 1 : 0);
-  }
-  return out;
-}
-
-function extendOrg(text, e){
-  const rest = text.slice(e, e + 30);
-  const m = /^,?\s*(?:Unipessoal,?\s*)?(?:Lda\.?|Ltda\.?|S\.\s?A\.?|SA\b)/i.exec(rest);
-  return m ? e + m[0].length : e;
-}
-
-function entityToCandidate(text, ent, ch, cursorRef){
-  const src = ent.words.map(w => w === '[UNK]' ? '\\S' : escRe(w)).join('\\s*');
-  let m = null;
-  for (const flags of ['gu', 'giu']) {
-    const re = new RegExp(src, flags);
-    re.lastIndex = cursorRef.v;
-    m = re.exec(ch.t);
-    if (!m) { re.lastIndex = 0; m = re.exec(ch.t); }
-    if (m) break;
-  }
-  if (!m) return null;
-  cursorRef.v = m.index + m[0].length;
-  let s = ch.s + m.index, e = s + m[0].length;
-  [s, e] = trimNonAlnum(text, s, e);
-  const cat = NER_CAT[ent.type];
-  if (cat === 'EMPRESA') e = extendOrg(text, e);
-  if (!validName(text.slice(s, e))) return null;
-  return { s, e, cat, src: 'ner' };
-}
-
-async function detectNER(ner, text, onChunk){
-  const out = [];
-  const chunks = splitChunks(text, CFG.chunkChars);
-  for (let i = 0; i < chunks.length; i++) {
-    const ch = chunks[i];
-    if (onChunk) onChunk(i, chunks.length);
-    if (ch.t.trim().length < 3 || !/\p{Lu}/u.test(ch.t)) continue;
-    let toks;
-    try { toks = await ner(ch.t); } catch (_) { continue; }
-    const cursor = { v: 0 };
-    for (const ent of aggregate(toks)) {
-      const avg = ent.scores.reduce((x, y) => x + y, 0) / ent.scores.length;
-      if (avg < CFG.minScore) continue;
-      const c = entityToCandidate(text, ent, ch, cursor);
-      if (c) out.push(c);
-    }
-    await new Promise(r => setTimeout(r, 0));
-  }
-  return out;
-}
-
-/* ---- filtragem, propagação e resolução de sobreposições ---- */
-function filterNER(text, cands, zones){
-  const out = [];
-  for (const c of cands) {
-    for (const seg of subtractZones(c, zones)) {
-      const [s, e] = trimNonAlnum(text, seg.s, seg.e);
-      if (validName(text.slice(s, e))) out.push(Object.assign({}, seg, { s, e }));
-    }
-  }
-  return out;
-}
-
-function normKey(cat, v){
-  const base = v.normalize('NFC').toLowerCase().replace(/\s+/g, ' ');
-  if (cat === 'ID' || cat === 'TEL') return base.replace(/[^a-z0-9]/g, '');
-  return base.replace(/^[\s.,;:()\-]+|[\s.,;:()\-]+$/g, '');
-}
-
-function propagate(text, known, zones){
-  const out = [];
-  for (const k of known) {
-    const re = new RegExp('(?<![\\p{L}\\d])' + escRe(k.value).replace(/\s+/g, '\\s+') + '(?![\\p{L}\\d])',
-      k.value.length >= 6 ? 'giu' : 'gu');
-    for (const m of text.matchAll(re)) {
-      const c = { s: m.index, e: m.index + m[0].length, cat: k.cat, src: 'prop' };
-      if (zones.some(z => overlaps(c.s, c.e, z[0], z[1]))) continue;
-      out.push(c);
-    }
-  }
-  return out;
-}
-
-function resolve(cands){
-  const pr = { custom: 0, regex: 1, ner: 2, prop: 3 };
-  const sorted = cands.slice().sort((a, b) => pr[a.src] - pr[b.src] || (b.e - b.s) - (a.e - a.s) || a.s - b.s);
-  const acc = [];
-  for (const c of sorted) if (!acc.some(a => overlaps(a.s, a.e, c.s, c.e))) acc.push(c);
-  return acc.sort((a, b) => a.s - b.s);
-}
-
-function makeLabeler(){
-  const counters = {};
-  const map = new Map();
-  return {
-    get(cat, value){
-      const key = cat + '|' + normKey(cat, value);
-      let r = map.get(key);
-      if (!r) {
-        counters[cat] = (counters[cat] || 0) + 1;
-        r = { cat, label: '[' + cat + '_' + counters[cat] + ']', value: value.trim().replace(/\s+/g, ' ') };
-        map.set(key, r);
-      }
-      return r.label;
-    },
-    entries(){ return Array.from(map.values()); }
-  };
-}
-
-/* ---- geometria: do intervalo no texto da página às tarjas em coordenadas PDF ---- */
-function makeRects(pg, s, e){
-  const out = [];
-  for (const it of pg.items) {
-    const is = it.start, ie = is + it.str.length;
-    if (ie <= s || is >= e) continue;
-    let a0 = Math.max(s, is) - is, a1 = Math.min(e, ie) - is;
-    while (a0 < a1 && /\s/.test(it.str[a0])) a0++;
-    while (a1 > a0 && /\s/.test(it.str[a1 - 1])) a1--;
-    if (a1 <= a0) continue;
-    const st = pg.styles[it.font];
-    const fam = st && st.fontFamily;
-    const tot = measureImpl(it.str, fam);
-    let f0, f1;
-    if (tot > 0) {
-      f0 = measureImpl(it.str.slice(0, a0), fam) / tot;
-      f1 = measureImpl(it.str.slice(0, a1), fam) / tot;
-    } else {
-      f0 = a0 / it.str.length;
-      f1 = a1 / it.str.length;
-    }
-    const wTot = it.w > 0 ? it.w : (tot / 100) * it.h;
-    const h = it.h;
-    const pad0 = 0.04 * h, pad1 = 0.06 * h;
-    const lx = f0 * wTot - pad0;
-    const lw = (f1 - f0) * wTot + pad0 + pad1;
-    const ly = -0.22 * h, lh = 1.08 * h;
-    const th = Math.atan2(it.b, it.a);
-    const ux = Math.cos(th), uy = Math.sin(th), nx = -uy, ny = ux;
-    out.push({ th, ox: it.e + lx * ux + ly * nx, oy: it.f + lx * uy + ly * ny, lw, lh });
-  }
-  return out;
-}
-
-function fitLabel(label, lw, lh, widthFn){
-  const pad = Math.min(2, lh * 0.1);
-  let size = lh * 0.62;
-  let w = widthFn(label, size);
-  if (w > lw - 2 * pad) size *= (lw - 2 * pad) / w;
-  let newLw = lw;
-  if (size < 4) {
-    size = 4;
-    w = widthFn(label, size);
-    newLw = Math.max(lw, w + 2 * pad);
-  }
-  return { size, lw: newLw, pad };
-}
-
-function widestIndex(rects){
-  let k = 0;
-  rects.forEach((r, i) => { if (r.lw > rects[k].lw) k = i; });
-  return k;
-}
-/* END CORE */
-
-/* ===================== INTERFACE E PIPELINE ===================== */
-const $ = id => document.getElementById(id);
-let selectedFile = null;
-let busy = false;
-let lastMap = [];
-let lastBase = 'documento';
-let nerPromise = null;
-let nerProgress = () => {};
-
-if (typeof pdfjsLib !== 'undefined') pdfjsLib.GlobalWorkerOptions.workerSrc = CFG.pdfjsWorker;
-
-function fmtSize(n){ return n < 1048576 ? (n / 1024).toFixed(0) + ' KB' : (n / 1048576).toFixed(1).replace('.', ',') + ' MB'; }
-function fmtTime(ms){
-  if (ms < 1000) return Math.round(ms) + ' ms';
-  const s = ms / 1000;
-  if (s < 60) return s.toFixed(1).replace('.', ',') + ' s';
-  return Math.floor(s / 60) + ' min ' + Math.round(s % 60) + ' s';
-}
-function setProgress(frac, text){
-  const p = Math.max(0, Math.min(1, frac)) * 100;
-  $('bar').style.width = p.toFixed(1) + '%';
-  $('barBox').setAttribute('aria-valuenow', String(Math.round(p)));
-  if (text) $('status').textContent = text;
-}
-function showError(msg){ const el = $('error'); el.textContent = msg; el.hidden = !msg; }
-const tick = () => new Promise(r => setTimeout(r, 0));
-
-function friendly(e){
-  if (e instanceof UserError) return e.message;
-  const n = e && e.name, m = (e && e.message) || '';
-  if (n === 'PasswordException') return 'O PDF está protegido por palavra-passe. Remover a proteção e tentar de novo.';
-  if (n === 'InvalidPDFException') return 'O ficheiro não é um PDF válido ou está danificado.';
-  if (n === 'MissingPDFException') return 'Não foi possível ler o ficheiro.';
-  if (/memory|allocation|Array buffer/i.test(m)) return 'O browser ficou sem memória. Experimentar um ficheiro mais pequeno ou fechar outros separadores.';
-  return 'Ocorreu um erro inesperado: ' + m;
-}
-
-function setFile(f){
-  showError('');
-  if (!f) return;
-  if (!/\.pdf$/i.test(f.name) && f.type !== 'application/pdf') {
-    showError('O ficheiro selecionado não é um PDF.');
-    return;
-  }
-  selectedFile = f;
-  $('dropText').textContent = f.name;
-  $('fileInfo').textContent = fmtSize(f.size);
-  $('go').disabled = false;
-  $('result').hidden = true;
-}
-
-$('file').addEventListener('change', e => setFile(e.target.files[0]));
-const drop = $('drop');
-['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
-['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
-drop.addEventListener('drop', e => { if (e.dataTransfer.files.length) setFile(e.dataTransfer.files[0]); });
-$('go').addEventListener('click', run);
-
-/* ---- modelo de IA ---- */
-function loadNER(){
-  if (nerPromise) return nerPromise;
-  nerPromise = (async () => {
-    const tf = await import(CFG.transformers);
-    tf.env.allowLocalModels = false;
-    tf.env.useBrowserCache = true;
-    try { tf.env.backends.onnx.wasm.numThreads = 1; tf.env.backends.onnx.wasm.proxy = false; } catch (_) {}
-    return await tf.pipeline('token-classification', CFG.model, {
-      quantized: true,
-      progress_callback: p => nerProgress(p)
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('legaltech_theme', next);
     });
-  })();
-  nerPromise.catch(() => { nerPromise = null; });
-  return nerPromise;
-}
 
-/* ---- desenho ---- */
-function vectorDraw(pdfPage, helv, r, mode, label){
-  const { rgb, degrees } = PDFLib;
-  const deg = r.th * 180 / Math.PI;
-  let lw = r.lw, fit = null;
-  if (mode === 'label' && label) {
-    fit = fitLabel(label, r.lw, r.lh, (t, s) => helv.widthOfTextAtSize(t, s));
-    lw = fit.lw;
-  }
-  pdfPage.drawRectangle({
-    x: r.ox, y: r.oy, width: lw, height: r.lh, rotate: degrees(deg),
-    color: mode === 'black' ? rgb(0, 0, 0) : rgb(1, 1, 1), borderWidth: 0
-  });
-  if (fit) {
-    const ux = Math.cos(r.th), uy = Math.sin(r.th), nx = -uy, ny = ux;
-    const lx = fit.pad, ly = r.lh / 2 - 0.36 * fit.size;
-    pdfPage.drawText(label, {
-      x: r.ox + lx * ux + ly * nx, y: r.oy + lx * uy + ly * ny,
-      size: fit.size, font: helv, color: rgb(0, 0, 0), rotate: degrees(deg)
-    });
-  }
-}
+    /********************************************************************
+     * 2. CONFIGURAÇÃO DO PDF.JS E ESTADO GLOBAL
+     ********************************************************************/
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-function rasterDraw(ctx, vp, r, mode, label){
-  const sc = vp.scale;
-  let lw = r.lw, fit = null;
-  if (mode === 'label' && label) {
-    fit = fitLabel(label, r.lw, r.lh, (t, s) => {
-      ctx.font = (s * sc) + 'px Helvetica, Arial, sans-serif';
-      return ctx.measureText(t).width / sc;
-    });
-    lw = fit.lw;
-  }
-  const ux = Math.cos(r.th), uy = Math.sin(r.th), nx = -uy, ny = ux;
-  const P = [
-    [r.ox, r.oy],
-    [r.ox + ux * lw, r.oy + uy * lw],
-    [r.ox + ux * lw + nx * r.lh, r.oy + uy * lw + ny * r.lh],
-    [r.ox + nx * r.lh, r.oy + ny * r.lh]
-  ].map(p => vp.convertToViewportPoint(p[0], p[1]));
-  ctx.fillStyle = mode === 'black' ? '#000' : '#fff';
-  ctx.beginPath();
-  ctx.moveTo(P[0][0], P[0][1]);
-  for (let i = 1; i < 4; i++) ctx.lineTo(P[i][0], P[i][1]);
-  ctx.closePath();
-  ctx.fill();
-  if (fit) {
-    ctx.save();
-    ctx.translate(P[0][0], P[0][1]);
-    ctx.rotate(Math.atan2(P[1][1] - P[0][1], P[1][0] - P[0][0]));
-    ctx.fillStyle = '#000';
-    ctx.textBaseline = 'alphabetic';
-    ctx.font = (fit.size * sc) + 'px Helvetica, Arial, sans-serif';
-    ctx.fillText(label, fit.pad * sc, -(r.lh / 2 - 0.36 * fit.size) * sc);
-    ctx.restore();
-  }
-}
-
-function canvasToBytes(canvas){
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(async b => {
-      if (!b) return reject(new Error('Falha ao gerar a imagem da página.'));
-      resolve(new Uint8Array(await b.arrayBuffer()));
-    }, 'image/jpeg', 0.92);
-  });
-}
-
-function download(bytes, name){
-  const blob = new Blob([bytes], { type: 'application/pdf' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = name;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 30000);
-}
-
-/* ---- pipeline principal ---- */
-async function run(){
-  if (!selectedFile || busy) return;
-  busy = true;
-  const t0 = performance.now();
-  const warnings = [];
-  $('go').disabled = true;
-  $('result').hidden = true;
-  $('progWrap').hidden = false;
-  showError('');
-  setProgress(0, 'A preparar…');
-  let pdf = null;
-
-  try {
-    if (typeof pdfjsLib === 'undefined' || typeof PDFLib === 'undefined') {
-      throw new UserError('Não foi possível carregar as bibliotecas pdf.js e pdf-lib. Verificar a ligação à Internet e recarregar a página.');
-    }
-    const mode = document.querySelector('input[name=modo]:checked').value;
-    let raster = $('raster').checked;
-    const hide = parseHide($('hideTerms').value.split('\n'));
-    const keep = $('keepTerms').value.split('\n').map(s => s.trim()).filter(Boolean);
-
-    const buf = await selectedFile.arrayBuffer();
-    lastBase = selectedFile.name.replace(/\.pdf$/i, '');
-
-    /* modelo de IA */
-    nerProgress = p => {
-      if (p.status === 'progress' && /\.onnx/.test(p.file || '')) {
-        setProgress(0, 'A carregar o modelo de IA (' + Math.round(p.progress) + ' %). Na primeira utilização o descarregamento é demorado.');
-      } else if (p.status === 'initiate' || p.status === 'download') {
-        setProgress(0, 'A obter o modelo de IA…');
-      }
+    const State = {
+      pdfDoc: null,
+      pdfBytes: null,
+      fileName: 'documento.pdf',
+      currentPage: 1,
+      totalPages: 0,
+      renderScale: 1.5,
+      pagesData: [],      // Texto e itens posicionais por página
+      detections: [],     // [{ id, page, category, text, rects: [{x,y,w,h}], active: true }]
+      manualBoxes: [],    // [{ id, page, x, y, w, h }]
+      isDrawing: false,
+      startX: 0,
+      startY: 0,
+      nerPipeline: null
     };
-    setProgress(0, 'A obter o modelo de IA…');
-    let ner = null;
-    try {
-      ner = await loadNER();
-    } catch (e) {
-      const go = confirm('Não foi possível carregar o modelo de IA (' + ((e && e.message) || 'erro desconhecido') + ').\n\nContinuar só com as regras (processos, NIF, IBAN, emails, telefones, códigos postais)? Nomes, empresas e moradas NÃO serão detetados.');
-      if (!go) throw new Cancelled();
-      warnings.push('O modelo de IA não foi carregado. Só foram aplicadas as regras; nomes, empresas e moradas não foram detetados.');
-    }
 
-    /* leitura com pdf.js */
-    setProgress(0, 'A abrir o PDF…');
-    pdf = await pdfjsLib.getDocument({
-      data: new Uint8Array(buf.slice(0)),
-      cMapUrl: CFG.cmaps, cMapPacked: true, standardFontDataUrl: CFG.fonts
-    }).promise;
-    const n = pdf.numPages;
-    const total = 2 * n;
+    // Elementos DOM
+    const elUpload = document.getElementById('pdf-upload');
+    const elStatus = document.getElementById('status-text');
+    const elDetList = document.getElementById('detections-list');
+    const elDetCounter = document.getElementById('det-counter');
+    const elBtnExport = document.getElementById('btn-export');
+    const elBtnPrev = document.getElementById('btn-prev');
+    const elBtnNext = document.getElementById('btn-next');
+    const elPageInfo = document.getElementById('page-info');
+    const elPdfCanvas = document.getElementById('pdf-canvas');
+    const elOverlayCanvas = document.getElementById('overlay-canvas');
+    const elCustomTerm = document.getElementById('custom-term');
+    const elBtnAddTerm = document.getElementById('btn-add-term');
+    const elBtnUndoBox = document.getElementById('btn-undo-box');
+    const elOptRaster = document.getElementById('opt-secure-raster');
+    const elOptWatermark = document.getElementById('opt-watermark');
+    const elSecWarning = document.getElementById('security-warning');
+    const elFilterPage = document.getElementById('filter-current-page');
+    const elBtnRunNER = document.getElementById('btn-run-ner');
 
-    /* fase 1a: texto de cada página e nomes de magistrados (título + nome, em qualquer página e em qualquer ordem) */
-    setProgress(0, 'A identificar menções a juízes, desembargadores e relatores…');
-    const pages = [];
-    const noText = [];
-    const judgeNames = new Map();
-    for (let i = 1; i <= n; i++) {
-      const page = await pdf.getPage(i);
-      const tc = await page.getTextContent();
-      const pg = buildPageText(tc);
-      page.cleanup();
-      if (!pg.text.trim()) noText.push(i);
-      for (const name of extractJudgeNames(pg.text)) {
-        const k = normKey('PESSOA', name);
-        const prev = judgeNames.get(k);
-        if (!prev || name.length > prev.length) judgeNames.set(k, name);
+    elOptRaster.addEventListener('change', () => {
+      elSecWarning.style.display = elOptRaster.checked ? 'none' : 'block';
+    });
+
+    /********************************************************************
+     * 3. EXPRESSÕES REGULARES MELHORADAS (DATAS, MATRÍCULAS, MORADAS, ETC.)
+     ********************************************************************/
+    const REGEX_PATTERNS = [
+      // Matrículas Portuguesas (AA-00-00, 00-00-AA, 00-AA-00, AA-00-AA)
+      {
+        category: 'MATRICULA',
+        regex: /\b(?:[A-Z]{2}-\d{2}-\d{2}|\d{2}-\d{2}-[A-Z]{2}|\d{2}-[A-Z]{2}-\d{2}|[A-Z]{2}-\d{2}-[A-Z]{2})\b/g
+      },
+      // Datas numéricas e por extenso (incluindo datas de nascimento)
+      {
+        category: 'DATA',
+        regex: /\b(?:\d{1,2}[\/\-]\d{1,2}[\/\-](?:19|20)\d{2}|\d{1,2}\s+de\s+(?:janeiro|fevereiro|março|marco|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)\s+de\s+(?:19|20)\d{2})\b/gi
+      },
+      // Códigos Postais Portugueses (0000-000 + Localidade opcional)
+      {
+        category: 'CP',
+        regex: /\b\d{4}-\d{3}(?:\s+[A-ZÀ-Ú][A-Za-zÀ-ÿ\s\-]{2,25})?\b/g
+      },
+      // Moradas e Artérias Portuguesas alargadas
+      {
+        category: 'MORADA',
+        regex: /\b(?:Rua|Avenida|Av\.|Travessa|Tv\.|Largo|Praça|Praceta|Pct\.|Alameda|Beco|Calçada|Estrada|EN\s*\d+|Rotunda|Urbanização|Urb\.|Lugar|Quinta|Bairro|Edifício|Bloco)\s+[A-ZÀ-Ú0-9][A-Za-zÀ-ÿ0-9\s,\.ºª\-]{4,65}(?:n\.?º?\s*\d+|\d+\s*[ºª]?\s*(?:Dto|Esq|Frente|Trás|Hab|[A-Z])?)?/gi
+      },
+      // IBAN Português e Europeu
+      {
+        category: 'IBAN',
+        regex: /\bPT50[\s\.]?(?:\d{4}[\s\.]?){5}\d{1}\b/gi
+      },
+      // NIF / NIPC (9 dígitos começados por 1,2,3,5,6,7,8,9)
+      {
+        category: 'NIF',
+        regex: /\b(?:NIF|NIPC|Contribuinte|Fiscal)?[\s:º.]*([12356789]\d{8})\b/gi
+      },
+      // NISS (Segurança Social - 11 dígitos)
+      {
+        category: 'NISS',
+        regex: /\b(?:NISS|Segurança Social)[\s:º.]*(\d{11})\b/gi
+      },
+      // Cartão de Cidadão / BI
+      {
+        category: 'CC',
+        regex: /\b(?:CC|Cartão de Cidadão|BI|Bilhete de Identidade)[\s:nº.]*(\d{7,8}(?:\s*\d\s*[A-Z0-9]{2}\d)?)\b/gi
+      },
+      // Emails e Contactos Telefónicos PT
+      {
+        category: 'CONTACTO',
+        regex: /\b(?:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|(?:\+351\s?)?(?:9[1236]\d|2\d{2})[\s\-]?\d{3}[\s\-]?\d{3})\b/g
+      },
+      // Magistrados, Mandatários e Partes Processuais (Heurística Jurídica PT)
+      {
+        category: 'PESSOA',
+        regex: /\b(?:Juiz(?:a)?\s+de\s+Direito|Juiz(?:a)?\s+Desembargador(?:a)?|Procurador(?:a)?|Dr\.?ª?|Sr\.?ª?|Autor(?:a|es)?|Ré(?:u|s)?|Requerente(?:s)?|Requerid(?:o|a|os|as)|Impugnante(?:s)?|Executad(?:o|a|os|as)|Exequente(?:s)?|Arguid(?:o|a|os|as)|Testemunha(?:s)?|Perit(?:o|a))[\s:—\-]+([A-ZÀ-Ú][a-zà-ÿ]+(?:\s+(?:da|de|do|das|dos|e|[A-ZÀ-Ú][a-zà-ÿ]+)){1,5})\b/g
       }
-      pages.push(pg);
-      await tick();
-    }
-    if (noText.length === n) {
-      throw new UserError('O PDF não tem camada de texto (parece digitalizado). Esta ferramenta não faz OCR, por isso não há nada a analisar.');
-    }
-    if (noText.length) warnings.push('Páginas sem camada de texto, não analisadas: ' + noText.join(', ') + '.');
+    ];
 
-    /* os nomes de magistrados encontrados juntam-se aos termos a preservar, para ficarem protegidos em todo o documento, incluindo a assinatura */
-    const protectors = buildProtectors(keep.concat(Array.from(judgeNames.values())));
+    /********************************************************************
+     * 4. CARREGAMENTO E EXTRAÇÃO POSICIONAL DO PDF
+     ********************************************************************/
+    elUpload.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
 
-    /* fase 1b: deteção por página */
-    for (let i = 1; i <= n; i++) {
-      const pg = pages[i - 1];
-      const zones = protectedZones(pg.text, protectors);
-      let cands = detectRegex(pg.text, zones).concat(detectCustom(pg.text, hide));
-      if (ner && pg.text.trim()) {
-        const found = await detectNER(ner, pg.text, (j, m) => {
-          setProgress((i - 1 + j / m) / total, 'A analisar a página ' + i + ' de ' + n + '…');
+      State.fileName = file.name.replace(/\.pdf$/i, '') + '_ANONIMIZADO.pdf';
+      elStatus.textContent = 'A ler e analisar o PDF localmente...';
+      State.detections = [];
+      State.manualBoxes = [];
+      State.pagesData = [];
+
+      const arrayBuffer = await file.arrayBuffer();
+      State.pdfBytes = new Uint8Array(arrayBuffer);
+
+      const loadingTask = pdfjsLib.getDocument({ data: State.pdfBytes.slice() });
+      State.pdfDoc = await loadingTask.promise;
+      State.totalPages = State.pdfDoc.numPages;
+      State.currentPage = 1;
+
+      await extractAllPagesAndDetect();
+      await renderCurrentPage();
+
+      elBtnAddTerm.disabled = false;
+      elBtnExport.disabled = false;
+      elBtnRunNER.disabled = false;
+      updateUndoButton();
+      renderSidebarList();
+      elStatus.textContent = `Pronto: ${State.totalPages} página(s) analisadas.`;
+    });
+
+    async function extractAllPagesAndDetect() {
+      let idCounter = 1;
+
+      for (let p = 1; p <= State.totalPages; p++) {
+        const page = await State.pdfDoc.getPage(p);
+        const viewport = page.getViewport({ scale: State.renderScale });
+        const textContent = await page.getTextContent();
+
+        // Mapear cada item de texto do PDF com as suas coordenadas no Canvas
+        const items = [];
+        let fullPageText = '';
+
+        for (const item of textContent.items) {
+          if (!item.str || !item.str.trim()) continue;
+
+          const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
+          const fontHeight = Math.hypot(tx[2], tx[3]);
+          const x = tx[4];
+          const y = tx[5] - fontHeight;
+          const w = item.width * State.renderScale;
+          const h = fontHeight * 1.25;
+
+          const startIdx = fullPageText.length;
+          fullPageText += item.str + ' ';
+          const endIdx = fullPageText.length - 1;
+
+          items.push({
+            str: item.str,
+            startIdx,
+            endIdx,
+            rect: { x: x - 2, y: y - 2, w: w + 4, h: h + 4 }
+          });
+        }
+
+        State.pagesData.push({ pageNumber: p, fullPageText, items, viewport });
+
+        // Aplicar todas as Regex sobre o texto contínuo da página (permite apanhar expressões multi-item)
+        for (const rule of REGEX_PATTERNS) {
+          rule.regex.lastIndex = 0;
+          let match;
+          while ((match = rule.regex.exec(fullPageText)) !== null) {
+            const matchedText = (match[1] && ['NIF', 'NISS', 'CC', 'PESSOA'].includes(rule.category))
+              ? match[1].trim()
+              : match[0].trim();
+
+            if (matchedText.length < 3) continue;
+
+            const matchStart = match.index + match[0].indexOf(matchedText);
+            const matchEnd = matchStart + matchedText.length;
+
+            // Descobrir quais os retângulos do PDF abrangidos por este match
+            const rects = getRectsForRange(items, matchStart, matchEnd);
+            if (rects.length > 0) {
+              State.detections.push({
+                id: `det_${idCounter++}`,
+                page: p,
+                category: rule.category,
+                text: matchedText,
+                rects,
+                active: true
+              });
+            }
+          }
+        }
+      }
+    }
+
+    function getRectsForRange(items, start, end) {
+      const rects = [];
+      for (const it of items) {
+        if (it.endIdx >= start && it.startIdx <= end) {
+          rects.push(it.rect);
+        }
+      }
+      return rects;
+    }
+
+    /********************************************************************
+     * 5. MODELO NER COM SLIDING WINDOW DE 150 CARACTERES (OVERLAP)
+     ********************************************************************/
+    /**
+     * Divide o texto em blocos com sobreposição (overlap) de 150 caracteres
+     * para garantir que nenhum nome próprio ou entidade seja cortado a meio.
+     */
+    function createSlidingWindowChunks(text, chunkSize = 450, overlap = 150) {
+      const chunks = [];
+      let index = 0;
+      while (index < text.length) {
+        const end = Math.min(index + chunkSize, text.length);
+        chunks.push({
+          text: text.slice(index, end),
+          offset: index
         });
-        cands = cands.concat(filterNER(pg.text, found, zones));
+        if (end === text.length) break;
+        index += (chunkSize - overlap);
       }
-      pg.zones = zones;
-      pg.cands = cands;
-      setProgress(i / total, 'A analisar a página ' + i + ' de ' + n + '…');
-      await tick();
+      return chunks;
     }
 
-    /* propagação das entidades conhecidas a todas as páginas */
-    const known = new Map();
-    for (const pg of pages) {
-      for (const c of pg.cands) {
-        if (c.src !== 'ner' && c.src !== 'custom') continue;
-        if (!['PESSOA', 'EMPRESA', 'LOCAL'].includes(c.cat)) continue;
-        const v = pg.text.slice(c.s, c.e).replace(/\s+/g, ' ');
-        const k = c.cat + '|' + normKey(c.cat, v);
-        if (!known.has(k)) known.set(k, { cat: c.cat, value: v });
-      }
-    }
-    const knownList = Array.from(known.values()).sort((a, b) => b.value.length - a.value.length);
-    for (const pg of pages) {
-      const extra = propagate(pg.text, knownList, pg.zones);
-      pg.final = resolve(pg.cands.concat(extra));
-    }
-
-    /* fase 2: desenho */
-    let outDoc = null, helv = null;
-    if (!raster) {
+    elBtnRunNER.addEventListener('click', async () => {
       try {
-        outDoc = await PDFLib.PDFDocument.load(buf, { updateMetadata: false });
-        helv = await outDoc.embedFont(PDFLib.StandardFonts.Helvetica);
-      } catch (e) {
-        raster = true;
-        outDoc = null;
-        warnings.push('Não foi possível editar o PDF original (' + (/encrypt/i.test(e.message || '') ? 'está encriptado' : 'estrutura não suportada') + '). Foi usada a conversão das páginas em imagem.');
+        elBtnRunNER.disabled = true;
+        elStatus.textContent = 'A carregar modelo NER local (com overlap de 150 chars)...';
+
+        if (!State.nerPipeline) {
+          const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.1');
+          State.nerPipeline = await pipeline('token-classification', 'Xenova/bert-base-multilingual-cased-ner-hrl', {
+             aggregation_strategy: 'simple'
+          });
+        }
+
+        let added = 0;
+        for (const pageObj of State.pagesData) {
+          elStatus.textContent = `IA a analisar página ${pageObj.pageNumber}/${State.totalPages}...`;
+          const chunks = createSlidingWindowChunks(pageObj.fullPageText, 450, 150);
+
+          for (const chunk of chunks) {
+            const results = await State.nerPipeline(chunk.text);
+            for (const ent of results) {
+              if ((ent.entity_group === 'PER' || ent.entity_group === 'LOC') && ent.score > 0.82) {
+                const cleanWord = ent.word.replace(/^##/, '').trim();
+                if (cleanWord.length < 4) continue;
+
+                // Evitar duplicados já detetados na mesma página
+                const alreadyExists = State.detections.some(
+                  d => d.page === pageObj.pageNumber && d.text.toLowerCase() === cleanWord.toLowerCase()
+                );
+                if (alreadyExists) continue;
+
+                const posInChunk = chunk.text.indexOf(cleanWord);
+                if (posInChunk !== -1) {
+                  const globalStart = chunk.offset + posInChunk;
+                  const globalEnd = globalStart + cleanWord.length;
+                  const rects = getRectsForRange(pageObj.items, globalStart, globalEnd);
+                  if (rects.length > 0) {
+                    State.detections.push({
+                      id: `ner_${Date.now()}_${Math.random()}`,
+                      page: pageObj.pageNumber,
+                      category: 'NER',
+                      text: cleanWord,
+                      rects,
+                      active: true
+                    });
+                    added++;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        renderSidebarList();
+        drawOverlay();
+        elStatus.textContent = `Análise NER concluída (+${added} entidades adicionadas).`;
+      } catch (err) {
+        console.error(err);
+        elStatus.textContent = 'Nota: Modelo NER indisponível offline; deteção Regex + Heurística ativa.';
+      } finally {
+        elBtnRunNER.disabled = false;
+      }
+    });
+
+    /********************************************************************
+     * 6. ADIÇÃO MANUAL DE TERMO EM FALTA
+     ********************************************************************/
+    function addCustomTerm() {
+      const term = elCustomTerm.value.trim();
+      if (!term || !State.pdfDoc) return;
+
+      const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const customRegex = new RegExp(escaped, 'gi');
+      let foundCount = 0;
+
+      for (const pageObj of State.pagesData) {
+        let match;
+        while ((match = customRegex.exec(pageObj.fullPageText)) !== null) {
+          const start = match.index;
+          const end = start + match[0].length;
+          const rects = getRectsForRange(pageObj.items, start, end);
+          if (rects.length > 0) {
+            State.detections.unshift({
+              id: `man_term_${Date.now()}_${Math.random()}`,
+              page: pageObj.pageNumber,
+              category: 'MANUAL',
+              text: match[0],
+              rects,
+              active: true
+            });
+            foundCount++;
+          }
+        }
+      }
+
+      elCustomTerm.value = '';
+      renderSidebarList();
+      drawOverlay();
+      elStatus.textContent = foundCount > 0
+        ? `Termo "${term}" marcado (${foundCount} ocorrências).`
+        : `Termo "${term}" não encontrado no texto selecionável. Use o desenho manual no ecrã.`;
+    }
+
+    elBtnAddTerm.addEventListener('click', addCustomTerm);
+    elCustomTerm.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addCustomTerm();
+    });
+
+    /********************************************************************
+     * 7. RENDERIZAÇÃO DO CANVAS E OVERLAY (COM CLICK/TOUCH & DRAG)
+     ********************************************************************/
+    async function renderCurrentPage() {
+      if (!State.pdfDoc) return;
+
+      const page = await State.pdfDoc.getPage(State.currentPage);
+      const viewport = page.getViewport({ scale: State.renderScale });
+
+      elPdfCanvas.width = viewport.width;
+      elPdfCanvas.height = viewport.height;
+      elOverlayCanvas.width = viewport.width;
+      elOverlayCanvas.height = viewport.height;
+
+      const ctx = elPdfCanvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport }).promise;
+
+      elPageInfo.textContent = `Página ${State.currentPage} / ${State.totalPages}`;
+      elBtnPrev.disabled = State.currentPage <= 1;
+      elBtnNext.disabled = State.currentPage >= State.totalPages;
+
+      drawOverlay();
+      if (elFilterPage.checked) renderSidebarList();
+    }
+
+    function drawOverlay() {
+      const ctx = elOverlayCanvas.getContext('2d');
+      ctx.clearRect(0, 0, elOverlayCanvas.width, elOverlayCanvas.height);
+
+      // 1. Desenhar deteções automáticas/termos ativos na página atual
+      const pageDetections = State.detections.filter(
+        d => d.page === State.currentPage && d.active
+      );
+
+      for (const det of pageDetections) {
+        for (const r of det.rects) {
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
+          ctx.fillRect(r.x, r.y, r.w, r.h);
+          ctx.strokeStyle = '#ef4444';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(r.x, r.y, r.w, r.h);
+        }
+      }
+
+      // 2. Desenhar caixas de ocultação manual (Click & Drag) na página atual
+      const pageBoxes = State.manualBoxes.filter(b => b.page === State.currentPage);
+      for (const b of pageBoxes) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(b.x, b.y, b.w, b.h);
       }
     }
-    if (raster) outDoc = await PDFLib.PDFDocument.create();
 
-    const labeler = makeLabeler();
-    let count = 0, pagesTouched = 0;
-    for (let i = 1; i <= n; i++) {
-      const pg = pages[i - 1];
-      const ents = pg.final.map(c => {
-        const value = pg.text.slice(c.s, c.e);
-        return Object.assign({}, c, { value, label: labeler.get(c.cat, value), rects: makeRects(pg, c.s, c.e) });
-      }).filter(c => c.rects.length);
-      count += ents.length;
-      if (ents.length) pagesTouched++;
+    // Eventos de Rato e Touch (iPad/iPhone) para desenhar retângulos manuais
+    function getCanvasCoordinates(e) {
+      const rect = elOverlayCanvas.getBoundingClientRect();
+      const touch = e.touches && e.touches[0] ? e.touches[0] : (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0] : e);
+      return {
+        x: (touch.clientX - rect.left) * (elOverlayCanvas.width / rect.width),
+        y: (touch.clientY - rect.top) * (elOverlayCanvas.height / rect.height)
+      };
+    }
 
-      if (!raster) {
-        const op = outDoc.getPage(i - 1);
-        for (const en of ents) {
-          const k = widestIndex(en.rects);
-          en.rects.forEach((r, idx) => vectorDraw(op, helv, r, mode, idx === k ? en.label : null));
-        }
-      } else {
-        const page = await pdf.getPage(i);
-        const v1 = page.getViewport({ scale: 1 });
-        let sc = CFG.rasterScale;
-        const px = v1.width * v1.height * sc * sc;
-        if (px > CFG.rasterMaxPixels) sc *= Math.sqrt(CFG.rasterMaxPixels / px);
-        const vp = page.getViewport({ scale: sc });
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.ceil(vp.width);
-        canvas.height = Math.ceil(vp.height);
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        await page.render({ canvasContext: ctx, viewport: vp }).promise;
-        for (const en of ents) {
-          const k = widestIndex(en.rects);
-          en.rects.forEach((r, idx) => rasterDraw(ctx, vp, r, mode, idx === k ? en.label : null));
-        }
-        const bytes = await canvasToBytes(canvas);
-        const img = await outDoc.embedJpg(bytes);
-        const op = outDoc.addPage([v1.width, v1.height]);
-        op.drawImage(img, { x: 0, y: 0, width: v1.width, height: v1.height });
-        canvas.width = canvas.height = 0;
-        page.cleanup();
+    function onStartDraw(e) {
+      if (!State.pdfDoc) return;
+      if (e.cancelable) e.preventDefault();
+      State.isDrawing = true;
+      const pos = getCanvasCoordinates(e);
+      State.startX = pos.x;
+      State.startY = pos.y;
+    }
+
+    function onMoveDraw(e) {
+      if (!State.isDrawing) return;
+      if (e.cancelable) e.preventDefault();
+      const pos = getCanvasCoordinates(e);
+      drawOverlay();
+      const ctx = elOverlayCanvas.getContext('2d');
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.35)';
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 2;
+      ctx.fillRect(State.startX, State.startY, pos.x - State.startX, pos.y - State.startY);
+      ctx.strokeRect(State.startX, State.startY, pos.x - State.startX, pos.y - State.startY);
+    }
+
+    function onEndDraw(e) {
+      if (!State.isDrawing) return;
+      State.isDrawing = false;
+      const pos = getCanvasCoordinates(e);
+      const w = pos.x - State.startX;
+      const h = pos.y - State.startY;
+
+      if (Math.abs(w) > 8 && Math.abs(h) > 8) {
+        State.manualBoxes.push({
+          id: `box_${Date.now()}`,
+          page: State.currentPage,
+          x: w < 0 ? pos.x : State.startX,
+          y: h < 0 ? pos.y : State.startY,
+          w: Math.abs(w),
+          h: Math.abs(h)
+        });
+        updateUndoButton();
+        renderSidebarList();
       }
-      setProgress((n + i) / total, 'A aplicar o expurgo na página ' + i + ' de ' + n + '…');
-      await tick();
+      drawOverlay();
     }
 
-    if (count === 0) {
-      lastMap = [];
-      warnings.push('Não foi detetado nenhum dado sensível. Não foi gerado nenhum ficheiro.');
-      showResult({ count: 0, pagesTouched: 0, ms: performance.now() - t0, warnings, entries: [], file: null });
-      return;
+    elOverlayCanvas.addEventListener('mousedown', onStartDraw);
+    elOverlayCanvas.addEventListener('mousemove', onMoveDraw);
+    window.addEventListener('mouseup', onEndDraw);
+
+    elOverlayCanvas.addEventListener('touchstart', onStartDraw, { passive: false });
+    elOverlayCanvas.addEventListener('touchmove', onMoveDraw, { passive: false });
+    window.addEventListener('touchend', onEndDraw);
+
+    function updateUndoButton() {
+      elBtnUndoBox.disabled = State.manualBoxes.length === 0;
     }
 
-    if (!raster) {
-      outDoc.setTitle(''); outDoc.setAuthor(''); outDoc.setSubject('');
-      outDoc.setKeywords([]); outDoc.setCreator(''); outDoc.setProducer('');
-      try { outDoc.catalog.delete(PDFLib.PDFName.of('Metadata')); } catch (_) {}
-      warnings.push('Foram limpos os metadados do documento (título, autor, assunto, palavras-chave). Marcadores e anotações não são alterados.');
+    elBtnUndoBox.addEventListener('click', () => {
+      if (State.manualBoxes.length > 0) {
+        State.manualBoxes.pop();
+        updateUndoButton();
+        drawOverlay();
+        renderSidebarList();
+      }
+    });
+
+    elBtnPrev.addEventListener('click', () => {
+      if (State.currentPage > 1) {
+        State.currentPage--;
+        renderCurrentPage();
+      }
+    });
+
+    elBtnNext.addEventListener('click', () => {
+      if (State.currentPage < State.totalPages) {
+        State.currentPage++;
+        renderCurrentPage();
+      }
+    });
+
+    /********************************************************************
+     * 8. SIDEBAR DE REVISÃO (CHECKBOXES PARA FALSOS POSITIVOS)
+     ********************************************************************/
+    function renderSidebarList() {
+      elDetList.innerHTML = '';
+
+      const activeTotal = State.detections.filter(d => d.active).length + State.manualBoxes.length;
+      elDetCounter.textContent = `${activeTotal} ativas`;
+
+      const filtered = elFilterPage.checked
+        ? State.detections.filter(d => d.page === State.currentPage)
+        : State.detections;
+
+      if (filtered.length === 0 && State.manualBoxes.length === 0) {
+        elDetList.innerHTML = '<p class="empty-msg">Nenhuma ocorrência listada neste filtro.</p>';
+        return;
+      }
+
+      filtered.forEach(item => {
+        const label = document.createElement('label');
+        label.className = `detection-item ${item.active ? '' : 'ignored'}`;
+        label.innerHTML = `
+          <input type="checkbox" ${item.active ? 'checked' : ''} />
+          <div class="det-body">
+            <div class="det-meta">
+              <span class="det-tag tag-${item.category}">${item.category}</span>
+              <span style="font-size: 0.72rem; color: var(--text-secondary);">Pág. ${item.page}</span>
+            </div>
+            <div class="det-text">${escapeHTML(item.text)}</div>
+          </div>
+        `;
+
+        const checkbox = label.querySelector('input');
+        checkbox.addEventListener('change', () => {
+          item.active = checkbox.checked;
+          label.classList.toggle('ignored', !item.active);
+          const count = State.detections.filter(d => d.active).length + State.manualBoxes.length;
+          elDetCounter.textContent = `${count} ativas`;
+          if (item.page === State.currentPage) {
+            drawOverlay();
+          } else {
+            State.currentPage = item.page;
+            renderCurrentPage();
+          }
+        });
+
+        elDetList.appendChild(label);
+      });
     }
-    setProgress(1, 'A gerar o ficheiro…');
-    const out = await outDoc.save();
-    const name = lastBase + '_Anonimizado.pdf';
-    download(out, name);
-    lastMap = labeler.entries();
-    showResult({ count, pagesTouched, ms: performance.now() - t0, warnings, entries: lastMap, file: name });
-    setProgress(1, 'Concluído.');
-  } catch (e) {
-    if (!(e instanceof Cancelled)) showError(friendly(e));
-    $('progWrap').hidden = true;
-  } finally {
-    if (pdf) { try { await pdf.destroy(); } catch (_) {} }
-    busy = false;
-    $('go').disabled = !selectedFile;
-  }
-}
 
-function showResult(r){
-  $('result').hidden = false;
-  $('summary').textContent = r.file
-    ? r.count + ' ocorrências expurgadas em ' + r.pagesTouched + ' página(s). Ficheiro descarregado: ' + r.file + '. Tempo de processamento: ' + fmtTime(r.ms) + '.'
-    : 'Tempo de processamento: ' + fmtTime(r.ms) + '.';
-  const ul = $('warnings');
-  ul.textContent = '';
-  for (const w of r.warnings) { const li = document.createElement('li'); li.textContent = w; ul.appendChild(li); }
-  const list = $('mapList');
-  list.textContent = '';
-  if (!r.entries.length) {
-    const d = document.createElement('div'); d.textContent = 'Sem correspondências.'; list.appendChild(d);
-  }
-  for (const en of r.entries) {
-    const d = document.createElement('div');
-    d.textContent = en.label + ' = ' + en.value;
-    list.appendChild(d);
-  }
-}
+    elFilterPage.addEventListener('change', renderSidebarList);
 
-function mapAsText(){ return lastMap.map(e => e.label + ' = ' + e.value).join('\n'); }
+    document.getElementById('btn-check-all').addEventListener('click', () => {
+      State.detections.forEach(d => {
+        if (!elFilterPage.checked || d.page === State.currentPage) d.active = true;
+      });
+      renderSidebarList();
+      drawOverlay();
+    });
 
-$('copyMap').addEventListener('click', async () => {
-  const txt = mapAsText();
-  try { await navigator.clipboard.writeText(txt); $('copyMap').textContent = 'Copiado'; }
-  catch (_) {
-    const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); $('copyMap').textContent = 'Copiado'; } catch (__) { $('copyMap').textContent = 'Falhou'; }
-    ta.remove();
-  }
-  setTimeout(() => { $('copyMap').textContent = 'Copiar'; }, 1800);
-});
+    document.getElementById('btn-uncheck-all').addEventListener('click', () => {
+      State.detections.forEach(d => {
+        if (!elFilterPage.checked || d.page === State.currentPage) d.active = false;
+      });
+      renderSidebarList();
+      drawOverlay();
+    });
 
-$('saveMap').addEventListener('click', () => {
-  const blob = new Blob([mapAsText() + '\n'], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = lastBase + '_Mapa.txt';
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 30000);
-});
-</script>
+    /********************************************************************
+     * 9. EXPORTAÇÃO SEGURA DO PDF (RASTERIZAÇÃO OU VETORIAL + MARCA DE ÁGUA)
+     ********************************************************************/
+    elBtnExport.addEventListener('click', async () => {
+      if (!State.pdfDoc) return;
+
+      elBtnExport.disabled = true;
+      elStatus.textContent = 'A gerar PDF anonimizado...';
+
+      const useSecureRaster = elOptRaster.checked;
+      const useWatermark = elOptWatermark.checked;
+
+      try {
+        const outPdf = await PDFLib.PDFDocument.create();
+        const exportScale = 2.0; // Alta definição para impressão e leitura nítida
+
+        for (let p = 1; p <= State.totalPages; p++) {
+          elStatus.textContent = `A processar página ${p} de ${State.totalPages}...`;
+          const page = await State.pdfDoc.getPage(p);
+          const viewport = page.getViewport({ scale: exportScale });
+
+          // Criar canvas offscreen de alta resolução
+          const offCanvas = document.createElement('canvas');
+          offCanvas.width = viewport.width;
+          offCanvas.height = viewport.height;
+          const ctx = offCanvas.getContext('2d');
+
+          await page.render({ canvasContext: ctx, viewport }).promise;
+
+          const ratio = exportScale / State.renderScale;
+
+          // Aplicar Tarjas Pretas Sólidas nas deteções ativas
+          const activeDets = State.detections.filter(d => d.page === p && d.active);
+          ctx.fillStyle = '#000000';
+          for (const det of activeDets) {
+            for (const r of det.rects) {
+              ctx.fillRect(r.x * ratio, r.y * ratio, r.w * ratio, r.h * ratio);
+            }
+          }
+
+          // Aplicar Tarjas Manuais
+          const manualBoxes = State.manualBoxes.filter(b => b.page === p);
+          for (const b of manualBoxes) {
+            ctx.fillRect(b.x * ratio, b.y * ratio, b.w * ratio, b.h * ratio);
+          }
+
+          // Aplicar Marca de Água Diagonal ("CÓPIA ANONIMIZADA") se marcada
+          if (useWatermark) {
+            ctx.save();
+            ctx.translate(offCanvas.width / 2, offCanvas.height / 2);
+            ctx.rotate(-Math.PI / 4);
+            ctx.font = `bold ${Math.round(offCanvas.width * 0.055)}px sans-serif`;
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.28)';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('CÓPIA ANONIMIZADA', 0, 0);
+            ctx.restore();
+          }
+
+          if (useSecureRaster) {
+            // MODO SEGURO: Incorpora a página como imagem flattened (0% texto oculto extraível)
+            const imgDataUrl = offCanvas.toDataURL('image/jpeg', 0.92);
+            const jpgImage = await outPdf.embedJpg(imgDataUrl);
+            const pdfPage = outPdf.addPage([viewport.width / exportScale, viewport.height / exportScale]);
+            pdfPage.drawImage(jpgImage, {
+              x: 0,
+              y: 0,
+              width: pdfPage.getWidth(),
+              height: pdfPage.getHeight()
+            });
+          }
+        }
+
+        // Caso o utilizador tenha desmarcado o modo de rasterização segura, usa pdf-lib sobre o original
+        let finalBytes;
+        if (!useSecureRaster) {
+          const rawDoc = await PDFLib.PDFDocument.load(State.pdfBytes);
+          const pages = rawDoc.getPages();
+
+          for (let p = 1; p <= State.totalPages; p++) {
+            const pdfPage = pages[p - 1];
+            const { width, height } = pdfPage.getSize();
+            const pageView = State.pagesData[p - 1].viewport;
+            const scaleX = width / pageView.width;
+            const scaleY = height / pageView.height;
+
+            const activeDets = State.detections.filter(d => d.page === p && d.active);
+            for (const det of activeDets) {
+              for (const r of det.rects) {
+                pdfPage.drawRectangle({
+                  x: r.x * scaleX,
+                  y: height - (r.y + r.h) * scaleY,
+                  width: r.w * scaleX,
+                  height: r.h * scaleY,
+                  color: PDFLib.rgb(0, 0, 0)
+                });
+              }
+            }
+
+            const manualBoxes = State.manualBoxes.filter(b => b.page === p);
+            for (const b of manualBoxes) {
+              pdfPage.drawRectangle({
+                x: b.x * scaleX,
+                y: height - (b.y + b.h) * scaleY,
+                width: b.w * scaleX,
+                height: b.h * scaleY,
+                color: PDFLib.rgb(0, 0, 0)
+              });
+            }
+
+            if (useWatermark) {
+              pdfPage.drawText('COPIA ANONIMIZADA', {
+                x: width * 0.18,
+                y: height * 0.35,
+                size: 36,
+                rotate: PDFLib.degrees(45),
+                color: PDFLib.rgb(0.6, 0.6, 0.6),
+                opacity: 0.28
+              });
+            }
+          }
+          finalBytes = await rawDoc.save();
+        } else {
+          finalBytes = await outPdf.save();
+        }
+
+        // Disparar Download
+        const blob = new Blob([finalBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = State.fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+        elStatus.textContent = 'PDF Anonimizado exportado com sucesso!';
+      } catch (err) {
+        console.error(err);
+        elStatus.textContent = 'Erro ao exportar o PDF. Verifique o ficheiro.';
+      } finally {
+        elBtnExport.disabled = false;
+      }
+    });
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      }[tag]));
+    }
+  </script>
 </body>
 </html>
