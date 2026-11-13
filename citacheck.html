@@ -1,1433 +1,1324 @@
 <!DOCTYPE html>
-<html lang="pt-PT" data-theme="light">
+<html lang="pt-PT" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cita-Check | Simulador de Citações, Dilações e Notificações</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Anonimizador RGPD v2.0 | LegalTech Suite</title>
+
+  <!-- PDF.js (Leitura, Coordenadas e Renderização) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- pdf-lib (Construção e Exportação de PDF Client-Side) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+
   <style>
     :root {
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --primary: #1e293b;
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --danger: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --border: #334155;
+      --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+      --radius: 10px;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f1f5f9;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
       --accent: #2563eb;
       --accent-hover: #1d4ed8;
-      --border: #e2e8f0;
-      --text: #0f172a;
-      --muted: #64748b;
-      --success-bg: #f0fdf4;
-      --success-border: #bbf7d0;
-      --warn-bg: #fffbeb;
-      --warn-border: #fde68a;
-      --warn-text: #92400e;
-      --danger-bg: #fef2f2;
-      --danger-border: #fecaca;
-      --danger-text: #991b1b;
-      --nav-bg: #0f172a;
-      --nav-text: #cbd5e1;
-      --nav-active-bg: #2563eb;
-      --nav-active-text: #ffffff;
-      --nav-inactive-border: #334155;
-      --nav-hover-bg: #334155;
-      --nav-hover-text: #ffffff;
-      --input-bg: #ffffff;
-      --input-disabled: #f1f5f9;
-      --cota-bg: #f1f5f9;
-      --headline-bg: #eff6ff;
-      --headline-border: #bfdbfe;
-      --copy-ok: #15803d;
-      --chip-bg: #e2e8f0;
-      --chip-text: #1e293b;
+      --danger: #dc2626;
+      --success: #059669;
+      --warning: #d97706;
+      --border: #cbd5e1;
+      --card-shadow: 0 4px 15px -2px rgba(15, 23, 42, 0.08);
     }
 
-    [data-theme="dark"] {
-      --bg: #0f172a;
-      --card: #1e293b;
-      --primary: #f8fafc;
-      --accent: #3b82f6;
-      --accent-hover: #60a5fa;
-      --border: #334155;
-      --text: #cbd5e1;
-      --muted: #94a3b8;
-      --success-bg: #052e16;
-      --success-border: #14532d;
-      --warn-bg: #422006;
-      --warn-border: #78350f;
-      --warn-text: #fde68a;
-      --danger-bg: #450a0a;
-      --danger-border: #7f1d1d;
-      --danger-text: #fecaca;
-      --nav-bg: #020617;
-      --nav-text: #94a3b8;
-      --nav-active-bg: #3b82f6;
-      --nav-active-text: #ffffff;
-      --nav-inactive-border: #1e293b;
-      --nav-hover-bg: #1e293b;
-      --nav-hover-text: #f8fafc;
-      --input-bg: #0f172a;
-      --input-disabled: #1e293b;
-      --cota-bg: #0f172a;
-      --headline-bg: #0f172a;
-      --headline-border: #334155;
-      --copy-ok: #4ade80;
-      --chip-bg: #334155;
-      --chip-text: #f8fafc;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { transition: background-color 0.3s, color 0.3s; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-      padding-bottom: 48px;
-      transition: background-color 0.3s, color 0.3s;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.2s, color 0.2s;
     }
 
+    /* NAVBAR UNIFICADA (Sem referência a CEJ) */
     .top-nav {
-      background: var(--nav-bg);
-      padding: 10px 16px;
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.25rem;
       display: flex;
-      gap: 10px;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
       flex-wrap: wrap;
-      position: relative;
-      transition: background-color 0.3s;
+      gap: 0.75rem;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.05rem;
+      color: var(--text-primary);
+      text-decoration: none;
+    }
+
+    .badge-client {
+      font-size: 0.7rem;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-weight: 600;
     }
 
     .nav-links {
       display: flex;
-      gap: 10px;
       align-items: center;
-      flex-wrap: wrap;
+      gap: 0.5rem;
     }
 
-    .nav-links a {
+    .nav-item {
+      color: var(--text-secondary);
       text-decoration: none;
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: all 0.15s;
-    }
-
-    .nav-inactive {
-      background: transparent;
-      color: var(--nav-text);
-      border: 1px solid var(--nav-inactive-border);
-    }
-
-    .nav-inactive:hover {
-      background: var(--nav-hover-bg);
-      color: var(--nav-hover-text);
-    }
-
-    .nav-active {
-      background: var(--nav-active-bg) !important;
-      color: var(--nav-active-text) !important;
-      border: 1px solid transparent;
-    }
-
-    .theme-toggle {
-      background: transparent;
-      border: 1px solid var(--nav-inactive-border);
-      color: var(--nav-text);
-      cursor: pointer;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.15s;
-      position: absolute;
-      right: 16px;
-    }
-
-    @media (max-width: 768px) {
-      .theme-toggle { position: static; margin-left: auto; }
-      .top-nav { justify-content: space-between; }
-    }
-
-    .theme-toggle:hover {
-      background: var(--nav-hover-bg);
-      color: var(--nav-hover-text);
-    }
-
-    .container {
-      max-width: 940px;
-      margin: 0 auto;
-      padding: 0 16px;
-    }
-
-    header {
-      margin-bottom: 20px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 14px;
-    }
-
-    header h1 {
-      font-size: 1.45rem;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    header p {
-      color: var(--muted);
       font-size: 0.9rem;
-      margin-top: 4px;
+      font-weight: 500;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      transition: all 0.15s;
     }
 
-    .badge {
-      background: var(--headline-bg);
-      color: var(--accent);
-      font-size: 0.74rem;
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-weight: 600;
-      border: 1px solid var(--headline-border);
+    .nav-item:hover {
+      color: var(--text-primary);
+      background: var(--bg-tertiary);
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
+    .nav-item.active {
+      color: #ffffff;
+      background: var(--accent);
     }
 
-    @media (min-width: 780px) {
-      .grid { grid-template-columns: 1.08fr 0.92fr; }
+    .theme-btn {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.4rem 0.65rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    /* WORKSPACE */
+    .workspace-container {
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      flex: 1;
     }
 
     .card {
-      background: var(--card);
+      background: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-      transition: background-color 0.3s, border-color 0.3s;
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
     }
 
-    .card h2 {
-      font-size: 1.02rem;
-      margin-bottom: 14px;
-      color: var(--primary);
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 8px;
+    /* BARRA DE UPLOAD E SEGURANÇA */
+    .upload-bar {
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
     }
 
-    .form-group { margin-bottom: 14px; }
+    .file-input-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
 
-    label {
-      display: block;
-      font-size: 0.84rem;
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.55rem 1rem;
+      border-radius: 7px;
+      font-size: 0.88rem;
       font-weight: 600;
-      margin-bottom: 5px;
-      color: var(--primary);
-    }
-
-    select, input[type="date"], input[type="number"] {
-      width: 100%;
-      padding: 9px 11px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 0.89rem;
-      background: var(--input-bg);
-      color: var(--text);
-      transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-    }
-
-    select:disabled {
-      background: var(--input-disabled);
-      color: var(--muted);
-    }
-
-    select:focus, input:focus {
-      outline: 2px solid var(--accent);
-      border-color: transparent;
-    }
-
-    .hint {
-      font-size: 0.76rem;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .check-row {
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
-      margin-bottom: 8px;
-    }
-
-    .check-row input { margin-top: 4px; }
-
-    .check-row label {
-      margin: 0;
-      font-weight: 500;
-      color: var(--text);
       cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.15s;
     }
 
-    .row-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
-    @media (max-width: 520px) {
-      .row-2 { grid-template-columns: 1fr; }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
     }
-
-    .custom-date-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 8px;
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
     }
 
     .btn-secondary {
-      background: var(--cota-bg);
-      color: var(--primary);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0 14px;
-      font-size: 0.84rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background 0.15s;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      border-color: var(--border);
     }
 
-    .btn-secondary:hover {
-      border-color: var(--accent);
+    .btn-success {
+      background: var(--success);
+      color: #fff;
     }
 
-    .chips-wrap {
+    .btn-danger-outline {
+      background: transparent;
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .security-options {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-
-    .chip {
-      display: inline-flex;
+      gap: 1rem;
       align-items: center;
-      gap: 6px;
-      background: var(--chip-bg);
-      color: var(--chip-text);
-      font-size: 0.78rem;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 999px;
-    }
-
-    .chip button {
-      background: none;
-      border: none;
-      color: inherit;
-      font-size: 0.95rem;
-      line-height: 1;
-      cursor: pointer;
-      padding: 0;
-      opacity: 0.75;
-    }
-
-    .chip button:hover { opacity: 1; }
-
-    button.btn-primary {
-      width: 100%;
-      padding: 12px;
-      background: var(--accent);
-      color: #ffffff;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
-      margin-top: 8px;
-    }
-
-    button.btn-primary:hover { background: var(--accent-hover); }
-
-    .result-box {
-      background: var(--success-bg);
-      border: 1px solid var(--success-border);
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 14px;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
-
-    .result-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      border-bottom: 1px dashed var(--border);
-      font-size: 0.87rem;
-      gap: 8px;
-    }
-
-    .result-item:last-child { border-bottom: none; }
-    .result-item strong { color: var(--primary); text-align: right; }
-
-    .alert-box {
-      background: var(--warn-bg);
-      border: 1px solid var(--warn-border);
-      color: var(--warn-text);
-      padding: 12px;
-      border-radius: 8px;
       font-size: 0.84rem;
-      margin-bottom: 12px;
-      transition: background-color 0.3s, border-color 0.3s, color 0.3s;
     }
 
-    .duty-box {
-      background: var(--danger-bg);
-      border: 1px solid var(--danger-border);
-      color: var(--danger-text);
-      padding: 10px 12px;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-      transition: background-color 0.3s, border-color 0.3s, color 0.3s;
-    }
-
-    .feriados-info {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 14px;
-      background: var(--cota-bg);
-      padding: 8px 10px;
-      border-radius: 6px;
-      transition: background-color 0.3s;
-    }
-
-    .cota-box {
-      background: var(--cota-bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.81rem;
-      white-space: pre-wrap;
-      color: var(--text);
-      margin-bottom: 10px;
-      transition: background-color 0.3s, border-color 0.3s, color 0.3s;
-    }
-
-    .btn-copy {
-      background: var(--primary);
-      color: var(--bg);
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-size: 0.82rem;
+    .option-check {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
       cursor: pointer;
-      font-weight: 600;
-      transition: background-color 0.3s, color 0.3s;
+      user-select: none;
     }
 
-    .copy-feedback {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--copy-ok);
-      margin-left: 8px;
+    .option-check input {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+    }
+
+    .security-warning {
+      width: 100%;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid var(--warning);
+      color: var(--warning);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
       display: none;
     }
 
-    .rodape {
-      font-size: 0.76rem;
-      color: var(--muted);
-      margin-top: 20px;
-      text-align: center;
+    /* GRELHA PRINCIPAL: SIDEBAR + CANVAS */
+    .review-grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 1rem;
+      align-items: start;
     }
 
-    .dev-credit {
-      margin-top: 8px;
-      font-weight: 600;
-      color: var(--primary);
+    @media (max-width: 980px) {
+      .review-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
-    details.base-legal {
-      margin: 0 0 18px;
-      font-size: 0.82rem;
-      color: var(--text);
+    /* PAINEL LATERAL DE DETEÇÕES */
+    .detections-panel {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 175px);
+      min-height: 520px;
+      overflow: hidden;
     }
-    details.base-legal summary {
-      cursor: pointer;
-      color: var(--primary);
+
+    @media (max-width: 980px) {
+      .detections-panel {
+        height: 460px;
+      }
+    }
+
+    .panel-header {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-header h3 {
+      font-size: 0.95rem;
       font-weight: 600;
-      outline: none;
     }
-    details.base-legal div {
-      margin-top: 8px;
-      padding: 10px 12px;
-      background: var(--cota-bg);
+
+    .badge-count {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 0.75rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 99px;
+      font-weight: 600;
+    }
+
+    .manual-add-bar {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 0.45rem;
+    }
+
+    .manual-add-bar input {
+      flex: 1;
+      background: var(--bg-primary);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      line-height: 1.5;
-      transition: background-color 0.3s, border-color 0.3s;
+      color: var(--text-primary);
+      padding: 0.45rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
     }
 
-    .headline {
-      background: var(--headline-bg);
-      border: 1px solid var(--headline-border);
-      border-radius: 10px;
-      padding: 14px 16px;
-      margin-bottom: 12px;
-      transition: background-color 0.3s, border-color 0.3s;
+    .filter-toolbar {
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      background: rgba(0, 0, 0, 0.1);
     }
-    .headline-label { font-size: 0.78rem; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.03em; }
-    .headline-date { font-size: 1.45rem; font-weight: 700; color: var(--accent); line-height: 1.25; margin-top: 2px; }
-    .headline-sub { font-size: 0.82rem; color: var(--text); margin-top: 4px; }
 
-    button.btn-limpar {
+    .link-btn {
       background: none;
       border: none;
       color: var(--accent);
-      font-size: 0.82rem;
-      font-weight: 600;
       cursor: pointer;
-      padding: 6px 0 0;
+      font-weight: 600;
+      font-size: 0.78rem;
     }
 
-    .hidden { display: none !important; }
+    .detections-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .detection-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.55rem 0.65rem;
+      border-radius: 7px;
+      border: 1px solid var(--border);
+      background: var(--bg-primary);
+      cursor: pointer;
+      transition: all 0.12s;
+      font-size: 0.83rem;
+    }
+
+    .detection-item.ignored {
+      opacity: 0.45;
+      text-decoration: line-through;
+    }
+
+    .detection-item input[type="checkbox"] {
+      margin-top: 0.15rem;
+      accent-color: var(--accent);
+      width: 15px;
+      height: 15px;
+    }
+
+    .det-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .det-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.2rem;
+    }
+
+    .det-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .tag-NIF, .tag-CC, .tag-NISS, .tag-IBAN { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .tag-DATA { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .tag-MATRICULA { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .tag-MORADA, .tag-CP { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+    .tag-PESSOA, .tag-MAGISTRADO, .tag-NER { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+    .tag-CONTACTO { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
+    .tag-MANUAL { background: rgba(148, 163, 184, 0.25); color: #cbd5e1; }
+
+    .det-text {
+      font-weight: 600;
+      word-break: break-word;
+      color: var(--text-primary);
+    }
+
+    .panel-footer {
+      padding: 0.85rem 1rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    /* PAINEL DIREITO: CANVAS E OCULTAÇÃO MANUAL */
+    .canvas-panel {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .canvas-toolbar {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg-secondary);
+    }
+
+    .page-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .draw-hint {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .canvas-viewport {
+      background: #090d16;
+      padding: 1.25rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow: auto;
+      max-height: calc(100vh - 235px);
+      min-height: 500px;
+    }
+
+    .canvas-stage {
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      line-height: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    #pdf-canvas {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    #overlay-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+      touch-action: none; /* Impede scroll no iPad/iPhone ao desenhar tarja */
+    }
+
+    .status-bar {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .empty-msg {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
   </style>
 </head>
 <body>
 
-<nav class="top-nav">
-  <div class="nav-links">
-    <a href="index.html" class="nav-inactive">Anonimizador PDF</a>
-    <a href="citacheck.html" class="nav-active">Cita-Check (Prazos)</a>
-    <a href="casos.html" class="nav-inactive">Simulador CEJ (Casos)</a>
-  </div>
-  <button id="themeToggle" class="theme-toggle" type="button" aria-label="Mudar tema">
-    <span id="themeIcon">🌙</span> <span id="themeLabel">Tema Escuro</span>
-  </button>
-</nav>
-
-<div class="container">
-  <header>
-    <h1>Cita-Check <span class="badge">Prazos de citações e notificações</span></h1>
-    <p>Diga o que aconteceu. A ferramenta calcula o último dia do prazo e escreve a cota.</p>
-  </header>
-
-  <div class="grid">
-    <!-- PAINEL ESQUERDO: PERGUNTAS -->
-    <div class="card">
-      <h2>1. O que aconteceu</h2>
-
-      <div class="form-group">
-        <label for="tipoAto">O que se vai contar?</label>
-        <select id="tipoAto" onchange="atualizarSubOpcoes()">
-          <option value="cit_pc_postal">Citação de empresa ou associação, por carta</option>
-          <option value="cit_pc_eletronica">Citação de empresa ou associação, pela área reservada (eletrónica)</option>
-          <option value="cit_singular">Citação de pessoa singular (particular)</option>
-          <option value="cit_entidade_publica">Citação do Estado, de autarquia ou de outra entidade pública</option>
-          <option value="notif_mandatario">Notificação a advogado</option>
-          <option value="notif_parte">Notificação a parte sem advogado</option>
-        </select>
-      </div>
-
-      <div id="fundamentoContainer" class="form-group">
-        <label for="fundamentoPostal">Porque é que foi por carta?</label>
-        <select id="fundamentoPostal" onchange="atualizarOpcoesPostalPC()">
-          <option value="f9">A empresa não se registou no Sistema Público de Notificações Eletrónicas (SPNE) — Citius emite logo AR 2.ª tentativa + taxa de 0,5 UC</option>
-          <option value="f13">A citação eletrónica não era aplicável / falhou por outro motivo (sem taxa)</option>
-        </select>
-      </div>
-
-      <div id="subOpcaoContainer" class="form-group">
-        <label id="subOpcaoLabel" for="subOpcao">Como correu a entrega?</label>
-        <select id="subOpcao" onchange="verificarCamposExtra()"></select>
-      </div>
-
-      <div class="row-2">
-        <div class="form-group">
-          <label id="dataLabel" for="dataBase">Data</label>
-          <input type="date" id="dataBase">
-        </div>
-        <div class="form-group">
-          <label for="prazoDias">Prazo para contestar ou responder (dias)</label>
-          <input type="number" id="prazoDias" value="30" min="1" max="180">
-        </div>
-      </div>
-      <div class="hint" style="margin-top:-8px; margin-bottom:14px;">O prazo vem preenchido (30 dias na citação, 10 na notificação). Altere se o processo tiver outro.</div>
-
-      <div id="consultaContainer" class="form-group hidden">
-        <label for="dataConsulta">Data em que a empresa consultou a citação</label>
-        <input type="date" id="dataConsulta">
-        <button type="button" class="btn-limpar" onclick="el('dataConsulta').value=''; simular();">Limpar (a empresa não consultou)</button>
-        <div class="hint">Deixe em branco se não consultou. A data da consulta aparece certificada no Citius.</div>
-      </div>
-
-      <div class="row-2">
-        <div class="form-group">
-          <label for="dilacaoExtra">Onde foi feita a citação?</label>
-          <select id="dilacaoExtra">
-            <option value="0">Na comarca do tribunal (sem dilação)</option>
-            <option value="5">Fora da comarca (+5 dias)</option>
-            <option value="15">Açores ou Madeira, com o processo no continente, ou o contrário (+15 dias)</option>
-            <option value="30">No estrangeiro (+30 dias)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="processoUrgente">Tipo de processo</label>
-          <select id="processoUrgente">
-            <option value="nao">Normal (o prazo pára nas férias judiciais)</option>
-            <option value="sim">Urgente (o prazo corre nas férias)</option>
-          </select>
-        </div>
-      </div>
-      <div id="hintTerr" class="hint" style="margin-top:-8px; margin-bottom:14px;"></div>
-
-      <div class="form-group">
-        <label for="feriadoMunicipal">Feriado municipal do tribunal (TAF)</label>
-        <select id="feriadoMunicipal">
-          <option value="porto" selected>TAF do Porto (24 de junho)</option>
-          <option value="almada">TAF de Almada (24 de junho)</option>
-          <option value="aveiro">TAF de Aveiro (12 de maio)</option>
-          <option value="beja">TAF de Beja (Ascensão, móvel)</option>
-          <option value="braga">TAF de Braga (24 de junho)</option>
-          <option value="castelo_branco">TAF de Castelo Branco (Sr.ª de Mércoles, móvel)</option>
-          <option value="coimbra">TAF de Coimbra (4 de julho)</option>
-          <option value="funchal">TAF do Funchal (21 de agosto)</option>
-          <option value="leiria">TAF de Leiria (22 de maio)</option>
-          <option value="lisboa">TAF de Lisboa (13 de junho)</option>
-          <option value="loule">TAF de Loulé (Ascensão, móvel)</option>
-          <option value="loures">TAF de Loures (26 de julho)</option>
-          <option value="mirandela">TAF de Mirandela (25 de maio)</option>
-          <option value="penafiel">TAF de Penafiel (11 de novembro)</option>
-          <option value="ponta_delgada">TAF de Ponta Delgada (Santo Cristo, móvel)</option>
-          <option value="sintra">TAF de Sintra (29 de junho)</option>
-          <option value="viseu">TAF de Viseu (21 de setembro)</option>
-          <option value="nenhum">Nenhum (apenas feriados nacionais)</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Tolerâncias de ponto e outros dias de encerramento do tribunal</label>
-        <div class="check-row">
-          <input type="checkbox" id="carnaval">
-          <label for="carnaval">Terça-feira de Carnaval</label>
-        </div>
-        <div class="check-row">
-          <input type="checkbox" id="tol24dez">
-          <label for="tol24dez">24 de dezembro</label>
-        </div>
-        <div class="check-row">
-          <input type="checkbox" id="tol31dez">
-          <label for="tol31dez">31 de dezembro</label>
-        </div>
-
-        <div class="custom-date-row">
-          <input type="date" id="novaDataFecho" aria-label="Outra data de encerramento">
-          <button type="button" class="btn-secondary" onclick="adicionarDataFecho()">+ Adicionar data</button>
-        </div>
-        <div class="hint">Use para greves com encerramento do serviço ou outras tolerâncias de ponto decretadas.</div>
-        <div id="listaDatasFecho" class="chips-wrap"></div>
-      </div>
-
-      <button class="btn-primary" type="button" onclick="simular()">Calcular</button>
+  <!-- NAVBAR UNIFICADA -->
+  <nav class="top-nav">
+    <a href="index.html" class="nav-brand">
+      <span>⚖️</span>
+      <span>LegalTech <strong>Suite</strong></span>
+      <span class="badge-client">100% Client-Side • RGPD</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-item active">Anonimizador PDF</a>
+      <a href="citacheck.html" class="nav-item">Cita-Check (CPC/CPTA)</a>
+      <button id="theme-toggle" class="theme-btn" title="Alternar Modo Claro/Escuro">🌓</button>
     </div>
+  </nav>
 
-    <!-- PAINEL DIREITO: RESULTADOS -->
-    <div class="card">
-      <h2>2. Resultado</h2>
-
-      <div class="headline">
-        <div class="headline-label">Último dia do prazo</div>
-        <div id="resumoTermo" class="headline-date">-</div>
-        <div id="resumoMulta" class="headline-sub"></div>
+  <main class="workspace-container">
+    <!-- BARRA DE CARREGAMENTO E OPÇÕES DE SEGURANÇA -->
+    <section class="upload-bar card">
+      <div class="file-input-group">
+        <label for="pdf-upload" class="btn btn-primary">
+          📄 Carregar PDF
+        </label>
+        <!-- onclick="this.value=null" resolve o bug de selecionar o mesmo PDF 2x seguidas -->
+        <input type="file" id="pdf-upload" accept="application/pdf" onclick="this.value=null" hidden />
+        <button id="btn-run-ner" class="btn btn-secondary" disabled title="Executa modelo NER local com janela deslizante de 150 chars">
+          🧠 Deteção IA Profunda (NER)
+        </button>
+        <span id="status-text" class="status-bar">Nenhum documento carregado.</span>
       </div>
 
-      <div id="alertaJuridico" class="alert-box"></div>
-      <div id="deverSecretaria" class="duty-box hidden"></div>
+      <div class="security-options">
+        <label class="option-check" title="Converte as páginas em imagem rasterizada no PDF final para destruir a camada de texto selecionável por baixo das tarjas">
+          <input type="checkbox" id="opt-secure-raster" checked />
+          <span>🔒 <strong>Tarja Preta Segura</strong> (Destruir texto oculto)</span>
+        </label>
 
-      <div class="result-box">
-        <div class="result-item">
-          <span>A citação ou notificação fica feita em:</span>
-          <strong id="resDataPerfeicao">-</strong>
-        </div>
-        <div class="result-item">
-          <span>Dias a mais por entrega a outra pessoa (dilação):</span>
-          <strong id="resDilacaoA">-</strong>
-        </div>
-        <div class="result-item">
-          <span>Dias a mais por local ou modalidade (dilação; conta só o maior):</span>
-          <strong id="resDilacaoG">-</strong>
-        </div>
-        <div class="result-item">
-          <span>Total de dias a contar:</span>
-          <strong id="resTotalDias">-</strong>
-        </div>
-        <div class="result-item">
-          <span>Último dia do prazo:</span>
-          <strong id="resTermoPrazo" style="color: var(--accent); font-size: 1rem;">-</strong>
-        </div>
-        <div class="result-item">
-          <span>1.º dia com multa:</span>
-          <strong id="resMulta1">-</strong>
-        </div>
-        <div class="result-item">
-          <span>2.º dia com multa:</span>
-          <strong id="resMulta2">-</strong>
-        </div>
-        <div class="result-item">
-          <span>3.º e último dia com multa:</span>
-          <strong id="resMulta3" style="color: #ef4444;">-</strong>
-        </div>
+        <label class="option-check" title="Estampa 'CÓPIA ANONIMIZADA' na diagonal em todas as páginas">
+          <input type="checkbox" id="opt-watermark" checked />
+          <span>💧 Marca de Água ("CÓPIA ANONIMIZADA")</span>
+        </label>
       </div>
 
-      <div id="feriadosDetetados" class="feriados-info"></div>
+      <div id="security-warning" class="security-warning">
+        ⚠️ <strong>Aviso de Segurança RGPD:</strong> Ao desativar a "Tarja Preta Segura", o PDF manterá a camada de texto original por baixo dos retângulos (qualquer pessoa poderá copiar e colar o texto oculto). Recomendamos manter o modo seguro ativado.
+      </div>
+    </section>
 
-      <details class="base-legal">
-        <summary>Ver base legal</summary>
-        <div id="baseLegalTexto"></div>
-      </details>
+    <!-- GRELHA DE TRABALHO -->
+    <section class="review-grid">
+      
+      <!-- COLUNA ESQUERDA: LISTA DE REVISÃO COM CHECKBOXES -->
+      <aside class="detections-panel card">
+        <div class="panel-header">
+          <h3>1. Revisão de Ocorrências</h3>
+          <span id="det-counter" class="badge-count">0 ativas</span>
+        </div>
 
-      <h2>3. Texto da cota (Citius)</h2>
-      <div id="cotaTexto" class="cota-box"></div>
-      <button class="btn-copy" type="button" onclick="copiarCota()">Copiar cota</button>
-      <span id="copyFeedback" class="copy-feedback">Copiado.</span>
-    </div>
-  </div>
+        <!-- Adicionar termo manual em todas as páginas -->
+        <div class="manual-add-bar">
+          <input type="text" id="custom-term" placeholder="Ocultar palavra/nome no PDF..." />
+          <button id="btn-add-term" class="btn btn-secondary" disabled>➕</button>
+        </div>
 
-  <div class="rodape">
-    <p>Regime processual conforme CPC (na redação do DL n.º 87/2024, de 7/11), CPTA e Portaria n.º 267/2018 (SPNE). Valor de referência da UC: 102,00 €. Confirme sempre no processo antes de lavrar a cota.</p>
-    <p class="dev-credit">@developed by Armando Afonso</p>
-  </div>
-</div>
+        <div class="filter-toolbar">
+          <div>
+            <button id="btn-check-all" class="link-btn">Marcar tudo</button>
+            <span style="margin: 0 4px; color: var(--text-secondary)">|</span>
+            <button id="btn-uncheck-all" class="link-btn">Desmarcar tudo</button>
+          </div>
+          <label class="option-check" style="font-size: 0.76rem;">
+            <input type="checkbox" id="filter-current-page" />
+            <span>Só pág. atual</span>
+          </label>
+        </div>
 
-<script>
-  /* ===================== GESTÃO DO TEMA (DARK/LIGHT MODE) ===================== */
-  const themeToggleBtn = document.getElementById('themeToggle');
-  const themeIcon = document.getElementById('themeIcon');
-  const themeLabel = document.getElementById('themeLabel');
-  const htmlEl = document.documentElement;
+        <div id="detections-list" class="detections-list">
+          <p class="empty-msg">Carregue uma sentença, articulado ou despacho em PDF para rever as entidades detetadas antes de exportar.</p>
+        </div>
 
-  function setTheme(theme) {
-    htmlEl.setAttribute('data-theme', theme);
-    localStorage.setItem('legaltech_theme', theme);
-    if (theme === 'dark') {
-      themeIcon.textContent = '☀️';
-      themeLabel.textContent = 'Tema Claro';
-    } else {
-      themeIcon.textContent = '🌙';
-      themeLabel.textContent = 'Tema Escuro';
-    }
-  }
+        <div class="panel-footer">
+          <button id="btn-export" class="btn btn-success" style="width: 100%; padding: 0.7rem;" disabled>
+            ⬇️ Descarregar PDF Anonimizado
+          </button>
+        </div>
+      </aside>
 
-  const savedTheme = localStorage.getItem('legaltech_theme');
-  if (savedTheme) {
-    setTheme(savedTheme);
-  } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    setTheme('dark');
-  } else {
-    setTheme('light');
-  }
+      <!-- COLUNA DIREITA: PREVIEW DO PDF + CLICK & DRAG MANUAL -->
+      <section class="canvas-panel card">
+        <div class="canvas-toolbar">
+          <div class="page-controls">
+            <button id="btn-prev" class="btn btn-secondary" disabled>◀</button>
+            <span id="page-info">Página 0 / 0</span>
+            <button id="btn-next" class="btn btn-secondary" disabled>▶</button>
+          </div>
 
-  themeToggleBtn.addEventListener('click', () => {
-    const currentTheme = htmlEl.getAttribute('data-theme');
-    setTheme(currentTheme === 'dark' ? 'light' : 'dark');
-  });
+          <div class="draw-hint">
+            <span>✏️ <strong>Ocultação Manual:</strong> Arraste o dedo/rato sobre o documento para desenhar uma tarja.</span>
+            <button id="btn-undo-box" class="btn btn-danger-outline" style="padding: 0.3rem 0.6rem; font-size: 0.78rem;" disabled>
+              ↩️ Desfazer Tarja Manual
+            </button>
+          </div>
+        </div>
 
-  /* ===================== LÓGICA DO SIMULADOR ===================== */
-  const UC_EUR = 102;
-  const OPC = { carnaval: false, tol24dez: false, tol31dez: false };
-  const datasFechoExtra = new Set();
+        <div class="canvas-viewport">
+          <div id="canvas-stage" class="canvas-stage">
+            <canvas id="pdf-canvas"></canvas>
+            <canvas id="overlay-canvas"></canvas>
+          </div>
+        </div>
+      </section>
 
-  function el(id) { return document.getElementById(id); }
-  function L(d) { return d.toLocaleDateString('pt-PT'); }
-  function fmtEuro(v) { return v.toFixed(2).replace('.', ',') + ' €'; }
+    </section>
+  </main>
 
-  function isoKey(date) {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-  }
+  <script>
+    /********************************************************************
+     * 1. TEMA DARK / LIGHT PERSISTENTE (localStorage)
+     ********************************************************************/
+    const themeToggle = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('legaltech_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
 
-  function adicionarDataFecho() {
-    const val = el('novaDataFecho').value;
-    if (!val) return;
-    datasFechoExtra.add(val);
-    el('novaDataFecho').value = '';
-    renderizarDatasFecho();
-    simular();
-  }
-
-  function removerDataFecho(val) {
-    datasFechoExtra.delete(val);
-    renderizarDatasFecho();
-    simular();
-  }
-
-  function renderizarDatasFecho() {
-    const wrap = el('listaDatasFecho');
-    wrap.innerHTML = '';
-    Array.from(datasFechoExtra).sort().forEach(iso => {
-      const dt = dataLocal(iso);
-      const chip = document.createElement('span');
-      chip.className = 'chip';
-      chip.textContent = L(dt) + ' ';
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.textContent = '×';
-      btn.title = 'Remover data';
-      btn.onclick = () => removerDataFecho(iso);
-      chip.appendChild(btn);
-      wrap.appendChild(chip);
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('legaltech_theme', next);
     });
-  }
 
-  // ---------- Calendário judicial ----------
+    /********************************************************************
+     * 2. CONFIGURAÇÃO DO PDF.JS E ESTADO GLOBAL
+     ********************************************************************/
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-  function getPascoa(year) {
-    const a = year % 19;
-    const b = Math.floor(year / 100);
-    const c = year % 100;
-    const d = Math.floor(b / 4);
-    const e = b % 4;
-    const f = Math.floor((b + 8) / 25);
-    const g = Math.floor((b - f + 1) / 3);
-    const h = (19 * a + b - d - g + 15) % 30;
-    const i = Math.floor(c / 4);
-    const k = c % 4;
-    const l = (32 + 2 * e + 2 * i - h - k) % 7;
-    const m = Math.floor((a + 11 * h + 22 * l) / 451);
-    const month = Math.floor((h + l - 7 * m + 114) / 31) - 1;
-    const day = ((h + l - 7 * m + 114) % 31) + 1;
-    return new Date(year, month, day);
-  }
-
-  function sameDay(d1, d2) {
-    return d1.getFullYear() === d2.getFullYear() &&
-           d1.getMonth() === d2.getMonth() &&
-           d1.getDate() === d2.getDate();
-  }
-
-  function addDays(date, days) {
-    const res = new Date(date);
-    res.setDate(res.getDate() + days);
-    return res;
-  }
-
-  function getNomeFeriado(date, municipal) {
-    const y = date.getFullYear();
-    const m = date.getMonth() + 1;
-    const d = date.getDate();
-
-    const fixos = {
-      '1-1': 'Ano Novo',
-      '4-25': 'Dia da Liberdade',
-      '5-1': 'Dia do Trabalhador',
-      '6-10': 'Dia de Portugal',
-      '8-15': 'Assunção de Nossa Senhora',
-      '10-5': 'Implantação da República',
-      '11-1': 'Todos os Santos',
-      '12-1': 'Restauração da Independência',
-      '12-8': 'Imaculada Conceição',
-      '12-25': 'Natal'
+    const State = {
+      pdfDoc: null,
+      pdfBytes: null,
+      fileName: 'documento.pdf',
+      currentPage: 1,
+      totalPages: 0,
+      renderScale: 1.5,
+      pagesData: [],      // Texto e itens posicionais por página
+      detections: [],     // [{ id, page, category, text, rects: [{x,y,w,h}], active: true }]
+      manualBoxes: [],    // [{ id, page, x, y, w, h }]
+      isDrawing: false,
+      startX: 0,
+      startY: 0,
+      nerPipeline: null
     };
 
-    const key = `${m}-${d}`;
-    if (fixos[key]) return fixos[key];
+    // Elementos DOM
+    const elUpload = document.getElementById('pdf-upload');
+    const elStatus = document.getElementById('status-text');
+    const elDetList = document.getElementById('detections-list');
+    const elDetCounter = document.getElementById('det-counter');
+    const elBtnExport = document.getElementById('btn-export');
+    const elBtnPrev = document.getElementById('btn-prev');
+    const elBtnNext = document.getElementById('btn-next');
+    const elPageInfo = document.getElementById('page-info');
+    const elPdfCanvas = document.getElementById('pdf-canvas');
+    const elOverlayCanvas = document.getElementById('overlay-canvas');
+    const elCustomTerm = document.getElementById('custom-term');
+    const elBtnAddTerm = document.getElementById('btn-add-term');
+    const elBtnUndoBox = document.getElementById('btn-undo-box');
+    const elOptRaster = document.getElementById('opt-secure-raster');
+    const elOptWatermark = document.getElementById('opt-watermark');
+    const elSecWarning = document.getElementById('security-warning');
+    const elFilterPage = document.getElementById('filter-current-page');
+    const elBtnRunNER = document.getElementById('btn-run-ner');
 
-    if (OPC.tol24dez && m === 12 && d === 24) return '24 de dezembro (tolerância de ponto)';
-    if (OPC.tol31dez && m === 12 && d === 31) return '31 de dezembro (tolerância de ponto)';
+    elOptRaster.addEventListener('change', () => {
+      elSecWarning.style.display = elOptRaster.checked ? 'none' : 'block';
+    });
 
-    const munFixos = {
-      'almada': { m: 6, d: 24, nome: 'São João (Almada)' },
-      'aveiro': { m: 5, d: 12, nome: 'Santa Joana (Aveiro)' },
-      'braga': { m: 6, d: 24, nome: 'São João (Braga)' },
-      'coimbra': { m: 7, d: 4, nome: 'Rainha Santa Isabel (Coimbra)' },
-      'funchal': { m: 8, d: 21, nome: 'Dia da Cidade (Funchal)' },
-      'leiria': { m: 5, d: 22, nome: 'Dia do Município (Leiria)' },
-      'lisboa': { m: 6, d: 13, nome: 'Santo António (Lisboa)' },
-      'loures': { m: 7, d: 26, nome: 'Dia do Foral (Loures)' },
-      'mirandela': { m: 5, d: 25, nome: 'Dia do Município (Mirandela)' },
-      'penafiel': { m: 11, d: 11, nome: 'São Martinho (Penafiel)' },
-      'porto': { m: 6, d: 24, nome: 'São João (Porto)' },
-      'sintra': { m: 6, d: 29, nome: 'São Pedro (Sintra)' },
-      'viseu': { m: 9, d: 21, nome: 'São Mateus (Viseu)' }
-    };
+    /********************************************************************
+     * 3. EXPRESSÕES REGULARES MELHORADAS (DATAS, MATRÍCULAS, MORADAS, ETC.)
+     ********************************************************************/
+    const REGEX_PATTERNS = [
+      // Matrículas Portuguesas (AA-00-00, 00-00-AA, 00-AA-00, AA-00-AA)
+      {
+        category: 'MATRICULA',
+        regex: /\b(?:[A-Z]{2}-\d{2}-\d{2}|\d{2}-\d{2}-[A-Z]{2}|\d{2}-[A-Z]{2}-\d{2}|[A-Z]{2}-\d{2}-[A-Z]{2})\b/g
+      },
+      // Datas numéricas e por extenso (incluindo datas de nascimento)
+      {
+        category: 'DATA',
+        regex: /\b(?:\d{1,2}[\/\-]\d{1,2}[\/\-](?:19|20)\d{2}|\d{1,2}\s+de\s+(?:janeiro|fevereiro|março|marco|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)\s+de\s+(?:19|20)\d{2})\b/gi
+      },
+      // Códigos Postais Portugueses (0000-000 + Localidade opcional)
+      {
+        category: 'CP',
+        regex: /\b\d{4}-\d{3}(?:\s+[A-ZÀ-Ú][A-Za-zÀ-ÿ\s\-]{2,25})?\b/g
+      },
+      // Moradas e Artérias Portuguesas alargadas
+      {
+        category: 'MORADA',
+        regex: /\b(?:Rua|Avenida|Av\.|Travessa|Tv\.|Largo|Praça|Praceta|Pct\.|Alameda|Beco|Calçada|Estrada|EN\s*\d+|Rotunda|Urbanização|Urb\.|Lugar|Quinta|Bairro|Edifício|Bloco)\s+[A-ZÀ-Ú0-9][A-Za-zÀ-ÿ0-9\s,\.ºª\-]{4,65}(?:n\.?º?\s*\d+|\d+\s*[ºª]?\s*(?:Dto|Esq|Frente|Trás|Hab|[A-Z])?)?/gi
+      },
+      // IBAN Português e Europeu
+      {
+        category: 'IBAN',
+        regex: /\bPT50[\s\.]?(?:\d{4}[\s\.]?){5}\d{1}\b/gi
+      },
+      // NIF / NIPC (9 dígitos começados por 1,2,3,5,6,7,8,9)
+      {
+        category: 'NIF',
+        regex: /\b(?:NIF|NIPC|Contribuinte|Fiscal)?[\s:º.]*([12356789]\d{8})\b/gi
+      },
+      // NISS (Segurança Social - 11 dígitos)
+      {
+        category: 'NISS',
+        regex: /\b(?:NISS|Segurança Social)[\s:º.]*(\d{11})\b/gi
+      },
+      // Cartão de Cidadão / BI
+      {
+        category: 'CC',
+        regex: /\b(?:CC|Cartão de Cidadão|BI|Bilhete de Identidade)[\s:nº.]*(\d{7,8}(?:\s*\d\s*[A-Z0-9]{2}\d)?)\b/gi
+      },
+      // Emails e Contactos Telefónicos PT
+      {
+        category: 'CONTACTO',
+        regex: /\b(?:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}|(?:\+351\s?)?(?:9[1236]\d|2\d{2})[\s\-]?\d{3}[\s\-]?\d{3})\b/g
+      },
+      // Magistrados, Mandatários e Partes Processuais (Heurística Jurídica PT)
+      {
+        category: 'PESSOA',
+        regex: /\b(?:Juiz(?:a)?\s+de\s+Direito|Juiz(?:a)?\s+Desembargador(?:a)?|Procurador(?:a)?|Dr\.?ª?|Sr\.?ª?|Autor(?:a|es)?|Ré(?:u|s)?|Requerente(?:s)?|Requerid(?:o|a|os|as)|Impugnante(?:s)?|Executad(?:o|a|os|as)|Exequente(?:s)?|Arguid(?:o|a|os|as)|Testemunha(?:s)?|Perit(?:o|a))[\s:—\-]+([A-ZÀ-Ú][a-zà-ÿ]+(?:\s+(?:da|de|do|das|dos|e|[A-ZÀ-Ú][a-zà-ÿ]+)){1,5})\b/g
+      }
+    ];
 
-    if (munFixos[municipal] && munFixos[municipal].m === m && munFixos[municipal].d === d) {
-      return munFixos[municipal].nome;
-    }
+    /********************************************************************
+     * 4. CARREGAMENTO E EXTRAÇÃO POSICIONAL DO PDF
+     ********************************************************************/
+    elUpload.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
 
-    const pascoa = getPascoa(y);
-    if (sameDay(date, addDays(pascoa, -2))) return 'Sexta-Feira Santa';
-    if (sameDay(date, pascoa)) return 'Domingo de Páscoa';
-    if (sameDay(date, addDays(pascoa, 60))) return 'Corpo de Deus';
-    if (OPC.carnaval && sameDay(date, addDays(pascoa, -47))) return 'Terça-feira de Carnaval (tolerância de ponto)';
+      State.fileName = file.name.replace(/\.pdf$/i, '') + '_ANONIMIZADO.pdf';
+      elStatus.textContent = 'A ler e analisar o PDF localmente...';
+      State.detections = [];
+      State.manualBoxes = [];
+      State.pagesData = [];
 
-    if (municipal === 'beja' && sameDay(date, addDays(pascoa, 39))) return 'Quinta-feira da Ascensão (Beja)';
-    if (municipal === 'loule' && sameDay(date, addDays(pascoa, 39))) return 'Quinta-feira da Ascensão (Loulé)';
-    if (municipal === 'castelo_branco' && sameDay(date, addDays(pascoa, 16))) return 'Nossa Senhora de Mércoles (Castelo Branco)';
-    if (municipal === 'ponta_delgada' && sameDay(date, addDays(pascoa, 36))) return 'Senhor Santo Cristo dos Milagres (Ponta Delgada)';
+      const arrayBuffer = await file.arrayBuffer();
+      State.pdfBytes = new Uint8Array(arrayBuffer);
 
-    if (datasFechoExtra.has(isoKey(date))) return `Encerramento / tolerância (${L(date)})`;
+      const loadingTask = pdfjsLib.getDocument({ data: State.pdfBytes.slice() });
+      State.pdfDoc = await loadingTask.promise;
+      State.totalPages = State.pdfDoc.numPages;
+      State.currentPage = 1;
 
-    return null;
-  }
+      await extractAllPagesAndDetect();
+      await renderCurrentPage();
 
-  function isFeriasJudiciais(date) {
-    const y = date.getFullYear();
-    const m = date.getMonth() + 1;
-    const d = date.getDate();
+      elBtnAddTerm.disabled = false;
+      elBtnExport.disabled = false;
+      elBtnRunNER.disabled = false;
+      updateUndoButton();
+      renderSidebarList();
+      elStatus.textContent = `Pronto: ${State.totalPages} página(s) analisadas.`;
+    });
 
-    if ((m === 12 && d >= 22) || (m === 1 && d <= 3)) return true;
-    if ((m === 7 && d >= 16) || m === 8) return true;
+    async function extractAllPagesAndDetect() {
+      let idCounter = 1;
 
-    const pascoa = getPascoa(y);
-    const domingoRamos = addDays(pascoa, -7);
-    const segundaPascoa = addDays(pascoa, 1);
+      for (let p = 1; p <= State.totalPages; p++) {
+        const page = await State.pdfDoc.getPage(p);
+        const viewport = page.getViewport({ scale: State.renderScale });
+        const textContent = await page.getTextContent();
 
-    const t = new Date(y, date.getMonth(), d).getTime();
-    return (t >= domingoRamos.getTime() && t <= segundaPascoa.getTime());
-  }
+        // Mapear cada item de texto do PDF com as suas coordenadas no Canvas
+        const items = [];
+        let fullPageText = '';
 
-  function isWeekend(date) {
-    const d = date.getDay();
-    return d === 0 || d === 6;
-  }
+        for (const item of textContent.items) {
+          if (!item.str || !item.str.trim()) continue;
 
-  function isDiaUtilTribunal(date, urgente, municipal) {
-    if (isWeekend(date)) return false;
-    if (getNomeFeriado(date, municipal) !== null) return false;
-    if (!urgente && isFeriasJudiciais(date)) return false;
-    return true;
-  }
+          const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
+          const fontHeight = Math.hypot(tx[2], tx[3]);
+          const x = tx[4];
+          const y = tx[5] - fontHeight;
+          const w = item.width * State.renderScale;
+          const h = fontHeight * 1.25;
 
-  function proximoDiaUtilPresuncao(date, municipal) {
-    let dt = new Date(date);
-    while (isWeekend(dt) || getNomeFeriado(dt, municipal) !== null) {
-      dt.setDate(dt.getDate() + 1);
-    }
-    return dt;
-  }
+          const startIdx = fullPageText.length;
+          fullPageText += item.str + ' ';
+          const endIdx = fullPageText.length - 1;
 
-  function adicionarDiasUteisSecretaria(startDate, diasUteis, municipal) {
-    let dt = new Date(startDate);
-    let count = 0;
-    while (count < diasUteis) {
-      dt.setDate(dt.getDate() + 1);
-      if (!isWeekend(dt) && getNomeFeriado(dt, municipal) === null) {
-        count++;
+          items.push({
+            str: item.str,
+            startIdx,
+            endIdx,
+            rect: { x: x - 2, y: y - 2, w: w + 4, h: h + 4 }
+          });
+        }
+
+        State.pagesData.push({ pageNumber: p, fullPageText, items, viewport });
+
+        // Aplicar todas as Regex sobre o texto contínuo da página (permite apanhar expressões multi-item)
+        for (const rule of REGEX_PATTERNS) {
+          rule.regex.lastIndex = 0;
+          let match;
+          while ((match = rule.regex.exec(fullPageText)) !== null) {
+            const matchedText = (match[1] && ['NIF', 'NISS', 'CC', 'PESSOA'].includes(rule.category))
+              ? match[1].trim()
+              : match[0].trim();
+
+            if (matchedText.length < 3) continue;
+
+            const matchStart = match.index + match[0].indexOf(matchedText);
+            const matchEnd = matchStart + matchedText.length;
+
+            // Descobrir quais os retângulos do PDF abrangidos por este match
+            const rects = getRectsForRange(items, matchStart, matchEnd);
+            if (rects.length > 0) {
+              State.detections.push({
+                id: `det_${idCounter++}`,
+                page: p,
+                category: rule.category,
+                text: matchedText,
+                rects,
+                active: true
+              });
+            }
+          }
+        }
       }
     }
-    return dt;
-  }
 
-  function adicionarDiasContinuosComSuspensao(startDate, dias, urgente, municipal, logEventos) {
-    let dt = new Date(startDate);
-    let restantes = dias;
-    while (restantes > 0) {
-      dt.setDate(dt.getDate() + 1);
-      if (urgente || !isFeriasJudiciais(dt)) {
-        restantes--;
-      } else {
-        logEventos.add('Suspensão em férias judiciais');
+    function getRectsForRange(items, start, end) {
+      const rects = [];
+      for (const it of items) {
+        if (it.endIdx >= start && it.startIdx <= end) {
+          rects.push(it.rect);
+        }
+      }
+      return rects;
+    }
+
+    /********************************************************************
+     * 5. MODELO NER COM SLIDING WINDOW DE 150 CARACTERES (OVERLAP)
+     ********************************************************************/
+    /**
+     * Divide o texto em blocos com sobreposição (overlap) de 150 caracteres
+     * para garantir que nenhum nome próprio ou entidade seja cortado a meio.
+     */
+    function createSlidingWindowChunks(text, chunkSize = 450, overlap = 150) {
+      const chunks = [];
+      let index = 0;
+      while (index < text.length) {
+        const end = Math.min(index + chunkSize, text.length);
+        chunks.push({
+          text: text.slice(index, end),
+          offset: index
+        });
+        if (end === text.length) break;
+        index += (chunkSize - overlap);
+      }
+      return chunks;
+    }
+
+    elBtnRunNER.addEventListener('click', async () => {
+      try {
+        elBtnRunNER.disabled = true;
+        elStatus.textContent = 'A carregar modelo NER local (com overlap de 150 chars)...';
+
+        if (!State.nerPipeline) {
+          const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.1');
+          State.nerPipeline = await pipeline('token-classification', 'Xenova/bert-base-multilingual-cased-ner-hrl', {
+             aggregation_strategy: 'simple'
+          });
+        }
+
+        let added = 0;
+        for (const pageObj of State.pagesData) {
+          elStatus.textContent = `IA a analisar página ${pageObj.pageNumber}/${State.totalPages}...`;
+          const chunks = createSlidingWindowChunks(pageObj.fullPageText, 450, 150);
+
+          for (const chunk of chunks) {
+            const results = await State.nerPipeline(chunk.text);
+            for (const ent of results) {
+              if ((ent.entity_group === 'PER' || ent.entity_group === 'LOC') && ent.score > 0.82) {
+                const cleanWord = ent.word.replace(/^##/, '').trim();
+                if (cleanWord.length < 4) continue;
+
+                // Evitar duplicados já detetados na mesma página
+                const alreadyExists = State.detections.some(
+                  d => d.page === pageObj.pageNumber && d.text.toLowerCase() === cleanWord.toLowerCase()
+                );
+                if (alreadyExists) continue;
+
+                const posInChunk = chunk.text.indexOf(cleanWord);
+                if (posInChunk !== -1) {
+                  const globalStart = chunk.offset + posInChunk;
+                  const globalEnd = globalStart + cleanWord.length;
+                  const rects = getRectsForRange(pageObj.items, globalStart, globalEnd);
+                  if (rects.length > 0) {
+                    State.detections.push({
+                      id: `ner_${Date.now()}_${Math.random()}`,
+                      page: pageObj.pageNumber,
+                      category: 'NER',
+                      text: cleanWord,
+                      rects,
+                      active: true
+                    });
+                    added++;
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        renderSidebarList();
+        drawOverlay();
+        elStatus.textContent = `Análise NER concluída (+${added} entidades adicionadas).`;
+      } catch (err) {
+        console.error(err);
+        elStatus.textContent = 'Nota: Modelo NER indisponível offline; deteção Regex + Heurística ativa.';
+      } finally {
+        elBtnRunNER.disabled = false;
+      }
+    });
+
+    /********************************************************************
+     * 6. ADIÇÃO MANUAL DE TERMO EM FALTA
+     ********************************************************************/
+    function addCustomTerm() {
+      const term = elCustomTerm.value.trim();
+      if (!term || !State.pdfDoc) return;
+
+      const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const customRegex = new RegExp(escaped, 'gi');
+      let foundCount = 0;
+
+      for (const pageObj of State.pagesData) {
+        let match;
+        while ((match = customRegex.exec(pageObj.fullPageText)) !== null) {
+          const start = match.index;
+          const end = start + match[0].length;
+          const rects = getRectsForRange(pageObj.items, start, end);
+          if (rects.length > 0) {
+            State.detections.unshift({
+              id: `man_term_${Date.now()}_${Math.random()}`,
+              page: pageObj.pageNumber,
+              category: 'MANUAL',
+              text: match[0],
+              rects,
+              active: true
+            });
+            foundCount++;
+          }
+        }
+      }
+
+      elCustomTerm.value = '';
+      renderSidebarList();
+      drawOverlay();
+      elStatus.textContent = foundCount > 0
+        ? `Termo "${term}" marcado (${foundCount} ocorrências).`
+        : `Termo "${term}" não encontrado no texto selecionável. Use o desenho manual no ecrã.`;
+    }
+
+    elBtnAddTerm.addEventListener('click', addCustomTerm);
+    elCustomTerm.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') addCustomTerm();
+    });
+
+    /********************************************************************
+     * 7. RENDERIZAÇÃO DO CANVAS E OVERLAY (COM CLICK/TOUCH & DRAG)
+     ********************************************************************/
+    async function renderCurrentPage() {
+      if (!State.pdfDoc) return;
+
+      const page = await State.pdfDoc.getPage(State.currentPage);
+      const viewport = page.getViewport({ scale: State.renderScale });
+
+      elPdfCanvas.width = viewport.width;
+      elPdfCanvas.height = viewport.height;
+      elOverlayCanvas.width = viewport.width;
+      elOverlayCanvas.height = viewport.height;
+
+      const ctx = elPdfCanvas.getContext('2d');
+      await page.render({ canvasContext: ctx, viewport }).promise;
+
+      elPageInfo.textContent = `Página ${State.currentPage} / ${State.totalPages}`;
+      elBtnPrev.disabled = State.currentPage <= 1;
+      elBtnNext.disabled = State.currentPage >= State.totalPages;
+
+      drawOverlay();
+      if (elFilterPage.checked) renderSidebarList();
+    }
+
+    function drawOverlay() {
+      const ctx = elOverlayCanvas.getContext('2d');
+      ctx.clearRect(0, 0, elOverlayCanvas.width, elOverlayCanvas.height);
+
+      // 1. Desenhar deteções automáticas/termos ativos na página atual
+      const pageDetections = State.detections.filter(
+        d => d.page === State.currentPage && d.active
+      );
+
+      for (const det of pageDetections) {
+        for (const r of det.rects) {
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
+          ctx.fillRect(r.x, r.y, r.w, r.h);
+          ctx.strokeStyle = '#ef4444';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(r.x, r.y, r.w, r.h);
+        }
+      }
+
+      // 2. Desenhar caixas de ocultação manual (Click & Drag) na página atual
+      const pageBoxes = State.manualBoxes.filter(b => b.page === State.currentPage);
+      for (const b of pageBoxes) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(b.x, b.y, b.w, b.h);
       }
     }
-    while (!isDiaUtilTribunal(dt, urgente, municipal)) {
-      const fer = getNomeFeriado(dt, municipal);
-      if (fer) logEventos.add(`Termo transferido por feriado/encerramento (${fer})`);
-      else if (isWeekend(dt)) logEventos.add('Termo transferido por fim de semana');
-      else if (!urgente && isFeriasJudiciais(dt)) logEventos.add('Termo transferido por férias judiciais');
-      dt.setDate(dt.getDate() + 1);
+
+    // Eventos de Rato e Touch (iPad/iPhone) para desenhar retângulos manuais
+    function getCanvasCoordinates(e) {
+      const rect = elOverlayCanvas.getBoundingClientRect();
+      const touch = e.touches && e.touches[0] ? e.touches[0] : (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0] : e);
+      return {
+        x: (touch.clientX - rect.left) * (elOverlayCanvas.width / rect.width),
+        y: (touch.clientY - rect.top) * (elOverlayCanvas.height / rect.height)
+      };
     }
-    return dt;
-  }
 
-  function proximoDiaUtilMulta(date, urgente, municipal) {
-    let dt = new Date(date);
-    do {
-      dt.setDate(dt.getDate() + 1);
-    } while (!isDiaUtilTribunal(dt, urgente, municipal));
-    return dt;
-  }
+    function onStartDraw(e) {
+      if (!State.pdfDoc) return;
+      if (e.cancelable) e.preventDefault();
+      State.isDrawing = true;
+      const pos = getCanvasCoordinates(e);
+      State.startX = pos.x;
+      State.startY = pos.y;
+    }
 
-  function formatDate(date) {
-    return date.toLocaleDateString('pt-PT', {
-      weekday: 'short',
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
+    function onMoveDraw(e) {
+      if (!State.isDrawing) return;
+      if (e.cancelable) e.preventDefault();
+      const pos = getCanvasCoordinates(e);
+      drawOverlay();
+      const ctx = elOverlayCanvas.getContext('2d');
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.35)';
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 2;
+      ctx.fillRect(State.startX, State.startY, pos.x - State.startX, pos.y - State.startY);
+      ctx.strokeRect(State.startX, State.startY, pos.x - State.startX, pos.y - State.startY);
+    }
+
+    function onEndDraw(e) {
+      if (!State.isDrawing) return;
+      State.isDrawing = false;
+      const pos = getCanvasCoordinates(e);
+      const w = pos.x - State.startX;
+      const h = pos.y - State.startY;
+
+      if (Math.abs(w) > 8 && Math.abs(h) > 8) {
+        State.manualBoxes.push({
+          id: `box_${Date.now()}`,
+          page: State.currentPage,
+          x: w < 0 ? pos.x : State.startX,
+          y: h < 0 ? pos.y : State.startY,
+          w: Math.abs(w),
+          h: Math.abs(h)
+        });
+        updateUndoButton();
+        renderSidebarList();
+      }
+      drawOverlay();
+    }
+
+    elOverlayCanvas.addEventListener('mousedown', onStartDraw);
+    elOverlayCanvas.addEventListener('mousemove', onMoveDraw);
+    window.addEventListener('mouseup', onEndDraw);
+
+    elOverlayCanvas.addEventListener('touchstart', onStartDraw, { passive: false });
+    elOverlayCanvas.addEventListener('touchmove', onMoveDraw, { passive: false });
+    window.addEventListener('touchend', onEndDraw);
+
+    function updateUndoButton() {
+      elBtnUndoBox.disabled = State.manualBoxes.length === 0;
+    }
+
+    elBtnUndoBox.addEventListener('click', () => {
+      if (State.manualBoxes.length > 0) {
+        State.manualBoxes.pop();
+        updateUndoButton();
+        drawOverlay();
+        renderSidebarList();
+      }
     });
-  }
 
-  // ---------- Regras por modalidade ----------
-
-  const pcPref = c => c.fund === 'f13'
-    ? 'Citação postal de pessoa coletiva (art. 246.º, n.º 13 do CPC)'
-    : 'Citação postal de pessoa coletiva (AR 2.ª tentativa emitida após inviabilidade eletrónica por falta de registo no Sistema Público de Notificações Eletrónicas [SPNE] — art. 246.º, n.ºs 9 e 10 do CPC)';
-
-  const SUBS = {
-    pc_repr: {
-      textoF9: 'AR 2.ª tentativa: Gerente, administrador ou funcionário assinou o AR',
-      textoF13: '1.ª ou 2.ª tentativa: Gerente, administrador ou funcionário assinou o AR',
-      dataLabel: 'Data da assinatura do aviso de receção',
-      offset: 0, a: 0, g: 0,
-      explica: c => c.fund === 'f9'
-        ? `Como a empresa não se registou no Sistema Público de Notificações Eletrónicas (SPNE) — 1.ª tentativa eletrónica frustrada —, o Citius emitiu logo AR 2.ª tentativa com taxa de 0,5 UC. Quem assinou representa a empresa ou trabalha nela: a citação fica feita no dia da assinatura e não há dilação.`
-        : `Quem assinou representa a empresa ou trabalha nela. A citação considera-se feita no dia da assinatura e não há dilação.`,
-      alerta: c => 'Carta assinada por representante legal ou funcionário: a citação considera-se feita na data de assinatura do AR (art. 246.º, n.ºs 9 e 10 e art. 230.º, n.º 1 do CPC), sem dilação.',
-      cota: c => `${pcPref(c)}, concretizada em ${L(c.base)} por aviso de receção assinado por representante legal ou funcionário (art. 230.º, n.º 1 do CPC).`
-    },
-    pc_terceiro: {
-      textoF9: 'AR 2.ª tentativa: Outra pessoa assinou o AR (+5 dias)',
-      textoF13: '1.ª ou 2.ª tentativa: Outra pessoa assinou o AR (+5 dias)',
-      dataLabel: 'Data da assinatura do aviso de receção',
-      offset: 0, a: 5, g: 0, adv233: true,
-      explica: c => c.fund === 'f9'
-        ? `Como a empresa não se registou no Sistema Público de Notificações Eletrónicas (SPNE) — 1.ª tentativa eletrónica frustrada —, o Citius emitiu logo AR 2.ª tentativa com taxa de 0,5 UC. Assinou alguém que não representa a empresa: a citação fica feita no dia da assinatura, com 5 dias de dilação e carta de advertência.`
-        : `Assinou alguém que não representa a empresa. A citação considera-se feita no dia da assinatura e o prazo ganha 5 dias de dilação. A secretaria tem de enviar carta de advertência.`,
-      alerta: c => 'AR assinado por terceiro: a citação considera-se feita na data de assinatura, com dilação de 5 dias (art. 245.º, n.º 1, al. a) do CPC).',
-      cota: c => `${pcPref(c)}, efetuada em ${L(c.base)} por aviso de receção assinado por terceiro (art. 230.º, n.º 1 do CPC). Expedida carta de advertência do art. 233.º do CPC.`
-    },
-    pc_2t_deposito: {
-      textoF9: 'AR 2.ª tentativa: Depositada na caixa de correio da sede (+30 dias)',
-      textoF13: '2.ª tentativa (após devolução da 1.ª carta): Depositada na caixa de correio da sede (+30 dias)',
-      dataLabel: 'Data em que o carteiro depositou a carta na caixa de correio',
-      offset: 0, a: 0, g: 30, adv233: true,
-      explica: c => c.fund === 'f9'
-        ? `Como a empresa não se registou no Sistema Público de Notificações Eletrónicas (SPNE) — 1.ª tentativa eletrónica frustrada —, o Citius enviou logo AR 2.ª tentativa com menção da taxa de 0,5 UC. A carta foi depositada na caixa de correio da sede: a citação fica feita na data certificada do depósito e ganha 30 dias de dilação. A secretaria envia carta de advertência.`
-        : `Após devolução da 1.ª carta postal, foi enviada 2.ª tentativa e depositada na caixa de correio da sede. A citação considera-se feita no dia certificado pelo carteiro e o prazo ganha 30 dias de dilação. A secretaria tem de enviar carta de advertência.`,
-      alerta: c => c.fund === 'f9'
-        ? 'Falta de registo no Sistema Público de Notificações Eletrónicas (SPNE) — 1.ª tentativa eletrónica frustrada: expedida de imediato carta registada com AR (2.ª tentativa) com depósito na caixa de correio da sede inscrita no RNPC. A citação considera-se feita na data certificada do depósito (art. 246.º, n.ºs 9 e 10, art. 229.º, n.º 5 e art. 230.º, n.º 2 do CPC), com dilação de 30 dias (art. 245.º, n.º 3).'
-        : '2.ª tentativa de citação postal (após devolução da 1.ª carta): carta depositada na caixa de correio da sede inscrita no RNPC, considerando-se a citação feita na data certificada do depósito (art. 246.º, n.º 10, art. 229.º, n.ºs 4 e 5 e art. 230.º, n.º 2 do CPC), com dilação de 30 dias (art. 245.º, n.º 3).',
-      cota: c => `${pcPref(c)}: efetuada por depósito da carta na caixa de correio da sede, em ${L(c.base)}, conforme certificação do distribuidor postal (art. 246.º, n.º 10, art. 229.º, n.º 5 e art. 230.º, n.º 2 do CPC). Expedida carta de advertência do art. 233.º do CPC.`
-    },
-    pc_2t_aviso: {
-      textoF9: 'AR 2.ª tentativa: Impossível depositar, deixado aviso (feita 8 dias depois, +30 dias)',
-      textoF13: '2.ª tentativa (após devolução da 1.ª carta): Impossível depositar, deixado aviso (feita 8 dias depois, +30 dias)',
-      dataLabel: 'Data em que o carteiro deixou o aviso',
-      offset: 8, a: 0, g: 30, adv233: true,
-      explica: c => c.fund === 'f9'
-        ? `Como a empresa não se registou no Sistema Público de Notificações Eletrónicas (SPNE) — 1.ª tentativa eletrónica frustrada —, o Citius enviou logo AR 2.ª tentativa com menção da taxa de 0,5 UC. Não sendo possível depositar a carta na caixa de correio, o carteiro deixou aviso: a citação fica feita no 8.º dia seguinte e ganha 30 dias de dilação. A secretaria envia carta de advertência.`
-        : `Após devolução da 1.ª carta postal, foi enviada 2.ª tentativa mas não foi possível depositar na caixa de correio, tendo sido deixado aviso. A citação considera-se feita 8 dias depois da data certificada e o prazo ganha 30 dias de dilação. A secretaria tem de enviar carta de advertência.`,
-      alerta: c => c.fund === 'f9'
-        ? 'Falta de registo no Sistema Público de Notificações Eletrónicas (SPNE) — 1.ª tentativa eletrónica frustrada: expedida de imediato carta registada com AR (2.ª tentativa). Não sendo possível o depósito pelas dimensões da carta/recetáculo, foi deixado aviso, considerando-se a citação feita no 8.º dia posterior à data certificada (art. 246.º, n.ºs 9 e 10, art. 229.º, n.º 5 e art. 230.º, n.º 2 do CPC), com dilação de 30 dias (art. 245.º, n.º 3).'
-        : '2.ª tentativa de citação postal (após devolução da 1.ª carta): não sendo possível o depósito pelas dimensões da carta/recetáculo, foi deixado aviso, considerando-se a citação feita no 8.º dia posterior à data certificada (art. 246.º, n.º 10, art. 229.º, n.ºs 4 e 5 e art. 230.º, n.º 2 do CPC), com dilação de 30 dias (art. 245.º, n.º 3).',
-      cota: c => `${pcPref(c)}: não sendo possível depositar a carta na caixa de correio da sede, foi deixado aviso em ${L(c.base)}, conforme certificação do distribuidor postal. A citação considera-se efetuada em ${L(c.perf)}, 8.º dia posterior (art. 246.º, n.º 10, art. 229.º, n.º 5 e art. 230.º, n.º 2 do CPC). Expedida carta de advertência do art. 233.º do CPC.`
-    },
-
-    el_8d: {
-      texto: 'Consultada na área reservada até ao 8.º dia (sem dilação)',
-      dataLabel: 'Data da consulta eletrónica',
-      offset: 0, a: 0, g: 0,
-      explica: c => `A empresa consultou a citação até ao 8.º dia. A citação considera-se feita no dia da consulta e não há dilação.`,
-      alerta: c => 'Consulta na área reservada até ao 8.º dia: a citação considera-se feita na data da consulta (art. 225.º, n.º 4 e art. 230.º-B, n.º 1 do CPC), sem dilação.',
-      cota: c => `Citação eletrónica de pessoa coletiva efetuada por consulta na área reservada em ${L(c.base)} (art. 246.º, n.º 6 e art. 230.º-B do CPC).`
-    },
-    el_tardia: {
-      texto: 'Não consultada até ao 8.º dia, consultada nos 30 dias seguintes (dilação variável)',
-      dataLabel: 'Data da disponibilização na área reservada',
-      offset: 8, a: 0, g: 0, tardia: true,
-      explica: c => `Passaram 8 dias sem consulta, por isso a citação considera-se feita em ${L(c.perf)}. A empresa consultou em ${L(c.consulta)}, ${c.n} dias depois. Esses ${c.n} dias contam como dilação e, havendo férias judiciais pelo meio, só correm depois delas.` + (c.terr > 0 ? ' A dilação do local da citação não se aplica: vale só esta.' : ''),
-      alerta: c => `Sem consulta até ao 8.º dia, a citação presume-se feita em ${L(c.perf)} (art. 246.º, n.º 11 do CPC). Como houve consulta em ${L(c.consulta)}, dentro dos 30 dias seguintes, a dilação de 30 dias reduz-se aos ${c.n} dias decorridos (art. 245.º, n.º 3 e 4). Conta-se como prazo processual: se houver férias judiciais pelo meio, esses dias só correm depois delas.` +
-        (c.terr > 0 ? ' A dilação territorial selecionada não se aplica: vale apenas a variável.' : ''),
-      cota: c => `Citação eletrónica de pessoa coletiva disponibilizada em ${L(c.base)} e não consultada até ao 8.º dia, presumindo-se efetuada em ${L(c.perf)} (art. 246.º, n.º 11 do CPC). Consultada em ${L(c.consulta)}, nos 30 dias seguintes, a dilação reduz-se aos ${c.n} dias decorridos (art. 245.º, n.º 3 e 4 do CPC).`
-    },
-    el_nao: {
-      texto: 'Não consultada, ou consultada depois de 30 dias (feita no 8.º dia, +30 dias)',
-      dataLabel: 'Data da disponibilização na área reservada',
-      offset: 8, a: 0, g: 30,
-      explica: c => `A empresa não consultou, ou consultou só mais de 30 dias depois do 8.º dia. A citação considera-se feita no 8.º dia e o prazo ganha 30 dias de dilação. O aviso postal que a secretaria envia não altera o prazo.`,
-      alerta: c => 'Sem consulta, ou com consulta só depois de 30 dias sobre o 8.º dia: a citação considera-se feita no 8.º dia após a disponibilização (art. 246.º, n.º 11 do CPC), com dilação de 30 dias, que fica consumida (art. 245.º, n.º 3 e 4). É enviado aviso postal para a sede, sem efeito sobre o prazo.',
-      cota: c => `Citação eletrónica de pessoa coletiva disponibilizada em ${L(c.base)} e não consultada. Considera-se efetuada em ${L(c.perf)}, 8.º dia após a disponibilização (art. 246.º, n.º 11 do CPC).`
-    },
-
-    si_proprio: {
-      texto: 'Carta registada (1.ª ou 2.ª tentativa): AR assinado pelo próprio citando',
-      dataLabel: 'Data da assinatura do aviso de receção',
-      offset: 0, a: 0, g: 0,
-      explica: c => `O próprio assinou. A citação considera-se feita no dia da assinatura e não há dilação.`,
-      alerta: c => 'AR assinado pelo citando: a citação considera-se feita na data de assinatura (art. 230.º, n.º 1 do CPC), sem dilação.',
-      cota: c => `Citação postal efetuada na pessoa do citando em ${L(c.base)} (art. 230.º, n.º 1 do CPC).`
-    },
-    si_terceiro: {
-      texto: 'Carta registada (1.ª ou 2.ª tentativa): AR assinado por outra pessoa (+5 dias)',
-      dataLabel: 'Data da assinatura do aviso de receção',
-      offset: 0, a: 5, g: 0, adv233: true,
-      explica: c => `Assinou outra pessoa. A citação considera-se feita no dia da assinatura, mas o prazo ganha 5 dias de dilação. A secretaria tem de enviar carta de advertência.`,
-      alerta: c => 'AR assinado por terceiro: a citação considera-se feita na data de assinatura, na pessoa do citando (art. 230.º, n.º 1), com dilação de 5 dias (art. 245.º, n.º 1, al. a) do CPC).',
-      cota: c => `Citação postal efetuada em ${L(c.base)}, por aviso de receção assinado por terceiro (art. 230.º, n.º 1 do CPC). Expedida carta de advertência do art. 233.º do CPC.`
-    },
-    si_dc_2t_deposito: {
-      texto: 'Domicílio convencionado — 2.ª tentativa (após devolução da 1.ª): carta na caixa de correio (+30 dias)',
-      dataLabel: 'Data em que o carteiro depositou a 2.ª carta',
-      offset: 0, a: 0, g: 30, adv233: true,
-      explica: c => `Após devolução da 1.ª carta no domicílio convencionado, foi enviada 2.ª tentativa e depositada na caixa de correio. A citação considera-se feita no dia certificado pelo carteiro e o prazo ganha 30 dias de dilação. Este regime só vale para ações de cumprimento de obrigações pecuniárias com contrato escrito. A secretaria tem de enviar carta de advertência.`,
-      alerta: c => '2.ª tentativa de citação postal em domicílio convencionado (após devolução da 1.ª carta por não reclamada ou recusa): carta depositada na caixa de correio, considerando-se a citação feita na data certificada do depósito (art. 229.º, n.ºs 1, 4 e 5 e art. 230.º, n.º 2 do CPC), com dilação de 30 dias (art. 245.º, n.º 3).',
-      cota: c => `Citação em domicílio convencionado — 2.ª tentativa (após devolução da primeira carta): efetuada por depósito da carta em ${L(c.base)}, conforme certificação do distribuidor postal (art. 229.º, n.ºs 4 e 5 e art. 230.º, n.º 2 do CPC). Expedida carta de advertência do art. 233.º do CPC.`
-    },
-    si_dc_2t_aviso: {
-      texto: 'Domicílio convencionado — 2.ª tentativa (após devolução da 1.ª): deixado aviso (feita 8 dias depois, +30 dias)',
-      dataLabel: 'Data em que o carteiro deixou o aviso da 2.ª carta',
-      offset: 8, a: 0, g: 30, adv233: true,
-      explica: c => `Após devolução da 1.ª carta no domicílio convencionado, foi enviada 2.ª tentativa mas não foi possível depositar, tendo sido deixado aviso. A citação considera-se feita 8 dias depois da data certificada e o prazo ganha 30 dias de dilação. Este regime só vale para ações de cumprimento de obrigações pecuniárias com contrato escrito. A secretaria tem de enviar carta de advertência.`,
-      alerta: c => '2.ª tentativa de citação postal em domicílio convencionado (após devolução da 1.ª carta): não sendo possível o depósito, foi deixado aviso, considerando-se a citação feita no 8.º dia posterior à data certificada (art. 229.º, n.ºs 1, 4 e 5 e art. 230.º, n.º 2 do CPC), com dilação de 30 dias (art. 245.º, n.º 3).',
-      cota: c => `Citação em domicílio convencionado — 2.ª tentativa (após devolução da primeira carta): não sendo possível depositar a carta, foi deixado aviso em ${L(c.base)}, conforme certificação do distribuidor postal. A citação considera-se efetuada em ${L(c.perf)}, 8.º dia posterior (art. 229.º, n.ºs 4 e 5 e art. 230.º, n.º 2 do CPC). Expedida carta de advertência do art. 233.º do CPC.`
-    },
-    si_hora_certa: {
-      texto: 'Hora certa, ou nota deixada pelo oficial de justiça (+5 dias)',
-      dataLabel: 'Data da diligência',
-      offset: 0, a: 5, g: 0, adv233: true,
-      explica: c => `O citando não foi encontrado e a citação fez-se com hora certa. Considera-se feita na data da diligência e o prazo ganha 5 dias de dilação. A secretaria tem de enviar carta de advertência.`,
-      alerta: c => 'Citação com hora certa (art. 232.º do CPC): dilação de 5 dias (art. 245.º, n.º 1, al. a)).',
-      cota: c => `Citação com hora certa concretizada em ${L(c.base)} (art. 232.º do CPC). Expedida carta de advertência do art. 233.º do CPC.`
-    },
-    si_edital: {
-      texto: 'Anúncio (edital): o citando não foi encontrado (+30 dias)',
-      dataLabel: 'Data da publicação do anúncio',
-      offset: 0, a: 0, g: 30,
-      explica: c => `A citação fez-se por anúncio. Considera-se feita na data da publicação e o prazo ganha 30 dias de dilação.`,
-      alerta: c => 'Citação edital (art. 240.º do CPC): dilação de 30 dias (art. 245.º, n.º 3).',
-      cota: c => `Citação edital concretizada com a publicação do anúncio em ${L(c.base)} (art. 240.º do CPC).`
-    },
-
-    ep: {
-      dataLabel: 'Data da citação',
-      offset: 0, a: 0, g: 0,
-      explica: c => `A secretaria cita a entidade por sua iniciativa, sem dilação. Confirme o prazo de contestação aplicável ao processo.`,
-      alerta: c => 'Citação da entidade demandada (art. 81.º do CPTA), promovida oficiosamente pela secretaria. O prazo de contestação consta do art. 82.º do CPTA.',
-      cota: c => `Citação da entidade demandada / Ministério Público efetuada em ${L(c.base)} (art. 81.º do CPTA).`
-    },
-
-    nm: {
-      dataLabel: 'Data em que a notificação foi elaborada',
-      presuncao: true,
-      explica: c => `A notificação a advogado considera-se feita no 3.º dia depois da elaboração. Se esse dia não for útil, passa para o primeiro dia útil seguinte.`,
-      alerta: c => 'A notificação eletrónica a mandatário presume-se feita no 3.º dia posterior ao da elaboração ou no 1.º dia útil seguinte (art. 248.º do CPC).',
-      cota: c => `Notificação eletrónica elaborada em ${L(c.base)}, presumindo-se efetuada em ${L(c.perf)} (art. 248.º do CPC).`
-    },
-    np_carta: {
-      texto: 'Carta registada enviada',
-      dataLabel: 'Data do registo postal',
-      presuncao: true,
-      explica: c => `Considera-se feita no 3.º dia depois do registo ou, se esse dia não for útil, no primeiro dia útil seguinte.`,
-      alerta: c => 'Notificação por carta registada à parte sem mandatário: presume-se feita no 3.º dia posterior ao registo ou no 1.º dia útil seguinte (art. 249.º, n.º 5 do CPC).',
-      cota: c => `Notificação postal expedida sob registo em ${L(c.base)}, presumindo-se efetuada em ${L(c.perf)} (art. 249.º, n.º 5 do CPC).`
-    },
-    np_devolvida: {
-      texto: 'Carta devolvida (não reclamada, destinatário mudou-se)',
-      dataLabel: 'Data do registo postal',
-      presuncao: true,
-      explica: c => `A devolução da carta não impede a notificação. Considera-se feita no 3.º dia depois do registo ou, se esse dia não for útil, no primeiro dia útil seguinte.`,
-      alerta: c => 'Carta devolvida: a notificação não deixa de produzir efeito, presumindo-se feita no 3.º dia posterior ao registo ou no 1.º dia útil seguinte (art. 249.º do CPC).',
-      cota: c => `Junta-se expediente postal devolvido. A notificação considera-se efetuada em ${L(c.perf)} (registo de ${L(c.base)}), produzindo todos os seus efeitos legais (art. 249.º do CPC).`
-    },
-    np_eletronica: {
-      texto: 'Disponibilizada na área reservada (com aviso por email)',
-      dataLabel: 'Data em que a notificação foi disponibilizada',
-      presuncao: true,
-      explica: c => `Considera-se feita no 3.º dia depois da disponibilização ou, se esse dia não for útil, no primeiro dia útil seguinte.`,
-      alerta: c => 'Notificação por disponibilização na área reservada, com aviso por correio eletrónico: considera-se feita no 3.º dia após o envio ou no 1.º dia útil seguinte (art. 249.º, n.º 5 do CPC).',
-      cota: c => `Notificação eletrónica à parte disponibilizada em ${L(c.base)}, presumindo-se efetuada em ${L(c.perf)} (art. 249.º, n.ºs 1, al. a) e 5 do CPC).`
-    }
-  };
-
-  const TIPOS = {
-    cit_pc_postal:        { prazo: 30, subLabel: 'Como correu a entrega da carta?', subs: ['pc_repr', 'pc_terceiro', 'pc_2t_deposito', 'pc_2t_aviso'] },
-    cit_pc_eletronica:    { prazo: 30, eletronica: true },
-    cit_singular:         { prazo: 30, subLabel: 'Como foi feita a citação?', subs: ['si_proprio', 'si_terceiro', 'si_dc_2t_deposito', 'si_dc_2t_aviso', 'si_hora_certa', 'si_edital'] },
-    cit_entidade_publica: { prazo: 30, semSub: 'ep' },
-    notif_mandatario:     { prazo: 10, semSub: 'nm' },
-    notif_parte:          { prazo: 10, subLabel: 'Como foi enviada a notificação?', subs: ['np_carta', 'np_devolvida', 'np_eletronica'] }
-  };
-
-  // ---------- Interface ----------
-
-  function textoSubOpcao(chave) {
-    const s = SUBS[chave];
-    if (el('tipoAto').value === 'cit_pc_postal') {
-      return el('fundamentoPostal').value === 'f9' ? (s.textoF9 || s.texto) : (s.textoF13 || s.texto);
-    }
-    return s.texto;
-  }
-
-  function atualizarOpcoesPostalPC() {
-    const select = el('subOpcao');
-    const valorAtual = select.value;
-    Array.from(select.options).forEach(opt => {
-      opt.textContent = textoSubOpcao(opt.value);
+    elBtnPrev.addEventListener('click', () => {
+      if (State.currentPage > 1) {
+        State.currentPage--;
+        renderCurrentPage();
+      }
     });
-    select.value = valorAtual;
-    verificarCamposExtra();
-    simular();
-  }
 
-  function atualizarSubOpcoes() {
-    const tipo = el('tipoAto').value;
-    const cfg = TIPOS[tipo];
-    const select = el('subOpcao');
-    const notif = tipo.indexOf('notif_') === 0;
+    elBtnNext.addEventListener('click', () => {
+      if (State.currentPage < State.totalPages) {
+        State.currentPage++;
+        renderCurrentPage();
+      }
+    });
 
-    select.innerHTML = '';
-    el('fundamentoContainer').classList.toggle('hidden', tipo !== 'cit_pc_postal');
-    el('prazoDias').value = cfg.prazo;
+    /********************************************************************
+     * 8. SIDEBAR DE REVISÃO (CHECKBOXES PARA FALSOS POSITIVOS)
+     ********************************************************************/
+    function renderSidebarList() {
+      elDetList.innerHTML = '';
 
-    const terr = el('dilacaoExtra');
-    terr.disabled = notif;
-    if (notif) terr.value = '0';
+      const activeTotal = State.detections.filter(d => d.active).length + State.manualBoxes.length;
+      elDetCounter.textContent = `${activeTotal} ativas`;
 
-    if (notif) {
-      el('hintTerr').textContent = 'Nas notificações não há dilação por local.';
-    } else if (tipo === 'cit_pc_eletronica') {
-      el('hintTerr').textContent = 'Na citação eletrónica conta o local da sede da empresa. As dilações de local/modalidade não cumulam entre si (art. 245.º, n.º 5 do CPC): aplica-se apenas a maior.';
-    } else {
-      el('hintTerr').textContent = 'As dilações de local e de modalidade não cumulam entre si (art. 245.º, n.º 5 do CPC): aplica-se apenas a maior, acrescida de 5 dias quando entregue a terceiro.';
-    }
+      const filtered = elFilterPage.checked
+        ? State.detections.filter(d => d.page === State.currentPage)
+        : State.detections;
 
-    if (cfg.semSub || cfg.eletronica) {
-      el('subOpcaoContainer').classList.add('hidden');
-    } else {
-      el('subOpcaoContainer').classList.remove('hidden');
-      el('subOpcaoLabel').textContent = cfg.subLabel;
-      cfg.subs.forEach(chave => {
-        const opt = document.createElement('option');
-        opt.value = chave;
-        opt.textContent = textoSubOpcao(chave);
-        select.appendChild(opt);
+      if (filtered.length === 0 && State.manualBoxes.length === 0) {
+        elDetList.innerHTML = '<p class="empty-msg">Nenhuma ocorrência listada neste filtro.</p>';
+        return;
+      }
+
+      filtered.forEach(item => {
+        const label = document.createElement('label');
+        label.className = `detection-item ${item.active ? '' : 'ignored'}`;
+        label.innerHTML = `
+          <input type="checkbox" ${item.active ? 'checked' : ''} />
+          <div class="det-body">
+            <div class="det-meta">
+              <span class="det-tag tag-${item.category}">${item.category}</span>
+              <span style="font-size: 0.72rem; color: var(--text-secondary);">Pág. ${item.page}</span>
+            </div>
+            <div class="det-text">${escapeHTML(item.text)}</div>
+          </div>
+        `;
+
+        const checkbox = label.querySelector('input');
+        checkbox.addEventListener('change', () => {
+          item.active = checkbox.checked;
+          label.classList.toggle('ignored', !item.active);
+          const count = State.detections.filter(d => d.active).length + State.manualBoxes.length;
+          elDetCounter.textContent = `${count} ativas`;
+          if (item.page === State.currentPage) {
+            drawOverlay();
+          } else {
+            State.currentPage = item.page;
+            renderCurrentPage();
+          }
+        });
+
+        elDetList.appendChild(label);
       });
     }
 
-    verificarCamposExtra();
-  }
+    elFilterPage.addEventListener('change', renderSidebarList);
 
-  function dataLocal(valor) {
-    const [y, m, d] = valor.split('-').map(Number);
-    return new Date(y, m - 1, d);
-  }
-
-  function resolverEletronica() {
-    const v = el('dataBase').value;
-    if (!v) return null;
-    const disp = dataLocal(v);
-    const oitavo = addDays(disp, 8);
-    const c = el('dataConsulta').value;
-    if (!c) return { chave: 'el_nao', consulta: null, n: 0 };
-    const cons = dataLocal(c);
-    if (cons < disp) return { erro: 'A data da consulta é anterior à data da disponibilização. Confirme as duas datas.' };
-    if (cons <= oitavo) return { chave: 'el_8d', consulta: cons, n: 0 };
-    const n = Math.round((cons - oitavo) / 86400000);
-    if (n > 30) return { chave: 'el_nao', consulta: cons, n };
-    return { chave: 'el_tardia', consulta: cons, n };
-  }
-
-  function chaveAtual() {
-    const cfg = TIPOS[el('tipoAto').value];
-    if (cfg.eletronica) {
-      const r = resolverEletronica();
-      return r && r.chave ? r.chave : 'el_nao';
-    }
-    return cfg.semSub ? cfg.semSub : el('subOpcao').value;
-  }
-
-  function verificarCamposExtra() {
-    const tipo = el('tipoAto').value;
-    const eletronica = !!TIPOS[tipo].eletronica;
-    el('consultaContainer').classList.toggle('hidden', !eletronica);
-    if (eletronica) {
-      el('dataLabel').textContent = 'Data em que a citação foi disponibilizada na área reservada';
-      return;
-    }
-    const def = SUBS[chaveAtual()];
-    if (def && def.dataLabel) el('dataLabel').textContent = def.dataLabel;
-  }
-
-  function artDilacaoPrincipal(valor, terr, g) {
-    if (terr > g) {
-      if (terr === 5) return 'art. 245.º, n.º 1, al. b) do CPC';
-      if (terr === 15) return 'art. 245.º, n.º 2 do CPC';
-    }
-    return 'art. 245.º, n.º 3 do CPC';
-  }
-
-  function limparResultado() {
-    ['resumoTermo', 'resumoMulta', 'resDataPerfeicao', 'resDilacaoA', 'resDilacaoG', 'resTotalDias',
-     'resTermoPrazo', 'resMulta1', 'resMulta2', 'resMulta3', 'baseLegalTexto', 'cotaTexto', 'feriadosDetetados']
-      .forEach(id => { el(id).textContent = id === 'resumoMulta' || id === 'baseLegalTexto' || id === 'cotaTexto' || id === 'feriadosDetetados' ? '' : '-'; });
-    el('deverSecretaria').classList.add('hidden');
-  }
-
-  function simular() {
-    const tipo = el('tipoAto').value;
-    const chave = chaveAtual();
-    const def = SUBS[chave];
-    const dataInput = el('dataBase').value;
-    const prazo = parseInt(el('prazoDias').value, 10);
-    const notif = tipo.indexOf('notif_') === 0;
-    const terr = notif ? 0 : (parseInt(el('dilacaoExtra').value, 10) || 0);
-    const urgente = el('processoUrgente').value === 'sim';
-    const municipal = el('feriadoMunicipal').value;
-    const fund = el('fundamentoPostal').value;
-
-    OPC.carnaval = el('carnaval').checked;
-    OPC.tol24dez = el('tol24dez').checked;
-    OPC.tol31dez = el('tol31dez').checked;
-
-    if (!def || !dataInput) return;
-    if (!(prazo > 0)) {
-      limparResultado();
-      el('alertaJuridico').textContent = 'Indique o prazo de defesa ou resposta, em dias.';
-      return;
-    }
-
-    let base = dataLocal(dataInput);
-    const logEventos = new Set();
-
-    let eletr = null;
-    if (TIPOS[tipo].eletronica) {
-      eletr = resolverEletronica();
-      if (eletr.erro) {
-        limparResultado();
-        el('alertaJuridico').textContent = eletr.erro;
-        return;
-      }
-      if (eletr.chave === 'el_8d') base = eletr.consulta;
-    }
-
-    let perf = addDays(base, def.offset || 0);
-    let inicio = perf;
-    let consulta = null;
-    let n = 0;
-    let a = def.a || 0;
-    let g = def.g || 0;
-
-    if (def.presuncao) {
-      const antes = addDays(base, 3);
-      perf = proximoDiaUtilPresuncao(antes, municipal);
-      inicio = perf;
-      if (!sameDay(antes, perf)) {
-        logEventos.add('Presunção do 3.º dia transferida para o 1.º dia útil seguinte');
-      }
-    }
-
-    if (def.tardia) {
-      n = eletr.n;
-      consulta = eletr.consulta;
-      g = n;
-    }
-
-    const dilPrincipal = def.tardia ? g : Math.max(g, terr);
-    const dilTotal = a + dilPrincipal;
-    const totalDias = prazo + dilTotal;
-
-    const dataTermo = adicionarDiasContinuosComSuspensao(inicio, totalDias, urgente, municipal, logEventos);
-    const multa1 = proximoDiaUtilMulta(dataTermo, urgente, municipal);
-    const multa2 = proximoDiaUtilMulta(multa1, urgente, municipal);
-    const multa3 = proximoDiaUtilMulta(multa2, urgente, municipal);
-
-    const ctx = { base, perf, consulta, n, fund, terr };
-    const taxa = (tipo === 'cit_pc_postal' && fund === 'f9');
-    const lim233 = adicionarDiasUteisSecretaria(base, 2, municipal);
-
-    el('alertaJuridico').textContent = def.explica(ctx);
-    el('baseLegalTexto').textContent = def.alerta(ctx);
-
-    const deveres = [];
-    if (def.adv233) {
-      deveres.push(`A secretaria tem de expedir carta registada de advertência ao citado até ${L(lim233)} (2 dias úteis após a certificação).`);
-    }
-    if (taxa) {
-      deveres.push(`Consta da citação (AR 2.ª tentativa) a taxa sancionatória de 0,5 UC (${fmtEuro(0.5 * UC_EUR)}) da responsabilidade da citanda por falta de registo no SPNE.`);
-    }
-    const deverBox = el('deverSecretaria');
-    if (deveres.length) {
-      deverBox.textContent = deveres.join(' ');
-      deverBox.classList.remove('hidden');
-    } else {
-      deverBox.classList.add('hidden');
-    }
-
-    let cota = 'COTA: ' + def.cota(ctx);
-    if (taxa) cota += ' Devida taxa de 0,5 UC pela citanda (art. 246.º, n.º 9 do CPC e art. 9.º, n.º 2 do RCP).';
-
-    const partes = [];
-    if (a) partes.push('5 dias, art. 245.º, n.º 1, al. a) do CPC');
-    if (dilPrincipal) partes.push(def.tardia
-      ? 'dias decorridos até à consulta, art. 245.º, n.º 3 e 4 do CPC'
-      : `${dilPrincipal} dias, ${artDilacaoPrincipal(dilPrincipal, terr, g)}`);
-    cota += `\nPrazo de ${prazo} dias` +
-            (dilTotal > 0 ? `, acrescido de ${dilTotal} dias de dilação (${partes.join('; ')})` : '') +
-            `, terminando em ${L(dataTermo)} (ou até ${L(multa3)} com a multa do art. 139.º, n.º 5 do CPC).`;
-
-    el('resDataPerfeicao').textContent = def.tardia
-      ? `${formatDate(perf)} (consulta em ${formatDate(consulta)})`
-      : formatDate(perf);
-    el('resDilacaoA').textContent = `${a} dias`;
-    el('resDilacaoG').textContent = def.tardia
-      ? `${dilPrincipal} dias (dilação variável: dias decorridos até à consulta)`
-      : `${dilPrincipal} dias`;
-    el('resTotalDias').textContent = `${totalDias} dias (${dilTotal} dilação + ${prazo} prazo)`;
-    el('resTermoPrazo').textContent = formatDate(dataTermo);
-    el('resumoTermo').textContent = formatDate(dataTermo);
-    el('resumoMulta').textContent = `Depois deste dia ainda se pode praticar o ato, com multa, até ${formatDate(multa3)}.`;
-    el('resMulta1').textContent = formatDate(multa1);
-    el('resMulta2').textContent = formatDate(multa2);
-    el('resMulta3').textContent = formatDate(multa3);
-
-    const eventosArray = Array.from(logEventos);
-    el('feriadosDetetados').textContent = eventosArray.length > 0
-      ? 'Ocorrências na contagem: ' + eventosArray.join(' | ')
-      : 'Contagem contínua, sem suspensão por férias judiciais nem transferência de termo por feriado ou fim de semana.';
-
-    el('cotaTexto').textContent = cota;
-  }
-
-  function copiarCota() {
-    const texto = el('cotaTexto').textContent;
-    const fb = el('copyFeedback');
-    const sucesso = () => {
-      fb.style.display = 'inline';
-      setTimeout(() => { fb.style.display = 'none'; }, 2000);
-    };
-    const alternativa = () => {
-      const ta = document.createElement('textarea');
-      ta.value = texto;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.focus();
-      ta.select();
-      ta.setSelectionRange(0, texto.length);
-      try { if (document.execCommand('copy')) sucesso(); } catch (e) {}
-      document.body.removeChild(ta);
-    };
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(texto).then(sucesso, alternativa);
-    } else {
-      alternativa();
-    }
-  }
-
-  (function iniciar() {
-    const h = new Date();
-    const mm = String(h.getMonth() + 1).padStart(2, '0');
-    const dd = String(h.getDate()).padStart(2, '0');
-    el('dataBase').value = `${h.getFullYear()}-${mm}-${dd}`;
-    atualizarSubOpcoes();
-    simular();
-    document.querySelectorAll('select, input[type="date"], input[type="number"], input[type="checkbox"]').forEach(campo => {
-      if (campo.id === 'novaDataFecho') return;
-      campo.addEventListener('change', simular);
-      campo.addEventListener('input', simular);
+    document.getElementById('btn-check-all').addEventListener('click', () => {
+      State.detections.forEach(d => {
+        if (!elFilterPage.checked || d.page === State.currentPage) d.active = true;
+      });
+      renderSidebarList();
+      drawOverlay();
     });
-  })();
-</script>
 
+    document.getElementById('btn-uncheck-all').addEventListener('click', () => {
+      State.detections.forEach(d => {
+        if (!elFilterPage.checked || d.page === State.currentPage) d.active = false;
+      });
+      renderSidebarList();
+      drawOverlay();
+    });
+
+    /********************************************************************
+     * 9. EXPORTAÇÃO SEGURA DO PDF (RASTERIZAÇÃO OU VETORIAL + MARCA DE ÁGUA)
+     ********************************************************************/
+    elBtnExport.addEventListener('click', async () => {
+      if (!State.pdfDoc) return;
+
+      elBtnExport.disabled = true;
+      elStatus.textContent = 'A gerar PDF anonimizado...';
+
+      const useSecureRaster = elOptRaster.checked;
+      const useWatermark = elOptWatermark.checked;
+
+      try {
+        const outPdf = await PDFLib.PDFDocument.create();
+        const exportScale = 2.0; // Alta definição para impressão e leitura nítida
+
+        for (let p = 1; p <= State.totalPages; p++) {
+          elStatus.textContent = `A processar página ${p} de ${State.totalPages}...`;
+          const page = await State.pdfDoc.getPage(p);
+          const viewport = page.getViewport({ scale: exportScale });
+
+          // Criar canvas offscreen de alta resolução
+          const offCanvas = document.createElement('canvas');
+          offCanvas.width = viewport.width;
+          offCanvas.height = viewport.height;
+          const ctx = offCanvas.getContext('2d');
+
+          await page.render({ canvasContext: ctx, viewport }).promise;
+
+          const ratio = exportScale / State.renderScale;
+
+          // Aplicar Tarjas Pretas Sólidas nas deteções ativas
+          const activeDets = State.detections.filter(d => d.page === p && d.active);
+          ctx.fillStyle = '#000000';
+          for (const det of activeDets) {
+            for (const r of det.rects) {
+              ctx.fillRect(r.x * ratio, r.y * ratio, r.w * ratio, r.h * ratio);
+            }
+          }
+
+          // Aplicar Tarjas Manuais
+          const manualBoxes = State.manualBoxes.filter(b => b.page === p);
+          for (const b of manualBoxes) {
+            ctx.fillRect(b.x * ratio, b.y * ratio, b.w * ratio, b.h * ratio);
+          }
+
+          // Aplicar Marca de Água Diagonal ("CÓPIA ANONIMIZADA") se marcada
+          if (useWatermark) {
+            ctx.save();
+            ctx.translate(offCanvas.width / 2, offCanvas.height / 2);
+            ctx.rotate(-Math.PI / 4);
+            ctx.font = `bold ${Math.round(offCanvas.width * 0.055)}px sans-serif`;
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.28)';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('CÓPIA ANONIMIZADA', 0, 0);
+            ctx.restore();
+          }
+
+          if (useSecureRaster) {
+            // MODO SEGURO: Incorpora a página como imagem flattened (0% texto oculto extraível)
+            const imgDataUrl = offCanvas.toDataURL('image/jpeg', 0.92);
+            const jpgImage = await outPdf.embedJpg(imgDataUrl);
+            const pdfPage = outPdf.addPage([viewport.width / exportScale, viewport.height / exportScale]);
+            pdfPage.drawImage(jpgImage, {
+              x: 0,
+              y: 0,
+              width: pdfPage.getWidth(),
+              height: pdfPage.getHeight()
+            });
+          }
+        }
+
+        // Caso o utilizador tenha desmarcado o modo de rasterização segura, usa pdf-lib sobre o original
+        let finalBytes;
+        if (!useSecureRaster) {
+          const rawDoc = await PDFLib.PDFDocument.load(State.pdfBytes);
+          const pages = rawDoc.getPages();
+
+          for (let p = 1; p <= State.totalPages; p++) {
+            const pdfPage = pages[p - 1];
+            const { width, height } = pdfPage.getSize();
+            const pageView = State.pagesData[p - 1].viewport;
+            const scaleX = width / pageView.width;
+            const scaleY = height / pageView.height;
+
+            const activeDets = State.detections.filter(d => d.page === p && d.active);
+            for (const det of activeDets) {
+              for (const r of det.rects) {
+                pdfPage.drawRectangle({
+                  x: r.x * scaleX,
+                  y: height - (r.y + r.h) * scaleY,
+                  width: r.w * scaleX,
+                  height: r.h * scaleY,
+                  color: PDFLib.rgb(0, 0, 0)
+                });
+              }
+            }
+
+            const manualBoxes = State.manualBoxes.filter(b => b.page === p);
+            for (const b of manualBoxes) {
+              pdfPage.drawRectangle({
+                x: b.x * scaleX,
+                y: height - (b.y + b.h) * scaleY,
+                width: b.w * scaleX,
+                height: b.h * scaleY,
+                color: PDFLib.rgb(0, 0, 0)
+              });
+            }
+
+            if (useWatermark) {
+              pdfPage.drawText('COPIA ANONIMIZADA', {
+                x: width * 0.18,
+                y: height * 0.35,
+                size: 36,
+                rotate: PDFLib.degrees(45),
+                color: PDFLib.rgb(0.6, 0.6, 0.6),
+                opacity: 0.28
+              });
+            }
+          }
+          finalBytes = await rawDoc.save();
+        } else {
+          finalBytes = await outPdf.save();
+        }
+
+        // Disparar Download
+        const blob = new Blob([finalBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = State.fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+
+        elStatus.textContent = 'PDF Anonimizado exportado com sucesso!';
+      } catch (err) {
+        console.error(err);
+        elStatus.textContent = 'Erro ao exportar o PDF. Verifique o ficheiro.';
+      } finally {
+        elBtnExport.disabled = false;
+      }
+    });
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      }[tag]));
+    }
+  </script>
 </body>
 </html>
