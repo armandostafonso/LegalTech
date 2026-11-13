@@ -34,8 +34,11 @@
       --cota-bg: #f1f5f9;
       --headline-bg: #eff6ff;
       --headline-border: #bfdbfe;
+      --copy-ok: #15803d;
+      --chip-bg: #e2e8f0;
+      --chip-text: #1e293b;
     }
-    
+
     [data-theme="dark"] {
       --bg: #0f172a;
       --card: #1e293b;
@@ -65,6 +68,9 @@
       --cota-bg: #0f172a;
       --headline-bg: #0f172a;
       --headline-border: #334155;
+      --copy-ok: #4ade80;
+      --chip-bg: #334155;
+      --chip-text: #f8fafc;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -78,7 +84,6 @@
       transition: background-color 0.3s, color 0.3s;
     }
 
-    /* Barra de navegação superior */
     .top-nav {
       background: var(--nav-bg);
       padding: 10px 16px;
@@ -96,6 +101,7 @@
       display: flex;
       gap: 10px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .nav-links a {
@@ -140,15 +146,10 @@
       position: absolute;
       right: 16px;
     }
-    
+
     @media (max-width: 768px) {
-      .theme-toggle {
-          position: static;
-          margin-left: auto;
-      }
-      .top-nav {
-          justify-content: space-between;
-      }
+      .theme-toggle { position: static; margin-left: auto; }
+      .top-nav { justify-content: space-between; }
     }
 
     .theme-toggle:hover {
@@ -261,7 +262,7 @@
       display: flex;
       gap: 8px;
       align-items: flex-start;
-      margin-bottom: 14px;
+      margin-bottom: 8px;
     }
 
     .check-row input { margin-top: 4px; }
@@ -270,6 +271,7 @@
       margin: 0;
       font-weight: 500;
       color: var(--text);
+      cursor: pointer;
     }
 
     .row-2 {
@@ -277,6 +279,65 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
+
+    @media (max-width: 520px) {
+      .row-2 { grid-template-columns: 1fr; }
+    }
+
+    .custom-date-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .btn-secondary {
+      background: var(--cota-bg);
+      color: var(--primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0 14px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+    }
+
+    .chips-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--chip-bg);
+      color: var(--chip-text);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .chip button {
+      background: none;
+      border: none;
+      color: inherit;
+      font-size: 0.95rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+      opacity: 0.75;
+    }
+
+    .chip button:hover { opacity: 1; }
 
     button.btn-primary {
       width: 100%;
@@ -289,7 +350,7 @@
       font-weight: 600;
       cursor: pointer;
       transition: background 0.15s;
-      margin-top: 4px;
+      margin-top: 8px;
     }
 
     button.btn-primary:hover { background: var(--accent-hover); }
@@ -373,6 +434,14 @@
       transition: background-color 0.3s, color 0.3s;
     }
 
+    .copy-feedback {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--copy-ok);
+      margin-left: 8px;
+      display: none;
+    }
+
     .rodape {
       font-size: 0.76rem;
       color: var(--muted);
@@ -437,10 +506,11 @@
 <nav class="top-nav">
   <div class="nav-links">
     <a href="index.html" class="nav-inactive">Anonimizador PDF</a>
-    <a href="citacheck.html" class="nav-active">Cita-Check (Prazos e Dilações)</a>
+    <a href="citacheck.html" class="nav-active">Cita-Check (Prazos)</a>
+    <a href="casos.html" class="nav-inactive">Simulador CEJ (Casos)</a>
   </div>
-  <button id="themeToggle" class="theme-toggle" aria-label="Mudar tema">
-    <span id="themeIcon">🌙</span> Tema Escuro
+  <button id="themeToggle" class="theme-toggle" type="button" aria-label="Mudar tema">
+    <span id="themeIcon">🌙</span> <span id="themeLabel">Tema Escuro</span>
   </button>
 </nav>
 
@@ -543,12 +613,30 @@
         </select>
       </div>
 
-      <div class="check-row">
-        <input type="checkbox" id="carnaval">
-        <label for="carnaval">O tribunal esteve fechado na terça-feira de Carnaval (tolerância de ponto)</label>
+      <div class="form-group">
+        <label>Tolerâncias de ponto e outros dias de encerramento do tribunal</label>
+        <div class="check-row">
+          <input type="checkbox" id="carnaval">
+          <label for="carnaval">Terça-feira de Carnaval</label>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="tol24dez">
+          <label for="tol24dez">24 de dezembro</label>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="tol31dez">
+          <label for="tol31dez">31 de dezembro</label>
+        </div>
+
+        <div class="custom-date-row">
+          <input type="date" id="novaDataFecho" aria-label="Outra data de encerramento">
+          <button type="button" class="btn-secondary" onclick="adicionarDataFecho()">+ Adicionar data</button>
+        </div>
+        <div class="hint">Use para greves com encerramento do serviço ou outras tolerâncias de ponto decretadas.</div>
+        <div id="listaDatasFecho" class="chips-wrap"></div>
       </div>
 
-      <button class="btn-primary" onclick="simular()">Calcular</button>
+      <button class="btn-primary" type="button" onclick="simular()">Calcular</button>
     </div>
 
     <!-- PAINEL DIREITO: RESULTADOS -->
@@ -608,13 +696,13 @@
 
       <h2>3. Texto da cota (Citius)</h2>
       <div id="cotaTexto" class="cota-box"></div>
-      <button class="btn-copy" onclick="copiarCota()">Copiar cota</button>
-      <span id="copyFeedback" style="font-size: 0.8rem; color: #166534; margin-left: 8px; display: none;">Copiado.</span>
+      <button class="btn-copy" type="button" onclick="copiarCota()">Copiar cota</button>
+      <span id="copyFeedback" class="copy-feedback">Copiado.</span>
     </div>
   </div>
 
   <div class="rodape">
-    <p>Regras revistas em 13/11/2026 (CPC após o DL 87/2024 e o DL 91/2024; UC de 102 €). A citação eletrónica de empresas nos tribunais administrativos e fiscais vale desde 15/09/2025. Confirme sempre na lei em vigor antes de lavrar a cota.</p>
+    <p>Regime processual conforme CPC (na redação do DL n.º 87/2024, de 7/11), CPTA e Portaria n.º 267/2018 (SPNE). Valor de referência da UC: 102,00 €. Confirme sempre no processo antes de lavrar a cota.</p>
     <p class="dev-credit">@developed by Armando Afonso</p>
   </div>
 </div>
@@ -623,6 +711,7 @@
   /* ===================== GESTÃO DO TEMA (DARK/LIGHT MODE) ===================== */
   const themeToggleBtn = document.getElementById('themeToggle');
   const themeIcon = document.getElementById('themeIcon');
+  const themeLabel = document.getElementById('themeLabel');
   const htmlEl = document.documentElement;
 
   function setTheme(theme) {
@@ -630,14 +719,13 @@
     localStorage.setItem('legaltech_theme', theme);
     if (theme === 'dark') {
       themeIcon.textContent = '☀️';
-      themeToggleBtn.innerHTML = '<span id="themeIcon">☀️</span> Tema Claro';
+      themeLabel.textContent = 'Tema Claro';
     } else {
       themeIcon.textContent = '🌙';
-      themeToggleBtn.innerHTML = '<span id="themeIcon">🌙</span> Tema Escuro';
+      themeLabel.textContent = 'Tema Escuro';
     }
   }
 
-  // Verifica a preferência guardada ou a preferência do sistema
   const savedTheme = localStorage.getItem('legaltech_theme');
   if (savedTheme) {
     setTheme(savedTheme);
@@ -654,11 +742,52 @@
 
   /* ===================== LÓGICA DO SIMULADOR ===================== */
   const UC_EUR = 102;
-  const OPC = { carnaval: false };
+  const OPC = { carnaval: false, tol24dez: false, tol31dez: false };
+  const datasFechoExtra = new Set();
 
   function el(id) { return document.getElementById(id); }
   function L(d) { return d.toLocaleDateString('pt-PT'); }
   function fmtEuro(v) { return v.toFixed(2).replace('.', ',') + ' €'; }
+
+  function isoKey(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function adicionarDataFecho() {
+    const val = el('novaDataFecho').value;
+    if (!val) return;
+    datasFechoExtra.add(val);
+    el('novaDataFecho').value = '';
+    renderizarDatasFecho();
+    simular();
+  }
+
+  function removerDataFecho(val) {
+    datasFechoExtra.delete(val);
+    renderizarDatasFecho();
+    simular();
+  }
+
+  function renderizarDatasFecho() {
+    const wrap = el('listaDatasFecho');
+    wrap.innerHTML = '';
+    Array.from(datasFechoExtra).sort().forEach(iso => {
+      const dt = dataLocal(iso);
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.textContent = L(dt) + ' ';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = '×';
+      btn.title = 'Remover data';
+      btn.onclick = () => removerDataFecho(iso);
+      chip.appendChild(btn);
+      wrap.appendChild(chip);
+    });
+  }
 
   // ---------- Calendário judicial ----------
 
@@ -697,7 +826,6 @@
     const m = date.getMonth() + 1;
     const d = date.getDate();
 
-    // Fixos Nacionais
     const fixos = {
       '1-1': 'Ano Novo',
       '4-25': 'Dia da Liberdade',
@@ -714,7 +842,9 @@
     const key = `${m}-${d}`;
     if (fixos[key]) return fixos[key];
 
-    // Fixos Municipais (Sedes dos TAFs)
+    if (OPC.tol24dez && m === 12 && d === 24) return '24 de dezembro (tolerância de ponto)';
+    if (OPC.tol31dez && m === 12 && d === 31) return '31 de dezembro (tolerância de ponto)';
+
     const munFixos = {
       'almada': { m: 6, d: 24, nome: 'São João (Almada)' },
       'aveiro': { m: 5, d: 12, nome: 'Santa Joana (Aveiro)' },
@@ -735,18 +865,18 @@
       return munFixos[municipal].nome;
     }
 
-    // Móveis Nacionais
     const pascoa = getPascoa(y);
     if (sameDay(date, addDays(pascoa, -2))) return 'Sexta-Feira Santa';
     if (sameDay(date, pascoa)) return 'Domingo de Páscoa';
     if (sameDay(date, addDays(pascoa, 60))) return 'Corpo de Deus';
     if (OPC.carnaval && sameDay(date, addDays(pascoa, -47))) return 'Terça-feira de Carnaval (tolerância de ponto)';
 
-    // Móveis Municipais (Sedes dos TAFs)
     if (municipal === 'beja' && sameDay(date, addDays(pascoa, 39))) return 'Quinta-feira da Ascensão (Beja)';
     if (municipal === 'loule' && sameDay(date, addDays(pascoa, 39))) return 'Quinta-feira da Ascensão (Loulé)';
     if (municipal === 'castelo_branco' && sameDay(date, addDays(pascoa, 16))) return 'Nossa Senhora de Mércoles (Castelo Branco)';
     if (municipal === 'ponta_delgada' && sameDay(date, addDays(pascoa, 36))) return 'Senhor Santo Cristo dos Milagres (Ponta Delgada)';
+
+    if (datasFechoExtra.has(isoKey(date))) return `Encerramento / tolerância (${L(date)})`;
 
     return null;
   }
@@ -812,7 +942,7 @@
     }
     while (!isDiaUtilTribunal(dt, urgente, municipal)) {
       const fer = getNomeFeriado(dt, municipal);
-      if (fer) logEventos.add(`Termo transferido por feriado (${fer})`);
+      if (fer) logEventos.add(`Termo transferido por feriado/encerramento (${fer})`);
       else if (isWeekend(dt)) logEventos.add('Termo transferido por fim de semana');
       else if (!urgente && isFeriasJudiciais(dt)) logEventos.add('Termo transferido por férias judiciais');
       dt.setDate(dt.getDate() + 1);
@@ -844,7 +974,6 @@
     : 'Citação postal de pessoa coletiva (AR 2.ª tentativa emitida após inviabilidade eletrónica por falta de registo no Sistema Público de Notificações Eletrónicas [SPNE] — art. 246.º, n.ºs 9 e 10 do CPC)';
 
   const SUBS = {
-    // Pessoa coletiva, via postal
     pc_repr: {
       textoF9: 'AR 2.ª tentativa: Gerente, administrador ou funcionário assinou o AR',
       textoF13: '1.ª ou 2.ª tentativa: Gerente, administrador ou funcionário assinou o AR',
@@ -894,7 +1023,6 @@
       cota: c => `${pcPref(c)}: não sendo possível depositar a carta na caixa de correio da sede, foi deixado aviso em ${L(c.base)}, conforme certificação do distribuidor postal. A citação considera-se efetuada em ${L(c.perf)}, 8.º dia posterior (art. 246.º, n.º 10, art. 229.º, n.º 5 e art. 230.º, n.º 2 do CPC). Expedida carta de advertência do art. 233.º do CPC.`
     },
 
-    // Pessoa coletiva, via eletrónica
     el_8d: {
       texto: 'Consultada na área reservada até ao 8.º dia (sem dilação)',
       dataLabel: 'Data da consulta eletrónica',
@@ -909,7 +1037,7 @@
       offset: 8, a: 0, g: 0, tardia: true,
       explica: c => `Passaram 8 dias sem consulta, por isso a citação considera-se feita em ${L(c.perf)}. A empresa consultou em ${L(c.consulta)}, ${c.n} dias depois. Esses ${c.n} dias contam como dilação e, havendo férias judiciais pelo meio, só correm depois delas.` + (c.terr > 0 ? ' A dilação do local da citação não se aplica: vale só esta.' : ''),
       alerta: c => `Sem consulta até ao 8.º dia, a citação presume-se feita em ${L(c.perf)} (art. 246.º, n.º 11 do CPC). Como houve consulta em ${L(c.consulta)}, dentro dos 30 dias seguintes, a dilação de 30 dias reduz-se aos ${c.n} dias decorridos (art. 245.º, n.º 3 e 4). Conta-se como prazo processual: se houver férias judiciais pelo meio, esses dias só correm depois delas.` +
-        (c.terr > 0 ? ' A dilação territorial selecionada não se aplica: vale apenas a variável (exemplo 7 da formação DGAJ).' : ''),
+        (c.terr > 0 ? ' A dilação territorial selecionada não se aplica: vale apenas a variável.' : ''),
       cota: c => `Citação eletrónica de pessoa coletiva disponibilizada em ${L(c.base)} e não consultada até ao 8.º dia, presumindo-se efetuada em ${L(c.perf)} (art. 246.º, n.º 11 do CPC). Consultada em ${L(c.consulta)}, nos 30 dias seguintes, a dilação reduz-se aos ${c.n} dias decorridos (art. 245.º, n.º 3 e 4 do CPC).`
     },
     el_nao: {
@@ -921,7 +1049,6 @@
       cota: c => `Citação eletrónica de pessoa coletiva disponibilizada em ${L(c.base)} e não consultada. Considera-se efetuada em ${L(c.perf)}, 8.º dia após a disponibilização (art. 246.º, n.º 11 do CPC).`
     },
 
-    // Pessoa singular
     si_proprio: {
       texto: 'Carta registada (1.ª ou 2.ª tentativa): AR assinado pelo próprio citando',
       dataLabel: 'Data da assinatura do aviso de receção',
@@ -971,7 +1098,6 @@
       cota: c => `Citação edital concretizada com a publicação do anúncio em ${L(c.base)} (art. 240.º do CPC).`
     },
 
-    // Entidade pública
     ep: {
       dataLabel: 'Data da citação',
       offset: 0, a: 0, g: 0,
@@ -980,7 +1106,6 @@
       cota: c => `Citação da entidade demandada / Ministério Público efetuada em ${L(c.base)} (art. 81.º do CPTA).`
     },
 
-    // Notificações
     nm: {
       dataLabel: 'Data em que a notificação foi elaborada',
       presuncao: true,
@@ -1061,9 +1186,9 @@
     if (notif) {
       el('hintTerr').textContent = 'Nas notificações não há dilação por local.';
     } else if (tipo === 'cit_pc_eletronica') {
-      el('hintTerr').textContent = 'Na citação eletrónica conta o local da sede da empresa. Os dias de local não se somam entre si: vale o maior.';
+      el('hintTerr').textContent = 'Na citação eletrónica conta o local da sede da empresa. As dilações de local/modalidade não cumulam entre si (art. 245.º, n.º 5 do CPC): aplica-se apenas a maior.';
     } else {
-      el('hintTerr').textContent = 'Os dias de local não se somam entre si: vale o maior. Só os 5 dias por entrega a outra pessoa se somam aos restantes.';
+      el('hintTerr').textContent = 'As dilações de local e de modalidade não cumulam entre si (art. 245.º, n.º 5 do CPC): aplica-se apenas a maior, acrescida de 5 dias quando entregue a terceiro.';
     }
 
     if (cfg.semSub || cfg.eletronica) {
@@ -1151,6 +1276,8 @@
     const fund = el('fundamentoPostal').value;
 
     OPC.carnaval = el('carnaval').checked;
+    OPC.tol24dez = el('tol24dez').checked;
+    OPC.tol31dez = el('tol31dez').checked;
 
     if (!def || !dataInput) return;
     if (!(prazo > 0)) {
@@ -1208,7 +1335,6 @@
     const taxa = (tipo === 'cit_pc_postal' && fund === 'f9');
     const lim233 = adicionarDiasUteisSecretaria(base, 2, municipal);
 
-    // Alerta, dever da secretaria e cota
     el('alertaJuridico').textContent = def.explica(ctx);
     el('baseLegalTexto').textContent = def.alerta(ctx);
 
@@ -1239,7 +1365,6 @@
             (dilTotal > 0 ? `, acrescido de ${dilTotal} dias de dilação (${partes.join('; ')})` : '') +
             `, terminando em ${L(dataTermo)} (ou até ${L(multa3)} com a multa do art. 139.º, n.º 5 do CPC).`;
 
-    // Resultados
     el('resDataPerfeicao').textContent = def.tardia
       ? `${formatDate(perf)} (consulta em ${formatDate(consulta)})`
       : formatDate(perf);
@@ -1279,7 +1404,7 @@
       ta.focus();
       ta.select();
       ta.setSelectionRange(0, texto.length);
-      try { if (document.execCommand('copy')) sucesso(); } catch (e) { /* sem suporte */ }
+      try { if (document.execCommand('copy')) sucesso(); } catch (e) {}
       document.body.removeChild(ta);
     };
     if (navigator.clipboard && window.isSecureContext) {
@@ -1296,7 +1421,8 @@
     el('dataBase').value = `${h.getFullYear()}-${mm}-${dd}`;
     atualizarSubOpcoes();
     simular();
-    document.querySelectorAll('select, input').forEach(campo => {
+    document.querySelectorAll('select, input[type="date"], input[type="number"], input[type="checkbox"]').forEach(campo => {
+      if (campo.id === 'novaDataFecho') return;
       campo.addEventListener('change', simular);
       campo.addEventListener('input', simular);
     });
