@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Anonimizador de PDF</title>
+<title>Anonimizador de PDF — LegalTech</title>
 <style>
   :root{
     --bg:#f3f4f6; --card:#ffffff; --ink:#1b2430; --muted:#5b6675; --line:#d8dde4;
@@ -20,6 +20,19 @@
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
   body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+
+  /* Barra de navegação superior */
+  .topbar{background:var(--card);border-bottom:1px solid var(--line);padding:0 16px}
+  .topbar-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;min-height:54px;gap:16px;flex-wrap:wrap}
+  .brand{font-weight:700;font-size:1rem;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px}
+  .nav-links{display:flex;align-items:center;gap:8px}
+  .nav-link{text-decoration:none;font-size:.9rem;font-weight:500;padding:6px 12px;border-radius:6px;color:var(--muted);transition:background .15s,color .15s}
+  .nav-link:hover{background:var(--soft);color:var(--ink)}
+  .nav-link.active{background:var(--soft);color:var(--accent);font-weight:600}
+  .nav-link.soon{opacity:.65;cursor:default;display:inline-flex;align-items:center;gap:6px}
+  .nav-link.soon:hover{background:transparent;color:var(--muted)}
+  .badge{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;padding:2px 6px;border-radius:4px;background:var(--soft);border:1px solid var(--line);color:var(--muted)}
+
   main{max-width:760px;margin:0 auto;padding:28px 16px 56px}
   header{margin-bottom:20px}
   h1{font-size:1.5rem;margin:0 0 6px;letter-spacing:-.01em}
@@ -59,13 +72,25 @@
   .maptools{display:flex;gap:8px;margin:10px 0 4px}
   #mapList{margin:8px 0 0;max-height:300px;overflow:auto;border:1px solid var(--line);border-radius:6px;padding:8px 10px;font:.85rem/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--soft)}
   #mapList div{word-break:break-word}
-  footer{font-size:.82rem;color:var(--muted);margin-top:8px}
+  footer{font-size:.82rem;color:var(--muted);margin-top:12px}
+  .dev-credit{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-weight:600;color:var(--ink);opacity:.85}
   [hidden]{display:none !important}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 </head>
 <body>
+
+<nav class="topbar" aria-label="Ferramentas LegalTech">
+  <div class="topbar-inner">
+    <a href="index.html" class="brand">⚖️ LegalTech</a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link active" aria-current="page">Anonimizador de PDF</a>
+      <span class="nav-link soon" title="Em preparação">Simulador de Prazos <span class="badge">Em breve</span></span>
+    </div>
+  </div>
+</nav>
+
 <main>
   <header>
     <h1>Anonimizador de PDF</h1>
@@ -126,7 +151,10 @@
     </details>
   </section>
 
-  <footer>A deteção automática não é infalível. Verificar sempre o PDF antes de o divulgar. A alteração do ficheiro invalida assinaturas digitais criptográficas; a imagem da assinatura mantém-se.</footer>
+  <footer>
+    A deteção automática não é infalível. Verificar sempre o PDF antes de o divulgar. A alteração do ficheiro invalida assinaturas digitais criptográficas; a imagem da assinatura mantém-se.
+    <div class="dev-credit">@developed by Armando Afonso</div>
+  </footer>
 </main>
 
 <script type="module">
