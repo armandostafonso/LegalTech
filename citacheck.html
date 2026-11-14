@@ -4,9 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cita-Check | Simulador de Citações, Dilações e Notificações</title>
+  
+  <!-- Script para carregar o tema imediatamente e evitar que a página "pisque" em branco -->
+  <script>
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+
   <style>
     :root {
-      color-scheme: light dark;
+      color-scheme: light;
       --bg: #f8fafc;
       --card: #ffffff;
       --primary: #1e293b;
@@ -25,39 +34,40 @@
       --danger-text: #991b1b;
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0f172a;
-        --card: #1e293b;
-        --primary: #f8fafc;
-        --accent: #3b82f6;
-        --accent-hover: #60a5fa;
-        --border: #334155;
-        --text: #cbd5e1;
-        --muted: #94a3b8;
-        --success-bg: #064e3b;
-        --success-border: #047857;
-        --warn-bg: #78350f;
-        --warn-border: #b45309;
-        --warn-text: #fde68a;
-        --danger-bg: #7f1d1d;
-        --danger-border: #b91c1c;
-        --danger-text: #fecaca;
-      }
-      
-      .top-nav { background: #020617 !important; }
-      .badge { background: #1e3a8a !important; color: #93c5fd !important; }
-      select, input[type="date"], input[type="number"] { background: #0f172a !important; }
-      select:disabled { background: #1e293b !important; }
-      .feriados-info, .cota-box { background: #0f172a !important; color: #cbd5e1 !important; }
-      details.base-legal div { background: #0f172a !important; }
-      .headline { background: #172554 !important; border-color: #1e3a8a !important; }
-      .headline-label { color: #93c5fd !important; }
-      .headline-sub { color: #94a3b8 !important; }
-      #resTermoPrazo { color: #60a5fa !important; }
-      #resMulta3 { color: #f87171 !important; }
-      #copyFeedback { color: #4ade80 !important; }
+    /* Variáveis aplicadas quando o modo escuro está ativo */
+    :root.dark {
+      color-scheme: dark;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --primary: #f8fafc;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --border: #334155;
+      --text: #cbd5e1;
+      --muted: #94a3b8;
+      --success-bg: #064e3b;
+      --success-border: #047857;
+      --warn-bg: #78350f;
+      --warn-border: #b45309;
+      --warn-text: #fde68a;
+      --danger-bg: #7f1d1d;
+      --danger-border: #b91c1c;
+      --danger-text: #fecaca;
     }
+
+    /* Exceções específicas do modo escuro */
+    :root.dark .top-nav { background: #020617; border-bottom: 1px solid #1e293b; }
+    :root.dark .badge { background: #1e3a8a; color: #93c5fd; }
+    :root.dark select, :root.dark input[type="date"], :root.dark input[type="number"] { background: #0f172a; }
+    :root.dark select:disabled { background: #1e293b; }
+    :root.dark .feriados-info, :root.dark .cota-box { background: #0f172a; color: #cbd5e1; }
+    :root.dark details.base-legal div { background: #0f172a; }
+    :root.dark .headline { background: #172554; border-color: #1e3a8a; }
+    :root.dark .headline-label { color: #93c5fd; }
+    :root.dark .headline-sub { color: #94a3b8; }
+    :root.dark #resTermoPrazo { color: #60a5fa !important; }
+    :root.dark #resMulta3 { color: #f87171 !important; }
+    :root.dark #copyFeedback { color: #4ade80 !important; }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -72,11 +82,17 @@
       background: #0f172a;
       padding: 10px 16px;
       display: flex;
-      gap: 10px;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
+    }
+
+    .nav-links-container {
+      display: flex;
+      gap: 10px;
       flex-wrap: wrap;
+      justify-content: center;
+      flex-grow: 1;
     }
 
     .top-nav a {
@@ -102,6 +118,26 @@
     .nav-active {
       background: var(--accent);
       color: #ffffff;
+      border: 1px solid transparent;
+    }
+
+    .theme-btn {
+      background: transparent;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 4px 10px;
+      border-radius: 6px;
+      transition: background 0.15s, color 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .theme-btn:hover {
+      background: #1e293b;
+      color: #fff;
     }
 
     .container {
@@ -370,8 +406,12 @@
 <body>
 
 <nav class="top-nav">
-  <a href="index.html" class="nav-inactive">Anonimizador PDF</a>
-  <a href="citacheck.html" class="nav-active">Cita-Check (Prazos e Dilações)</a>
+  <div style="width: 40px;"></div> <!-- Spacer para equilibrar o menu ao centro -->
+  <div class="nav-links-container">
+    <a href="index.html" class="nav-inactive">Anonimizador PDF</a>
+    <a href="citacheck.html" class="nav-active">Cita-Check (Prazos)</a>
+  </div>
+  <button id="themeToggle" class="theme-btn" aria-label="Mudar tema" title="Alternar modo claro/escuro">🌙</button>
 </nav>
 
 <div class="container">
@@ -442,7 +482,7 @@
         <div class="form-group">
           <label for="processoUrgente">Tipo de processo</label>
           <select id="processoUrgente">
-            <option value="nao">Normal (o prazo pára nas férias judiciais)</option>
+            <option value="nao">Normal (o prazo para nas férias judiciais)</option>
             <option value="sim">Urgente (o prazo corre nas férias)</option>
           </select>
         </div>
@@ -556,6 +596,21 @@
   function el(id) { return document.getElementById(id); }
   function L(d) { return d.toLocaleDateString('pt-PT'); }
   function fmtEuro(v) { return v.toFixed(2).replace('.', ',') + ' €'; }
+
+  // ---------- Alternador de Tema ----------
+  function toggleTheme() {
+    const doc = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    if (doc.classList.contains('dark')) {
+      doc.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      btn.textContent = '🌙';
+    } else {
+      doc.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      btn.textContent = '☀️';
+    }
+  }
 
   // ---------- Calendário judicial ----------
 
@@ -899,7 +954,7 @@
       presuncao: true,
       explica: c => `A devolução da carta não impede a notificação. Considera-se feita no 3.º dia depois do registo ou, se esse dia não for útil, no primeiro dia útil seguinte.`,
       alerta: c => 'Carta devolvida: a notificação não deixa de produzir efeito, presumindo-se feita no 3.º dia posterior ao registo ou no 1.º dia útil seguinte (art. 249.º do CPC).',
-      cota: c => `Junta-se expediente postal devolvido. A notificação considera-se efetuada em ${L(c.perf)} (registo de ${L(c.base)}), producing todos os seus efeitos legais (art. 249.º do CPC).`
+      cota: c => `Junta-se expediente postal devolvido. A notificação considera-se efetuada em ${L(c.perf)} (registo de ${L(c.base)}), produzindo todos os seus efeitos legais (art. 249.º do CPC).`
     },
     np_eletronica: {
       texto: 'Disponibilizada na área reservada (com aviso por email)',
@@ -1187,6 +1242,11 @@
   }
 
   (function iniciar() {
+    // Configura o botão do tema conforme o estado atual
+    const btn = document.getElementById('themeToggle');
+    btn.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+    btn.addEventListener('click', toggleTheme);
+
     const h = new Date();
     const mm = String(h.getMonth() + 1).padStart(2, '0');
     const dd = String(h.getDate()).padStart(2, '0');
