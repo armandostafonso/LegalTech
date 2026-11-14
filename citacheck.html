@@ -6,6 +6,7 @@
   <title>Cita-Check | Simulador de Citações, Dilações e Notificações</title>
   <style>
     :root {
+      color-scheme: light dark;
       --bg: #f8fafc;
       --card: #ffffff;
       --primary: #1e293b;
@@ -22,6 +23,40 @@
       --danger-bg: #fef2f2;
       --danger-border: #fecaca;
       --danger-text: #991b1b;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a;
+        --card: #1e293b;
+        --primary: #f8fafc;
+        --accent: #3b82f6;
+        --accent-hover: #60a5fa;
+        --border: #334155;
+        --text: #cbd5e1;
+        --muted: #94a3b8;
+        --success-bg: #064e3b;
+        --success-border: #047857;
+        --warn-bg: #78350f;
+        --warn-border: #b45309;
+        --warn-text: #fde68a;
+        --danger-bg: #7f1d1d;
+        --danger-border: #b91c1c;
+        --danger-text: #fecaca;
+      }
+      
+      .top-nav { background: #020617 !important; }
+      .badge { background: #1e3a8a !important; color: #93c5fd !important; }
+      select, input[type="date"], input[type="number"] { background: #0f172a !important; }
+      select:disabled { background: #1e293b !important; }
+      .feriados-info, .cota-box { background: #0f172a !important; color: #cbd5e1 !important; }
+      details.base-legal div { background: #0f172a !important; }
+      .headline { background: #172554 !important; border-color: #1e3a8a !important; }
+      .headline-label { color: #93c5fd !important; }
+      .headline-sub { color: #94a3b8 !important; }
+      #resTermoPrazo { color: #60a5fa !important; }
+      #resMulta3 { color: #f87171 !important; }
+      #copyFeedback { color: #4ade80 !important; }
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -864,7 +899,7 @@
       presuncao: true,
       explica: c => `A devolução da carta não impede a notificação. Considera-se feita no 3.º dia depois do registo ou, se esse dia não for útil, no primeiro dia útil seguinte.`,
       alerta: c => 'Carta devolvida: a notificação não deixa de produzir efeito, presumindo-se feita no 3.º dia posterior ao registo ou no 1.º dia útil seguinte (art. 249.º do CPC).',
-      cota: c => `Junta-se expediente postal devolvido. A notificação considera-se efetuada em ${L(c.perf)} (registo de ${L(c.base)}), produzindo todos os seus efeitos legais (art. 249.º do CPC).`
+      cota: c => `Junta-se expediente postal devolvido. A notificação considera-se efetuada em ${L(c.perf)} (registo de ${L(c.base)}), producing todos os seus efeitos legais (art. 249.º do CPC).`
     },
     np_eletronica: {
       texto: 'Disponibilizada na área reservada (com aviso por email)',
