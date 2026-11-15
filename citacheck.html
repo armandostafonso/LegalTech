@@ -84,6 +84,17 @@
       width: 100%; padding: 10px 11px; border: 1px solid var(--line); border-radius: 3px;
       font: inherit; font-size: 1rem; background: var(--sheet); color: var(--ink);
     }
+    input[type="date"], input[type="number"] {
+      appearance: none;
+      -webkit-appearance: none;
+      display: block;
+      min-inline-size: 0;
+      max-inline-size: 100%;
+      height: 46px;
+      text-align: left;
+    }
+    input[type="date"]::-webkit-date-and-time-value { margin: 0; text-align: left; }
+    input[type="date"]::-webkit-datetime-edit { min-width: 0; }
     select:disabled { background: var(--soft); color: var(--muted); }
     select:focus, input:focus { outline: 2px solid var(--stamp); outline-offset: 1px; border-color: var(--stamp); }
     input[type="checkbox"] { accent-color: var(--stamp); }
@@ -96,7 +107,9 @@
     .check-row input { margin-top: 5px; }
     .check-row label { margin: 0; font-weight: 500; cursor: pointer; }
 
-    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .row-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .row-2 > .form-group { display: flex; flex-direction: column; min-width: 0; }
+    .row-2 > .form-group > :is(input, select) { margin-top: auto; }
     @media (max-width: 520px) { .row-2 { grid-template-columns: 1fr; } }
 
     .custom-date-row { display: flex; gap: 8px; margin-top: 8px; }
