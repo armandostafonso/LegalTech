@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cita-Check | Simulador de Citações, Dilações e Notificações</title>
+  <meta name="theme-color" content="#ebe8e8">
+<title>Cita-Check | Simulador de Citações, Dilações e Notificações</title>
   <script>
     (function () {
       var t = null;
@@ -12,6 +13,7 @@
         t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
       }
       document.documentElement.setAttribute('data-theme', t);
+      document.querySelector('meta[name="theme-color"]').content = t === 'dark' ? '#0d0b0c' : '#ebe8e8';
     })();
   </script>
   <style>
@@ -365,6 +367,7 @@
   /* A aplicação inicial do tema faz-se no <head>; aqui só se trata da troca. */
   function setTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
+    document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#0d0b0c' : '#ebe8e8';
     try { localStorage.setItem('theme', theme); } catch (e) {}
   }
 
@@ -667,8 +670,8 @@
       texto: 'Não consultada até ao 8.º dia, consultada nos 30 dias seguintes (dilação variável)',
       dataLabel: 'Data da disponibilização na área reservada',
       offset: 8, a: 0, g: 0, tardia: true,
-      explica: c => `Passaram 8 dias sem consulta, por isso a citação considera-se feita em ${L(c.perf)}. A empresa consultou em ${L(c.consulta)}, ${c.n} dias depois. Esses ${c.n} dias contam como dilação e, havendo férias judiciais pelo meio, só correm depois delas.` + (c.terr > 0 ? ' A dilação do local da citação não se aplica: vale só esta.' : ''),
-      alerta: c => `Sem consulta até ao 8.º dia, a citação presume-se feita em ${L(c.perf)} (art. 246.º, n.º 11 do CPC). Como houve consulta em ${L(c.consulta)}, dentro dos 30 dias seguintes, a dilação de 30 dias reduz-se aos ${c.n} dias decorridos (art. 245.º, n.º 3 e 4). Conta-se como prazo processual: se houver férias judiciais pelo meio, esses dias só correm depois delas.` +
+      explica: c => `Passaram 8 dias sem consulta, por isso a citação considera-se feita em ${L(c.perf)}. A empresa consultou em ${L(c.consulta)}, ${c.n} dias depois. Esses ${c.n} dias já decorridos constituem a dilação. O prazo de defesa conta-se a partir da consulta, com a suspensão em férias judiciais quando aplicável.` + (c.terr > 0 ? ' A dilação do local da citação não se aplica: vale só esta.' : ''),
+      alerta: c => `Sem consulta até ao 8.º dia, a citação presume-se feita em ${L(c.perf)} (art. 246.º, n.º 11 do CPC). Como houve consulta em ${L(c.consulta)}, dentro dos 30 dias seguintes, a dilação de 30 dias reduz-se aos ${c.n} dias decorridos (art. 245.º, n.º 3 e 4). O prazo de defesa conta-se a partir da consulta, com a suspensão em férias judiciais quando aplicável.` +
         (c.terr > 0 ? ' A dilação territorial selecionada não se aplica: vale apenas a variável.' : ''),
       cota: c => `Citação eletrónica de pessoa coletiva disponibilizada em ${L(c.base)} e não consultada até ao 8.º dia, presumindo-se efetuada em ${L(c.perf)} (art. 246.º, n.º 11 do CPC). Consultada em ${L(c.consulta)}, nos 30 dias seguintes, a dilação reduz-se aos ${c.n} dias decorridos (art. 245.º, n.º 3 e 4 do CPC).`
     },
@@ -893,6 +896,7 @@
      'resTermoPrazo', 'resMulta1', 'resMulta2', 'resMulta3', 'baseLegalTexto', 'cotaTexto', 'feriadosDetetados']
       .forEach(id => { el(id).textContent = id === 'resumoMulta' || id === 'baseLegalTexto' || id === 'cotaTexto' || id === 'feriadosDetetados' ? '' : '-'; });
     el('deverSecretaria').classList.add('hidden');
+    document.querySelector('.btn-copy').disabled = true;
   }
 
   function simular() {
@@ -911,7 +915,11 @@
     OPC.tol24dez = el('tol24dez').checked;
     OPC.tol31dez = el('tol31dez').checked;
 
-    if (!def || !dataInput) return;
+    if (!def || !dataInput) {
+      limparResultado();
+      el('alertaJuridico').textContent = 'Indique uma data válida.';
+      return;
+    }
     if (!(prazo > 0)) {
       limparResultado();
       el('alertaJuridico').textContent = 'Indique o prazo de defesa ou resposta, em dias.';
@@ -958,7 +966,7 @@
     const dilTotal = a + dilPrincipal;
     const totalDias = prazo + dilTotal;
 
-    const dataTermo = adicionarDiasContinuosComSuspensao(inicio, totalDias, urgente, municipal, logEventos);
+    const dataTermo = adicionarDiasContinuosComSuspensao(def.tardia ? consulta : inicio, def.tardia ? prazo : totalDias, urgente, municipal, logEventos);
     const multa1 = proximoDiaUtilMulta(dataTermo, urgente, municipal);
     const multa2 = proximoDiaUtilMulta(multa1, urgente, municipal);
     const multa3 = proximoDiaUtilMulta(multa2, urgente, municipal);
@@ -1018,10 +1026,12 @@
       : 'Contagem contínua, sem suspensão por férias judiciais nem transferência de termo por feriado ou fim de semana.';
 
     el('cotaTexto').textContent = cota;
+    document.querySelector('.btn-copy').disabled = false;
   }
 
   function copiarCota() {
     const texto = el('cotaTexto').textContent;
+    if (!texto.trim()) return;
     const fb = el('copyFeedback');
     const sucesso = () => {
       fb.style.display = 'inline';
@@ -1063,3 +1073,4 @@
 
 </body>
 </html>
+
