@@ -81,6 +81,20 @@ await check("Tema Claro/Escuro: alternância no WebKit",async()=>{
  const after=await page.locator("html").getAttribute("data-theme");
  if(before===after||!["light","dark"].includes(after))throw Error("Tema não mudou");
 });
+await check("Capturas de controlo visual iPad em Claro/Escuro",async()=>{
+ fs.mkdirSync("qa/ui-snapshots",{recursive:true});
+ for(const [url,label] of [["index.html","catalogo"],["assistant.html","assistant"],["pa.html","pa"],["tramitação-taf.html","tramitação"]]){
+  await open(url);
+  for(const mode of ["light","dark"]){
+   await page.evaluate(value=>{
+    document.documentElement.dataset.theme=value;
+    try{localStorage.setItem("legaltech_theme",value);localStorage.setItem("theme",value)}catch(e){}
+   },mode);
+   await page.screenshot({path:"qa/ui-snapshots/"+label+"-ipad-"+mode+".png",fullPage:true,animations:"disabled"});
+  }
+ }
+ console.log("Oito capturas WebKit de componentes institucionais guardadas para revisão visual.");
+});
 await browser.close();
 if(errors.length)failures.push("Exceções JavaScript: "+errors.join(" | "));
 if(failures.length){console.error(failures.join("\n"));process.exit(1)}
