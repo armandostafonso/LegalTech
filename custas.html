@@ -10,7 +10,7 @@
 </style><script>try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||"light"}catch(e){}</script><link rel="stylesheet" href="assets/brand.css">
 </head>
 <body><main><header><a class="brand" href="index.html">LegalTech <span class="lt-suite">Suite</span></a><button class="secondary" id="theme" type="button">◐ Tema</button></header>
-<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.8</p>
+<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.9</p>
 <div class="notice"><strong>Âmbito:</strong> cálculo limitado da taxa-base por impulso com Tabela I-A/I-B e conferência de valores. Não determina automaticamente o total legalmente exigível, não lê PDF e não emite conta oficial. Não introduzas dados pessoais ou processuais confidenciais. Os dados não são enviados nem guardados por esta página.</div>
 <section class="panel"><h2>1. Identificação e regime</h2><div class="grid">
 <div class="field"><label for="process">Referência fictícia / interna</label><input id="process" placeholder="Ex.: TESTE-A01"></div>
@@ -184,6 +184,39 @@
 <div class="actions"><button type="button" id="calc">Conferir valores</button><button class="secondary" type="button" id="reset">Limpar</button></div></section>
 <section class="panel" aria-live="polite"><h2>9. Resultado</h2><p id="status" class="status">Aguardam-se dados.</p><table><tbody><tr><th>Total exigível</th><td id="due">—</td></tr><tr><th>Total confirmado</th><td id="paid">—</td></tr><tr><th>Diferença aritmética positiva</th><td id="debt">—</td></tr><tr><th>Potencial excesso</th><td id="over">—</td></tr></tbody></table><p id="notes" class="muted">A ausência de diferenças aritméticas não basta para dispensar a elaboração da conta: confirmar os pressupostos do artigo 29.º do RCP.</p><div class="actions"><button type="button" class="secondary" id="copy">Copiar relatório</button><button type="button" class="secondary" onclick="window.print()">Imprimir</button></div><pre id="report" hidden></pre></section>
 
+
+<section class="panel" id="responsabilidade-multipla">
+<h2>Responsabilidade multissujeito · litisconsórcio e coligação</h2>
+<p class="muted">Mapa autónomo para 1 a 12 intervenientes, com repartição de <strong>encargos concretamente identificados</strong>. Distingue quotas expressamente fixadas e divisão em partes iguais quando estejam confirmados os pressupostos do artigo 528.º, n.º 1, do CPC. <strong>Não altera automaticamente a conta A/B, os pagamentos nem as custas de parte.</strong></p>
+<div class="grid">
+<div class="field"><label for="multiName">Identificador fictício do interveniente</label><input id="multiName" maxlength="60" autocomplete="off" placeholder="Ex.: AUTOR-01"></div>
+<div class="field"><label for="multiRole">Posição processual</label><select id="multiRole"><option value="autor">Autor</option><option value="reu">Réu</option><option value="contra">Contrainteressado</option><option value="outro">Outro</option></select></div>
+</div>
+<div class="actions"><button type="button" id="multiAdd" class="secondary">Adicionar interveniente</button><button type="button" id="multiClear" class="secondary">Limpar mapa multissujeito</button></div>
+<p id="multiMessage" class="notice" aria-live="polite">Adiciona intervenientes com identificadores fictícios. O mapa não guarda dados depois de fechada ou recarregada a página.</p>
+<div class="table-scroll"><table aria-label="Intervenientes do mapa multissujeito"><thead><tr><th>Interveniente</th><th>Posição</th><th>Incluído neste encargo</th><th>Quota expressa (%)</th><th>Acção</th></tr></thead><tbody id="multiPeopleRows"><tr><td colspan="5">Ainda não existem intervenientes.</td></tr></tbody></table></div>
+<div class="grid">
+<div class="field"><label for="multiRef">Referência fictícia do encargo</label><input id="multiRef" maxlength="60" autocomplete="off" placeholder="Ex.: ENC-COLETIVO-001"></div>
+<div class="field"><label for="multiScope">Âmbito da decisão</label><select id="multiScope"><option value="acao">Acção principal</option><option value="incidente">Incidente</option><option value="recurso">Recurso</option></select></div>
+<div class="field"><label for="multiAmount">Montante a repartir (€)</label><input id="multiAmount" type="number" min="0.01" max="100000000" step="0.01" placeholder="Ex.: 101.01"></div>
+<div class="field"><label for="multiMode">Critério de repartição</label><select id="multiMode"><option value="expressa">Quotas expressas na decisão</option><option value="iguais">Partes iguais: CPC 528.º/1</option></select></div>
+<div class="field"><label for="multiDecision">Referência fictícia da decisão</label><input id="multiDecision" maxlength="80" autocomplete="off" placeholder="Ex.: DECISAO-001"></div>
+<div class="field"><label for="multiDate">Data da decisão</label><input id="multiDate" type="date"></div>
+<div class="field"><label for="multiSolidarity">Condenação solidária?</label><select id="multiSolidarity"><option value="unknown">Por verificar</option><option value="no">Não, confirmado</option><option value="yes">Sim: exige conferência individual</option></select></div>
+<div class="field"><label for="multiSettlement">Houve transacção de litisconsorte?</label><select id="multiSettlement"><option value="unknown">Por verificar</option><option value="no">Não, confirmado</option><option value="yes">Sim: CPC 528.º/2 a analisar</option></select></div>
+</div>
+<label class="checkrow"><input id="multiAllLost" type="checkbox"> Para o critério de partes iguais: confirmei que todos os intervenientes seleccionados são autores ou réus do mesmo lado e ficaram totalmente vencidos, sem acordo ou particularidade que afaste o artigo 528.º/1.</label>
+<label class="checkrow"><input id="multiVerified" type="checkbox"> Confirmei o julgado, a responsabilidade de cada sujeito, o montante do encargo, as referências documentais e a ausência de duplicação nos mapas anteriores.</label>
+<div class="actions"><button type="button" id="multiPreview" class="secondary">Conferir repartição multissujeito</button><button type="button" id="multiPost">Registar repartição</button><button type="button" id="multiCopy" class="secondary">Copiar mapa</button><button type="button" id="multiExport" class="secondary">Exportar CSV multissujeito</button></div>
+<p id="multiResult" class="notice" aria-live="polite">Aguarda identificação dos intervenientes e validação dos pressupostos jurídicos.</p>
+<div class="grid" style="margin-top:14px">
+<div class="notice"><small>Intervenientes inscritos</small><div class="status" id="multiPeopleCount">0</div></div>
+<div class="notice"><small>Encargos repartidos no mapa</small><div class="status" id="multiChargeCount">0</div></div>
+</div>
+<div class="table-scroll"><table aria-label="Responsabilidade final individualizada por sujeito"><thead><tr><th>Interveniente</th><th>Posição</th><th>Total atribuído no mapa</th></tr></thead><tbody id="multiTotalsRows"><tr><td colspan="3">Sem resultados.</td></tr></tbody></table></div>
+<div class="table-scroll"><table aria-label="Encargos repartidos no mapa multissujeito"><thead><tr><th>Encargo / decisão</th><th>Âmbito</th><th>Montante</th><th>Repartição</th><th>Acção</th></tr></thead><tbody id="multiChargesRows"><tr><td colspan="5">Sem repartições registadas.</td></tr></tbody></table></div>
+<p class="muted"><small>Base legal: <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2013-34580575-53451975" target="_blank" rel="noopener">CPC, artigos 527.º e 528.º</a>; <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975-45001875" target="_blank" rel="noopener">RCP, artigo 30.º</a>. A solidariedade, a transacção com redução, o decaimento parcial e situações especiais não são resolvidos automaticamente.</small></p>
+</section>
 <section class="panel" id="conciliacao-impulsos">
 <h2>Reconciliação financeira por impulso</h2>
 <p class="muted">Cruza as obrigações processuais com pagamentos e restituições <strong>confirmados e imputados à mesma obrigação</strong>. Movimentos pendentes não contam como pagos. Montantes não imputados surgem separadamente e não são distribuídos automaticamente entre impulsos.</p>
@@ -836,6 +869,145 @@ for(const id of ["ap","bp","extrap"])el(id).addEventListener("input",()=>{
 const ids=["process","date","value","subject","a","ap","b","bp","extra","extrap","law","table","exempt","remainder","charges","hearing","endbefore","opp","priority","authorcontinue","remvalue","remdisp","remcost","instruction","actdate","entrydate","calcvalue"];
 
 
+
+/* Pluralidade de intervenientes: mapa separado do livro A/B.
+   Art. 528.º/1 CPC só automatizado com pressupostos expressamente confirmados.
+   Solidariedade e transacção nunca são convertidas em quotas automaticamente. */
+const multiPeople=[],multiCharges=[],multiRoles={autor:"Autor",reu:"Réu",contra:"Contrainteressado",outro:"Outro"};
+const multiScopes={acao:"Acção principal",incidente:"Incidente",recurso:"Recurso"};
+let multiNextPerson=1,multiNextCharge=1,multiPreviewState=null,multiReportCache=null;
+function multiInvalidate(){
+ multiPreviewState=null;multiReportCache=null;
+ el("multiResult").textContent="Dados alterados. Confere novamente antes de registar ou exportar.";
+}
+function multiRender(message){
+ el("multiPeopleCount").textContent=String(multiPeople.length);
+ el("multiChargeCount").textContent=String(multiCharges.length);
+ el("multiPeopleRows").innerHTML=multiPeople.length?multiPeople.map(p=>'<tr><td>'+ledgerEscape(p.name)+'</td><td>'+multiRoles[p.role]+'</td><td><input type="checkbox" data-multi-active="'+p.id+'" '+(p.active?'checked':'')+' aria-label="Incluir '+ledgerEscape(p.name)+'" /></td><td><input type="number" min="0" max="100" step="0.01" data-multi-share="'+p.id+'" value="'+(p.share/100).toFixed(2)+'" '+(!p.active?'disabled':'')+' aria-label="Quota percentual de '+ledgerEscape(p.name)+'" /></td><td><button type="button" data-multi-remove="'+p.id+'">Retirar</button></td></tr>').join(""):'<tr><td colspan="5">Ainda não existem intervenientes.</td></tr>';
+ const totals=new Map(multiPeople.map(p=>[p.id,0]));
+ for(const charge of multiCharges)for(const allocation of charge.allocations)totals.set(allocation.id,(totals.get(allocation.id)||0)+allocation.cents);
+ el("multiTotalsRows").innerHTML=multiPeople.length?multiPeople.map(p=>'<tr><td>'+ledgerEscape(p.name)+'</td><td>'+multiRoles[p.role]+'</td><td>'+ledgerFmt(totals.get(p.id)||0)+'</td></tr>').join(""):'<tr><td colspan="3">Sem resultados.</td></tr>';
+ el("multiChargesRows").innerHTML=multiCharges.length?multiCharges.map(c=>'<tr><td>'+ledgerEscape(c.ref)+' · '+ledgerEscape(c.decision)+'</td><td>'+multiScopes[c.scope]+'</td><td>'+ledgerFmt(c.cents)+'</td><td>'+c.allocations.map(a=>ledgerEscape(multiPeople.find(p=>p.id===a.id)?.name||"Interveniente retirado")+' '+ledgerFmt(a.cents)).join("; ")+'</td><td><button type="button" data-multi-charge-remove="'+c.id+'">Retirar</button></td></tr>').join(""):'<tr><td colspan="5">Sem repartições registadas.</td></tr>';
+ if(message)el("multiMessage").textContent=message;
+}
+function multiNumeric(raw,min,max){
+ if(raw===""||!Number.isFinite(Number(raw))||Number(raw)<min||Number(raw)>max||Math.abs(Number(raw)*100-Math.round(Number(raw)*100))>1e-6)return null;
+ return Math.round(Number(raw)*100);
+}
+function multiSplit(total,participants,weights){
+ // Largest remainder in integer cents. A remainder is distributed by entry order on exact ties.
+ const denominator=weights.reduce((sum,v)=>sum+v,0);
+ if(denominator<=0)return null;
+ const base=weights.map(w=>Math.floor(total*w/denominator));
+ let residual=total-base.reduce((sum,v)=>sum+v,0);
+ const order=weights.map((w,i)=>({i,fraction:total*w/denominator-base[i]})).sort((a,b)=>b.fraction-a.fraction||a.i-b.i);
+ for(let j=0;j<residual;j++)base[order[j].i]++;
+ return participants.map((p,i)=>({id:p.id,cents:base[i]}));
+}
+function multiCheck(){
+ const selected=multiPeople.filter(p=>p.active);
+ const cents=multiNumeric(el("multiAmount").value.trim(),0.01,100000000);
+ const ref=el("multiRef").value.trim(),decision=el("multiDecision").value.trim(),date=el("multiDate").value;
+ const scope=el("multiScope").value,mode=el("multiMode").value;
+ if(selected.length<2)return {error:"Selecciona pelo menos dois intervenientes para uma repartição multissujeito."};
+ if(cents===null||cents<=0)return {error:"Montante inválido: até 100 milhões de euros, com duas casas decimais."};
+ if(!ref||ref.length>60||!decision||decision.length>80||!/^\d{4}-\d{2}-\d{2}$/.test(date))return {error:"Indica referências fictícias do encargo e da decisão, bem como a data."};
+ if(!Object.hasOwn(multiScopes,scope)||!["expressa","iguais"].includes(mode))return {error:"Critério ou âmbito inválido."};
+ if(multiCharges.some(c=>c.ref.toLocaleLowerCase("pt-PT")===ref.toLocaleLowerCase("pt-PT")))return {error:"Encargo multissujeito já registado com esta referência."};
+ if(respEntries.some(c=>c.ref.toLocaleLowerCase("pt-PT")===ref.toLocaleLowerCase("pt-PT"))||obligations.some(o=>o.ref.toLocaleLowerCase("pt-PT")===ref.toLocaleLowerCase("pt-PT")))return {error:"Existe referência idêntica nos mapas anteriores. Confirma a ausência de duplicação."};
+ if(el("multiSolidarity").value!=="no")return {error:"Solidariedade não excluída: os artigos 527.º/3 e 528.º exigem conferência individual, sem repartir automaticamente."};
+ if(el("multiSettlement").value!=="no")return {error:"Transacção não excluída: confirmar o artigo 528.º/2 e eventuais reduções antes de repartir."};
+ if(!el("multiVerified").checked)return {error:"É necessário confirmar a decisão, o montante, os responsáveis e a inexistência de duplicações."};
+ let weights,method;
+ if(mode==="iguais"){
+  if(!el("multiAllLost").checked)return {error:"Para partes iguais confirma a derrota total dos litisconsortes, sem particularidades."};
+  if(!selected.every(p=>p.role===selected[0].role&&["autor","reu"].includes(p.role)))return {error:"CPC 528.º/1: divisão igual só para vários autores ou vários réus litisconsortes totalmente vencidos. Selecciona apenas intervenientes do mesmo lado."};
+  weights=selected.map(()=>1);method="CPC 528.º/1, partes iguais com pressupostos confirmados";
+ } else {
+  if(selected.some(p=>!Number.isSafeInteger(p.share)||p.share<0||p.share>10000))return {error:"Quota percentual inválida."};
+  const sum=selected.reduce((v,p)=>v+p.share,0);
+  if(sum!==10000)return {error:"As quotas expressas devem perfazer exactamente 100,00%. Total indicado: "+(sum/100).toFixed(2)+"%."};
+  weights=selected.map(p=>p.share);method="Quotas individuais expressamente confirmadas na decisão";
+ }
+ const allocations=multiSplit(cents,selected,weights);
+ if(!allocations||allocations.reduce((n,x)=>n+x.cents,0)!==cents)return {error:"Não foi possível conservar o montante total após arredondamento."};
+ return {ref,decision,date,scope,mode,method,cents,allocations,selected:selected.map(p=>({id:p.id,name:p.name,role:p.role,share:p.share}))};
+}
+function multiTotals(){
+ const totals=new Map(multiPeople.map(p=>[p.id,0]));
+ for(const charge of multiCharges)for(const a of charge.allocations)totals.set(a.id,(totals.get(a.id)||0)+a.cents);
+ return [...multiPeople].map(p=>({...p,cents:totals.get(p.id)||0}));
+}
+function multiSnapshot(){
+ return JSON.stringify({people:multiPeople.map(p=>[p.id,p.name,p.role,p.active,p.share]),cases:multiCharges.map(c=>[c.id,c.ref,c.decision,c.date,c.cents,c.mode,c.allocations.map(a=>[a.id,a.cents])])});
+}
+function multiReport(){
+ const totals=multiTotals();
+ return ["LEGALTECH SUITE · MAPA MULTISSUJEITO EXPERIMENTAL","NÃO É CONTA OFICIAL. Valores declarados pelo utilizador, não integrados na conta A/B.","Participantes: "+totals.length+"; encargos repartidos: "+multiCharges.length,
+ ...totals.map(p=>p.name+" ("+multiRoles[p.role]+"): encargo imputado no mapa "+ledgerFmt(p.cents)),
+ ...multiCharges.flatMap(c=>["Encargo "+c.ref+" | "+multiScopes[c.scope]+" | decisão "+c.decision+" de "+c.date+" | "+ledgerFmt(c.cents)+" | "+c.method,...c.allocations.map(a=>"  "+(multiPeople.find(p=>p.id===a.id)?.name||a.id)+" : "+ledgerFmt(a.cents))]),
+ "Aviso: não se calculam automaticamente taxas por impulso, pagamentos, solidariedade, reduções por transacção, decaimento parcial ou custas de parte.","O eventual processamento da conta obedece ao RCP 29.º e 30.º, por cada sujeito processual responsável."].join("\n");
+}
+el("multiAdd").addEventListener("click",()=>{
+ const name=el("multiName").value.trim(),role=el("multiRole").value;
+ if(!name||name.length>60||!Object.hasOwn(multiRoles,role)){el("multiMessage").textContent="Indica um identificador fictício válido e a posição processual.";return}
+ if(multiPeople.length>=12){el("multiMessage").textContent="O protótipo admite até 12 intervenientes.";return}
+ if(multiPeople.some(p=>p.name.toLocaleLowerCase("pt-PT")===name.toLocaleLowerCase("pt-PT"))){el("multiMessage").textContent="Interveniente já registado com este identificador.";return}
+ multiPeople.push({id:multiNextPerson++,name,role,active:true,share:0});
+ el("multiName").value="";multiInvalidate();multiRender("Interveniente registado. Indica quotas expressas no mapa ou selecciona partes iguais após conferência jurídica.");
+});
+el("multiPeopleRows").addEventListener("change",event=>{
+ const target=event.target,id=Number(target.dataset.multiShare||target.dataset.multiActive);
+ const p=multiPeople.find(x=>x.id===id);if(!p)return;
+ if(target.dataset.multiActive){p.active=!!target.checked;if(!p.active)p.share=0}
+ else if(target.dataset.multiShare){const num=multiNumeric(String(target.value).trim(),0,100);if(num===null){el("multiMessage").textContent="Quota inválida: utiliza 0 a 100%, com duas casas decimais.";multiRender();return}p.share=num}
+ multiInvalidate();multiRender();
+});
+el("multiPeopleRows").addEventListener("click",event=>{
+ const btn=event.target.closest("button[data-multi-remove]");if(!btn)return;
+ const id=Number(btn.dataset.multiRemove),index=multiPeople.findIndex(p=>p.id===id);if(index<0)return;
+ if(multiCharges.some(c=>c.allocations.some(a=>a.id===id))){el("multiMessage").textContent="Não podes retirar um interveniente associado a encargos. Retira primeiro as repartições correspondentes.";return}
+ multiPeople.splice(index,1);multiInvalidate();multiRender("Interveniente retirado do mapa temporário.");
+});
+for(const id of ["multiRef","multiScope","multiAmount","multiMode","multiDecision","multiDate","multiSolidarity","multiSettlement","multiAllLost","multiVerified"]){
+ el(id).addEventListener("input",multiInvalidate);el(id).addEventListener("change",multiInvalidate);
+}
+el("multiPreview").addEventListener("click",()=>{
+ const d=multiCheck();if(d.error){multiPreviewState=null;el("multiResult").textContent=d.error;return}
+ multiPreviewState={data:d,snapshot:multiSnapshot()};
+ el("multiResult").textContent="Repartição proposta: "+d.allocations.map(a=>(multiPeople.find(p=>p.id===a.id)?.name||"Interveniente")+" "+ledgerFmt(a.cents)).join("; ")+". Total "+ledgerFmt(d.cents)+". Ainda não lançada; conferir os cêntimos residuais e a decisão.";
+});
+el("multiPost").addEventListener("click",()=>{
+ const d=multiCheck();if(d.error){el("multiResult").textContent=d.error;return}
+ if(!multiPreviewState||multiPreviewState.snapshot!==multiSnapshot()||JSON.stringify(d)!==JSON.stringify(multiPreviewState.data)){el("multiResult").textContent="Volta a conferir a repartição antes de a registar.";return}
+ multiCharges.push({...d,id:multiNextCharge++});
+ multiPreviewState=null;multiReportCache=null;el("multiVerified").checked=false;el("multiRef").value="";el("multiAmount").value="";
+ multiRender("Encargo repartido, sem alteração das taxas, dos pagamentos ou da conta A/B. Verifica os resultados por sujeito.");
+});
+el("multiChargesRows").addEventListener("click",event=>{
+ const btn=event.target.closest("button[data-multi-charge-remove]");if(!btn)return;
+ const index=multiCharges.findIndex(c=>c.id===Number(btn.dataset.multiChargeRemove));if(index<0)return;
+ multiCharges.splice(index,1);multiInvalidate();multiRender("Repartição retirada do mapa; sem alteração do livro financeiro A/B.");
+});
+el("multiClear").addEventListener("click",()=>{
+ multiPeople.length=0;multiCharges.length=0;multiNextPerson=1;multiNextCharge=1;
+ multiInvalidate();multiRender("Mapa multissujeito limpo, sem afectar a conferência A/B.");
+});
+el("multiCopy").addEventListener("click",async()=>{
+ const textContent=multiReport();
+ try{await navigator.clipboard.writeText(textContent);el("multiResult").textContent="Mapa experimental copiado, sem dados do livro A/B."}
+ catch(e){el("multiResult").textContent="Não foi possível copiar automaticamente; verifica as permissões do navegador."}
+});
+el("multiExport").addEventListener("click",()=>{
+ const quote=value=>'"'+String(value).replace(/"/g,'""')+'"';
+ const csv=["Interveniente;Posição;Total atribuído (€)",...multiTotals().map(p=>[quote(p.name),quote(multiRoles[p.role]),String((p.cents/100).toFixed(2)).replace(".",",")].join(";")),
+  "ALERTA;"+quote("Mapa autónomo. Não inclui a conta A/B nem pagamentos confirmados. Não é conta oficial.")].join("\r\n");
+ const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+ const href=URL.createObjectURL(blob),a=document.createElement("a");a.href=href;a.download="legaltech-multissujeito-experimental.csv";
+ document.body.append(a);a.click();a.remove();URL.revokeObjectURL(href);
+ el("multiResult").textContent="Resumo multissujeito exportado localmente, sem integração automática na conta A/B.";
+});
+
 /* Reconciliação por ID de obrigação, sem imputação tácita nem encontro de contas entre partes. */
 let reconcileCache=null;
 function reconcileSnapshot(){
@@ -908,6 +1080,7 @@ function proposalSnapshot(){
    ledger:ledgerEntries.map(m=>[m.id,m.party,m.kind,m.cents,m.status,m.obId]),
    ledgerSynced,obSynced,profilesReady,
    responsibility:respEntries.map(x=>[x.id,x.a,x.b,x.posted]),
+   multi:multiSnapshot(),
    checks:["law","table","exempt","remainder","charges"].map(id=>el(id).checked),
    payments:proposalParts.map(x=>el(x[2]).value),
    due:proposalParts.map(x=>el(x[0]).value),
@@ -924,6 +1097,7 @@ function proposalBuild(){
  if(obligations.some(o=>!o.checked||o.benefitAuditCurrent===false))blockers.push("Existem obrigações sem revisão jurídica actualizada");
  if(obligations.some(o=>o.paymentTiming==="deferred"))blockers.push("Dispensa de pagamento prévio: confirmar exigibilidade após decisão sobre custas");
  if(respEntries.some(x=>!x.posted))blockers.push("Existem encargos no mapa que ainda não foram lançados nas obrigações");
+ if(multiPeople.length||multiCharges.length)blockers.push("Existe mapa multissujeito autónomo, não incluído nos totais A/B: rever cada sujeito processual antes da conta");
  if(!profilesReady)blockers.push("Fichas dos intervenientes não estão totalmente verificadas");
  if(["law","table","exempt","remainder","charges"].some(id=>!el(id).checked))blockers.push("Faltam confirmações jurídicas gerais");
  if(!el("proposalTransit").value)blockers.push("Trânsito em julgado não confirmado");
@@ -954,6 +1128,7 @@ function proposalBuild(){
   "",
   ...obligations.map(o=>"Impulso "+o.id+": "+ledgerParties[o.party]+"; "+obTypes[o.type]+"; "+o.ref+"; valor "+ledgerFmt(o.cents)+"; fundamento "+o.basis),
   ...respEntries.map(x=>"Encargo "+x.ref+"; A "+ledgerFmt(x.a)+"; B "+ledgerFmt(x.b)+"; "+(x.posted?"lançado":"não lançado")),
+  ...multiCharges.map(c=>"MAPA MULTISSUJEITO NÃO INCLUÍDO NA CONTA A/B: "+c.ref+"; "+ledgerFmt(c.cents)+"; "+c.allocations.map(a=>(multiPeople.find(p=>p.id===a.id)?.name||a.id)+": "+ledgerFmt(a.cents)).join("; ")),
   "", "RECONCILIAÇÃO POR IMPULSO:", ...reconciliation.rows.map(x=>ledgerParties[x.party]+"; "+x.ref+"; devido "+ledgerFmt(x.due)+"; imputado "+ledgerFmt(x.paid)+"; diferença "+ledgerFmt(x.positive)+"; excesso "+ledgerFmt(x.excess)+"; "+x.state.join(", ")),
   "Não imputados (líquidos): "+ledgerFmt(reconciliation.unassigned),
   "",
@@ -991,6 +1166,7 @@ el("proposalExport").addEventListener("click",()=>{
   "Mapa por impulso;Obrigação (€);Pago imputado (€);Diferença positiva (€);Excesso potencial (€);Estado",
   ...p.reconciliation.rows.map(x=>[quote(ledgerParties[x.party]+" · "+x.ref),x.due,x.paid,x.positive,x.excess,quote(x.state.join("; "))].map((v,i)=>i>=1&&i<=4?String((v/100).toFixed(2)).replace(".",","):v).join(";")),
   "Não imputados (líquidos);"+String((p.reconciliation.unassigned/100).toFixed(2)).replace(".",","),
+  ...multiCharges.map(c=>"MULTISSUJEITO NÃO INCLUÍDO EM A/B;"+quote(c.ref+"; "+ledgerFmt(c.cents)+"; "+c.allocations.map(a=>(multiPeople.find(p=>p.id===a.id)?.name||a.id)+" "+ledgerFmt(a.cents)).join(", "))),
   "Sujeito;Obrigações (€);Pagamentos confirmados (€);Diferença positiva (€);Excesso potencial (€)",
   ...p.rows.map(x=>[x.label,x.due,x.paid,x.positive,x.excess].map((v,i)=>i?String((v/100).toFixed(2)).replace(".",","):quote(v)).join(";")),
   "AVISO;"+quote("Documento não oficial. Diferenças não são necessariamente dívida. Custas de parte excluídas.")
@@ -1015,7 +1191,7 @@ el("status").textContent=!validated?"Conferência jurídica incompleta":debt?"Di
 el("notes").textContent=(obligations.some(o=>o.paymentTiming==="deferred")?"Existem obrigações com dispensa de pagamento prévio: as diferenças não são dívidas imediatamente exigíveis. Confirmar o artigo 15.º do RCP. ":"")+(!validated?"Existem pressupostos jurídicos por confirmar. ":"")+(debt?"Há diferenças positivas por parte/rubrica. ":"")+(over?"O excesso não implica restituição automática. ":"")+(debt===0?"Conferir, apenas após validação completa dos autos, a eventual dispensa de conta prevista no artigo 29.º, n.º 1, alínea a), do RCP. ":"")+"Não inclui custas de parte nem valida comprovativos automaticamente.";
 report=["CONFERÊNCIA EXPERIMENTAL DE CUSTAS · A01", "Referência: "+(el("process").value||"não indicada"),"Entrada: "+(el("date").value||"não indicada"),"Valor da causa: "+(el("value").value||"não indicado"),"Objecto: "+(el("subject").value||"não indicado"),"Parte A: devido "+euro(a)+"; pago "+euro(ap),"Parte B: devido "+euro(b)+"; pago "+euro(bp),"Outras quantias: devido "+euro(extra)+"; pago "+euro(extrap),"Total exigível: "+euro(due),"Total confirmado: "+euro(paid),"Diferença aritmética positiva (não é dívida confirmada): "+euro(debt),"Potencial excesso: "+euro(over),"Validação jurídica: "+(validated?"assinalada pelo utilizador":"incompleta"),"Obrigações por impulso: "+(obligations.length?obligations.length+"; "+(obSynced?"totais transferidos":"totais por transferir"):"sem obrigações; totais introduzidos manualmente"),...obligations.map(ob=>"Obrigação "+ob.id+": "+ledgerParties[ob.party]+"; "+obTypes[ob.type]+"; "+ob.ref+"; "+(ob.benefit==="electronic90"?"taxa a 90%; ":"")+(ob.paymentTiming==="deferred"?"dispensa pagamento prévio; ":"")+"devido "+ledgerFmt(ob.cents)+"; pagamentos imputados "+ledgerFmt(obAllocated(ob))+"; diferença aritmética "+ledgerFmt(ob.cents-obAllocated(ob))+"; "+ob.basis),"Livro de movimentos: "+(ledgerEntries.length?ledgerEntries.length+" movimento(s), "+ledgerBalances().pending+" pagamento(s)/restituição(ões) pendente(s), "+(ledgerSynced?"saldos transferidos":"saldos não transferidos"):"sem movimentos; pagamentos preenchidos manualmente"),profilesText||"Fichas dos intervenientes: não analisadas",...respEntries.map(x=>"Responsabilidade: "+respPhases[x.phase]+"; encargo "+x.ref+"; fundamento "+respBases[x.basis]+"; decisão "+x.decisionRef+" de "+x.date+"; A "+respMoney(x.a)+"; B "+respMoney(x.b)+"; "+(x.posted?"lançada em obrigações":"não lançada em obrigações")),...ledgerEntries.map(m=>"Movimento "+m.id+": "+ledgerParties[m.party]+"; "+ledgerKinds[m.kind]+"; "+m.ref+"; "+m.date+"; "+ledgerFmt(m.cents)+"; "+(m.status==="confirmed"?"confirmado":m.status==="pending"?"pendente":"registado")),"Resultado não oficial. Verificar legislação e documentos."].join("\n");el("report").textContent=report;el("report").hidden=false;});
 el("copy").addEventListener("click",async()=>{if(!report)return;try{await navigator.clipboard.writeText(report)}catch(e){const ta=document.createElement("textarea");ta.value=report;document.body.append(ta);ta.select();document.execCommand("copy");ta.remove()}});
-el("reset").addEventListener("click",()=>{respEntries.length=0;respNextId=1;respPreviewState=null;for(const id of ["respRef","respAmount","respDecisionRef","respDecisionDate"])el(id).value="";for(const id of ["respPhase","respBasis"])el(id).selectedIndex=0;el("respShareA").value="50";el("respShareB").value="50,00 %";el("respVerified").checked=false;respRender("Mapa de responsabilidade limpo.");benefitPreviewState=null;for(const id of ["benefitRule","benefitNoCounsel","benefitOptional","benefitAllElectronic"])el(id).selectedIndex=0;el("benefitVerified").checked=false;el("benefitResult").textContent="Selecciona uma obrigação.";secondPreviewState=null;remObPreviewState=null;for(const id of ["secondOther","remDecision","remTarget"])el(id).selectedIndex=0;for(const id of ["remRef"])el(id).value="";el("remPayPct").value="100";el("secondVerified").checked=false;el("remVerified").checked=false;el("secondCalcResult").textContent="Sem primeira prestação seleccionada.";el("remObResult").textContent="Aguarda verificação documental.";autoPreviewState=null;for(const id of ["autoDate","autoValue","autoUC","autoRef"])el(id).value="";for(const id of ["autoParty","autoType"])el(id).selectedIndex=0;el("autoVerified").checked=false;el("autoResult").textContent="Indica os dados do impulso.";obligations.length=0;obNextId=1;obSynced=false;for(const id of ["obRef","obAmount","obBasis"])el(id).value="";el("obChecked").checked=false;for(const id of ["obParty","obType"])el(id).selectedIndex=0;for(const id of ids){const x=el(id);if(x.type==="checkbox")x.checked=false;else if(x.tagName==="SELECT")x.selectedIndex=0;else x.value=(id==="extra"||id==="extrap")?"0":""}ledgerEntries.length=0;ledgerNextId=1;ledgerSynced=false;ledgerRender("Livro de movimentos limpo.");obSummary();el("obMessage").textContent="Sem obrigações.";for(const id of ["ledgerRef","ledgerDate","ledgerAmount"])el(id).value="";for(const id of ["ledgerParty","ledgerKind","ledgerStatus"])el(id).selectedIndex=0;profilesReady=false;profilesText="";el("partiesstatus").textContent="A análise exige revisão documental e legal individualizada.";for(const p of ["pa","pb"]){for(const field of partyFields){const x=el(p+"_"+field);if(x.type==="checkbox")x.checked=false;else if(x.tagName==="SELECT")x.selectedIndex=0;else x.value=""}el(p+"_result").textContent="Aguardam-se os dados do interveniente.";}el("status").textContent="Aguardam-se dados.";for(const id of ["due","paid","debt","over"])el(id).textContent="—";el("report").hidden=true;report=""});
+el("reset").addEventListener("click",()=>{multiPeople.length=0;multiCharges.length=0;multiNextPerson=1;multiNextCharge=1;multiPreviewState=null;multiReportCache=null;el("multiName").value="";el("multiRef").value="";el("multiAmount").value="";el("multiDecision").value="";el("multiDate").value="";for(const id of ["multiRole","multiScope","multiMode","multiSolidarity","multiSettlement"])el(id).selectedIndex=0;el("multiAllLost").checked=false;el("multiVerified").checked=false;multiRender("Mapa multissujeito limpo.");respEntries.length=0;respNextId=1;respPreviewState=null;for(const id of ["respRef","respAmount","respDecisionRef","respDecisionDate"])el(id).value="";for(const id of ["respPhase","respBasis"])el(id).selectedIndex=0;el("respShareA").value="50";el("respShareB").value="50,00 %";el("respVerified").checked=false;respRender("Mapa de responsabilidade limpo.");benefitPreviewState=null;for(const id of ["benefitRule","benefitNoCounsel","benefitOptional","benefitAllElectronic"])el(id).selectedIndex=0;el("benefitVerified").checked=false;el("benefitResult").textContent="Selecciona uma obrigação.";secondPreviewState=null;remObPreviewState=null;for(const id of ["secondOther","remDecision","remTarget"])el(id).selectedIndex=0;for(const id of ["remRef"])el(id).value="";el("remPayPct").value="100";el("secondVerified").checked=false;el("remVerified").checked=false;el("secondCalcResult").textContent="Sem primeira prestação seleccionada.";el("remObResult").textContent="Aguarda verificação documental.";autoPreviewState=null;for(const id of ["autoDate","autoValue","autoUC","autoRef"])el(id).value="";for(const id of ["autoParty","autoType"])el(id).selectedIndex=0;el("autoVerified").checked=false;el("autoResult").textContent="Indica os dados do impulso.";obligations.length=0;obNextId=1;obSynced=false;for(const id of ["obRef","obAmount","obBasis"])el(id).value="";el("obChecked").checked=false;for(const id of ["obParty","obType"])el(id).selectedIndex=0;for(const id of ids){const x=el(id);if(x.type==="checkbox")x.checked=false;else if(x.tagName==="SELECT")x.selectedIndex=0;else x.value=(id==="extra"||id==="extrap")?"0":""}ledgerEntries.length=0;ledgerNextId=1;ledgerSynced=false;ledgerRender("Livro de movimentos limpo.");obSummary();el("obMessage").textContent="Sem obrigações.";for(const id of ["ledgerRef","ledgerDate","ledgerAmount"])el(id).value="";for(const id of ["ledgerParty","ledgerKind","ledgerStatus"])el(id).selectedIndex=0;profilesReady=false;profilesText="";el("partiesstatus").textContent="A análise exige revisão documental e legal individualizada.";for(const p of ["pa","pb"]){for(const field of partyFields){const x=el(p+"_"+field);if(x.type==="checkbox")x.checked=false;else if(x.tagName==="SELECT")x.selectedIndex=0;else x.value=""}el(p+"_result").textContent="Aguardam-se os dados do interveniente.";}el("status").textContent="Aguardam-se dados.";for(const id of ["due","paid","debt","over"])el(id).textContent="—";el("report").hidden=true;report=""});
 el("theme").addEventListener("click",()=>{const v=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=v;try{localStorage.setItem("legaltech_theme",v)}catch(e){}});
 </script><script src="assets/suite-nav.js"></script><script src="assets/theme.js"></script>
 </body></html>
