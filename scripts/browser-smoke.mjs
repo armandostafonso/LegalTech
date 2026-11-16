@@ -19,7 +19,24 @@ await check("Página inicial e pesquisa",async()=>{
  await page.locator("#search").fill("minuta");
  if(await page.locator(".tool:visible").count()!==1)throw Error("Pesquisa não filtra para uma ferramenta");
  await page.locator("#search").fill("");
- if(await page.locator(".tool:visible").count()!==6)throw Error("Ferramentas não recuperadas");
+ if(await page.locator(".tool:visible").count()!==7)throw Error("Ferramentas não recuperadas");
+});
+await check("Tramitação TAF: fases, urgência, progressão e remissão CPPT",async()=>{
+ await open("tramitação-taf.html");
+ if(await page.locator("#workflow option").count()!==3)throw Error("Roteiros TAF incompletos");
+ await page.locator("#workflow").selectOption("intimacao-informacao");
+ await page.locator("#phase").selectOption("citacao");
+ const text=await page.locator("#steps").innerText();
+ if(!text.includes("dez dias"))throw Error("Prazo do artigo 107 não identificado");
+ await page.locator("#steps input").first().check();
+ if(!(await page.locator("#count").innerText()).includes("1 de 4"))throw Error("Progresso errado");
+ await page.locator("#workflow").selectOption("intimacao-dlg");
+ if(!(await page.locator("#warning").innerText()).includes("sete dias"))throw Error("Ressalva do art. 110 ausente");
+ await page.locator("#workflow").selectOption("intimacao-tributaria");
+ const sources=await page.locator("#sources").innerText();
+ if(!sources.includes("146.º"))throw Error("Remissão CPPT 146 ausente");
+ await page.locator("#phase").selectOption("decisao");
+ if(await page.locator("#steps input").count()!==4)throw Error("Verificações por fase ausentes");
 });
 await check("Minutas: gerar texto e manter nomes introduzidos",async()=>{
  await open("minutas.html");
