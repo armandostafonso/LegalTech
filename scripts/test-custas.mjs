@@ -489,4 +489,93 @@ check("Reconciliação: limpar não reutiliza valores anteriores",()=>{
  click("reset");click("reconcile");
  assert.equal(read("reconcilePending"),"0");assert.match(els.get("reconcileRows").innerHTML,/Não existem obrigações/);
 });
+
+check("Multissujeito: três autores com identificadores diferentes",()=>{
+ for(const name of ["AUTOR-A","AUTOR-B","AUTOR-C"]){
+  put("multiName",name);put("multiRole","autor");click("multiAdd");
+ }
+ assert.equal(read("multiPeopleCount"),"3");
+ assert.match(els.get("multiPeopleRows").innerHTML,/AUTOR-C/);
+});
+check("Multissujeito: não permite interveniente duplicado",()=>{
+ put("multiName","autor-a");click("multiAdd");
+ assert.match(read("multiMessage"),/já registado/);assert.equal(read("multiPeopleCount"),"3");
+});
+check("Multissujeito: divisão igual bloqueia solidariedade não verificada",()=>{
+ put("multiMode","iguais");put("multiRef","ENC-MULTI-001");put("multiScope","acao");put("multiAmount","100.01");
+ put("multiDecision","DEC-001");put("multiDate","2026-11-16");els.get("multiAllLost").checked=true;els.get("multiVerified").checked=true;
+ click("multiPreview");assert.match(read("multiResult"),/Solidariedade não excluída/);
+});
+check("Multissujeito: litisconsórcio totalmente vencido em partes iguais",()=>{
+ put("multiSolidarity","no");put("multiSettlement","no");click("multiPreview");
+ assert.match(read("multiResult"),/33,34/);assert.match(read("multiResult"),/33,33/);
+ click("multiPost");assert.equal(read("multiChargeCount"),"1");
+ assert.match(els.get("multiChargesRows").innerHTML,/100,01/);
+ assert.match(els.get("multiTotalsRows").innerHTML,/33,34/);
+});
+check("Multissujeito: não duplica a referência já repartida",()=>{
+ put("multiRef","ENC-MULTI-001");els.get("multiVerified").checked=true;
+ click("multiPreview");assert.match(read("multiResult"),/já registado/);
+});
+check("Multissujeito: bloqueia retirada de participante com encargo",()=>{
+ els.get("multiPeopleRows").listeners.click({target:{closest:()=>({dataset:{multiRemove:"1"}})}});
+ assert.match(read("multiMessage"),/Retira primeiro as repartições/);
+});
+check("Multissujeito: solidariedade e transacção não criam quotas",()=>{
+ put("multiRef","ENC-MULTI-002");put("multiAmount","51");
+ put("multiSolidarity","yes");click("multiPreview");assert.match(read("multiResult"),/Solidariedade não excluída/);
+ put("multiSolidarity","no");put("multiSettlement","yes");click("multiPreview");assert.match(read("multiResult"),/Transacção não excluída/);
+ put("multiSettlement","no");
+});
+check("Multissujeito: quotas expressas exigem soma de 100 por cento",()=>{
+ put("multiMode","expressa");els.get("multiVerified").checked=true;
+ for(const [id,value] of [[1,"50"],[2,"30"],[3,"10"]])
+  els.get("multiPeopleRows").listeners.change({target:{dataset:{multiShare:String(id)},value}});
+ click("multiPreview");assert.match(read("multiResult"),/perfazer exactamente 100/);
+});
+check("Multissujeito: quotas expressas conservam cêntimos e total",()=>{
+ els.get("multiPeopleRows").listeners.change({target:{dataset:{multiShare:"3"},value:"20"}});
+ put("multiAmount","101.01");click("multiPreview");
+ assert.match(read("multiResult"),/50,51/);assert.match(read("multiResult"),/30,30/);assert.match(read("multiResult"),/20,20/);
+ click("multiPost");assert.equal(read("multiChargeCount"),"2");
+});
+check("Multissujeito: quotas expressas podem pertencer a lados distintos",()=>{
+ els.get("multiChargesRows").listeners.click({target:{closest:()=>({dataset:{multiChargeRemove:"2"}})}});
+ put("multiName","REU-D");put("multiRole","reu");click("multiAdd");
+ els.get("multiPeopleRows").listeners.change({target:{dataset:{multiActive:"1"},checked:false}});
+ els.get("multiPeopleRows").listeners.change({target:{dataset:{multiActive:"2"},checked:false}});
+ els.get("multiPeopleRows").listeners.change({target:{dataset:{multiShare:"3"},value:"20"}});
+ els.get("multiPeopleRows").listeners.change({target:{dataset:{multiShare:"4"},value:"80"}});
+ put("multiRef","ENC-MULTI-MISTO");put("multiMode","expressa");put("multiAmount","100");els.get("multiVerified").checked=true;
+ click("multiPreview");assert.match(read("multiResult"),/REU-D/);
+});
+check("Multissujeito: partes iguais bloqueadas para posições opostas",()=>{
+ put("multiMode","iguais");els.get("multiAllLost").checked=true;click("multiPreview");
+ assert.match(read("multiResult"),/mesmo lado/);
+});
+check("Multissujeito: mapa não altera obrigações nem pagamentos A/B",()=>{
+ assert.match(read("obA"),/0,00/);assert.match(read("obB"),/0,00/);
+ assert.match(read("ledgerA"),/0,00/);assert.match(read("ledgerB"),/0,00/);
+});
+check("Multissujeito: a proposta A/B avisa que não inclui o mapa independente",()=>{
+ click("proposalPreview");
+ assert.match(read("proposalText"),/MULTISSUJEITO NÃO INCLUÍDO NA CONTA A\/B/);
+ assert.match(read("proposalNote"),/mapa multissujeito autónomo/);
+});
+check("Multissujeito: CSV autónomo discrimina valores por sujeito",()=>{
+ click("multiExport");
+ const csv=downloads.at(-1);
+ assert.match(csv,/Interveniente;Posição;Total atribuído/);
+ assert.match(csv,/AUTOR-A/);assert.match(csv,/AUTOR-C/);
+ assert.match(csv,/Não é conta oficial/);
+});
+check("Multissujeito: limpar mapa não altera A/B nem livro financeiro",()=>{
+ click("multiClear");
+ assert.equal(read("multiChargeCount"),"0");assert.equal(read("multiPeopleCount"),"0");
+ assert.match(read("obA"),/0,00/);assert.match(read("ledgerA"),/0,00/);
+});
+check("Multissujeito: reposição integral limpa os intervenientes",()=>{
+ put("multiName","PESSOA-X");click("multiAdd");click("reset");
+ assert.equal(read("multiPeopleCount"),"0");assert.equal(read("multiChargeCount"),"0");
+});
 console.log(tests+" testes do módulo A01 concluídos.");
