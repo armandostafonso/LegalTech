@@ -4,7 +4,7 @@
 
 ## Conteúdo
 
-A ferramenta [Tramitação TAF](../tramitação-taf.html) dispõe de sete roteiros e 25 fases; o catálogo está em `rules/roteiros-taf.json` e as fichas complementares em `rules/fichas-taf.json`.
+A ferramenta [Tramitação TAF](../tramitação-taf.html) dispõe de nove roteiros e 33 fases; o catálogo está em `rules/roteiros-taf.json` e as fichas complementares em `rules/fichas-taf.json`.
 
 A ficha de cada fase apresenta: natureza da espécie, atenção jurídica especial, elementos a conferir antes de prosseguir, pressupostos que **não** devem ser presumidos, principais campos relevantes e acesso às fontes. As listas distinguem itens de secretaria e itens que dependem de despacho. O número de itens assinalados não constitui atestação de que o ato foi praticado.
 
@@ -31,6 +31,13 @@ O Decreto-Lei n.º 164/2026 entra em vigor em **1 de dezembro de 2026**. O artig
 - Intimação para proteção de direitos, liberdades e garantias: artigo 110.º do CPTA (despacho liminar e modalidades de tramitação subsequente).
 - Impugnação judicial tributária: artigo 110.º do CPPT (notificação do RFP ordenada pelo juiz; contestação em três meses, sem conversão aritmética em noventa dias).
 - Providência cautelar administrativa: artigos 116.º, 117.º e 131.º do CPTA (despacho liminar urgente, oposição e eventual decretamento provisório).
+
+## Espécies acrescentadas em 16 de novembro de 2026
+
+- **Contencioso pré-contratual:** artigos 100.º a 103.º-B do CPTA, com despacho liminar urgente, conferência da citação e atenção aos pressupostos específicos do efeito suspensivo automático do artigo 103.º-A.
+- **Reclamação de atos do órgão de execução fiscal:** artigos 276.º a 278.º do CPPT, com separação entre subida diferida e imediata, eventual natureza urgente e contraditório do representante da Fazenda Pública e Ministério Público.
+
+As fichas não determinam se os pressupostos do efeito suspensivo ou da subida imediata se verificam: essa apreciação depende da lei, dos autos e da decisão judicial aplicável.
 
 ## Restrições deliberadas
 
