@@ -215,7 +215,8 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
         <select id="tipoAto" onchange="atualizarSubOpcoes()">
           <option value="cit_pc_postal">Citação de empresa ou associação, por carta</option>
           <option value="cit_pc_eletronica">Citação de empresa ou associação, pela área reservada (eletrónica)</option>
-          <option value="cit_singular">Citação de pessoa singular (particular)</option>
+          <option value="cit_singular">Citação de pessoa singular, por via postal ou contacto pessoal</option>
+          <option value="cit_singular_eletronica">Citação de pessoa singular, por via eletrónica (art. 230.º-A CPC)</option>
           <option value="cit_entidade_publica">Citação do Estado, de autarquia ou de outra entidade pública</option>
           <option value="notif_mandatario">Notificação a advogado</option>
           <option value="notif_parte">Notificação a parte sem advogado</option>
@@ -255,12 +256,21 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
       <div class="hint after">O prazo vem preenchido (30 dias na citação, 10 na notificação). Altere se o processo tiver outro.</div>
 
       <div id="consultaContainer" class="form-group hidden">
-        <label for="dataConsulta">Data em que a empresa consultou a citação</label>
+        <label id="consultaLabel" for="dataConsulta">Data em que a empresa consultou a citação</label>
         <input type="date" id="dataConsulta">
-        <button type="button" class="btn-limpar" onclick="el('dataConsulta').value=''; simular();">Limpar (a empresa não consultou)</button>
-        <div class="hint">Deixe em branco se não consultou. A data da consulta aparece certificada no Citius.</div>
+        <button type="button" class="btn-limpar" onclick="el('dataConsulta').value=''; simular();">Limpar data da consulta</button>
+        <div class="hint">Deixe em branco se não houve consulta. Confirme a data nos eventos de retorno do sistema processual.</div>
       </div>
 
+      <div id="singularApos30" class="form-group hidden">
+        <label for="contactoPessoal">Se a consulta ocorreu após o 30.º dia, a citação por contacto pessoal ou outro meio já tinha sido concretizada?</label>
+        <select id="contactoPessoal">
+          <option value="desconhecido">Por confirmar</option>
+          <option value="nao">Não, a consulta ocorreu antes de outra citação</option>
+          <option value="sim">Sim, a citação já tinha sido concretizada por outro meio</option>
+        </select>
+        <div class="hint">A consulta posterior só produz este efeito se ocorrer antes da citação por outro meio (art. 230.º-A, n.º 10, CPC).</div>
+      </div>
       <div class="row-2">
         <div class="form-group">
           <label for="dilacaoExtra">Onde foi feita a citação?</label>
@@ -832,6 +842,7 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
   const TIPOS = {
     cit_pc_postal:        { prazo: 30, subLabel: 'Como correu a entrega da carta?', subs: ['pc_repr', 'pc_terceiro', 'pc_2t_deposito', 'pc_2t_aviso'] },
     cit_pc_eletronica:    { prazo: 30, eletronica: true },
+    cit_singular_eletronica: { prazo: 30, singularEletronica: true },
     cit_singular:         { prazo: 30, subLabel: 'Como foi feita a citação?', subs: ['si_proprio', 'si_terceiro', 'si_dc_2t_deposito', 'si_dc_2t_aviso', 'si_hora_certa', 'si_edital'] },
     cit_entidade_publica: { prazo: 30, semSub: 'ep' },
     notif_mandatario:     { prazo: 10, semSub: 'nm' },
@@ -876,13 +887,15 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
 
     if (notif) {
       el('hintTerr').textContent = 'Nas notificações não há dilação por local.';
+    } else if (tipo === 'cit_singular_eletronica') {
+      el('hintTerr').textContent = 'A consulta é citação pessoal: não há dilação por entrega a terceiro. Pode haver dilação territorial (art. 245.º, n.º 1, al. b), n.ºs 2 e 3 CPC).';
     } else if (tipo === 'cit_pc_eletronica') {
       el('hintTerr').textContent = 'Na citação eletrónica conta o local da sede da empresa. As dilações de local/modalidade não cumulam entre si (art. 245.º, n.º 5 do CPC): aplica-se apenas a maior.';
     } else {
       el('hintTerr').textContent = 'As dilações de local e de modalidade não cumulam entre si (art. 245.º, n.º 5 do CPC): aplica-se apenas a maior, acrescida de 5 dias quando entregue a terceiro.';
     }
 
-    if (cfg.semSub || cfg.eletronica) {
+    if (cfg.semSub || cfg.eletronica || cfg.singularEletronica) {
       el('subOpcaoContainer').classList.add('hidden');
     } else {
       el('subOpcaoContainer').classList.remove('hidden');
@@ -918,8 +931,29 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
     return { chave: 'el_tardia', consulta: cons, n };
   }
 
+  function resolverSingularEletronica() {
+    const disponivel = el('dataBase').value;
+    if (!disponivel) return { chave: 'sel_sem' };
+    const data = dataLocal(disponivel);
+    const entrada = el('dataConsulta').value;
+    if (!entrada) return { chave: 'sel_sem' };
+    const consulta = dataLocal(entrada);
+    if (consulta < data) return { erro: 'A consulta não pode anteceder a disponibilização da citação.' };
+    const limite = addDays(data, 30);
+    if (consulta > limite && el('contactoPessoal').value !== 'nao') {
+      return { chave: 'sel_sem', aviso: el('contactoPessoal').value === 'sim'
+        ? 'Já ocorreu citação por outro meio: o prazo deve ser contado a partir desse ato, e não da consulta eletrónica.'
+        : 'Consulta após o 30.º dia: confirme se ocorreu antes da concretização da citação por contacto pessoal ou outro meio.' };
+    }
+    return { chave: 'sel_consulta', consulta };
+  }
+
   function chaveAtual() {
     const cfg = TIPOS[el('tipoAto').value];
+    if (cfg.singularEletronica) {
+      const r = resolverSingularEletronica();
+      return r.chave || 'sel_sem';
+    }
     if (cfg.eletronica) {
       const r = resolverEletronica();
       return r && r.chave ? r.chave : 'el_nao';
@@ -929,8 +963,12 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
 
   function verificarCamposExtra() {
     const tipo = el('tipoAto').value;
-    const eletronica = !!TIPOS[tipo].eletronica;
+    const eletronica = !!(TIPOS[tipo].eletronica || TIPOS[tipo].singularEletronica);
     el('consultaContainer').classList.toggle('hidden', !eletronica);
+    el('singularApos30').classList.toggle('hidden', tipo !== 'cit_singular_eletronica' || !el('dataBase').value || !el('dataConsulta').value ||
+      dataLocal(el('dataConsulta').value) <= addDays(dataLocal(el('dataBase').value), 30));
+    el('consultaLabel').textContent = tipo === 'cit_singular_eletronica'
+      ? 'Data da consulta pela pessoa singular (certificada)' : 'Data em que a empresa consultou a citação';
     if (eletronica) {
       el('dataLabel').textContent = 'Data em que a citação foi disponibilizada na área reservada';
       return;
@@ -973,7 +1011,7 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
     OPC.tol24dez = el('tol24dez').checked;
     OPC.tol31dez = el('tol31dez').checked;
 
-    if (!def || !dataInput) {
+    if ((!def && tipo !== 'cit_singular_eletronica') || !dataInput) {
       limparResultado();
       el('alertaJuridico').textContent = 'Indique uma data válida.';
       return;
@@ -986,6 +1024,59 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
 
     let base = dataLocal(dataInput);
     const logEventos = new Set();
+
+    if (tipo === 'cit_singular_eletronica') {
+      const r = resolverSingularEletronica();
+      if (r.erro) {
+        limparResultado();
+        el('alertaJuridico').textContent = r.erro;
+        return;
+      }
+      if (r.chave === 'sel_sem') {
+        limparResultado();
+        const dia8 = addDays(base, 8);
+        const dia30 = addDays(base, 30);
+        const mensagem = r.aviso || `Sem consulta certificada. No 9.º dia após a disponibilização (${L(addDays(base, 9))}), a secretaria deve promover o aviso postal informativo (art. 230.º-A, n.º 6, CPC). Se continuar sem consulta até ao 30.º dia (${L(dia30)}), presume-se a recusa e devem iniciar-se diligências de citação por contacto pessoal (n.ºs 9 e 10). O aviso postal não suspende nem interrompe o prazo.`;
+        el('alertaJuridico').textContent = mensagem;
+        el('baseLegalTexto').textContent = 'Artigos 230.º-A, n.ºs 6 a 11, e 230.º-B do CPC. A disponibilização isolada não permite afirmar que a pessoa singular foi citada.';
+        el('resDataPerfeicao').textContent = 'Não confirmada';
+        el('resTotalDias').textContent = 'Sem termo calculável enquanto não houver citação válida';
+        el('feriadosDetetados').textContent = `8.º dia: ${L(dia8)} | 30.º dia: ${L(dia30)}. Verificar os eventos certificados.`;
+        el('cotaTexto').textContent = `COTA (minuta a conferir): Citação eletrónica de pessoa singular disponibilizada em ${L(base)}. ${mensagem} Não se apurou ainda data de citação eletrónica válida para início do prazo de ${descricaoPrazo}.`;
+        document.querySelector('.btn-copy').disabled = false;
+        return;
+      }
+      const consulta = r.consulta;
+      const atraso = consulta > addDays(base, 30);
+      const termo = unidade === 'dias'
+        ? adicionarDiasContinuosComSuspensao(consulta, prazo + terr, urgente, municipal, logEventos)
+        : contarPrazoCalendario(consulta, prazo, unidade, terr, urgente, municipal, logEventos);
+      const multa1 = proximoDiaUtilMulta(termo, urgente, municipal);
+      const multa2 = proximoDiaUtilMulta(multa1, urgente, municipal);
+      const multa3 = proximoDiaUtilMulta(multa2, urgente, municipal);
+      el('alertaJuridico').textContent = `Citação da pessoa singular efetuada na data da consulta, ${L(consulta)} (art. 230.º-B, n.ºs 1 e 2, CPC).` +
+        (atraso ? ' Consulta após o 30.º dia, declarada anterior a qualquer citação por outro meio: confirmar a sequência dos atos e solicitar devolução do pedido de citação pessoal, se aplicável (art. 230.º-A, n.º 10).' : '') +
+        (consulta > addDays(base, 8) ? ' Ultrapassado o 8.º dia: verificar expedição do aviso postal informativo, sem efeitos suspensivos.' : '');
+      el('baseLegalTexto').textContent = 'CPC: artigos 230.º-A, 230.º-B e 245.º, n.º 1, alínea b), n.ºs 2 e 3. A citação eletrónica é pessoal, sem dilação por entrega a terceiro.';
+      el('resDataPerfeicao').textContent = formatDate(consulta);
+      el('resDilacaoA').textContent = '0 dias';
+      el('resDilacaoG').textContent = terr + ' dias (territorial)';
+      el('resTotalDias').textContent = descricaoPrazo + (terr ? ' + ' + terr + ' dias de dilação' : '');
+      el('resTermoPrazo').textContent = formatDate(termo);
+      el('resumoTermo').textContent = formatDate(termo);
+      el('resumoMulta').textContent = `Ato com multa até ${formatDate(multa3)}, nos termos do art. 139.º, n.º 5 do CPC.`;
+      el('resMulta1').textContent = formatDate(multa1);
+      el('resMulta2').textContent = formatDate(multa2);
+      el('resMulta3').textContent = formatDate(multa3);
+      el('feriadosDetetados').textContent = Array.from(logEventos).join(' | ') || 'Sem suspensões ou transferências registadas.';
+      el('deverSecretaria').classList.add('hidden');
+      el('cotaTexto').textContent = `COTA (minuta a conferir): Citação eletrónica de pessoa singular disponibilizada na área reservada em ${L(base)} e consultada em ${L(consulta)}, data em que se considera efetuada (art. 230.º-B, n.ºs 1 e 2, CPC).` +
+        (atraso ? ' Consulta posterior ao 30.º dia, anterior à concretização de citação por outro meio (art. 230.º-A, n.º 10, CPC).' : '') +
+        ` Prazo de ${descricaoPrazo}` + (terr ? `, acrescido de ${terr} dias de dilação territorial (art. 245.º do CPC)` : '') +
+        `, com termo em ${L(termo)} (terceiro dia útil com multa: ${L(multa3)}, art. 139.º, n.º 5, CPC).`;
+      document.querySelector('.btn-copy').disabled = false;
+      return;
+    }
 
     let eletr = null;
     if (TIPOS[tipo].eletronica) {
@@ -1129,7 +1220,7 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
     simular();
     document.querySelectorAll('select, input[type="date"], input[type="number"], input[type="checkbox"]').forEach(campo => {
       if (campo.id === 'novaDataFecho') return;
-      campo.addEventListener('change', simular);
+      campo.addEventListener('change', () => { verificarCamposExtra(); simular(); });
       campo.addEventListener('input', simular);
     });
   })();
