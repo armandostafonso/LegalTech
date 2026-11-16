@@ -22,6 +22,8 @@ jobs:
         run: node scripts/taf-contract.mjs
       - name: Validar catálogo de expediente
         run: node scripts/expediente-contract.mjs
+      - name: Validar verificador de metadados legislativos (sem rede)
+        run: node scripts/lex-watch.mjs --self-test
       - name: Instalar navegador de testes
         run: |
           npm install --no-save playwright@1.56.1 axe-core@4.10.3
