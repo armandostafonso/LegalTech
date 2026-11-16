@@ -1,6 +1,6 @@
 # Motor de Custas A01 — Caderno jurídico e técnico
 
-**Versão da interface:** 1.9 (experimental, novembro de 2026)  
+**Versão da interface:** 2.0 (experimental, novembro de 2026)  
 **Espécie:** acção administrativa (CPTA)  
 **Página:** `custas.html`
 
@@ -222,6 +222,41 @@ O **mapa multissujeito não altera automaticamente** os campos A/B, as obrigaç�
 
 O módulo não interpreta decisões, não calcula automaticamente solidariedade, transacções ou decaimento parcial, não determina custas de parte e não produz contas oficiais.
 
+## Obrigações e pagamentos individualizados por interveniente (v2.0)
+
+A versão 2.0 acrescenta uma **contabilidade multissujeito autónoma**, para os intervenientes registados no mapa da versão 1.9, preservando a separação face à conta A/B.
+
+### Regras jurídicas estruturantes
+
+- O **artigo 30.º, n.º 2, do RCP** determina a elaboração de uma conta por cada sujeito processual responsável. A ferramenta regista separadamente cada sujeito, mas **não produz contas oficiais**.
+- O **artigo 530.º, n.º 4, do CPC** estabelece a obrigação inicial do primeiro litisconsorte quanto à taxa de justiça, sem prejuízo do regresso. Esta obrigação **não se presume idêntica** à responsabilidade final por encargos e não é redistribuída automaticamente.
+- O **artigo 530.º, n.º 5, do CPC** prevê a responsabilidade de cada autor, reconvinte, exequente ou requerente pela sua taxa na coligação. Esta análise é confirmada e introduzida manualmente.
+- A repartição dos encargos confirmada no mapa do artigo 528.º do CPC só é importada através de acção expressa. Não altera valores da conta A/B nem cria automaticamente pagamentos.
+
+### Modelo de registos
+
+**Obrigações individuais:** por cada pessoa podem ser registadas taxas de justiça, encargos, multas ou outras quantias, com referência única por sujeito, montante em cêntimos, fundamento jurídico/documental e confirmação expressa do utilizador. Não existe tabela de taxas automaticamente inferida para estes sujeitos.
+
+**Importação de encargos repartidos:** cria obrigações individualizadas correspondentes à quota de cada pessoa, conservando exactamente o valor repartido. Bloqueia importações repetidas e a eliminação do encargo de origem enquanto existirem obrigações dependentes.
+
+**Movimentos financeiros:** guia emitida, anulação, pagamento e restituição, com referência e data. Pagamentos e restituições podem ficar pendentes ou ser assinalados como confirmados. Guias emitidas ou anuladas **não constituem pagamentos**. Os movimentos podem ser associados a uma obrigação da própria pessoa, ou ficar sem imputação.
+
+**Reconciliação:** para cada interveniente, o mapa calcula obrigações registadas, saldo líquido de pagamentos confirmados, diferença aritmética positiva, excesso potencial e montantes confirmados sem imputação. Em paralelo, o quadro de obrigações mostra o valor pago por impulso. Não se fazem compensações automáticas entre sujeitos ou entre impulsos.
+
+### Controlos de integridade
+
+- Atribuição de pagamento a obrigação pertencente a outra pessoa é bloqueada.
+- Restituição confirmada exige pagamento confirmado da **mesma pessoa, referência e obrigação**, e não pode exceder o saldo ainda disponível.
+- Não se admite retirar um pagamento que sustente uma restituição confirmada, nem uma obrigação com movimentos associados.
+- Não é permitido apagar intervenientes, encargos ou mapas quando existam movimentos ou obrigações dependentes.
+- São assinalados pagamentos sem imputação, pagamentos ou restituições pendentes e excessos potenciais, sem classificar automaticamente qualquer diferença como dívida vencida.
+- O CSV da reconciliação inclui os alertas e é produzido localmente. Os conteúdos são escapados para reduzir o risco de interpretação de texto introduzido como fórmulas.
+- Os dados não são armazenados persistentemente pela ferramenta e perdem-se ao recarregar a página.
+
+**Integração deliberadamente limitada:** a contabilidade multissujeito é independente dos totais A/B e a proposta anterior assinala a sua existência. Não se convertem os saldos do novo mapa em parcelas da conta A/B nem se presume que o conjunto das obrigações registadas abranja todas as custas do processo.
+
+**Faltam:** interpretação completa da sentença e dos incidentes, normas temporais e regimes especiais por sujeito, verificação de DUC/comprovativos junto de sistemas oficiais, controlo de custas de parte fora da conta da secretaria, decisão sobre restituições e revisão jurídica independente de exemplos de contas reais devidamente anonimizados.
+
 ## Limitações que bloqueiam o uso como conta oficial
 
 - A taxa-base simulada não contempla isenções, reduções, prestações, regimes especiais, custas de recursos e incidentes. As obrigações de recurso ou incidente são valores **manuais**, não calculados automaticamente.
@@ -237,7 +272,7 @@ O módulo não interpreta decisões, não calcula automaticamente solidariedade,
 
 ## Testes
 
-- Script: `node scripts/test-custas.mjs` (132 casos técnicos na versão 1.9).
+- Script: `node scripts/test-custas.mjs` (152 casos técnicos na versão 2.0).
 - Verificação global da página: `node scripts/validate-site.mjs`.
 - Integração contínua: `.github/workflows/custas-tests.yml`.
 
@@ -247,7 +282,7 @@ O módulo não interpreta decisões, não calcula automaticamente solidariedade,
 
 1. Catálogo de versões legais e UC histórica.
 2. Motor de prestações com estrutura de **obrigações por impulso**, para impedir duplicações.
-3. Integrar progressivamente os mapas multissujeito com obrigações e pagamentos individualizados, sem misturar os valores da conta A/B e sem compensações de terceiros.
+3. Validar a contabilidade multissujeito em casos jurídicos reais anonimizados, incluindo regimes especiais, gestão de DUC e eventual integração formal com a conta por sujeito, sem compensações de terceiros.
 4. Expandir a triagem de isenção, apoio judiciário, dispensa prévia e reduções para regimes especiais, com fundamentação, efeitos temporais e validação da decisão de benefícios.
 5. Repartição de encargos e remanescente conforme condenação e decisões judiciais.
 6. Exportação da proposta de conferência, com indicação do grau de certeza e referências legais.
