@@ -656,7 +656,17 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
       Date.UTC(inicio.getFullYear(), inicio.getMonth(), inicio.getDate())) / 86400000);
     // Prazos processuais de duração igual ou superior a 6 meses não suspendem em férias judiciais (art. 138.º, n.º 1, CPC).
     const semSuspensao = urgente || meses >= 6;
-    return adicionarDiasContinuosComSuspensao(inicio, duracaoDias + dilacao, semSuspensao, municipal, logEventos);
+    let termo = adicionarDiasContinuosComSuspensao(inicio, duracaoDias + dilacao, semSuspensao, municipal, logEventos);
+    // Um prazo comum de duração >= 6 meses não se suspende em férias judiciais,
+    // mas o termo que recaia em férias transfere-se (art. 138.º, n.º 2, CPC;
+    // art. 279.º, al. e), CC). Não confundir esta regra com processo urgente.
+    if (!urgente && meses >= 6) {
+      while (!isDiaUtilTribunal(termo, false, municipal)) {
+        logEventos.add('Termo transferido por férias judiciais ou encerramento');
+        termo = addDays(termo, 1);
+      }
+    }
+    return termo;
   }
 
   function proximoDiaUtilMulta(date, urgente, municipal) {
