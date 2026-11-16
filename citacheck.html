@@ -166,7 +166,23 @@
       footer { padding: 16px 20px 22px; }
     }
     @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
-  </style>
+  
+/* LegalTech visual refresh · 2026 */
+:root{--desk:#f5f5f7;--sheet:#fff;--ink:#1d1d1f;--muted:#6e6e73;--line:#e5e5ea;--soft:#fafafa;--stamp:#1769aa;--stamp-ink:#fff;--stamp-hover:#125586;--sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;--serif:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif}
+:root[data-theme="dark"]{--desk:#101114;--sheet:#1c1c1e;--ink:#f5f5f7;--muted:#a1a1a6;--line:#38383a;--soft:#252528;--stamp:#69b8ff;--stamp-ink:#081724;--stamp-hover:#92cbff}
+body{font-family:var(--sans);letter-spacing:-.012em}
+.top-nav{max-width:1100px;padding:22px 22px 0;gap:12px 22px}
+.brand{font-family:var(--sans);font-size:1.22rem;font-weight:750;letter-spacing:-.045em}
+.nav-links a{font-weight:550;letter-spacing:-.015em}
+main{max-width:1060px;border-radius:22px;border-color:var(--line);box-shadow:0 10px 45px rgba(0,0,0,.045);overflow:hidden}
+header h1{font-family:var(--sans);font-weight:760;letter-spacing:-.055em}
+h2,h2 .n,.headline-date{font-family:var(--sans);letter-spacing:-.035em}
+select,input[type="date"],input[type="number"],.btn-secondary,.btn-copy,.theme-btn{border-radius:11px}
+button.btn-primary{border-radius:12px}
+.panel.out{background:var(--soft)}
+footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
+@media(max-width:520px){.top-nav{padding:16px 16px 0}main{width:calc(100% - 20px);border-radius:18px;margin-top:14px}.nav-links{gap:16px}.nav-links a{font-size:.84rem}}
+</style>
 </head>
 <body>
 
