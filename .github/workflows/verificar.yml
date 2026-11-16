@@ -28,5 +28,7 @@ jobs:
         run: node scripts/browser-smoke.mjs
       - name: Acessibilidade e tema claro-escuro em ecrãs móveis
         run: node scripts/a11y-smoke.mjs
+      - name: Verificar privacidade e entradas hostis em ferramentas locais
+        run: node scripts/privacy-smoke.mjs
       - name: Casos de regressão Cita-Check
         run: node scripts/citacheck-regression.mjs
