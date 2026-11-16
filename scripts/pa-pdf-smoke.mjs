@@ -29,6 +29,14 @@ try{
  });
  await page.goto(pathToFileURL(resolve("pa.html")).href,{waitUntil:"domcontentloaded"});
  if(await page.locator("script[src^='https://']").count())throw Error("O PDF.js foi carregado sem ação do utilizador");
+ const fragmented=await page.evaluate(()=>{
+   const item=(str,x,width)=>({str,width,transform:[12,0,0,12,x,730]});
+   const items=[item("05",60,12),item("/",72,4),item("01",76,12),item("/",88,4),item("2026",92,32),
+     item(" - Pedido",131,50)];
+   return LegalPaPdf.collectLines(items);
+ });
+ if(fragmented.length!==1||!fragmented[0].includes("05/01/2026"))throw Error("Data fragmentada não foi reconstruída: "+JSON.stringify(fragmented));
+
  await page.locator("#pdf").setInputFiles({name:"pa-ficticio.pdf",mimeType:"application/pdf",buffer:Buffer.from(files.textual)});
  await page.locator("#readPdf").click();
  await page.waitForFunction(()=>{
