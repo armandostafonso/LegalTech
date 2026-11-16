@@ -1,0 +1,65 @@
+<!doctype html><html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Roteiros de verificação | LegalTech</title><meta name="description" content="Listas de conferência para tarefas de secretaria, sujeitas à validação do processo e da lei."><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/tools.css">
+<style>.checklist{display:grid;gap:10px}.item{display:flex;align-items:flex-start;gap:13px;border:1px solid var(--line);padding:12px;border-radius:10px}.item input{width:19px;height:19px;margin:3px 0 0;flex:none}.item span{line-height:1.5}.item.checked{background:var(--soft)}.progress{height:9px;background:var(--soft);border-radius:10px;overflow:hidden;margin:12px 0}.bar{background:var(--accent);height:100%;width:0;transition:width .2s}.advice{color:var(--muted);font-size:13px}</style>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||"light"}catch(e){}</script></head><body>
+<header><nav><a class="brand" href="index.html">LegalTech</a><div><a href="index.html">Início</a><a href="anonimizador.html">Anonimizador</a><a href="citacheck.html">Cita-Check</a><a href="minutas.html">Minutas</a></div></nav></header>
+<main class="wrap"><div class="tag">Apoio à organização do trabalho</div><h1>Roteiros de verificação</h1><p class="sub">Checklists para rever tarefas de secretaria antes de dar seguimento aos autos. São auxiliares: não estabelecem uma tramitação obrigatória e não substituem a lei, os despachos judiciais ou as práticas de serviço.</p>
+<div class="grid">
+<section class="panel inputs"><h2>Selecionar roteiro</h2><div class="field"><label for="roteiro">Tipo de conferência</label><select id="roteiro">
+<option value="rececao">Receção de requerimento</option><option value="notificacao">Preparação de notificação</option><option value="citacao">Conferência de citação eletrónica</option><option value="conclusao">Preparação de conclusão</option><option value="expediente">Preparação de ofício</option><option value="prazo">Conferência de prazo</option></select></div>
+<p id="desc" class="advice"></p><div class="progress"><div class="bar" id="bar"></div></div><div id="count" aria-live="polite">0 de 0 verificações</div>
+<div class="actions"><button class="btn secondary" id="reset" type="button">Repor roteiro</button><button class="btn secondary" id="print" type="button">Imprimir</button></div>
+<p class="note">Não são carregados documentos nem guardadas informações de processos. As caixas assinaladas desaparecem quando mudares de roteiro ou atualizares a página.</p></section>
+<section class="panel"><h2 id="heading">Checklist</h2><div class="checklist" id="list"></div><p class="note"><strong>Atenção:</strong> cumprir o roteiro não confirma, por si só, a regularidade de um ato processual. Em caso de dúvida sobre competência, prazo, modalidade ou conteúdo, deve prevalecer a lei e o despacho aplicável.</p></section>
+</div></main>
+<script>
+const data={
+rececao:{title:"Receção de requerimento",description:"Conferência genérica de elementos de entrada, antes de qualquer movimentação.",items:[
+"Confirmar que o requerimento pertence ao processo e que os intervenientes estão identificados.",
+"Verificar a data e o meio de apresentação registados no sistema.",
+"Confirmar a existência de anexos e documentos mencionados.",
+"Verificar assinaturas e representação processual, quando aplicável.",
+"Identificar pedidos que necessitem de apreciação pelo juiz ou de tratamento específico.",
+"Registar a entrada e adotar apenas o seguimento determinado pelas regras e pelo estado dos autos."]},
+notificacao:{title:"Preparação de notificação",description:"Revisão do expediente antes da sua emissão.",items:[
+"Confirmar o despacho ou ato que determina a notificação.",
+"Confirmar destinatário, qualidade processual e meio de notificação juridicamente aplicável.",
+"Conferir o teor integral da comunicação e dos documentos a disponibilizar.",
+"Verificar a existência de prazo expressamente fixado ou legalmente aplicável.",
+"Verificar morada ou endereço eletrónico e eventuais devoluções ou alterações comunicadas.",
+"Conferir registos de expedição e certificações após o envio."]},
+citacao:{title:"Conferência de citação eletrónica",description:"Os efeitos variam consoante a pessoa citanda e a modalidade efetivamente utilizada.",items:[
+"Confirmar se o destinatário é pessoa singular ou coletiva e se a via eletrónica é admissível.",
+"Confirmar o registo de disponibilização e os eventos certificados pelo sistema.",
+"Quando aplicável, confirmar a data da consulta e a respetiva certificação.",
+"Verificar ocorrências de ausência de consulta e diligências subsequentes segundo o regime aplicável.",
+"Apurar a data juridicamente relevante da citação antes de iniciar a contagem de prazo.",
+"Verificar dilações, férias judiciais e demais regras especiais antes de certificar o termo."]},
+conclusao:{title:"Preparação de conclusão",description:"Conferência de estado dos autos antes da apresentação ao magistrado.",items:[
+"Conferir o último despacho e as diligências que dele decorreram.",
+"Verificar se as notificações ou comunicações determinadas foram efetivamente realizadas.",
+"Conferir requerimentos e documentos entretanto apresentados.",
+"Verificar prazos relevantes e registos de respetiva contagem, se aplicáveis.",
+"Assinalar de forma neutra a questão ou ocorrência que justifica a conclusão.",
+"Confirmar a atualização dos movimentos processuais no sistema."]},
+expediente:{title:"Preparação de ofício",description:"Controlo de elementos necessários a uma comunicação formal.",items:[
+"Identificar com precisão a entidade destinatária e o endereço adequado.",
+"Confirmar o despacho ou fundamento da comunicação.",
+"Indicar o número do processo e as referências essenciais.",
+"Conferir os documentos a anexar e eventuais reservas de acesso.",
+"Confirmar se o ofício reproduz corretamente a determinação judicial.",
+"Verificar a expedição e respetivo registo."]},
+prazo:{title:"Conferência de prazo",description:"Passos gerais para rever um prazo antes da prática de atos processuais.",items:[
+"Identificar a norma e o ato que originam o prazo.",
+"Determinar a data relevante da citação, notificação ou outro facto inicial.",
+"Confirmar se o prazo é processual ou substantivo e qual o regime aplicável.",
+"Verificar dilação, natureza urgente e eventual suspensão legal.",
+"Conferir feriados, encerramentos e regras de transferência do termo.",
+"Conferir separadamente eventuais dias úteis subsequentes com multa, quando aplicáveis.",
+"Registar o cálculo e conferir o resultado com a norma aplicável."]}
+};
+const $=id=>document.getElementById(id);function render(){
+const cfg=data[$("roteiro").value];$("heading").textContent=cfg.title;$("desc").textContent=cfg.description;$("list").textContent="";
+cfg.items.forEach((item,i)=>{const row=document.createElement("label");row.className="item";const box=document.createElement("input");box.type="checkbox";box.setAttribute("aria-label",item);box.addEventListener("change",()=>{row.classList.toggle("checked",box.checked);progress()});const txt=document.createElement("span");txt.textContent=item;row.append(box,txt);$("list").append(row)});progress();}
+function progress(){const boxes=[...document.querySelectorAll("#list input")],n=boxes.filter(x=>x.checked).length;$("count").textContent=n+" de "+boxes.length+" verificações";$("bar").style.width=(boxes.length?100*n/boxes.length:0)+"%"}
+$("roteiro").addEventListener("change",render);$("reset").addEventListener("click",render);$("print").addEventListener("click",()=>window.print());render();
+</script></body></html>
