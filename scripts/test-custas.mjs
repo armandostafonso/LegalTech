@@ -2,13 +2,25 @@ import fs from "node:fs";
 import vm from "node:vm";
 import assert from "node:assert/strict";
 const html=fs.readFileSync("custas.html","utf8");
-const scripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)].map(x=>x[1]);
-const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
-const els=new Map(ids.map(id=>[id,{value:"",checked:false,textContent:"",hidden:false,selectedIndex:0,tagName:"INPUT",listeners:{},addEventListener(type,fn){this.listeners[type]=fn}}]));
-for(const id of ["subject","hearing","endbefore","opp","priority","authorcontinue","remtable","remdisp","remcost","instruction"])els.get(id).tagName="SELECT";
+// Os scripts externos não têm corpo; os IDs são recolhidos apenas do HTML.
+const inline=[...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
+ .filter(m=>!/\bsrc\s*=/.test(m[1])&&m[2].trim()).map(m=>m[2]);
+const markup=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,"");
+const elements=[...markup.matchAll(/<([a-z][\w-]*)\b[^>]*\bid="([^"]+)"[^>]*>/gi)];
+const ids=elements.map(m=>m[2]);
+assert.equal(new Set(ids).size,ids.length,"IDs duplicados na página");
+const els=new Map(elements.map(m=>[m[2],{
+ value:"",checked:false,textContent:"",innerHTML:"",hidden:false,
+ selectedIndex:0,tagName:m[1].toUpperCase(),type:(m[0].match(/\btype="([^"]+)"/)||[])[1]||"text",
+ listeners:{},addEventListener(type,fn){this.listeners[type]=fn}
+}]));
+for(const m of markup.matchAll(/<select\b[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/select>/gi)){
+ const first=m[2].match(/<option value="([^"]*)"/);
+ if(first)els.get(m[1]).value=first[1];
+}
 const document={documentElement:{dataset:{theme:"light"}},getElementById:id=>{assert.ok(els.has(id),"ID inexistente: "+id);return els.get(id)}};
 const ctx=vm.createContext({document,Intl,Number,Math,console});
-new vm.Script(scripts.at(-1),{filename:"custas.html"}).runInContext(ctx);
+new vm.Script(inline.at(-1),{filename:"custas.html"}).runInContext(ctx);
 const put=(id,value)=>els.get(id).value=String(value),click=id=>{assert.ok(els.get(id).listeners.click,"sem evento click: "+id);return els.get(id).listeners.click()},read=id=>els.get(id).textContent;
 let tests=0;
 function check(name,fn){fn();tests++;console.log("✓ "+name)}
@@ -30,4 +42,42 @@ check("Fichas: Estado sem condenação, acto posterior a 1 de dezembro de 2026",
 check("Fichas: excepção contratual ao pagamento prévio",()=>{put("pb_excluded","yes");click("analyseparties");assert.match(read("pb_result"),/matéria excluída/);assert.doesNotMatch(read("pb_result"),/possível dispensa de pagamento prévio/)});
 check("Fichas: falta de comprovativo bloqueia revisão completa",()=>{els.get("pb_evidence").checked=false;click("analyseparties");assert.match(read("partiesstatus"),/incompleta/);assert.match(read("pb_result"),/POR CONFIRMAR/)});
 check("Fichas: isenção do MP em sujeito incompatível gera alerta",()=>{put("pa_exemption","mp");click("analyseparties");assert.match(read("pa_result"),/potencialmente incompatíveis/)});
+check("Livro: guia emitida não equivale a pagamento",()=>{
+ put("ledgerParty","a");put("ledgerKind","guide");put("ledgerRef","GUIA-T-001");put("ledgerDate","2026-11-16");put("ledgerAmount","612");click("ledgerAdd");
+ assert.match(read("ledgerA"),/0,00/);
+});
+check("Livro: pagamento confirmado contabilizado",()=>{
+ put("ledgerKind","payment");put("ledgerStatus","confirmed");put("ledgerRef","DUC-T-001");put("ledgerAmount","612");click("ledgerAdd");
+ assert.match(read("ledgerA"),/612,00/);
+});
+check("Livro: duplicação exacta bloqueada",()=>{
+ put("ledgerRef","DUC-T-001");put("ledgerAmount","612");click("ledgerAdd");
+ assert.match(read("ledgerMessage"),/duplicado/);assert.match(read("ledgerA"),/612,00/);
+});
+check("Livro: pagamento pendente não somado",()=>{
+ put("ledgerRef","DUC-T-002");put("ledgerAmount","100");put("ledgerStatus","pending");click("ledgerAdd");
+ assert.match(read("ledgerPending"),/^1$/);assert.match(read("ledgerA"),/612,00/);
+});
+check("Livro: anulação de guia não desconta pagamento",()=>{
+ put("ledgerKind","cancel");put("ledgerRef","GUIA-T-001");put("ledgerAmount","612");click("ledgerAdd");
+ assert.match(read("ledgerA"),/612,00/);
+});
+check("Livro: restituição superior ao pagamento é bloqueada",()=>{
+ put("ledgerKind","refund");put("ledgerStatus","confirmed");put("ledgerRef","DUC-T-001");put("ledgerAmount","800");click("ledgerAdd");
+ assert.match(read("ledgerMessage"),/superior/);assert.match(read("ledgerA"),/612,00/);
+});
+check("Livro: restituição confirmada deduzida ao pago",()=>{
+ put("ledgerRef","DUC-T-001");put("ledgerAmount","100");click("ledgerAdd");
+ assert.match(read("ledgerA"),/512,00/);
+});
+check("Livro: transferir apenas saldo líquido confirmado",()=>{
+ click("ledgerApply");assert.equal(els.get("ap").value,"512.00");assert.equal(els.get("bp").value,"0.00");
+});
+check("Livro: referência maliciosa é escapada no HTML",()=>{
+ put("ledgerKind","payment");put("ledgerStatus","confirmed");put("ledgerRef","<img src=x onerror=alert(1)>");put("ledgerAmount","1");click("ledgerAdd");
+ assert.doesNotMatch(els.get("ledgerRows").innerHTML,/<img src=x/);
+});
+check("Livro: botão limpar repõe os saldos",()=>{
+ click("reset");assert.match(read("ledgerA"),/0,00/);assert.equal(read("ledgerPending"),"0");
+});
 console.log(tests+" testes do módulo A01 concluídos.");
