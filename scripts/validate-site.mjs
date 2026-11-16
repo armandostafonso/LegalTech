@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 
-const pages=["index.html","anonimizador.html","citacheck.html","minutas.html","roteiros.html"];
+const pages=["index.html","anonimizador.html","citacheck.html","minutas.html","roteiros.html","privacidade.html"];
 const errors=[];
 let scriptsChecked=0,linksChecked=0,idsChecked=0;
 for(const file of pages){
