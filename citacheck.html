@@ -525,6 +525,9 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
     if (OPC.tol24dez && m === 12 && d === 24) return '24 de dezembro (tolerância de ponto)';
     if (OPC.tol31dez && m === 12 && d === 31) return '31 de dezembro (tolerância de ponto)';
 
+    const feriadoComum = LegalTechCalendario.municipalHoliday(date, municipal);
+    if (feriadoComum) return feriadoComum;
+
     const munFixos = {
       'almada': { m: 6, d: 24, nome: 'São João (Almada)' },
       'aveiro': { m: 5, d: 12, nome: 'Santa Joana (Aveiro)' },
