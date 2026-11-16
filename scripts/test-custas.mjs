@@ -605,4 +605,108 @@ check("Multissujeito: valores financeiros excessivos são bloqueados",()=>{
 check("Multissujeito: reposição final após verificações de segurança",()=>{
  click("reset");assert.equal(read("multiPeopleCount"),"0");
 });
+
+check("Multissujeito financeiro: registar dois sujeitos fictícios",()=>{
+ for(const [name,role] of [["AUTOR-X","autor"],["AUTOR-Y","autor"]]){put("multiName",name);put("multiRole",role);click("multiAdd")}
+ assert.equal(read("multiPeopleCount"),"2");
+ assert.match(els.get("multiObPerson").innerHTML,/AUTOR-X/);
+});
+check("Multissujeito financeiro: repartir encargo 101,01 por duas partes iguais",()=>{
+ put("multiRef","ENC-GRUPO-1");put("multiAmount","101.01");put("multiDecision","DECISAO-TESTE-1");put("multiDate","2026-11-16");
+ put("multiMode","iguais");put("multiSolidarity","no");put("multiSettlement","no");
+ els.get("multiAllLost").checked=true;els.get("multiVerified").checked=true;
+ click("multiPreview");assert.match(read("multiResult"),/50,51/);assert.match(read("multiResult"),/50,50/);
+ click("multiPost");assert.equal(read("multiChargeCount"),"1");
+});
+check("Multissujeito financeiro: sem confirmação não importa obrigações",()=>{
+ put("multiImportCharge","1");click("multiImport");
+ assert.match(read("multiAccountMessage"),/Confirma a ausência de duplicação/);
+ assert.match(els.get("multiObRows").innerHTML,/Sem obrigações/);
+});
+check("Multissujeito financeiro: importação cria duas obrigações apenas uma vez",()=>{
+ els.get("multiImportVerified").checked=true;click("multiImport");
+ assert.match(read("multiAccountMessage"),/Encargo importado/);
+ assert.match(els.get("multiObRows").innerHTML,/50,51/);assert.match(els.get("multiObRows").innerHTML,/50,50/);
+ put("multiImportCharge","1");els.get("multiImportVerified").checked=true;click("multiImport");
+ assert.match(read("multiAccountMessage"),/já foi importado/);
+});
+check("Multissujeito financeiro: importação não altera a conferência A/B",()=>{
+ assert.match(read("obA"),/0,00/);assert.match(read("obB"),/0,00/);
+ assert.match(read("ledgerA"),/0,00/);assert.match(read("ledgerB"),/0,00/);
+});
+check("Multissujeito financeiro: obrigação manual de taxa não deduzida dos encargos",()=>{
+ put("multiObPerson","1");put("multiObKind","taxa");put("multiObRef","TAXA-X-1");put("multiObAmount","255");
+ put("multiObBasis","RCP e tabela aplicável, manualmente verificada");els.get("multiObVerified").checked=true;
+ click("multiObAdd");assert.match(read("multiAccountMessage"),/Obrigação individual registada/);
+ click("multiAccountReconcile");assert.match(els.get("multiBalanceRows").innerHTML,/305,51/);
+});
+check("Multissujeito financeiro: obrigação duplicada é bloqueada",()=>{
+ put("multiObPerson","1");put("multiObRef","taxa-x-1");put("multiObAmount","255");
+ put("multiObBasis","Fundamento confirmado manualmente");els.get("multiObVerified").checked=true;
+ click("multiObAdd");assert.match(read("multiAccountMessage"),/duplicada/);
+});
+check("Multissujeito financeiro: emitir guia não constitui pagamento",()=>{
+ put("multiMovePerson","1");put("multiMoveOb","3");put("multiMoveKind","guide");put("multiMoveRef","DUC-X-1");put("multiMoveDate","2026-11-16");
+ put("multiMoveAmount","255");click("multiMoveAdd");
+ click("multiAccountReconcile");assert.match(els.get("multiBalanceRows").innerHTML,/305,51/);
+ assert.match(els.get("multiBalanceRows").innerHTML,/0,00/);
+});
+check("Multissujeito financeiro: pagamento pendente não é contabilizado",()=>{
+ put("multiMoveKind","payment");put("multiMoveStatus","pending");put("multiMoveRef","DUC-X-1");put("multiMoveAmount","100");
+ click("multiMoveAdd");click("multiAccountReconcile");
+ assert.match(read("multiAccountNote"),/pendente/);assert.match(els.get("multiBalanceRows").innerHTML,/305,51/);
+});
+check("Multissujeito financeiro: confirmar pagamento actualiza saldo da mesma parte",()=>{
+ els.get("multiMoveRows").listeners.click({target:{closest:()=>({dataset:{multiMoveConfirm:"2"}})}});
+ click("multiAccountReconcile");
+ assert.match(els.get("multiBalanceRows").innerHTML,/100,00/);assert.match(els.get("multiBalanceRows").innerHTML,/205,51/);
+ assert.match(els.get("multiObRows").innerHTML,/100,00/);
+});
+check("Multissujeito financeiro: impedir restituição superior ao pagamento",()=>{
+ put("multiMoveKind","refund");put("multiMoveStatus","confirmed");put("multiMoveRef","DUC-X-1");put("multiMoveAmount","150");
+ click("multiMoveAdd");assert.match(read("multiAccountMessage"),/Restituição excede/);
+});
+check("Multissujeito financeiro: restituição válida reduz pagamento líquido",()=>{
+ put("multiMoveAmount","20");click("multiMoveAdd");click("multiAccountReconcile");
+ assert.match(els.get("multiBalanceRows").innerHTML,/80,00/);assert.match(els.get("multiBalanceRows").innerHTML,/225,51/);
+});
+check("Multissujeito financeiro: pagamento sem imputação fica separado por sujeito",()=>{
+ put("multiMovePerson","2");put("multiMoveOb","");put("multiMoveKind","payment");put("multiMoveStatus","confirmed");
+ put("multiMoveRef","PAG-Y-SEM-IMP");put("multiMoveAmount","10");click("multiMoveAdd");click("multiAccountReconcile");
+ assert.match(read("multiAccountNote"),/sem imputação/);assert.match(els.get("multiBalanceRows").innerHTML,/10,00/);
+ assert.match(els.get("multiObRows").innerHTML,/50,50/);
+});
+check("Multissujeito financeiro: não permite imputar a obrigação de outra parte",()=>{
+ put("multiMovePerson","2");put("multiMoveOb","3");put("multiMoveRef","INVALIDO-OUTRA-PARTE");put("multiMoveAmount","2");
+ click("multiMoveAdd");assert.match(read("multiAccountMessage"),/pertence a outro interveniente/);
+});
+check("Multissujeito financeiro: não permite eliminar obrigação com movimentos imputados",()=>{
+ els.get("multiObRows").listeners.click({target:{closest:()=>({dataset:{multiObRemove:"3"}})}});
+ assert.match(read("multiAccountMessage"),/Retira primeiro os movimentos/);
+});
+check("Multissujeito financeiro: impede apagar encargo importado no mapa",()=>{
+ els.get("multiChargesRows").listeners.click({target:{closest:()=>({dataset:{multiChargeRemove:"1"}})}});
+ assert.match(read("multiResult"),/obrigações individualizadas importadas/);
+ click("multiClear");assert.match(read("multiMessage"),/obrigações ou pagamentos individualizados/);
+});
+check("Multissujeito financeiro: reconciliação e CSV com valores por sujeito",()=>{
+ click("multiAccountReconcile");click("multiAccountExport");const csv=downloads.at(-1);
+ assert.match(csv,/Interveniente;Obrigações/);assert.match(csv,/AUTOR-X/);
+ assert.match(csv,/305,51/);assert.match(csv,/80,00/);assert.match(csv,/Sem imputação/);
+ assert.match(csv,/Mapa independente/);
+});
+check("Multissujeito financeiro: alteração posterior invalida o CSV",()=>{
+ const n=downloads.length;put("multiMoveRef","PAG-OUTRO");put("multiMoveOb","");put("multiMoveAmount","1");
+ click("multiMoveAdd");click("multiAccountExport");
+ assert.equal(downloads.length,n);assert.match(read("multiAccountNote"),/desactualizado/);
+});
+check("Multissujeito financeiro: proposta A/B avisa quando existem contas externas",()=>{
+ click("proposalPreview");assert.match(read("proposalNote"),/contabilidade multissujeito autónoma/);
+ assert.match(read("proposalText"),/MULTISSUJEITO NÃO INCLUÍDO/);
+});
+check("Multissujeito financeiro: reset limpa o livro sem tocar no resto da suite",()=>{
+ click("reset");assert.equal(read("multiPeopleCount"),"0");
+ assert.match(els.get("multiObRows").innerHTML,/Sem obrigações/);
+ assert.match(els.get("multiMoveRows").innerHTML,/Sem movimentos/);
+});
 console.log(tests+" testes do módulo A01 concluídos.");
