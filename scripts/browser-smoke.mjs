@@ -47,6 +47,22 @@ await check("Tramitação TAF: fases, urgência, progressão e remissão CPPT",a
  await page.locator("#workflow").selectOption("recurso");
  if(!(await page.locator("#sources").innerText()).includes("279.º"))throw Error("Recursos CPPT ausentes");
 });
+await check("Fichas TAF: 25 fases, direito transitório e minutas seguras",async()=>{
+ await open("tramitação-taf.html");
+ await page.locator("#workflow").selectOption("acao-administrativa");
+ await page.locator("#phase").selectOption("citacao");
+ await page.locator("#detailGuide").evaluate(node=>node.open=true);
+ if(!(await page.locator("#guide").innerText()).includes("Antes de prosseguir"))throw Error("Ficha de conferência ausente");
+ const url=await page.locator("#draftLink").getAttribute("href");
+ if(!url.startsWith("minutas.html?tipo=")||url.includes("processo="))throw Error("Passagem para minutas insegura");
+ await page.locator("#actionFiled").fill("2026-11-30");
+ if(!(await page.locator("#lawStatus").innerText()).includes("não se aplicam"))throw Error("Direito transitório antigo");
+ await page.locator("#actionFiled").fill("2026-12-02");
+ if(!(await page.locator("#lawStatus").innerText()).includes("novas redações"))throw Error("Direito transitório novo");
+ await page.goto(new URL(url,page.url()).href);
+ if(!(await page.locator("#assunto").inputValue()).includes("Ação administrativa"))throw Error("Assunto genérico não importado");
+ if((await page.locator("#processo").inputValue())!=="")throw Error("Dados de processo transportados");
+});
 await check("Minutas: gerar texto e manter nomes introduzidos",async()=>{
  await open("minutas.html");
  await page.locator("#processo").fill("EXEMPLO/2026");
