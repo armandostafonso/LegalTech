@@ -1,11 +1,12 @@
 {
-  "version": 2,
+  "version": 3,
   "verified_at": "2026-11-16",
-  "description": "Manifesto dos quatro ficheiros de referência e 228 cenários sintéticos de prazo CPC, com SHA-1 Git dos bytes; não certifica juridicamente o motor.",
+  "description": "Manifesto de cinco ficheiros de regras e testes (324 cenários técnicos de prazos CPC/CPA/CPPT); hashes Git do conteúdo canónico. Não constitui validação jurídica.",
   "hashes": {
     "rules/calendario.json": "1085619ac7520b56caf8f397dede3a64d0342b15",
     "rules/municipais.json": "16604dd9990c9a4ed62732f415fdf530377b494f",
     "tests/shared-cases.json": "76ec5e4cfbaf9b2ccdd9b994007bbea58841069b",
-    "tests/parity-extended.json": "43ceddc4b2f904f562d28954ddfea6240e71c731"
+    "tests/parity-extended.json": "43ceddc4b2f904f562d28954ddfea6240e71c731",
+    "tests/regimes-parity.json": "b3b7f6e67c1a88191b1bf3597589d9ff77a56d86"
   }
 }
