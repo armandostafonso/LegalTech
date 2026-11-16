@@ -1,0 +1,32 @@
+name: Lex Watch - revisão legislativa
+on:
+  schedule:
+    - cron: '17 8 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  verificar-fontes:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verificar contrato de fontes
+        run: node scripts/lex-watch.mjs --self-test
+      - name: Consultar indicadores oficiais
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node scripts/lex-watch.mjs
+      - name: Guardar relatório de controlo
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: legaltech-lex-watch
+          path: reports/lex-watch.md
+          if-no-files-found: warn
+          retention-days: 60
