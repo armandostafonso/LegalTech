@@ -1,0 +1,149 @@
+{
+  "version": "2.0",
+  "purpose": "Cenários sintéticos para verificar operações aritméticas e bloqueios do Motor A01. Não são contas judiciais validadas nem determinam a aplicação do direito.",
+  "sourceNotes": [
+    "CPC, artigos 527.º, 528.º e 530.º, sujeitos à redacção temporal aplicável.",
+    "RCP, artigo 30.º: conferência individual e processamento oficial por sujeito responsável."
+  ],
+  "cases": [
+    {
+      "id": "LIT-3",
+      "title": "Três autores litisconsortes totalmente vencidos, divisão igual validada",
+      "people": [
+        {
+          "name": "AUT-A",
+          "role": "autor"
+        },
+        {
+          "name": "AUT-B",
+          "role": "autor"
+        },
+        {
+          "name": "AUT-C",
+          "role": "autor"
+        }
+      ],
+      "charge": {
+        "ref": "ENC-LIT-3",
+        "amount": "100.01",
+        "mode": "iguais",
+        "solidarity": "no",
+        "settlement": "no",
+        "allLost": true
+      },
+      "expectCents": [
+        3334,
+        3334,
+        3333
+      ]
+    },
+    {
+      "id": "EXP-2",
+      "title": "Quotas expressas 40/60 para encargo fictício de 99,99 euros",
+      "people": [
+        {
+          "name": "AUT-D",
+          "role": "autor",
+          "share": "40.00"
+        },
+        {
+          "name": "REU-E",
+          "role": "reu",
+          "share": "60.00"
+        }
+      ],
+      "charge": {
+        "ref": "ENC-EXP-2",
+        "amount": "99.99",
+        "mode": "expressa",
+        "solidarity": "no",
+        "settlement": "no"
+      },
+      "expectCents": [
+        4000,
+        5999
+      ]
+    },
+    {
+      "id": "MIN-3",
+      "title": "Arredondamento de um cêntimo com quotas 33,33/33,33/33,34",
+      "people": [
+        {
+          "name": "AUT-F",
+          "role": "autor",
+          "share": "33.33"
+        },
+        {
+          "name": "AUT-G",
+          "role": "autor",
+          "share": "33.33"
+        },
+        {
+          "name": "AUT-H",
+          "role": "autor",
+          "share": "33.34"
+        }
+      ],
+      "charge": {
+        "ref": "ENC-MIN-3",
+        "amount": "0.01",
+        "mode": "expressa",
+        "solidarity": "no",
+        "settlement": "no"
+      },
+      "expectCents": [
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "id": "BLO-SOL",
+      "title": "Solidariedade exige tratamento jurídico: sem cálculo automático",
+      "people": [
+        {
+          "name": "REU-I",
+          "role": "reu",
+          "share": "50"
+        },
+        {
+          "name": "REU-J",
+          "role": "reu",
+          "share": "50"
+        }
+      ],
+      "charge": {
+        "ref": "ENC-SOL",
+        "amount": "250",
+        "mode": "expressa",
+        "solidarity": "yes",
+        "settlement": "no"
+      },
+      "expectedError": "Solidariedade não excluída"
+    },
+    {
+      "id": "BLO-TRANS",
+      "title": "Transacção impede divisão cega da responsabilidade",
+      "people": [
+        {
+          "name": "AUT-K",
+          "role": "autor",
+          "share": "50"
+        },
+        {
+          "name": "AUT-L",
+          "role": "autor",
+          "share": "50"
+        }
+      ],
+      "charge": {
+        "ref": "ENC-TRANS",
+        "amount": "120",
+        "mode": "expressa",
+        "solidarity": "no",
+        "settlement": "yes"
+      },
+      "expectedError": "Transacção não excluída"
+    }
+  ]
+}
