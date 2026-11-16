@@ -283,4 +283,31 @@ check("Benefícios: não alterar taxas depois de movimentos imputados",()=>{
 check("Benefícios: reset limpa os novos campos e movimentos",()=>{
  click("reset");assert.equal(els.get("benefitVerified").checked,false);assert.match(read("obA"),/0,00/);assert.match(read("ledgerA"),/0,00/);
 });
+
+check("Benefícios: actualizar a ficha da parte invalida redução anterior",()=>{
+ put("autoDate","2026-12-20");put("autoValue","30000");put("autoUC","102");put("autoRef","AUDIT-PI-01");put("autoParty","a");put("autoType","peticao");
+ put("pa_entity","person");put("pa_exemption","none");put("pa_aid","none");els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");
+ put("benefitSource","1");put("benefitRule","electronic90");put("benefitNoCounsel","yes");put("benefitOptional","yes");put("benefitAllElectronic","yes");els.get("benefitVerified").checked=true;click("benefitPreview");click("benefitApply");
+ assert.match(read("obA"),/229,50/);
+ put("pa_exemption","mp");els.get("pa_exemption").listeners.change();click("obApply");
+ assert.match(read("obMessage"),/sem verificação jurídica actualizada/);
+});
+check("Benefícios: reverter redução quando as premissas deixam de valer",()=>{
+ put("benefitSource","1");put("benefitRule","restore");els.get("benefitVerified").checked=true;click("benefitPreview");click("benefitApply");
+ assert.match(read("obA"),/255,00/);
+});
+check("Benefícios: benefício pode ser revalidado sem novo desconto",()=>{
+ put("pa_exemption","none");put("benefitRule","electronic90");els.get("benefitVerified").checked=true;click("benefitPreview");click("benefitApply");
+ assert.match(read("obA"),/229,50/);
+ put("benefitAllElectronic","unknown");els.get("benefitAllElectronic").listeners.change();click("obApply");
+ assert.match(read("obMessage"),/sem verificação jurídica actualizada/);
+ put("benefitAllElectronic","yes");els.get("benefitVerified").checked=true;click("benefitPreview");click("benefitApply");
+ assert.match(read("benefitResult"),/revalidado/);assert.match(read("obA"),/229,50/);
+});
+check("Benefícios: transferência após revalidação sem somas duplicadas",()=>{
+ click("obApply");assert.equal(els.get("a").value,"229.50");click("obApply");assert.equal(els.get("a").value,"229.50");
+});
+check("Benefícios: limpeza final mantém o módulo disponível",()=>{
+ click("reset");assert.match(read("obA"),/0,00/);assert.match(read("benefitResult"),/Selecciona uma obrigação/);
+});
 console.log(tests+" testes do módulo A01 concluídos.");
