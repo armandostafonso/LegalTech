@@ -1,4 +1,5 @@
 import { chromium } from "playwright";
+import fs from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -24,6 +25,14 @@ async function setBase({start,quantity,unit="dias",urgent=false,type="cit_singul
 async function expectTerm(expected){
  const value=await page.locator("#resTermoPrazo").innerText();
  if(!value.includes(expected))throw new Error("Esperado "+expected+"; obtido "+value);
+}
+const shared=JSON.parse(fs.readFileSync(resolve("tests/shared-cases.json"),"utf8"));
+for(const testCase of shared.cases) {
+ await test("Paridade Web/Desktop: "+testCase.id,async()=>{
+   await setBase({start:testCase.start,quantity:testCase.quantity,unit:testCase.unit,urgent:testCase.urgent});
+   const [y,m,d]=testCase.expected.split("-");
+   await expectTerm(d+"/"+m+"/"+y);
+ });
 }
 await test("10 dias urgentes, sem férias",async()=>{
  await setBase({start:"2026-11-16",quantity:10,urgent:true});
