@@ -1141,13 +1141,16 @@ function multiMovementValidate(m,excludeId=null){
   if(!o||o.personId!==m.personId)return "Obrigação associada pertence a outro interveniente.";
  }
  const other=multiMovements.filter(x=>x.id!==excludeId);
+ const sameReference=other.filter(x=>x.personId===m.personId&&x.ref===m.ref);
+ if(sameReference.some(x=>x.obId!==m.obId))return "A mesma referência financeira não pode ser associada a obrigações diferentes do mesmo sujeito.";
+ if(m.kind==="guide"&&sameReference.some(x=>x.kind==="guide"))return "Já existe uma guia registada com a mesma referência para este interveniente.";
  if(!m.ref||m.ref.length>70||!/^\d{4}-\d{2}-\d{2}$/.test(m.date))return "Indica referência e data do movimento.";
  if(!Number.isSafeInteger(m.cents)||m.cents<=0)return "Montante financeiro inválido.";
  if(other.some(x=>x.personId===m.personId&&x.kind===m.kind&&x.ref.toLocaleLowerCase("pt-PT")===m.ref.toLocaleLowerCase("pt-PT")&&x.date===m.date&&x.cents===m.cents))
   return "Movimento aparentemente duplicado.";
  if(m.kind==="cancel"){
   const guide=other.find(x=>x.personId===m.personId&&x.kind==="guide"&&x.ref===m.ref);
-  if(!guide||guide.cents!==m.cents)return "Anulação exige guia prévia da mesma referência e montante.";
+  if(!guide||guide.cents!==m.cents||guide.obId!==m.obId)return "Anulação exige guia prévia da mesma referência, obrigação e montante.";
   if(other.some(x=>x.personId===m.personId&&x.kind==="cancel"&&x.ref===m.ref))return "Guia já anulada.";
  }
  if(m.kind==="refund"&&m.status==="confirmed"){
