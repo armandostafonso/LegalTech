@@ -17,7 +17,7 @@ Suite integrada de ferramentas jurídicas práticas em português de Portugal. P
 | Fontes normativas | `fontes.html` | Inventário da base jurídica dos nove roteiros TAF, com conferência manual sem persistência |
 | Tramitação TAF | `tramitação-taf.html` | Nove roteiros: intimações, ações, impugnações, cautelares, recursos, pré-contratual e reclamações OEF |
 | Prazos CPA e CPPT | `regimes.html` | Contagem auxiliar em dias com regras dos artigos 87.º CPA e 20.º/1 CPPT |
-| Conferência de custas (A01) | `custas.html` | Conferência manual de taxas e pagamentos, sem cálculo jurídico automático |
+| Conferência de custas (A01) | `custas.html` | Cálculo condicionado da taxa-base e prestações, remanescente, benefícios verificados e conferência de pagamentos |
 | Privacidade | `privacidade.html` | Informação sobre limites, dependências e tratamento local |
 | Agenda local | `agenda.html` | Datas previamente conferidas, exportação ICS e CSV, sem armazenamento persistente |
 
@@ -25,9 +25,12 @@ A Tramitação TAF reúne [33 fichas por fase](docs/fichas-taf.md), com cautelas
 
 **Atenção:** não são instrumentos oficiais e não substituem despacho, verificação dos autos ou enquadramento legal. Não se deve utilizar um cálculo sem confirmar as normas concretamente aplicáveis.
 
-O módulo A01 é experimental: contém apenas simulações orientadoras da Tabela I e conferência aritmética dos montantes indicados, além de fichas de intervenientes (isenções, apoio judiciário e dispensa de pagamento prévio). Não recebe PDFs nem emite conta oficial. Exige verificação da versão do RCP, do regime de cada parte, das reduções, remanescente e pagamentos. Não introduzir dados confidenciais. Especificação: [Caderno jurídico e técnico A01](docs/motor-custas-A01.md).
+O módulo A01 está na versão experimental 1.5: calcula taxas-base da Tabela I-A/I-B com pressupostos verificados, prestações I-A e remanescente condicionado. Regista obrigações, pagamentos e fichas das partes; distingue isenção, apoio judiciário, redução a 90% e dispensa de pagamento prévio. Não recebe PDFs nem emite conta oficial. Exige verificação da versão do RCP, do regime de cada parte, das reduções, remanescente e pagamentos. Não introduzir dados confidenciais. Especificação: [Caderno jurídico e técnico A01](docs/motor-custas-A01.md).
 
 ## Testes de qualidade
+
+O módulo A01 dispõe de **77 testes técnicos de regressão** em `scripts/test-custas.mjs`, incluindo prestações, remanescente, reduções, apoio judiciário e dispensa de pagamento prévio. Estes testes não certificam a interpretação jurídica nem os resultados em processos reais.
+
 
 O GitHub Actions executa verificações de estrutura, de contrato do calendário e da Tramitação TAF, de navegação, de modo Claro-Escuro e acessibilidade WCAG A/AA nas ferramentas principais, de privacidade e de regressão do Cita-Check. A auditoria isolada do anonimizador usa PDFs fictícios com duas páginas e documentos mistos sem texto.
 
