@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "description": "Casos fictícios CPC de contagem geral, sem dilação, para paridade Web/Desktop. Requerem conferência jurídica.",
   "cases": [
     {
@@ -75,6 +75,30 @@
       "urgent": false,
       "municipality": "lisboa",
       "expected": "2026-06-24"
+    },
+    {
+      "id": "ferias-natal-um-dia",
+      "start": "2026-12-21",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "expected": "2027-01-04"
+    },
+    {
+      "id": "ferias-pascoa-um-dia",
+      "start": "2026-03-28",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "expected": "2026-04-07"
+    },
+    {
+      "id": "feriado-nacional-10-junho",
+      "start": "2026-06-09",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "expected": "2026-06-11"
     }
   ]
 }
