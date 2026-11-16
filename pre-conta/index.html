@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pré-conta | LegalTech</title>
+<link rel="stylesheet" href="./style.css">
+<script type="module" src="./app.mjs"></script>
+</head>
+<body>
+<header class="wrap mast"><strong><span aria-hidden="true">§</span> LegalTech</strong><nav aria-label="Ferramentas"><a href="../">Anonimizador PDF</a> · <a href="../citacheck.html">Cita-Check</a></nav></header>
+<main class="wrap">
+<section class="hero"><p class="tag">Impugnação judicial tributária</p><h1>Pré-conta de custas</h1><p>Carrega os autos em PDF. Confere a taxa apurada, os pagamentos encontrados e as páginas que os comprovam.</p></section>
+<section class="panel" aria-labelledby="load-title">
+<h2 id="load-title">Analisar um processo</h2>
+<label class="drop" for="pdf"><strong>Escolher PDF</strong><span>Seleciona um ficheiro com texto pesquisável.</span></label>
+<input type="file" id="pdf" accept=".pdf,application/pdf">
+<div class="buttons"><button type="button" id="a" data-sample="A_com_comprovativo">Exemplo A · com comprovativo</button><button type="button" id="b" data-sample="B_apenas_DUC">Exemplo B · apenas DUC</button></div>
+<p class="muted">O PDF é lido no dispositivo. Este protótipo usa regras de extração e cálculo para o cenário de teste de 2026, no primeiro escalão da tabela I-A, sem recurso. Usa dados fictícios para o testar.</p>
+<p id="status" role="status"></p>
+</section>
+<section class="panel" id="results" hidden aria-labelledby="result-title">
+<div class="result-head"><h2 id="result-title">Pré-conta</h2><a id="open" target="_blank" rel="noopener">Abrir PDF ↗</a></div>
+<p id="context" class="muted"></p>
+<div id="cards"></div>
+<p id="conclusion"></p>
+</section>
+</main>
+</body>
+</html>
