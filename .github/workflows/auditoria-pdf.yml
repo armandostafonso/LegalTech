@@ -7,6 +7,9 @@ on:
       - '.github/workflows/auditoria-pdf.yml'
       - 'scripts/pdf-integration.mjs'
       - 'anonimizador.html'
+      - 'pa.html'
+      - 'assets/pa-pdf.js'
+      - 'scripts/pa-pdf-smoke.mjs'
 permissions:
   contents: read
 jobs:
@@ -23,3 +26,5 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Gerar PDF fictício e verificar resultado anonimizado
         run: node scripts/pdf-integration.mjs
+      - name: Verificar extração de PDF textual e bloqueio de documento misto no PA
+        run: node scripts/pa-pdf-smoke.mjs
