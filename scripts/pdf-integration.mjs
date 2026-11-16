@@ -44,6 +44,7 @@ try {
   const downloadPromise=page.waitForEvent("download",{timeout:90000});
   await page.locator("#go").click();
   const download=await downloadPromise;
+  if(download.suggestedFilename()!=="LegalTech_Documento_Anonimizado.pdf")throw Error("Nome do PDF exportado pode revelar identidade");
   const path=await download.path();
   if(!path)throw Error("Não se obteve um PDF para verificar");
   const out=[...fs.readFileSync(path)];
@@ -83,6 +84,11 @@ try {
   if(!warning.includes("páginas sem camada de texto")||!warning.includes("2"))throw Error("Documento misto não bloqueado: "+warning);
   if(extraDownloads)throw Error("O documento misto foi descarregado apesar de página sem texto");
   console.log("PASSOU: PDF misto com página digitalizada bloqueado sem exportação.");
+  await page.locator("#clearSession").click();
+  if(await page.locator("#go").isEnabled())throw Error("Ficheiro permaneceu selecionado após limpeza");
+  if(await page.locator("#hideTerms").inputValue())throw Error("Termos confidenciais permaneceram após limpeza");
+  if(await page.locator("#mapList").innerText())throw Error("Mapa confidencial permaneceu após limpeza");
+  console.log("PASSOU: limpeza da sessão e nome neutro do ficheiro exportado.");
 }finally{
   await browser.close();
 }
