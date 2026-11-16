@@ -72,7 +72,13 @@ function renderGuide(){
  const link=node("a","Preparar minuta genérica para esta fase");
  link.href="minutas.html?tipo="+encodeURIComponent(st.draft_kind)+"&assunto="+encodeURIComponent(st.draft_subject);
  link.id="draftLink";target.append(link);
- target.append(node("p","A ligação não transmite dados de partes, processos, despachos ou documentos."));
+ const toolsHeading=node("h3","Ferramentas auxiliares");target.append(toolsHeading);
+ for(const [title,href] of [
+   ["Cita-Check · simulação de citações e prazos","citacheck.html"],
+   ["Prazos CPA/CPPT · contagem procedimental","regimes.html"],
+   ["Agenda local · datas previamente confirmadas","agenda.html"]
+ ]){const a=node("a",title);a.href=href;target.append(a)}
+ target.append(node("p","As ligações auxiliares não transportam datas, nomes, números de processos ou documentos. Confirme sempre a norma e os despachos."));
 }
 $("actionFiled").addEventListener("change",updateTemporal);
 function updateProgress(){
