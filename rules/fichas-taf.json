@@ -1,0 +1,529 @@
+{
+  "version": "2026-11-16",
+  "purpose": "Fichas orientadoras derivadas dos roteiros, sem automatização de atos ou análise de processos.",
+  "fichas": [
+    {
+      "id": "intimacao-informacao",
+      "area": "Administrativa",
+      "title": "Intimação para informações, consulta ou certidões",
+      "scope": "Pedido de informações, consulta de processos ou passagem de certidões; confirmar que se trata deste meio processual.",
+      "attention": "Não presumir que o pedido foi satisfeito por junção documental sem apreciação do seu conteúdo.",
+      "trigger": "Art. 107.º/1 CPTA: citação oficiosa da entidade demandada e contrainteressados para responder em 10 dias; antes da prática, confirmar intervenientes e modalidade.",
+      "source": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2002-34464475",
+      "required_fields": [
+        "Data de entrada do pedido",
+        "Identificação e morada processual dos citandos",
+        "Certificação de citação e data relevante",
+        "Resposta e documentos recebidos"
+      ],
+      "stages": [
+        {
+          "id": "entrada",
+          "check_before": [
+            "Conferir que a fase «Entrada e distribuição» corresponde ao estado real dos autos.",
+            "Data de entrada do pedido",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Verificar se a lei ou um despacho determina uma atuação diferente."
+          ],
+          "secretaria": 0,
+          "judicial": 0,
+          "draft_kind": "remessa",
+          "draft_subject": "Intimação para informações, consulta ou certidões | Entrada e distribuição"
+        },
+        {
+          "id": "citacao",
+          "check_before": [
+            "Conferir que a fase «Citação e resposta» corresponde ao estado real dos autos.",
+            "Identificação e morada processual dos citandos",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Verificar se a lei ou um despacho determina uma atuação diferente."
+          ],
+          "secretaria": 0,
+          "judicial": 0,
+          "draft_kind": "notificacao",
+          "draft_subject": "Intimação para informações, consulta ou certidões | Citação e resposta"
+        },
+        {
+          "id": "decisao",
+          "check_before": [
+            "Conferir que a fase «Resposta, prazo e decisão» corresponde ao estado real dos autos.",
+            "Certificação de citação e data relevante",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Verificar se a lei ou um despacho determina uma atuação diferente."
+          ],
+          "secretaria": 0,
+          "judicial": 0,
+          "draft_kind": "cota",
+          "draft_subject": "Intimação para informações, consulta ou certidões | Resposta, prazo e decisão"
+        }
+      ]
+    },
+    {
+      "id": "intimacao-dlg",
+      "area": "Administrativa",
+      "title": "Intimação para proteção de direitos, liberdades e garantias",
+      "scope": "Meio urgente para proteção de direitos, liberdades e garantias; a sequência depende do despacho liminar.",
+      "attention": "Nunca fazer a citação como se o prazo normal de sete dias se aplicasse sem conferir o despacho e eventuais reduções.",
+      "trigger": "Art. 110.º CPTA: conclusão urgente para despacho liminar, em regra dentro de 48 horas; citação se a petição for admitida.",
+      "source": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2002-34464475-158690399",
+      "required_fields": [
+        "Data e hora de distribuição",
+        "Despacho liminar e tramitação fixada",
+        "Forma de citação/audição determinada",
+        "Resposta e demais diligências"
+      ],
+      "stages": [
+        {
+          "id": "entrada",
+          "check_before": [
+            "Conferir que a fase «Distribuição e despacho liminar» corresponde ao estado real dos autos.",
+            "Data e hora de distribuição",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Verificar se a lei ou um despacho determina uma atuação diferente."
+          ],
+          "secretaria": 0,
+          "judicial": 0,
+          "draft_kind": "remessa",
+          "draft_subject": "Intimação para proteção de direitos, liberdades e garantias | Distribuição e despacho liminar"
+        },
+        {
+          "id": "citacao",
+          "check_before": [
+            "Conferir que a fase «Execução do despacho liminar» corresponde ao estado real dos autos.",
+            "Despacho liminar e tramitação fixada",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Verificar se a lei ou um despacho determina uma atuação diferente."
+          ],
+          "secretaria": 0,
+          "judicial": 0,
+          "draft_kind": "notificacao",
+          "draft_subject": "Intimação para proteção de direitos, liberdades e garantias | Execução do despacho liminar"
+        },
+        {
+          "id": "decisao",
+          "check_before": [
+            "Conferir que a fase «Diligências e decisão» corresponde ao estado real dos autos.",
+            "Forma de citação/audição determinada",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Verificar se a lei ou um despacho determina uma atuação diferente."
+          ],
+          "secretaria": 0,
+          "judicial": 0,
+          "draft_kind": "cota",
+          "draft_subject": "Intimação para proteção de direitos, liberdades e garantias | Diligências e decisão"
+        }
+      ]
+    },
+    {
+      "id": "intimacao-tributaria",
+      "area": "Tributária",
+      "title": "Intimação tributária para consulta de documentos ou certidões",
+      "scope": "Intimação em matéria tributária; verificar enquadramento CPPT 146.º e remissão do CPTA.",
+      "attention": "Não aplicar automaticamente a tramitação de uma impugnação tributária comum nem classificar a urgência com base no nome do processo.",
+      "trigger": "CPPT 146.º e CPTA 104.º-108.º: confirmar a remissão concreta antes de promover a diligência.",
+      "source": "https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/Cod_download/Documents/CPPT.pdf",
+      "required_fields": [
+        "Objeto do pedido tributário",
+        "Remissão legal e despacho",
+        "Entidade requerida e contrainteressados",
+        "Citação e resposta comprovadas"
+      ],
+      "stages": [
+        {
+          "id": "entrada",
+          "check_before": [
+            "Conferir que a fase «Entrada e enquadramento» corresponde ao estado real dos autos.",
+            "Objeto do pedido tributário",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Verificar se a lei ou um despacho determina uma atuação diferente."
+          ],
+          "secretaria": 0,
+          "judicial": 0,
+          "draft_kind": "remessa",
+          "draft_subject": "Intimação tributária para consulta de documentos ou certidões | Entrada e enquadramento"
+        },
+        {
+          "id": "citacao",
+          "check_before": [
+            "Conferir que a fase «Citação e contraditório» corresponde ao estado real dos autos.",
+            "Remissão legal e despacho",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Verificar se a lei ou um despacho determina uma atuação diferente."
+          ],
+          "secretaria": 0,
+          "judicial": 0,
+          "draft_kind": "notificacao",
+          "draft_subject": "Intimação tributária para consulta de documentos ou certidões | Citação e contraditório"
+        },
+        {
+          "id": "decisao",
+          "check_before": [
+            "Conferir que a fase «Decisão e cumprimento» corresponde ao estado real dos autos.",
+            "Entidade requerida e contrainteressados",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Verificar se a lei ou um despacho determina uma atuação diferente."
+          ],
+          "secretaria": 0,
+          "judicial": 0,
+          "draft_kind": "cota",
+          "draft_subject": "Intimação tributária para consulta de documentos ou certidões | Decisão e cumprimento"
+        }
+      ]
+    },
+    {
+      "id": "acao-administrativa",
+      "area": "Administrativa",
+      "title": "Ação administrativa (A01)",
+      "scope": "Ação administrativa comum; distinguir data de propositura e atos sujeitos a direito transitório.",
+      "attention": "DL 164/2026: artigos 80.º e 82.º alterados apenas para ações propostas após 01-12-2026. Não projetar a nova redação sobre ações anteriores.",
+      "trigger": "Art. 81.º CPTA: em regra, citação oficiosa dos demandados; art. 82.º: conferir redação aplicável, prazo, dilações e exceções.",
+      "source": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/164-2026-1154555254",
+      "required_fields": [
+        "Data de propositura",
+        "Redação aplicável do art. 80.º",
+        "Entidades demandadas e contrainteressados",
+        "Data certificada da citação",
+        "Receção da contestação e PA"
+      ],
+      "stages": [
+        {
+          "id": "entrada",
+          "check_before": [
+            "Conferir que a fase «Entrada, distribuição e exame preliminar» corresponde ao estado real dos autos.",
+            "Data de propositura",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Os atos que dependem de decisão judicial carecem de despacho concreto, não da checklist."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "remessa",
+          "draft_subject": "Ação administrativa (A01) | Entrada, distribuição e exame preliminar"
+        },
+        {
+          "id": "citacao",
+          "check_before": [
+            "Conferir que a fase «Citação e contestação» corresponde ao estado real dos autos.",
+            "Redação aplicável do art. 80.º",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Verificar se a lei ou um despacho determina uma atuação diferente."
+          ],
+          "secretaria": 4,
+          "judicial": 0,
+          "draft_kind": "notificacao",
+          "draft_subject": "Ação administrativa (A01) | Citação e contestação"
+        },
+        {
+          "id": "saneamento",
+          "check_before": [
+            "Conferir que a fase «Articulados posteriores, saneamento e prova» corresponde ao estado real dos autos.",
+            "Entidades demandadas e contrainteressados",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Os atos que dependem de decisão judicial carecem de despacho concreto, não da checklist."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "oficio",
+          "draft_subject": "Ação administrativa (A01) | Articulados posteriores, saneamento e prova"
+        },
+        {
+          "id": "decisao",
+          "check_before": [
+            "Conferir que a fase «Sentença e atos subsequentes» corresponde ao estado real dos autos.",
+            "Data certificada da citação",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Os atos que dependem de decisão judicial carecem de despacho concreto, não da checklist."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "cota",
+          "draft_subject": "Ação administrativa (A01) | Sentença e atos subsequentes"
+        }
+      ]
+    },
+    {
+      "id": "impugnacao-judicial",
+      "area": "Tributária",
+      "title": "Impugnação judicial tributária",
+      "scope": "Impugnação judicial tributária; objeto e ato tributário devem estar corretamente identificados.",
+      "attention": "CPPT 110.º/1: a notificação do RFP para contestar é ordenada pelo juiz, e o prazo de três meses não equivale a 90 dias.",
+      "trigger": "Depois de recebida a petição, verificar despacho judicial para notificação do RFP (CPPT 110.º).",
+      "source": "https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/cppt/Pages/cppt110.aspx",
+      "required_fields": [
+        "Ato tributário e valor processual",
+        "Despacho relativo ao RFP",
+        "Notificação e data comprovada",
+        "Contestação e PA",
+        "Prova e alegações determinadas"
+      ],
+      "stages": [
+        {
+          "id": "entrada",
+          "check_before": [
+            "Conferir que a fase «Petição e distribuição» corresponde ao estado real dos autos.",
+            "Ato tributário e valor processual",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Os atos que dependem de decisão judicial carecem de despacho concreto, não da checklist."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "remessa",
+          "draft_subject": "Impugnação judicial tributária | Petição e distribuição"
+        },
+        {
+          "id": "contestacao",
+          "check_before": [
+            "Conferir que a fase «Contestação e processo administrativo» corresponde ao estado real dos autos.",
+            "Despacho relativo ao RFP",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Os atos que dependem de decisão judicial carecem de despacho concreto, não da checklist."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "oficio",
+          "draft_subject": "Impugnação judicial tributária | Contestação e processo administrativo"
+        },
+        {
+          "id": "instrucao",
+          "check_before": [
+            "Conferir que a fase «Instrução e alegações» corresponde ao estado real dos autos.",
+            "Notificação e data comprovada",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Os atos que dependem de decisão judicial carecem de despacho concreto, não da checklist."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "oficio",
+          "draft_subject": "Impugnação judicial tributária | Instrução e alegações"
+        },
+        {
+          "id": "decisao",
+          "check_before": [
+            "Conferir que a fase «Sentença, recurso e encerramento» corresponde ao estado real dos autos.",
+            "Contestação e PA",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Os atos que dependem de decisão judicial carecem de despacho concreto, não da checklist."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "cota",
+          "draft_subject": "Impugnação judicial tributária | Sentença, recurso e encerramento"
+        }
+      ]
+    },
+    {
+      "id": "providencia-cautelar",
+      "area": "Administrativa",
+      "title": "Providência cautelar administrativa",
+      "scope": "Providência cautelar administrativa; tramitação urgente e possibilidade de decretamento provisório.",
+      "attention": "Art. 116.º: conclusão ao juiz com maior urgência para despacho liminar em 48 horas. Não iniciar oposição antes do ato liminar necessário.",
+      "trigger": "Artigos 116.º, 117.º e 131.º CPTA: distinguir admissão e citação, oposição, decretamento provisório e decisão.",
+      "source": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2002-34464475-158690405",
+      "required_fields": [
+        "Data e hora de distribuição",
+        "Processo principal e requerente",
+        "Despacho liminar",
+        "Entidades citandas",
+        "Eventual decretamento provisório"
+      ],
+      "stages": [
+        {
+          "id": "entrada",
+          "check_before": [
+            "Conferir que a fase «Receção e conclusão urgente» corresponde ao estado real dos autos.",
+            "Data e hora de distribuição",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Os atos que dependem de decisão judicial carecem de despacho concreto, não da checklist."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "remessa",
+          "draft_subject": "Providência cautelar administrativa | Receção e conclusão urgente"
+        },
+        {
+          "id": "oposicao",
+          "check_before": [
+            "Conferir que a fase «Citação e oposição» corresponde ao estado real dos autos.",
+            "Processo principal e requerente",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Verificar se a lei ou um despacho determina uma atuação diferente."
+          ],
+          "secretaria": 4,
+          "judicial": 0,
+          "draft_kind": "notificacao",
+          "draft_subject": "Providência cautelar administrativa | Citação e oposição"
+        },
+        {
+          "id": "prova",
+          "check_before": [
+            "Conferir que a fase «Prova e decisão» corresponde ao estado real dos autos.",
+            "Despacho liminar",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Os atos que dependem de decisão judicial carecem de despacho concreto, não da checklist."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "oficio",
+          "draft_subject": "Providência cautelar administrativa | Prova e decisão"
+        },
+        {
+          "id": "posterior",
+          "check_before": [
+            "Conferir que a fase «Providência adotada e situação posterior» corresponde ao estado real dos autos.",
+            "Entidades citandas",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Os atos que dependem de decisão judicial carecem de despacho concreto, não da checklist."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "oficio",
+          "draft_subject": "Providência cautelar administrativa | Providência adotada e situação posterior"
+        }
+      ]
+    },
+    {
+      "id": "recurso",
+      "area": "Administrativa e tributária",
+      "title": "Recursos jurisdicionais TAF",
+      "scope": "Recursos jurisdicionais na jurisdição administrativa e tributária; regime depende da espécie de origem.",
+      "attention": "Não misturar CPTA 144.º-147.º com o regime do CPPT 279.º-282.º; prazo e efeito não são inferidos da designação de recurso.",
+      "trigger": "Verificar data da decisão e notificação, a peça de recurso, regras do regime aplicável e eventual despacho de admissão.",
+      "source": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2002-34464475",
+      "required_fields": [
+        "Decisão recorrida e notificação",
+        "Espécie originária e regime",
+        "Interposição e conclusões",
+        "Despacho de admissão e efeito",
+        "Remessa certificada"
+      ],
+      "stages": [
+        {
+          "id": "entrada",
+          "check_before": [
+            "Conferir que a fase «Interposição e identificação do regime» corresponde ao estado real dos autos.",
+            "Decisão recorrida e notificação",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Os atos que dependem de decisão judicial carecem de despacho concreto, não da checklist."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "remessa",
+          "draft_subject": "Recursos jurisdicionais TAF | Interposição e identificação do regime"
+        },
+        {
+          "id": "contraditorio",
+          "check_before": [
+            "Conferir que a fase «Notificação do recorrido e contra-alegações» corresponde ao estado real dos autos.",
+            "Espécie originária e regime",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Verificar se a lei ou um despacho determina uma atuação diferente."
+          ],
+          "secretaria": 4,
+          "judicial": 0,
+          "draft_kind": "notificacao",
+          "draft_subject": "Recursos jurisdicionais TAF | Notificação do recorrido e contra-alegações"
+        },
+        {
+          "id": "admissao",
+          "check_before": [
+            "Conferir que a fase «Despacho e remessa» corresponde ao estado real dos autos.",
+            "Interposição e conclusões",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Os atos que dependem de decisão judicial carecem de despacho concreto, não da checklist."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "oficio",
+          "draft_subject": "Recursos jurisdicionais TAF | Despacho e remessa"
+        },
+        {
+          "id": "retorno",
+          "check_before": [
+            "Conferir que a fase «Decisão do tribunal superior» corresponde ao estado real dos autos.",
+            "Despacho de admissão e efeito",
+            "Confirmar os atos ou despachos anteriores exigidos nesta fase."
+          ],
+          "do_not_assume": [
+            "Não dar como cumprido qualquer ato que não esteja documentalmente certificado.",
+            "Os atos que dependem de decisão judicial carecem de despacho concreto, não da checklist."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "cota",
+          "draft_subject": "Recursos jurisdicionais TAF | Decisão do tribunal superior"
+        }
+      ]
+    }
+  ]
+}
