@@ -55,3 +55,13 @@ Não afirmar que a ferramenta garante anonimização irreversível sem auditoria
 - [ ] Testar posteriormente formatos difíceis, PDFs assinados, rotacionados, encriptados e documentos de duas colunas; sem usar processos reais.
 
 O PDF.js é carregado de CDN externo; não introduzir documentos confidenciais antes de avaliação de segurança das dependências.
+
+## Integridade das dependências externas (16-11-2026)
+
+- [x] O carregamento de `pdf.js@3.11.174/pdf.min.js` no LegalTech PA e no Anonimizador usa SHA-512/SRI verificado.
+- [x] O `pdf-lib@1.17.1/pdf-lib.min.js` do Anonimizador tem SRI SHA-512 verificado.
+- [x] A auditoria de PDF no GitHub Actions compara os ficheiros publicados pelo CDN com os hashes fixados antes de executar os testes sintéticos (`scripts/cdn-pdf-hashes.mjs`).
+- [ ] O *worker* remoto do PDF.js ainda não dispõe de verificação SRI equivalente; a independência de CDNs exige disponibilização local de bibliotecas e respetivas licenças.
+- [ ] Auditoria independente de segurança, incluindo PDFs malformados ou contendo conteúdo ativo, e validação institucional antes de tratar documentos judiciais reais.
+
+A proteção SRI dificulta substituições não autorizadas do JavaScript externo, mas **não garante que uma biblioteca esteja isenta de vulnerabilidades nem certifica a confidencialidade de documentos reais**.
