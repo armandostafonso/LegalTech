@@ -141,7 +141,7 @@ check("Taxa-base: não cria obrigação sem confirmação das premissas",()=>{
 });
 check("Taxa-base: cria obrigação controlada e impede repetição",()=>{
  put("pa_exemption","none");put("pa_aid","none");put("pa_entity","person");els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");assert.match(read("autoResult"),/criada/);
- assert.match(read("obA"),/510,00/);
+ assert.match(read("obA"),/255,00/);
  els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");
  assert.match(read("autoResult"),/já registada/);assert.match(read("obA"),/510,00/);
 });
@@ -151,8 +151,8 @@ check("Taxa-base: alteração do impulso exige novo cálculo",()=>{
 });
 check("Taxa-base: transferência é substitutiva",()=>{
  els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");
- assert.match(read("obA"),/765,00/);
- click("obApply");assert.equal(els.get("a").value,"765.00");click("obApply");assert.equal(els.get("a").value,"765.00");
+ assert.match(read("obA"),/510,00/);
+ click("obApply");assert.equal(els.get("a").value,"510.00");click("obApply");assert.equal(els.get("a").value,"510.00");
 });
 
 check("Taxa-base: bloqueia isenção ou apoio judiciário",()=>{
@@ -170,5 +170,45 @@ check("Taxa-base: montantes com mais de duas casas são rejeitados",()=>{
 });
 check("Taxa-base: limpar apaga estado da simulação",()=>{
  click("reset");assert.equal(els.get("autoValue").value,"");assert.match(read("autoResult"),/Indica os dados/);
+});
+
+check("Prestações: primeira I-A é metade dos 5 UC",()=>{
+ put("autoValue","30000");put("autoDate","2026-11-16");put("autoParty","a");put("autoType","peticao");put("autoRef","PREST-001");put("autoUC","102");
+ put("pa_entity","person");put("pa_exemption","none");put("pa_aid","none");els.get("autoVerified").checked=true;
+ click("autoPreview");assert.match(read("autoResult"),/1.ª prestação: 255,00/);assert.match(read("autoResult"),/2.ª prestação potencial: 255,00/);
+ click("autoInsert");assert.match(read("obA"),/255,00/);
+});
+check("Prestações: não se cria segunda sem exclusão de causas de dispensa",()=>{
+ put("secondSource","1");click("secondPreview");assert.match(read("secondCalcResult"),/Ainda não foi excluída/);
+});
+check("Prestações: segunda é bloqueada se não há audiência final",()=>{
+ put("secondOther","no");put("hearing","no");put("endbefore","no");put("opp","no");put("priority","no");els.get("secondVerified").checked=true;
+ click("secondPreview");assert.match(read("secondCalcResult"),/causa de não pagamento/);
+});
+check("Prestações: criar segunda 255 € após validação",()=>{
+ put("hearing","yes");click("secondPreview");assert.match(read("secondCalcResult"),/255,00/);click("secondCreate");assert.match(read("secondCalcResult"),/lançada/);
+ assert.match(read("obA"),/510,00/);
+});
+check("Prestações: impede duplicar a mesma segunda prestação",()=>{
+ els.get("secondVerified").checked=true;click("secondPreview");assert.match(read("secondCalcResult"),/já está registada/);
+});
+check("Remanescente: recusar valor com instrução não concluída",()=>{
+ put("remvalue","400000");put("uc","102");put("remtable","A");put("remTarget","a");put("remRef","REM-A01");put("remPayPct","100");put("remdisp","no");put("instruction","unknown");put("remcost","loser");put("remDecision","verified");els.get("remVerified").checked=true;
+ click("remObPreview");assert.match(read("remObResult"),/instrução está por verificar/);
+});
+check("Remanescente: recusar dispensa integral",()=>{
+ put("instruction","no");put("remdisp","yes");click("remObPreview");assert.match(read("remObResult"),/Dispensa integral/);
+});
+check("Remanescente: sem dispensa exige 100 %",()=>{
+ put("remdisp","no");put("remPayPct","50");click("remObPreview");assert.match(read("remObResult"),/tem de ser 100/);
+});
+check("Remanescente: dispensa parcial com 50 % de 1530 €",()=>{
+ put("remdisp","partial");click("remObPreview");assert.match(read("remObResult"),/765,00/);click("remObCreate");assert.match(read("remObResult"),/registado/);assert.match(read("obA"),/1.?275,00/);
+});
+check("Remanescente: impedir dupla criação com a mesma referência",()=>{
+ els.get("remVerified").checked=true;click("remObPreview");assert.match(read("remObResult"),/Já existe obrigação/);
+});
+check("Prestações e remanescente: transferir sem duplicar",()=>{
+ click("obApply");assert.equal(els.get("a").value,"1275.00");click("obApply");assert.equal(els.get("a").value,"1275.00");
 });
 console.log(tests+" testes do módulo A01 concluídos.");
