@@ -41,6 +41,8 @@ try{
  if(rows!==3)throw Error("Esperadas três datas fictícias extraídas, obtidas "+rows);
  const content=await page.locator("#rows").innerText();
  if(!content.includes("[p. 1]")||!content.includes("[p. 2]"))throw Error("Faltam as páginas de origem");
+ const cells=await page.locator("#rows tr td:nth-child(2)").allInnerTexts();
+ if(!cells.includes("1")||!cells.includes("2"))throw Error("Coluna de página de origem incorreta");
  if(await page.locator("#csv").isDisabled())throw Error("Índice não exportável");
  console.log("PASSOU: PDF textual de duas páginas e três datas com origem por página.");
  await page.locator("#pdf").setInputFiles({name:"pa-misto-ficticio.pdf",mimeType:"application/pdf",buffer:Buffer.from(files.mixed)});
