@@ -18,7 +18,7 @@ Ferramentas jurídicas práticas em português de Portugal. Projeto estático pu
 
 **Atenção:** não são instrumentos oficiais e não substituem despacho, verificação dos autos ou enquadramento legal. Não se deve utilizar um cálculo sem confirmar as normas concretamente aplicáveis.
 
-O módulo A01 é experimental e não recebe PDFs nem calcula taxas legais. Exige que o utilizador determine os valores e confirme a versão do RCP, isenções, reduções, remanescente e pagamentos. Não introduzir dados confidenciais.
+O módulo A01 é experimental: contém apenas simulações orientadoras da Tabela I e conferência aritmética dos montantes indicados, além de fichas de intervenientes (isenções, apoio judiciário e dispensa de pagamento prévio). Não recebe PDFs nem emite conta oficial. Exige verificação da versão do RCP, do regime de cada parte, das reduções, remanescente e pagamentos. Não introduzir dados confidenciais. Especificação: [Caderno jurídico e técnico A01](docs/motor-custas-A01.md).
 
 ## Segurança e privacidade
 
@@ -38,7 +38,7 @@ A aplicação de Windows é um projeto independente, em outro repositório.
 
 ## Testes de custas A01
 
-Executar `node scripts/test-custas.mjs` para verificar os escalões, o remanescente, as condições do artigo 14.º-A, as regras transitórias e o apuramento separado por parte. Os testes são técnicos e não certificam a interpretação jurídica. O módulo continua experimental e não emite conta oficial.
+Executar `node scripts/test-custas.mjs` para verificar escalões, remanescente, artigo 14.º-A, regras transitórias, perfis de intervenientes e conferência separada por parte. O ficheiro `.github/workflows/custas-tests.yml` executa estes testes e a validação do site em pushes e pull requests pertinentes. São testes técnicos e não certificam a interpretação jurídica. O módulo continua experimental e não emite conta oficial.
 
 ## Validação
 
