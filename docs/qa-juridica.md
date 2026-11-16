@@ -20,6 +20,8 @@
 | 1 mês, desde 31 de janeiro (sem dia 31 em fevereiro, domingo) | 31-01-2027 | 01-03-2027 |
 | 6 meses (não suspende nas férias), termo num domingo | 15-05-2026 | 16-11-2026 |
 | 1 ano | 16-11-2026 | 16-11-2027 |
+| 6 meses, processo comum, termo nominal durante férias de verão | 01-02-2026 | 01-09-2026 |
+| 6 meses, processo urgente, termo nominal num sábado em agosto | 01-02-2026 | 03-08-2026 |
 | Singular eletrónica sem consulta | disponibilização em 16-11-2026 | sem data de citação confirmada |
 | Singular eletrónica com consulta | consulta em 18-11-2026 | citação em 18-11-2026 |
 | Singular eletrónica, consulta depois de 30 dias, sem confirmação de citação por outro meio | — | sem data confirmada |
@@ -41,3 +43,9 @@ Executar: `node scripts/citacheck-regression.mjs` (após instalar Playwright).
 9. Alterações legislativas posteriores à última conferência normativa.
 
 **Regra de desenvolvimento:** não alterar o motor jurídico para fazer passar um teste sem confrontar o resultado com a norma e o caso de referência. O resultado de cada teste deve ter revisão humana e data de validação.
+
+## Paridade com a aplicação Windows
+
+Existe uma matriz de casos em `tests/shared-cases.json`, idêntica no repositório `Cita-Check-Desktop`. Na versão Web, é exercitada em Chromium por `scripts/citacheck-regression.mjs`; na versão Windows, é exercitada por `tests/test_calculo.py`.
+
+**Importante:** os dois projetos continuam com motores próprios. A matriz comum deteta discrepâncias nos casos abrangidos, mas não garante que ambos coincidam em todas as modalidades de citação nem equivale a um motor partilhado de código. A sincronização desta matriz deve ser mantida sempre que qualquer uma das ferramentas seja alterada.
