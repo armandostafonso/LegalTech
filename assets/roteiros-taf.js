@@ -1,4 +1,4 @@
-/* Catálogo de roteiros TAF. Sincronizado com rules/roteiros-taf.json */
+/* Catálogo de roteiros TAF sincronizado com rules/roteiros-taf.json */
 window.LegalTechRoteirosTAF = Object.freeze({
   "version": "2026-11-16",
   "status": "Roteiros auxiliares, não constitutivos de despacho ou certificação de prazos.",
@@ -370,6 +370,124 @@ window.LegalTechRoteirosTAF = Object.freeze({
             "Juiz / despacho | Determinação da tramitação subsequente e eventual execução dependem do conteúdo da decisão.",
             "Secretaria | Dar seguimento às diligências concretamente ordenadas, incluindo custas quando legalmente devidas.",
             "Secretaria | Arquivar ou remeter para os atos finais apenas quando reunidos os pressupostos processuais."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pre-contratual",
+      "name": "Contencioso pré-contratual",
+      "jurisdiction": "Administrativa",
+      "urgency": "Urgente; despacho liminar nos termos do art. 102.º/2 do CPTA",
+      "basis": [
+        {
+          "article": "CPTA, artigos 100.º a 103.º-B; 102.º/2 e 103.º-A",
+          "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2002-34464475-907910337"
+        },
+        {
+          "article": "CPTA, artigo 103.º-A, efeito suspensivo",
+          "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2002-34464475-892448531"
+        }
+      ],
+      "notes": "Processo urgente. Após distribuição, conclusão ao juiz para despacho liminar no prazo máximo legal de 48 horas (art. 102.º/2); a admissão e a citação são determinadas pelo juiz. O efeito suspensivo automático do art. 103.º-A exige pressupostos específicos e não decorre da simples seleção desta espécie.",
+      "stages": [
+        {
+          "id": "entrada",
+          "name": "Distribuição e despacho liminar",
+          "steps": [
+            "Secretaria | Conferir distribuição, identificação do procedimento pré-contratual, partes, entidades demandadas e contrainteressados.",
+            "Secretaria | Assinalar a urgência e promover conclusão imediata para despacho liminar, nos termos do art. 102.º/2 CPTA.",
+            "Juiz / despacho | O juízo liminar sobre admissão e a determinação da citação dependem do despacho judicial.",
+            "Secretaria | Registar o despacho e qualquer advertência específica sobre efeito suspensivo que tenha sido determinada."
+          ]
+        },
+        {
+          "id": "citacao",
+          "name": "Citação e contraditório",
+          "steps": [
+            "Secretaria | Após despacho de admissão, conferir a citação da entidade demandada e dos contrainteressados (art. 102.º/2).",
+            "Secretaria | Confirmar modalidade de citação, destinatários, anexos e advertências ordenadas.",
+            "Secretaria | Conferir a data efetiva de citação e o prazo de resposta aplicável, sem o inferir apenas do nome da espécie.",
+            "Juiz / despacho | Questões de regularidade, adequação de tramitação e exceções são submetidas à apreciação judicial."
+          ]
+        },
+        {
+          "id": "suspensao",
+          "name": "Incidente de efeito suspensivo",
+          "steps": [
+            "Secretaria | Verificar se estão alegados e documentados os pressupostos específicos do artigo 103.º-A CPTA.",
+            "Secretaria | Registar eventual requerimento de levantamento e as peças apresentadas pelas partes.",
+            "Juiz / despacho | A apreciação e eventual levantamento do efeito suspensivo dependem de decisão judicial após contraditório legal.",
+            "Secretaria | Cumprir notificações de resposta e comunicações determinadas, conferindo os prazos e a urgência aplicáveis."
+          ]
+        },
+        {
+          "id": "decisao",
+          "name": "Decisão e tramitação posterior",
+          "steps": [
+            "Secretaria | Conferir a conclusão após contraditório e diligências de prova, conforme despachos.",
+            "Secretaria | Proceder às notificações da decisão, verificando destinatários e urgência.",
+            "Secretaria | Conferir eventual recurso e atos posteriores segundo o regime aplicável.",
+            "Juiz / despacho | Efeitos de decisões, incidentes e recurso são apreciados pelo juiz nos termos legais."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reclamacao-oef",
+      "name": "Reclamação de atos do órgão de execução fiscal",
+      "jurisdiction": "Tributária",
+      "urgency": "Subida diferida ou imediata; urgência na hipótese do art. 278.º/3 e /6 CPPT",
+      "basis": [
+        {
+          "article": "CPPT, artigos 276.º a 278.º",
+          "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/1999-34577575-158474486"
+        },
+        {
+          "article": "CPPT, artigos 277.º e 278.º, Portal das Finanças",
+          "url": "https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/Cod_download/Documents/CPPT_07_2025.pdf"
+        }
+      ],
+      "notes": "Regime dependente da modalidade de subida. Art. 277.º: reclamação apresentada no órgão de execução fiscal, com prazo próprio. Art. 278.º/1: regra de conhecimento diferido; n.º 3: hipóteses de prejuízo irreparável com subida imediata e regime urgente (n.º 6). A secretaria não presume o enquadramento sem os autos e eventual despacho.",
+      "stages": [
+        {
+          "id": "entrada",
+          "name": "Receção e identificação da reclamação",
+          "steps": [
+            "Secretaria | Confirmar a identificação do processo de execução fiscal, ato reclamado, intervenientes e documentos remetidos.",
+            "Secretaria | Verificar se o expediente provém do órgão de execução fiscal competente e se acompanha a documentação do processo executivo.",
+            "Secretaria | Registar os eventos e datas de apresentação, sem substituir a análise judicial da tempestividade ou subida.",
+            "Juiz / despacho | A qualificação da modalidade de subida e pressupostos concretos compete à apreciação judicial."
+          ]
+        },
+        {
+          "id": "subida",
+          "name": "Subida diferida ou imediata",
+          "steps": [
+            "Secretaria | Conferir se a reclamação invoca fundamentos da subida imediata do artigo 278.º/3 ou segue a regra do n.º 1.",
+            "Secretaria | Assinalar a urgência quando o regime do art. 278.º/6 seja aplicável, sem presumir que todas as reclamações são urgentes.",
+            "Secretaria | Verificar a remessa eletrónica do processo executivo e respetivas peças no caso de subida imediata (art. 278.º/5).",
+            "Juiz / despacho | Dúvidas sobre enquadramento legal, urgência e prova da subida são submetidas ao juiz."
+          ]
+        },
+        {
+          "id": "contraditorio",
+          "name": "Resposta do RFP e parecer do MP",
+          "steps": [
+            "Secretaria | Conferir a notificação do representante da Fazenda Pública, nos termos do art. 278.º/2, e o prazo legal de resposta.",
+            "Secretaria | Conferir a audição do Ministério Público e o respetivo prazo, quando aplicável.",
+            "Secretaria | Verificar a entrada de resposta e parecer, registando datas e documentos recebidos.",
+            "Juiz / despacho | Qualquer diligência adicional ou situação anómala é submetida a apreciação judicial."
+          ]
+        },
+        {
+          "id": "decisao",
+          "name": "Decisão e efeitos na execução",
+          "steps": [
+            "Secretaria | Apresentar os autos após o contraditório, de acordo com a urgência e determinações aplicáveis.",
+            "Secretaria | Conferir destinatários e notificações da decisão.",
+            "Juiz / despacho | Os efeitos sobre o processo executivo e eventual suspensão total ou parcial são determinados segundo o art. 278.º/8 e /9.",
+            "Secretaria | Registar o cumprimento da decisão e eventuais recursos, sem presumir subida ou efeito."
           ]
         }
       ]
