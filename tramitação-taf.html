@@ -1,25 +1,25 @@
 <!doctype html><html lang="pt-PT"><head>
 <script id="lt-theme-bootstrap">(function(){try{var a=localStorage.getItem("legaltech_theme"),b=localStorage.getItem("theme"),t=(a==="light"||a==="dark")?a:(b==="light"||b==="dark")?b:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;localStorage.setItem("legaltech_theme",t);localStorage.setItem("theme",t)}catch(e){}})();</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tramitação TAF | LegalTech</title><meta name="description" content="Roteiros operacionais de tramitação para intimações administrativas e tributárias."><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/tools.css">
-<style>.field small{display:block}.steplist{display:grid;gap:10px}.step{display:flex;gap:12px;border:1px solid var(--line);border-radius:11px;padding:13px}.step input{width:20px;height:20px;flex:none;margin-top:2px}.step.done{background:var(--soft)}.stage{padding:11px 13px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;cursor:pointer;text-align:left}.stage[aria-pressed=true]{border-color:var(--accent);background:var(--soft)}.stagebar{display:flex;gap:8px;flex-wrap:wrap}.progress{height:9px;background:var(--soft);border-radius:10px;margin:12px 0;overflow:hidden}.progress>div{height:100%;background:var(--accent);width:0}.article{display:block;font-size:13px;margin:5px 0}.info{border-left:3px solid var(--accent);padding:9px 14px;margin:14px 0;background:var(--soft);font-size:14px}.output{white-space:pre-wrap;font-size:13px;color:var(--muted);overflow-wrap:anywhere}.tagline{font-size:12px;color:var(--muted)}.actor{display:inline-block;font:700 10px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--accent);background:var(--soft);border-radius:6px;padding:4px 6px;margin:0 8px 0 0}.stepbody{flex:1}.stepheader{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-bottom:4px}.warning-temporal{border-left:3px solid #b86f22;background:var(--paper);border-radius:8px;padding:12px 14px;font-size:13px;margin-top:12px}@media print{.inputs,.actions,nav,.stagebar{display:none!important}.grid{display:block}.panel{border:0}.step{border:0;padding:5px}.step input{accent-color:#333}}</style><link rel="stylesheet" href="assets/brand.css">
+<style>.field small{display:block}.steplist{display:grid;gap:10px}.step{display:flex;gap:12px;border:1px solid var(--line);border-radius:11px;padding:13px}.step input{width:20px;height:20px;flex:none;margin-top:2px}.step.done{background:var(--soft)}.stage{padding:11px 13px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;cursor:pointer;text-align:left}.stage[aria-pressed=true]{border-color:var(--accent);background:var(--soft)}.stagebar{display:flex;gap:8px;flex-wrap:wrap}.progress{height:9px;background:var(--soft);border-radius:10px;margin:12px 0;overflow:hidden}.progress>div{height:100%;background:var(--accent);width:0}.article{display:block;font-size:13px;margin:5px 0}.info{border-left:3px solid var(--accent);padding:9px 14px;margin:14px 0;background:var(--soft);font-size:14px}.output{white-space:pre-wrap;font-size:13px;color:var(--muted);overflow-wrap:anywhere}.tagline{font-size:12px;color:var(--muted)}.actor{display:inline-block;font:700 10px/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--accent);background:var(--soft);border-radius:6px;padding:4px 6px;margin:0 8px 0 0}.stepbody{flex:1}.stepheader{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-bottom:4px}.guidance{display:grid;gap:10px}.guidance ul{margin:6px 0 8px;padding-left:20px}.guidance li{margin-bottom:7px}.guidance h3{font-size:14px;margin:14px 0 7px}.lawstatus{margin:8px 0;padding:10px;border-radius:10px;background:var(--soft);font-size:13px}.guidance a{display:block;margin-top:10px;font-weight:600}.date-field{margin-top:10px}.date-field input{max-width:250px}.warning-temporal{border-left:3px solid #b86f22;background:var(--paper);border-radius:8px;padding:12px 14px;font-size:13px;margin-top:12px}@media print{.inputs,.actions,nav,.stagebar{display:none!important}.grid{display:block}.panel{border:0}.step{border:0;padding:5px}.step input{accent-color:#333}}</style><link rel="stylesheet" href="assets/brand.css">
 </head><body>
 <header><nav><a class="brand" href="index.html">LegalTech</a><div><a href="index.html">Início</a><a href="roteiros.html">Roteiros gerais</a><a href="citacheck.html">Cita-Check</a><a href="regimes.html">Prazos CPA/CPPT</a></div></nav></header>
 <main class="wrap"><div class="tag">Secretarias dos tribunais administrativos e fiscais</div><h1>Tramitação TAF</h1><p class="sub">Roteiros operacionais por espécie processual e fase dos autos. Conferência humana, sem leitura de processos, sem acesso ao Citius/SITAF e sem criação automática de atos. Não substitui os despachos judiciais.</p>
 <div class="grid"><section class="panel inputs"><h2>Selecionar o processo</h2>
 <div class="field"><label for="workflow">Espécie processual</label><select id="workflow"></select></div>
 <div class="field"><label for="phase">Fase dos autos</label><select id="phase"></select></div>
-<p id="urgency" class="info"></p><p id="warning" class="hint"></p><p id="temporal" class="warning-temporal" hidden></p>
+<p id="urgency" class="info"></p><p id="warning" class="hint"></p><p id="temporal" class="warning-temporal" hidden></p><div id="temporalControl" class="date-field" hidden><label for="actionFiled">Data de propositura (verificação de direito transitório)</label><input type="date" id="actionFiled"><p id="lawStatus" class="lawstatus" aria-live="polite">Indique a data da propositura para verificar a versão aplicável dos artigos 80.º e 82.º CPTA.</p></div>
 <h2>Fundamentos para consulta</h2><div id="sources"></div>
 <p class="note">As referências legais são pontos de consulta, não uma validação automática da regularidade dos atos. Confirma a redação vigente e as particularidades da jurisdição, do processo e do despacho.</p>
 <div class="actions"><button id="reset" class="btn secondary" type="button">Repor verificações</button><button id="print" class="btn secondary" type="button">Imprimir</button></div>
 </section><section class="panel"><div class="tagline" id="stageName"></div><h2 id="stageTitle">Verificações</h2><div id="count" aria-live="polite">0 de 0</div><div class="progress" aria-hidden="true"><div id="bar"></div></div>
-<div id="steps" class="steplist"></div>
+<div id="steps" class="steplist"></div><details id="detailGuide" style="margin-top:18px;border:1px solid var(--line);padding:15px;border-radius:12px"><summary style="cursor:pointer;font-weight:700">Ficha jurídica complementar e preparação de expediente</summary><div id="guide" class="guidance" style="margin-top:12px"></div></details>
 <div class="actions"><button id="copy" class="btn" type="button">Copiar resumo</button><button id="download" class="btn secondary" type="button">Exportar TXT</button></div>
 <p class="note">As verificações não ficam guardadas. Fechar ou atualizar a página repõe a seleção, salvo as preferências gerais do navegador. Nunca introduzir nomes ou números de processos neste módulo.</p>
 <div id="feedback" class="tagline" role="status" aria-live="polite"></div></section></div>
-</main><script src="assets/roteiros-taf.js"></script><script>
+</main><script src="assets/roteiros-taf.js"></script><script src="assets/fichas-taf.js"></script><script>
 "use strict";
 const $=id=>document.getElementById(id);
-const model=window.LegalTechRoteirosTAF;let workflow=null,stage=null;
+const model=window.LegalTechRoteirosTAF,fmodel=window.LegalTechFichasTAF;let workflow=null,stage=null;
 function node(tag,text){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;return el}
 function fillWorkflows(){for(const item of model.workflows){const o=node("option",item.name);o.value=item.id;$("workflow").append(o)}$("workflow").addEventListener("change",chooseWorkflow);$("phase").addEventListener("change",render);chooseWorkflow()}
 function chooseWorkflow(){workflow=model.workflows.find(x=>x.id===$("workflow").value);if(!workflow)return;$("phase").replaceChildren();for(const item of workflow.stages){const opt=node("option",item.name);opt.value=item.id;$("phase").append(opt)}
@@ -29,7 +29,7 @@ $("temporal").hidden=workflow.id!=="acao-administrativa";
 $("temporal").textContent=workflow.id==="acao-administrativa"
  ? "Regime transitório: DL 164/2026, de 6 de agosto. Entra em vigor em 01/12/2026. Os artigos 80.º e 82.º do CPTA, na nova redação, só se aplicam às ações propostas após essa entrada em vigor (art. 8.º/3). Conferir a data da propositura antes da citação e contestação."
  : "";
-const sources=$("sources");sources.replaceChildren();for(const item of workflow.basis){const link=node("a",item.article);link.href=item.url;link.target="_blank";link.rel="noopener noreferrer";link.className="article";sources.append(link)}render()}
+$("temporalControl").hidden=workflow.id!=="acao-administrativa";updateTemporal();const sources=$("sources");sources.replaceChildren();for(const item of workflow.basis){const link=node("a",item.article);link.href=item.url;link.target="_blank";link.rel="noopener noreferrer";link.className="article";sources.append(link)}render()}
 function render(){stage=workflow?.stages.find(x=>x.id===$("phase").value);if(!stage)return;$("stageName").textContent=workflow.name;$("stageTitle").textContent=stage.name;$("steps").replaceChildren();
 for(const text of stage.steps){
  const label=node("label");label.className="step";
@@ -39,7 +39,38 @@ for(const text of stage.steps){
  const isActor=text.match(/^(Secretaria|Juiz \/ despacho) \| (.*)$/);
  if(isActor){const badge=node("span",isActor[1]==="Secretaria"?"Ato de secretaria":"Depende de despacho");badge.className="actor";detail.append(badge)}
  const caption=node("span",isActor?isActor[2]:text);detail.append(caption);label.append(cb,detail);$("steps").append(label)
-}updateProgress();$("feedback").textContent=""}
+}updateProgress();renderGuide();$("feedback").textContent=""}
+
+function updateTemporal(){
+ if($("workflow").value!=="acao-administrativa")return;
+ const raw=$("actionFiled").value,out=$("lawStatus");
+ if(!raw){out.textContent="Data não indicada: a aplicação não presume a redação aplicável.";return}
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(raw)){out.textContent="Data inválida.";return}
+ out.textContent=raw<"2026-12-01"
+ ? "Ação proposta antes de 01/12/2026: não se aplicam as redações dos artigos 80.º e 82.º introduzidas pelo DL 164/2026 (art. 8.º/3)."
+ : "Ação proposta a partir de 01/12/2026: conferir as novas redações dos artigos 80.º e 82.º e a norma transitória do DL 164/2026.";
+}
+function renderGuide(){
+ const ficha=fmodel.fichas.find(x=>x.id===workflow.id);
+ const st=ficha?.stages.find(x=>x.id===stage.id),target=$("guide");
+ target.replaceChildren();
+ if(!ficha||!st){target.append(node("p","Ficha não disponível."));return}
+ target.append(node("p",ficha.scope));
+ const caution=node("p",ficha.attention);caution.className="info";target.append(caution);
+ target.append(node("p",ficha.trigger));
+ for(const [name,items] of [["Antes de prosseguir",st.check_before],["Não presumir",st.do_not_assume],["Dados a conferir",ficha.required_fields]]){
+   const heading=node("h3",name),ul=node("ul");
+   for(const item of items)ul.append(node("li",item));
+   target.append(heading,ul);
+ }
+ target.append(node("p","Nesta fase: "+st.secretaria+" elementos classificados como secretaria; "+st.judicial+" dependentes de despacho. São categorias orientadoras, não determinações automáticas."));
+ const ref=node("a","Consultar fonte normativa");ref.href=ficha.source;ref.target="_blank";ref.rel="noopener noreferrer";target.append(ref);
+ const link=node("a","Preparar minuta genérica para esta fase");
+ link.href="minutas.html?tipo="+encodeURIComponent(st.draft_kind)+"&assunto="+encodeURIComponent(st.draft_subject);
+ link.id="draftLink";target.append(link);
+ target.append(node("p","A ligação não transmite dados de partes, processos, despachos ou documentos."));
+}
+$("actionFiled").addEventListener("change",updateTemporal);
 function updateProgress(){const all=[...$("steps").querySelectorAll("input")];const checked=all.filter(x=>x.checked).length;$("count").textContent=checked+" de "+all.length+" verificações";$("bar").style.width=(all.length?100*checked/all.length:0)+"%"}
 function summary(){if(!stage)return"";const boxes=[...$("steps").querySelectorAll("input")];return ["LEGALTECH · ROTEIRO AUXILIAR TAF",workflow.name,stage.name,workflow.urgency,"",
 ...stage.steps.map((v,i)=>(boxes[i]?.checked?"[x] ":"[ ] ")+v),"","Referências:",...workflow.basis.map(x=>x.article+" — "+x.url),"","Aviso: conferir autos, normas em vigor e despachos; o roteiro não certifica qualquer diligência."].join("\n")}
