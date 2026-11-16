@@ -36,8 +36,9 @@ async function loadPdfJs(){
 $("readPdf").addEventListener("click",async()=>{
  const file=$("pdf").files[0];const button=$("readPdf");
  if(!file){N.status("Seleciona primeiro um PDF com camada de texto.");return}
+ if(!/\.pdf$/i.test(file.name)){N.status("Seleciona um ficheiro com extensão PDF.");return}
  if(file.size>LegalPaPdf.MAX_BYTES||!file.size){N.status("Ficheiro vazio ou superior a 12 MB.");return}
- $("rows").replaceChildren();entries=[];$("csv").disabled=$("txt").disabled=true;
+ $("source").value="";$("rows").replaceChildren();entries=[];$("csv").disabled=$("txt").disabled=true;
  button.disabled=true;const previous=button.textContent;button.textContent="A analisar o PDF…";
  try{
   const lib=await loadPdfJs();
