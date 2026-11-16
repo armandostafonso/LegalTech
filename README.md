@@ -29,7 +29,7 @@ O módulo A01 está na versão experimental 1.7: calcula taxas-base da Tabela I-
 
 ## Testes de qualidade
 
-O módulo A01 dispõe de **99 testes técnicos de regressão** em `scripts/test-custas.mjs`, incluindo prestações, remanescente, reduções, apoio judiciário e dispensa de pagamento prévio. Estes testes não certificam a interpretação jurídica nem os resultados em processos reais.
+O módulo A01 dispõe de **101 testes técnicos de regressão** em `scripts/test-custas.mjs`, incluindo prestações, remanescente, reduções, apoio judiciário e dispensa de pagamento prévio. Estes testes não certificam a interpretação jurídica nem os resultados em processos reais.
 
 
 O GitHub Actions executa verificações de estrutura, de contrato do calendário e da Tramitação TAF, de navegação, de modo Claro-Escuro e acessibilidade WCAG A/AA nas ferramentas principais, de privacidade e de regressão do Cita-Check. A auditoria isolada do anonimizador usa PDFs fictícios com duas páginas e documentos mistos sem texto.
