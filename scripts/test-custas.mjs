@@ -211,4 +211,15 @@ check("Remanescente: impedir dupla criação com a mesma referência",()=>{
 check("Prestações e remanescente: transferir sem duplicar",()=>{
  click("obApply");assert.equal(els.get("a").value,"1275.00");click("obApply");assert.equal(els.get("a").value,"1275.00");
 });
+check("Prestações: impede retirar primeira com segunda dependente",()=>{
+ els.get("obRows").listeners.click({target:{closest:()=>({dataset:{removeOb:"1"}})}});
+ assert.match(read("obMessage"),/segunda prestação vinculada/);
+});
+check("Prestações: reposição limpa o cálculo e as decisões",()=>{
+ click("reset");
+ assert.equal(els.get("remRef").value,"");
+ assert.equal(els.get("remPayPct").value,"100");
+ assert.equal(els.get("secondVerified").checked,false);
+ assert.equal(els.get("remVerified").checked,false);
+});
 console.log(tests+" testes do módulo A01 concluídos.");
