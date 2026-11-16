@@ -143,7 +143,7 @@ check("Taxa-base: cria obrigação controlada e impede repetição",()=>{
  put("pa_exemption","none");put("pa_aid","none");put("pa_entity","person");els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");assert.match(read("autoResult"),/criada/);
  assert.match(read("obA"),/255,00/);
  els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");
- assert.match(read("autoResult"),/já registada/);assert.match(read("obA"),/510,00/);
+ assert.match(read("autoResult"),/já registada/);assert.match(read("obA"),/255,00/);
 });
 check("Taxa-base: alteração do impulso exige novo cálculo",()=>{
  put("autoRef","AUTO-REC-001");put("autoType","recurso");
