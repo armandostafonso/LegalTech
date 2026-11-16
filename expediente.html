@@ -48,6 +48,8 @@ function summary(){if(!current)return"";const boxes=[...$("items").querySelector
 async function copy(){try{await navigator.clipboard.writeText(summary());$("status").textContent="Checklist copiada."}catch(e){$("status").textContent="Cópia automática indisponível neste navegador."}}
 function download(){const blob=new Blob([summary()+"\n"],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=el("a");a.href=url;a.download="legaltech-conferencia-expediente.txt";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);$("status").textContent="Checklist exportada."}
 for(const type of catalog.types){const option=el("option",type.name);option.value=type.id;$("type").append(option)}
+const requested=new URLSearchParams(location.search).get("tipo");
+if(catalog.types.some(x=>x.id===requested))$("type").value=requested;
 $("type").addEventListener("change",changeType);
 $("reset").addEventListener("click",()=>{states.delete(current.id);changeType();$("status").textContent="Verificações repostas."});
 $("copy").addEventListener("click",copy);
