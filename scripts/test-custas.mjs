@@ -442,4 +442,51 @@ check("Conferência: rejeita valores monetários com mais de duas casas",()=>{
 check("Conferência: aceita exactamente dois decimais",()=>{
  put("a","100.01");click("calc");assert.match(read("due"),/100,01/);
 });
+
+check("Reconciliação: regista duas obrigações sem imputação automática",()=>{
+ put("obParty","a");put("obType","peticao");put("obRef","REC-A-100");put("obAmount","100");put("obBasis","Valor fictício com suporte documental");els.get("obChecked").checked=true;click("obAdd");
+ put("obParty","b");put("obRef","REC-B-40");put("obAmount","40");put("obBasis","Valor fictício com suporte documental");els.get("obChecked").checked=true;click("obAdd");
+ click("obApply");click("reconcile");
+ assert.match(els.get("reconcileRows").innerHTML,/100,00/);assert.match(els.get("reconcileRows").innerHTML,/40,00/);
+ assert.match(read("reconcileNote"),/Conferência com advertências/);
+});
+check("Reconciliação: confirmado e imputado a uma obrigação",()=>{
+ put("ledgerParty","a");put("ledgerKind","payment");put("ledgerStatus","confirmed");put("ledgerObligation","1");put("ledgerRef","REC-PA-25");put("ledgerDate","2026-11-16");put("ledgerAmount","25");click("ledgerAdd");
+ click("reconcile");assert.match(els.get("reconcileRows").innerHTML,/75,00/);assert.match(els.get("reconcileRows").innerHTML,/25,00/);
+});
+check("Reconciliação: movimento pendente não abate dívida aritmética",()=>{
+ put("ledgerRef","REC-PA-10-PEND");put("ledgerAmount","10");put("ledgerStatus","pending");click("ledgerAdd");
+ click("reconcile");assert.equal(read("reconcilePending"),"1");assert.match(els.get("reconcileRows").innerHTML,/75,00/);
+});
+check("Reconciliação: não imputado não abate impulso por adivinhação",()=>{
+ put("ledgerObligation","");put("ledgerStatus","confirmed");put("ledgerRef","REC-PA-8-SEM-IMP");put("ledgerAmount","8");click("ledgerAdd");
+ click("reconcile");assert.match(read("reconcileUnassigned"),/8,00/);assert.match(els.get("reconcileRows").innerHTML,/75,00/);
+});
+check("Reconciliação: pagamento excessivo gera alerta sem restituição automática",()=>{
+ put("ledgerParty","b");put("ledgerObligation","2");put("ledgerRef","REC-PB-60");put("ledgerAmount","60");click("ledgerAdd");
+ click("reconcile");assert.equal(read("reconcileOver"),"1");assert.match(els.get("reconcileRows").innerHTML,/20,00/);
+ assert.match(read("reconcileNote"),/excesso aritmético/);
+});
+check("Reconciliação: restituição confirmada abate ao mesmo impulso",()=>{
+ put("ledgerParty","a");put("ledgerKind","refund");put("ledgerObligation","1");put("ledgerStatus","confirmed");put("ledgerRef","REC-PA-25");put("ledgerAmount","5");click("ledgerAdd");
+ click("reconcile");assert.match(els.get("reconcileRows").innerHTML,/80,00/);
+});
+check("Reconciliação: proposta contém avisos por impulso e pagamentos sem imputação",()=>{
+ click("ledgerApply");click("proposalPreview");
+ assert.match(read("proposalText"),/RECONCILIAÇÃO POR IMPULSO/);
+ assert.match(read("proposalNote"),/sem obrigação atribuída/);
+});
+check("Reconciliação: CSV inclui mapa de impulsos",()=>{
+ click("proposalExport");const csv=downloads.at(-1);
+ assert.match(csv,/Mapa por impulso;Obrigação/);assert.match(csv,/REC-A-100/);
+ assert.match(csv,/Não imputados/);
+});
+check("Reconciliação: alterações ao livro invalidam cópia anterior",()=>{
+ put("ledgerParty","b");put("ledgerKind","payment");put("ledgerObligation","2");put("ledgerRef","REC-PB-1");put("ledgerAmount","1");click("ledgerAdd");
+ click("reconcileCopy");assert.match(read("reconcileNote"),/desactualizado/);
+});
+check("Reconciliação: limpar não reutiliza valores anteriores",()=>{
+ click("reset");click("reconcile");
+ assert.equal(read("reconcilePending"),"0");assert.match(els.get("reconcileRows").innerHTML,/Não existem obrigações/);
+});
 console.log(tests+" testes do módulo A01 concluídos.");
