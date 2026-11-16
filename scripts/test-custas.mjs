@@ -80,4 +80,44 @@ check("Livro: referência maliciosa é escapada no HTML",()=>{
 check("Livro: botão limpar repõe os saldos",()=>{
  click("reset");assert.match(read("ledgerA"),/0,00/);assert.equal(read("ledgerPending"),"0");
 });
+
+check("Obrigações: inserir petição inicial para parte A",()=>{
+ put("obParty","a");put("obType","peticao");put("obRef","PI-001");put("obAmount","612.00");put("obBasis","RCP art. 6 e tabela I-A, versão aplicável");els.get("obChecked").checked=true;click("obAdd");
+ assert.match(read("obA"),/612,00/);assert.match(read("obMessage"),/adicionada/);
+});
+check("Obrigações: bloquear impulso duplicado",()=>{
+ put("obRef","PI-001");put("obAmount","612.00");put("obBasis","Fundamento fictício conferido");els.get("obChecked").checked=true;click("obAdd");
+ assert.match(read("obMessage"),/duplicado/);assert.match(read("obA"),/612,00/);
+});
+check("Obrigações: somar recursos sem duplicar petição",()=>{
+ put("obType","recurso");put("obRef","REC-001");put("obAmount","306.00");put("obBasis","Tabela I-B ilustrativa a verificar");els.get("obChecked").checked=true;click("obAdd");
+ assert.match(read("obA"),/918,00/);
+});
+check("Obrigações: acrescentar contestação de parte B",()=>{
+ put("obParty","b");put("obType","contestacao");put("obRef","CON-001");put("obAmount","612.00");put("obBasis","Tabela I-A a verificar no processo");els.get("obChecked").checked=true;click("obAdd");
+ assert.match(read("obB"),/612,00/);
+});
+check("Obrigações: transferir por substituição, sem duplicação",()=>{
+ click("obApply");assert.equal(els.get("a").value,"918.00");assert.equal(els.get("b").value,"612.00");click("obApply");assert.equal(els.get("a").value,"918.00");
+});
+check("Obrigações: pagamento associado ao impulso correcto",()=>{
+ put("ledgerParty","a");put("ledgerKind","payment");put("ledgerStatus","confirmed");put("ledgerObligation","1");put("ledgerRef","PAG-PI-001");put("ledgerDate","2026-11-16");put("ledgerAmount","612");click("ledgerAdd");
+ assert.match(read("ledgerA"),/612,00/);assert.match(els.get("obRows").innerHTML,/PAG-PI-001|612,00/);
+});
+check("Obrigações: impedir afectação do pagamento a outra parte",()=>{
+ put("ledgerParty","b");put("ledgerKind","payment");put("ledgerStatus","confirmed");put("ledgerObligation","1");put("ledgerRef","PAG-B-INVALIDO");put("ledgerAmount","15");click("ledgerAdd");
+ assert.match(read("ledgerMessage"),/não pertence/);assert.match(read("ledgerB"),/0,00/);
+});
+check("Obrigações: restituição conserva o impulso de origem",()=>{
+ put("ledgerParty","a");put("ledgerKind","refund");put("ledgerStatus","confirmed");put("ledgerObligation","");put("ledgerRef","PAG-PI-001");put("ledgerAmount","100");click("ledgerAdd");
+ assert.match(read("ledgerMessage"),/manter o impulso/);
+ put("ledgerObligation","1");put("ledgerAmount","100");click("ledgerAdd");assert.match(read("ledgerA"),/512,00/);
+});
+check("Obrigações: não retirar obrigação com movimentos imputados",()=>{
+ els.get("obRows").listeners.click({target:{closest:()=>({dataset:{removeOb:"1"}})}});
+ assert.match(read("obMessage"),/Retira primeiro/);assert.match(read("obA"),/918,00/);
+});
+check("Obrigações: reset final limpa os novos registos",()=>{
+ click("reset");assert.match(read("obA"),/0,00/);assert.match(read("ledgerA"),/0,00/);
+});
 console.log(tests+" testes do módulo A01 concluídos.");
