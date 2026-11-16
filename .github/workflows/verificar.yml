@@ -48,5 +48,7 @@ jobs:
           path: qa/ui-snapshots/*.png
           if-no-files-found: warn
           retention-days: 14
+      - name: Paridade CPA e CPPT em dias (96 casos)
+        run: node scripts/regimes-parity.mjs
       - name: Casos de regressão Cita-Check
         run: node scripts/citacheck-regression.mjs
