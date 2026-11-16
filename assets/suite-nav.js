@@ -30,8 +30,6 @@ function init(){
    frag.appendChild(a);
  }
  nav.replaceChildren(frag);
- const currentLink=nav.querySelector('[aria-current="page"]');
- if(currentLink)currentLink.scrollIntoView({block:"nearest",inline:"nearest"});
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();
