@@ -1,29 +1,68 @@
-/* LegalTech · paridade dos contratos partilhados com Cita-Check Desktop.
- * Confere dados e casos de teste; NÃO certifica resultados jurídicos nem motor único. */
+/* LegalTech · paridade de contratos Web/Desktop.
+ * Comparação remota autenticada só quando há token autorizado.
+ * Sem token, valida apenas o contrato local e assinala REMOTA NÃO VERIFICADA.
+ * Não certifica equivalência dos motores de cálculo ou resultados jurídicos. */
 import fs from "node:fs";
+import { createHash } from "node:crypto";
 const files=["rules/calendario.json","rules/municipais.json","tests/shared-cases.json"];
-const desktop="https://raw.githubusercontent.com/armandostafonso/Cita-Check-Desktop/main/";
-const fail=[];
+const remoteRepo="armandostafonso/Cita-Check-Desktop";
+const token=process.env.DESKTOP_REPO_TOKEN?.trim();
+const opts=new Set(process.argv.slice(2));
+const offline=opts.has("--offline");
+const failures=[];
 function canonical(value){
  if(Array.isArray(value))return value.map(canonical);
  if(value&&typeof value==="object")return Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonical(value[k])]));
  return value;
 }
+const sha256=value=>createHash("sha256").update(JSON.stringify(canonical(value))).digest("hex");
+const manifest=JSON.parse(fs.readFileSync("rules/parity-manifest.json","utf8"));
+if(manifest.version!==1||Object.keys(manifest.hashes).length!==files.length)throw Error("Manifesto de paridade inválido");
+const local={};
 for(const path of files){
- const local=canonical(JSON.parse(fs.readFileSync(path,"utf8")));
- if(!local||typeof local!=="object")throw Error("Contrato local inválido: "+path);
- if(process.argv.includes("--offline")){
-  console.log("Contrato local válido: "+path);continue;
- }
- try{
-  const response=await fetch(desktop+path,{
-   signal:AbortSignal.timeout(18000),headers:{"Accept":"application/json","User-Agent":"LegalTech-Parity-Check/1.0"}
-  });
-  if(!response.ok)throw Error("HTTP "+response.status);
-  const remote=canonical(await response.json());
-  if(JSON.stringify(remote)!==JSON.stringify(local))fail.push("Contrato divergente: "+path);
-  else console.log("Paridade confirmada: "+path);
- }catch(e){fail.push(path+": não foi possível confirmar o repositório Desktop ("+e.message+")")}
+ const obj=JSON.parse(fs.readFileSync(path,"utf8"));
+ if(!obj||typeof obj!=="object")throw Error("Contrato local inválido: "+path);
+ const hash=sha256(obj);
+ if(hash!==manifest.hashes[path])failures.push("Contrato local diverge do manifesto Web/Desktop: "+path);
+ local[path]=obj;
 }
-if(fail.length){console.error(fail.join("\n"));process.exit(1)}
-console.log(process.argv.includes("--offline")?"Contratos locais válidos.":"Três contratos Web/Desktop sem diferenças detetadas.");
+if(failures.length){console.error(failures.join("\n"));process.exit(1)}
+console.log("Três contratos locais iguais às versões fixadas no manifesto de paridade.");
+async function writeSummary(content){
+ if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,content+"\n");
+}
+if(offline){
+ console.log("Paridade remota NÃO verificada em modo offline.");
+ await writeSummary("### Cita-Check: contratos locais verificados; repositório remoto não consultado");
+ process.exit(0);
+}
+if(!token){
+ console.log("::warning::Cita-Check Desktop é privado; sem DESKTOP_REPO_TOKEN só é possível verificar contratos locais. A paridade remota NÃO foi verificada.");
+ await writeSummary("### Cita-Check: comparação remota não efetuada\nO repositório Desktop é privado. Os três contratos locais passaram; para comparar os dois repositórios é necessário um token de leitura configurado como DESKTOP_REPO_TOKEN. Não se afirma paridade remota.");
+ process.exit(0);
+}
+for(const path of files){
+ try{
+  const target="https://api.github.com/repos/"+remoteRepo+"/contents/"+path+"?ref=main";
+  const result=await fetch(target,{signal:AbortSignal.timeout(18000),headers:{
+   "Authorization":"Bearer "+token,
+   "Accept":"application/vnd.github+json",
+   "X-GitHub-Api-Version":"2022-11-28",
+   "User-Agent":"LegalTech-Parity-Check/1.1"
+  }});
+  if(!result.ok)throw Error("HTTP "+result.status);
+  const payload=await result.json();
+  if(typeof payload.content!=="string"||payload.encoding!=="base64")throw Error("Representação inesperada");
+  const parsed=JSON.parse(Buffer.from(payload.content.replace(/\s/g,""),"base64").toString("utf8"));
+  const remoteHash=sha256(parsed);
+  if(remoteHash!==manifest.hashes[path])failures.push("Contrato privado diferente: "+path);
+  else console.log("Paridade confirmada via GitHub autenticado: "+path);
+ }catch(e){failures.push(path+": impossível confirmar o repositório Desktop ("+e.message+")")}
+}
+if(failures.length){
+ console.error(failures.join("\n"));
+ await writeSummary("### Cita-Check: comparação remota falhou\n"+failures.map(x=>"- "+x).join("\n"));
+ process.exit(1);
+}
+console.log("Três contratos Web/Desktop iguais, comparação remota autenticada concluída.");
+await writeSummary("### Cita-Check: três contratos remotos confirmados\nEsta verificação não prova igualdade dos algoritmos de contagem.");
