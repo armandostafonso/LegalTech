@@ -20,6 +20,22 @@ await test("Assistant: sugestões de notificação e conclusão sem texto origin
  await page.locator("#clear").click();
  if(await page.locator("#source").inputValue())throw Error("Texto não foi apagado");
 });
+await test("Assistant: instrução negativa bloqueia atos e exportação",async()=>{
+ await open("assistant.html");
+ await page.locator("#source").fill("Não notifique a entidade. Abra conclusão apenas quando determinado.");
+ await page.locator("#analyse").click();
+ if(await page.locator("#items input").count())throw Error("Foram sugeridos atos apesar de uma proibição");
+ if(await page.locator("#links a").count())throw Error("Foram abertos caminhos de atos apesar de proibição");
+ if(await page.locator("#txt").isEnabled())throw Error("Exportação não foi bloqueada");
+ if(!(await page.locator("#warning").innerText()).includes("não sugere"))throw Error("Advertência de negação ausente");
+});
+await test("Assistant: ressalva condicional exige conferência explícita",async()=>{
+ await open("assistant.html");
+ await page.locator("#source").fill("Caso seja legalmente admissível, notifique a entidade.");
+ await page.locator("#analyse").click();
+ if(await page.locator("#items input").count()<1)throw Error("Não foram apresentados pontos a conferir");
+ if(!(await page.locator("#warning").innerText()).includes("condição"))throw Error("Condição não assinalada");
+});
 await test("Privacy Check: deteção e substituição de dados fictícios",async()=>{
  await open("privacy-check.html");
  await page.locator("#source").fill("Exemplo fictício: email pessoa@exemplo.pt e NIF 123456789.");
