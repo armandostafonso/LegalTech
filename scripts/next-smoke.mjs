@@ -27,6 +27,10 @@ await test("Privacy Check: deteção e substituição de dados fictícios",async
  const out=await page.locator("#safe").inputValue();
  if(out.includes("pessoa@exemplo.pt")||out.includes("123456789"))throw Error("Identificadores originais permaneceram");
  if(!out.includes("[ENDEREÇO DE EMAIL]"))throw Error("Email não sinalizado");
+ await page.locator("#source").fill("Contacto fictício 912345678, endereço 1000-001, NISS 12345678901.");
+ await page.locator("#check").click();
+ const phone=await page.locator("#safe").inputValue();
+ if(phone.includes("912345678")||phone.includes("12345678901"))throw Error("Telefone ou NISS não sinalizados");
  await page.locator("#clear").click();
  if(await page.locator("#safe").inputValue())throw Error("Saída não foi apagada");
 });
@@ -86,6 +90,7 @@ await test("Auditor textual: sinalizar duração de prazo omitida",async()=>{
  await page.locator("#draft").fill("Notifica-se o documento à parte, sem indicação do prazo.");
  await page.locator("#review").click();const out=await page.locator("#results").innerText();
  if(!out.includes("5 dias"))throw Error("Duração não sinalizada");
+ await page.locator("#review").click();if(!(await page.locator("#results").innerText()).includes("5 dias"))throw Error("A segunda verificação divergiu");
 });
 await test("Mapa TAF: fases e navegação ao roteiro",async()=>{
  await open("mapa-taf.html");await page.locator("#workflow").selectOption("acao-administrativa");
