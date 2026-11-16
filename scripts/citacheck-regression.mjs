@@ -45,6 +45,14 @@ await test("Prazo igual a 6 meses não suspende em férias judiciais",async()=>{
  await setBase({start:"2026-05-15",quantity:6,unit:"meses"});
  await expectTerm("16/11/2026");
 });
+await test("Seis meses comuns terminados durante as férias passam para setembro",async()=>{
+ await setBase({start:"2026-02-01",quantity:6,unit:"meses"});
+ await expectTerm("01/09/2026");
+});
+await test("Seis meses urgentes podem terminar durante as férias judiciais",async()=>{
+ await setBase({start:"2026-02-01",quantity:6,unit:"meses",urgent:true});
+ await expectTerm("03/08/2026");
+});
 await test("Prazo anual conta por calendário",async()=>{
  await setBase({start:"2026-11-16",quantity:1,unit:"anos"});
  await expectTerm("16/11/2027");
