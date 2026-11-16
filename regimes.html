@@ -38,6 +38,7 @@
 <p><a href="https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/cppt/Pages/cppt20.aspx" target="_blank" rel="noopener">CPPT, artigo 20.º</a>, contagem contínua para procedimento tributário e interposição de impugnação judicial; contagem CPC para atos no processo judicial.</p></section>
 </main>
 <script src="assets/calendario.js"></script>
+<script src="assets/prazo-core.js"></script>
 <script>
 "use strict";
 const $=id=>document.getElementById(id);
@@ -54,19 +55,18 @@ function calculate(){
  const start=parseISO($("start").value),qty=Number($("days").value),regime=$("regime").value,municipality=$("municipality").value,closed=closures();
  if(!Number.isInteger(qty)||qty<1||qty>3650)throw Error("O prazo tem de ser um inteiro entre 1 e 3650 dias.");
  if(!["cpa87","cppt20_1"].includes(regime))throw Error("Regime inválido.");
- let cursor=start, counted=0, excluded=0,events=[],count=0;
- while(counted<qty){
-   cursor=plus(cursor,1);
-   const eligible=openDay(cursor,closed,municipality),include=regime==="cppt20_1"||eligible;
-   if(include)counted++;else excluded++;
-   const message=include?"Contado":("Não contado: "+(isHoliday(cursor)?"feriado nacional":LegalTechCalendario.municipalHoliday(cursor,municipality)?"feriado municipal":closed.has(dateISO(cursor))?"encerramento":"fim de semana"));
-   events.push({date:dateISO(cursor),count:include?counted:"",message});
-   if(++count>8000)throw Error("Intervalo excedido.");
- }
- const raw=dateISO(cursor);
- while(!openDay(cursor,closed,municipality)){
-   cursor=plus(cursor,1);events.push({date:dateISO(cursor),count:"",message:"Transferência do termo"});if(++count>8015)throw Error("Transferência excedida.");
- }
+ const result=LegalTechPrazoCore.calculate({
+   start,amount:qty,unit:"dias",regime,
+   openDay:date=>openDay(date,closed,municipality),
+   inVacation:LegalTechCalendario.isVacation,trace:true
+ });
+ const cursor=result.end,excluded=result.suspended,raw=dateISO(result.raw);
+ const events=result.steps.map(step=>{
+   const day=parseISO(step.date),include=!step.excluded;
+   const message=include?"Contado":("Não contado: "+(isHoliday(day)?"feriado nacional":LegalTechCalendario.municipalHoliday(day,municipality)?"feriado municipal":closed.has(step.date)?"encerramento":"fim de semana"));
+   return {date:step.date,count:include?step.counted:"",message};
+ });
+ for(const day of result.transfer)events.push({date:day,count:"",message:"Transferência do termo"});
  const end=dateISO(cursor);const note=regime==="cpa87"?"CPA, art. 87.º: os dias de encerramento não foram contados.":"CPPT, art. 20.º/1: contagem contínua e transferência do termo quando aplicável.";
  last={start:dateISO(start),end,qty,regime,excluded,raw,municipality,events,note};
  $("status").textContent="Simulação concluída · confirmar a norma e os factos do caso.";
