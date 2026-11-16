@@ -272,7 +272,7 @@ function autoData(){
  const valRaw=el("autoValue").value,ucRaw=el("autoUC").value,entry=el("autoDate").value;
  const v=Number(valRaw),uc=Number(ucRaw),party=el("autoParty").value,type=el("autoType").value,ref=el("autoRef").value.trim();
  if(!valRaw||!ucRaw||!Number.isFinite(v)||v<0||!Number.isFinite(uc)||uc<=0||!Number.isSafeInteger(Math.round(v*100))||!Number.isSafeInteger(Math.round(uc*100)))return {error:"Indica valor tributário e UC válidos, em euros, com duas casas decimais."};
- if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(entry))return {error:"Indica a data de propositura da acção."};
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(entry))return {error:"Indica a data de propositura da acção."};
  if(entry<"2012-03-29")return {error:"Cálculo bloqueado: acção anterior a 29-03-2012. Exige regime histórico próprio."};
  if(!["a","b"].includes(party)||!["peticao","contestacao","recurso"].includes(type))return {error:"Parte ou impulso não suportados."};
  const cents=Math.round(v*100),ucCents=Math.round(uc*100),capped=Math.min(cents,27500000);
