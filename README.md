@@ -11,12 +11,13 @@ Ferramentas jurídicas práticas em português de Portugal. Projeto estático pu
 | Cita-Check | `citacheck.html` | Simulação de citações, notificações e prazos, com cota proposta |
 | Minutas | `minutas.html` | Rascunhos de cotas, certidões, notificações e ofícios |
 | Roteiros | `roteiros.html` | Checklists operacionais de secretaria |
-| Tramitação TAF | `tramitação-taf.html` | Sete roteiros: intimações, ação administrativa, impugnação tributária, cautelar e recursos, com fases e artigos |
-
-As 25 fases dispõem de [fichas complementares](docs/fichas-taf.md), com dados a conferir, alertas, atos dependentes de despacho e minutas genéricas. A checklist conserva verificações apenas durante a sessão da página, sem guardar dados processuais.
+| Tramitação TAF | `tramitação-taf.html` | Nove roteiros: intimações, ações, impugnações, cautelares, recursos, pré-contratual e reclamações OEF |
 | Prazos CPA e CPPT | `regimes.html` | Contagem auxiliar em dias com regras dos artigos 87.º CPA e 20.º/1 CPPT |
 | Conferência de custas (A01) | `custas.html` | Conferência manual de taxas e pagamentos, sem cálculo jurídico automático |
 | Privacidade | `privacidade.html` | Informação sobre limites, dependências e tratamento local |
+| Agenda local | `agenda.html` | Datas previamente conferidas, exportação ICS e CSV, sem armazenamento persistente |
+
+A Tramitação TAF reúne [33 fichas por fase](docs/fichas-taf.md), com cautelas, atos dependentes de despacho e ligação às minutas. As verificações são temporárias. O acesso em iPad/iPhone pode ser acrescentado ao ecrã principal, mas as regras legais e bibliotecas externas requerem acesso atualizado à Internet.
 
 **Atenção:** não são instrumentos oficiais e não substituem despacho, verificação dos autos ou enquadramento legal. Não se deve utilizar um cálculo sem confirmar as normas concretamente aplicáveis.
 
