@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="pt-PT"><head>
+<script id="lt-theme-bootstrap">(function(){try{var a=localStorage.getItem("legaltech_theme"),b=localStorage.getItem("theme"),t=(a==="light"||a==="dark")?a:(b==="light"||b==="dark")?b:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;localStorage.setItem("legaltech_theme",t);localStorage.setItem("theme",t)}catch(e){}})();</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Contagem indicativa de prazos do CPA 87.º e CPPT 20.º/1 fixados em dias."><title>Prazos administrativos e tributários | LegalTech</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/tools.css">
 <style>
@@ -81,4 +82,5 @@ $("calculate").addEventListener("click",calculate);$("regime").addEventListener(
 $("clear").addEventListener("click",()=>{$("start").value="";$("days").value="10";$("closures").value="";$("municipality").value="";last=null;$("output").hidden=true;$("status").textContent="Campos repostos."});
 $("copy").addEventListener("click",copy);$("csv").addEventListener("click",csv);$("print").addEventListener("click",()=>window.print());
 $("start").value=dateISO(new Date());$("regime").dispatchEvent(new Event("change"));
-</script></body></html>
+</script><script src="assets/theme.js"></script>
+</body></html>
