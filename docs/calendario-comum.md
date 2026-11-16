@@ -20,6 +20,10 @@ A configuração contém os períodos fixos e móveis das férias judiciais e fe
 
 Os períodos são conferidos face ao artigo 28.º da LOSJ e ao calendário publicado pela DGAJ.
 
+## Integridade do contrato Web/Windows
+
+Os três ficheiros partilhados (calendário, feriados municipais e casos sintéticos) têm agora um [manifesto de paridade](paridade-web-desktop.md), verificado independentemente nos dois repositórios. A comparação remota através do GitHub Actions só é efetuada quando há credenciais de leitura para o repositório privado Windows. Sem credenciais, o relatório assinala que a paridade remota não foi verificada.
+
 ## Limites
 
 **Isto ainda não é um motor de prazos único.** Os cálculos de termo, suspensão, dilação e três dias úteis mantêm implementações próprias em JavaScript e Python, e as regras específicas de citação só existem na versão Web. Os cenários partilhados reduzem divergências, mas não provam equivalência geral.
