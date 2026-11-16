@@ -35,6 +35,10 @@ await test("Assistant: ressalva condicional exige conferência explícita",async
  await page.locator("#analyse").click();
  if(await page.locator("#items input").count()<1)throw Error("Não foram apresentados pontos a conferir");
  if(!(await page.locator("#warning").innerText()).includes("condição"))throw Error("Condição não assinalada");
+ const exported=await downloadBy("#txt");
+ if(!exported.body.includes("ALERTA:")||!exported.body.includes("possível condição"))throw Error("Plano exportado perdeu a ressalva");
+ await page.locator("#clear").click();
+ if(await page.locator("#warning").isVisible())throw Error("Advertência persistiu após limpeza");
 });
 await test("Privacy Check: deteção e substituição de dados fictícios",async()=>{
  await open("privacy-check.html");
