@@ -57,6 +57,24 @@
       "unit": "anos",
       "urgent": false,
       "expected": "2027-11-16"
+    },
+    {
+      "id": "feriado-municipal-porto",
+      "start": "2026-06-23",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2026-06-25"
+    },
+    {
+      "id": "feriado-municipal-lisboa",
+      "start": "2026-06-23",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2026-06-24"
     }
   ]
 }
