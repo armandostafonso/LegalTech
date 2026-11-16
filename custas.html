@@ -161,7 +161,7 @@ const el=id=>document.getElementById(id);
 let profilesReady=false,profilesText="";
 const partyFields=["role","entity","exemption","aid","excluded","outcome","decision","evidence"];
 for(const p of ["pa","pb"])for(const field of partyFields){
-  el(p+"_"+field).addEventListener("change",()=>{profilesReady=false;profilesText="";report="";el("report").hidden=true;el("status").textContent="Enquadramento jurídico por reconferir";el("partiesstatus").textContent="Dados alterados: volta a analisar os intervenientes.";});
+  el(p+"_"+field).addEventListener("change",()=>{for(const o of obligations.filter(x=>x.party===(p==="pa"?"a":"b")&&(x.benefit==="electronic90"||x.paymentTiming==="deferred"))){o.benefitAuditCurrent=false;o.checked=false;for(const link of obligations.filter(y=>y.sourceId===o.id)){link.checked=false;}}profilesReady=false;profilesText="";report="";el("report").hidden=true;el("status").textContent="Enquadramento jurídico por reconferir";el("partiesstatus").textContent="Dados alterados: volta a analisar os intervenientes.";});
 }
 function analyseParty(p){
  const v=id=>el(p+"_"+id).value, ev=el(p+"_evidence").checked;
@@ -285,7 +285,7 @@ el("obRows").addEventListener("click",event=>{
 });
 el("obApply").addEventListener("click",()=>{
  if(!obligations.length){el("obMessage").textContent="Regista primeiro as obrigações que pretendes conferir.";return}
- if(obligations.some(x=>!x.checked)){el("obMessage").textContent="Existem obrigações sem verificação jurídica.";return}
+ if(obligations.some(x=>!x.checked||x.benefitAuditCurrent===false)){el("obMessage").textContent="Existem obrigações sem verificação jurídica actualizada.";return}
  const totals=obAmounts();
  for(const [party,id] of [["a","a"],["b","b"],["extra","extra"]])el(id).value=(totals[party]/100).toFixed(2);
  obSynced=true;obSummary();el("obMessage").textContent="Valores transferidos por substituição, sem adição aos totais anteriores. Confere a responsabilidade final antes de emitir a conta.";
@@ -484,18 +484,18 @@ function benefitData(){
   if(source.paymentTiming==="deferred")return {error:"O impulso está marcado como pagamento prévio dispensado. Rever esse estatuto antes da redução."};
   const linked=obligations.find(o=>o.sourceId===source.id&&o.type==="segunda");
   if(ledgerEntries.some(m=>m.obId===source.id||(linked&&m.obId===linked.id)))return {error:"Existem movimentos associados a uma prestação. Não alterar valores após imputação financeira."};
-  if(source.benefit==="electronic90")return {error:"A redução de 10% já foi aplicada a este impulso."};
+  if(source.benefit==="electronic90"&&source.benefitAuditCurrent!==false)return {error:"A redução de 10% já foi aplicada a este impulso."};
   const base=source.totalCents;
   if(!Number.isSafeInteger(base)||base<0)return {error:"A taxa original do impulso não está disponível para recalcular."};
   const reduced=Math.round(base*90/100),first=Math.round(reduced/2),second=reduced-first;
-  return {...data,gross:base,reduced,first,second,linkedId:linked?.id??null,message:"Taxa I-A original "+ledgerFmt(base)+"; a 90% "+ledgerFmt(reduced)+"; 1.ª prestação "+ledgerFmt(first)+"; 2.ª prestação "+ledgerFmt(second)+". Redução de 10%, não de 90%."};
+  return {...data,recheck:source.benefit==="electronic90",gross:base,reduced,first,second,linkedId:linked?.id??null,message:"Taxa I-A original "+ledgerFmt(base)+"; a 90% "+ledgerFmt(reduced)+"; 1.ª prestação "+ledgerFmt(first)+"; 2.ª prestação "+ledgerFmt(second)+". Redução de 10%, não de 90%."};
  }
  if(rule==="prepay"){
   if(!["state","region","municipal"].includes(entity)||excluded!=="no")return {error:"Artigo 15.º/1/a) não confirmado: exige entidade pública abrangida e matéria não excluída."};
   if(exemption!=="none"||aid!=="none")return {error:"Existência de isenção ou apoio judiciário a verificar antes de registar a dispensa prévia."};
   if(!data.actDate||!/^\d{4}-\d{2}-\d{2}$/.test(data.actDate))return {error:"Indica a data do acto de custas para apreciar a norma temporal do artigo 15.º."};
-  if(source.paymentTiming==="deferred")return {error:"A dispensa de pagamento prévio já foi assinalada neste impulso."};
-  return {...data,message:"Possível dispensa de pagamento prévio do artigo 15.º/1/a), sujeita à data do acto e condenação final. Montante da obrigação mantém-se "+ledgerFmt(source.cents)+"; não corresponde a taxa zero."};
+  if(source.paymentTiming==="deferred"&&source.benefitAuditCurrent!==false)return {error:"A dispensa de pagamento prévio já foi assinalada neste impulso."};
+  return {...data,recheck:source.paymentTiming==="deferred",message:"Possível dispensa de pagamento prévio do artigo 15.º/1/a), sujeita à data do acto e condenação final. Montante da obrigação mantém-se "+ledgerFmt(source.cents)+"; não corresponde a taxa zero."};
  }
  if(rule==="restore"){
   if(source.benefit!=="electronic90"&&source.paymentTiming!=="deferred")return {error:"Esta obrigação não tem uma redução/dispensa prévia a repor."};
@@ -505,7 +505,17 @@ function benefitData(){
  return {error:"Regime desconhecido."};
 }
 for(const id of ["benefitSource","benefitRule","benefitNoCounsel","benefitOptional","benefitAllElectronic","benefitVerified"]){
- el(id).addEventListener("change",benefitInvalidate);
+ el(id).addEventListener("change",()=>{
+  if(["benefitNoCounsel","benefitOptional","benefitAllElectronic"].includes(id)){
+   const source=obligations.find(o=>String(o.id)===el("benefitSource").value);
+   if(source?.benefit==="electronic90"){
+    source.benefitAuditCurrent=false;source.checked=false;
+    for(const linked of obligations.filter(o=>o.sourceId===source.id))linked.checked=false;
+    obInvalidate();obSummary();
+   }
+  }
+  benefitInvalidate();
+ });
 }
 el("benefitPreview").addEventListener("click",()=>{
  const d=benefitData();
@@ -523,8 +533,15 @@ el("benefitApply").addEventListener("click",()=>{
  const source=obligations.find(o=>o.id===d.id);
  if(!source){el("benefitResult").textContent="Obrigação já não existe.";return}
  if(source.basisInitial===undefined)source.basisInitial=source.basis;
+ if(d.recheck){
+  source.benefitAuditCurrent=true;source.checked=true;
+  for(const linked of obligations.filter(o=>o.sourceId===source.id))linked.checked=true;
+  obInvalidate();obSummary();benefitPreviewState=null;el("benefitVerified").checked=false;
+  el("benefitResult").textContent="Fundamento do regime revalidado sem alteração de montantes. Transfere os totais novamente antes de conferir.";
+  return;
+ }
  if(d.rule==="electronic90"){
-  source.benefit="electronic90";source.cents=d.first;source.secondCents=d.second;
+  source.benefitAuditCurrent=true;source.benefit="electronic90";source.cents=d.first;source.secondCents=d.second;
   source.checked=true;source.basis=source.basisInitial+"; art. 6.º/3, redacção de 2026: taxa reduzida a 90% ("+ledgerFmt(d.reduced)+")";
   const linked=obligations.find(o=>o.sourceId===source.id&&o.type==="segunda");
   if(linked){
@@ -533,7 +550,7 @@ el("benefitApply").addEventListener("click",()=>{
   }
  }
  if(d.rule==="prepay"){
-  source.paymentTiming="deferred";source.basis=source.basisInitial+"; art. 15.º/1/a), dispensa de pagamento prévio verificada manualmente";
+  source.benefitAuditCurrent=true;source.paymentTiming="deferred";source.basis=source.basisInitial+"; art. 15.º/1/a), dispensa de pagamento prévio verificada manualmente";
   source.checked=true;
  }
  if(d.rule==="restore"){
@@ -542,7 +559,7 @@ el("benefitApply").addEventListener("click",()=>{
    const linked=obligations.find(o=>o.sourceId===source.id&&o.type==="segunda");
    if(linked){linked.cents=source.secondCents;linked.benefit=null;linked.basis=linked.basisInitial||linked.basis;}
   }
-  source.benefit=null;source.paymentTiming=null;source.basis=source.basisInitial;
+  source.benefit=null;source.paymentTiming=null;source.benefitAuditCurrent=true;source.basis=source.basisInitial;
  }
  obInvalidate();obSummary();benefitPreviewState=null;el("benefitVerified").checked=false;
  el("benefitResult").textContent="Regime registado no impulso "+source.ref+". "+d.message+" Totais devidos devem ser novamente transferidos.";
@@ -658,7 +675,7 @@ let report="";
 el("calc").addEventListener("click",()=>{const fields=["a","ap","b","bp","extra","extrap"],nums=fields.map(cents);
 if(nums.some(v=>v===null)){el("status").textContent="Dados incompletos ou inválidos.";return}
 const [a,ap,b,bp,extra,extrap]=nums;const due=a+b+extra,paid=ap+bp+extrap;const debt=Math.max(0,a-ap)+Math.max(0,b-bp)+Math.max(0,extra-extrap);const over=Math.max(0,ap-a)+Math.max(0,bp-b)+Math.max(0,extrap-extra);
-const checks=["law","table","exempt","remainder","charges"];const validated=checks.every(id=>el(id).checked)&&profilesReady&&!obligations.some(o=>o.paymentTiming==="deferred")&&(!obligations.length||obSynced)&&(!obligations.length||!ledgerEntries.some(m=>["payment","refund"].includes(m.kind)&&m.status==="confirmed"&&!m.obId))&&(!ledgerEntries.length||(ledgerSynced&&ledgerBalances().pending===0));
+const checks=["law","table","exempt","remainder","charges"];const validated=checks.every(id=>el(id).checked)&&profilesReady&&!obligations.some(o=>o.paymentTiming==="deferred"||o.benefitAuditCurrent===false)&&(!obligations.length||obSynced)&&(!obligations.length||!ledgerEntries.some(m=>["payment","refund"].includes(m.kind)&&m.status==="confirmed"&&!m.obId))&&(!ledgerEntries.length||(ledgerSynced&&ledgerBalances().pending===0));
 el("due").textContent=euro(due);el("paid").textContent=euro(paid);el("debt").textContent=euro(debt);el("over").textContent=euro(over);
 el("status").textContent=!validated?"Conferência jurídica incompleta":debt?"Diferenças a analisar":over?"Potencial excesso a verificar":"Sem diferenças nos valores introduzidos";
 el("notes").textContent=(obligations.some(o=>o.paymentTiming==="deferred")?"Existem obrigações com dispensa de pagamento prévio: as diferenças não são dívidas imediatamente exigíveis. Confirmar o artigo 15.º do RCP. ":"")+(!validated?"Existem pressupostos jurídicos por confirmar. ":"")+(debt?"Há diferenças positivas por parte/rubrica. ":"")+(over?"O excesso não implica restituição automática. ":"")+(debt===0?"Conferir, apenas após validação completa dos autos, a eventual dispensa de conta prevista no artigo 29.º, n.º 1, alínea a), do RCP. ":"")+"Não inclui custas de parte nem valida comprovativos automaticamente.";
