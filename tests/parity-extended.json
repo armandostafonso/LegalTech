@@ -1,0 +1,1951 @@
+{
+  "version": 1,
+  "description": "216 casos sintéticos adicionais de paridade técnica CPC sem dilação, construídos por algoritmo de referência independente. Resultados não certificados juridicamente. Calendário e feriados no estado de 2026-11-16.",
+  "methodology": "Percursos fixos sobre datas-limite, férias, feriados nacionais e municipais, ano bissexto e prazos diários, mensais e anuais. Expectativas reproduzem a metodologia já adotada pelo Desktop e exigem confronto normativo.",
+  "cases": [
+    {
+      "id": "m01-n-dias-1",
+      "start": "2026-01-30",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2026-02-02"
+    },
+    {
+      "id": "m01-n-dias-5",
+      "start": "2026-01-30",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2026-02-04"
+    },
+    {
+      "id": "m01-n-dias-30",
+      "start": "2026-01-30",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2026-03-02"
+    },
+    {
+      "id": "m01-n-meses-1",
+      "start": "2026-01-30",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2026-03-02"
+    },
+    {
+      "id": "m01-n-meses-6",
+      "start": "2026-01-30",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2026-09-01"
+    },
+    {
+      "id": "m01-n-anos-1",
+      "start": "2026-01-30",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2027-02-01"
+    },
+    {
+      "id": "m01-u-dias-1",
+      "start": "2026-01-30",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2026-02-02"
+    },
+    {
+      "id": "m01-u-dias-5",
+      "start": "2026-01-30",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2026-02-04"
+    },
+    {
+      "id": "m01-u-dias-30",
+      "start": "2026-01-30",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2026-03-02"
+    },
+    {
+      "id": "m01-u-meses-1",
+      "start": "2026-01-30",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2026-03-02"
+    },
+    {
+      "id": "m01-u-meses-6",
+      "start": "2026-01-30",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2026-07-30"
+    },
+    {
+      "id": "m01-u-anos-1",
+      "start": "2026-01-30",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2027-02-01"
+    },
+    {
+      "id": "m02-n-dias-1",
+      "start": "2026-02-28",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2026-03-02"
+    },
+    {
+      "id": "m02-n-dias-5",
+      "start": "2026-02-28",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2026-03-05"
+    },
+    {
+      "id": "m02-n-dias-30",
+      "start": "2026-02-28",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2026-04-08"
+    },
+    {
+      "id": "m02-n-meses-1",
+      "start": "2026-02-28",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2026-04-06"
+    },
+    {
+      "id": "m02-n-meses-6",
+      "start": "2026-02-28",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2026-09-01"
+    },
+    {
+      "id": "m02-n-anos-1",
+      "start": "2026-02-28",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2027-03-01"
+    },
+    {
+      "id": "m02-u-dias-1",
+      "start": "2026-02-28",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2026-03-02"
+    },
+    {
+      "id": "m02-u-dias-5",
+      "start": "2026-02-28",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2026-03-05"
+    },
+    {
+      "id": "m02-u-dias-30",
+      "start": "2026-02-28",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2026-03-30"
+    },
+    {
+      "id": "m02-u-meses-1",
+      "start": "2026-02-28",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2026-03-30"
+    },
+    {
+      "id": "m02-u-meses-6",
+      "start": "2026-02-28",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2026-08-28"
+    },
+    {
+      "id": "m02-u-anos-1",
+      "start": "2026-02-28",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2027-03-01"
+    },
+    {
+      "id": "m03-n-dias-1",
+      "start": "2026-03-27",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2026-04-06"
+    },
+    {
+      "id": "m03-n-dias-5",
+      "start": "2026-03-27",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2026-04-09"
+    },
+    {
+      "id": "m03-n-dias-30",
+      "start": "2026-03-27",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2026-05-04"
+    },
+    {
+      "id": "m03-n-meses-1",
+      "start": "2026-03-27",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2026-05-05"
+    },
+    {
+      "id": "m03-n-meses-6",
+      "start": "2026-03-27",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2026-09-28"
+    },
+    {
+      "id": "m03-n-anos-1",
+      "start": "2026-03-27",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2027-03-29"
+    },
+    {
+      "id": "m03-u-dias-1",
+      "start": "2026-03-27",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2026-03-30"
+    },
+    {
+      "id": "m03-u-dias-5",
+      "start": "2026-03-27",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2026-04-02"
+    },
+    {
+      "id": "m03-u-dias-30",
+      "start": "2026-03-27",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2026-04-27"
+    },
+    {
+      "id": "m03-u-meses-1",
+      "start": "2026-03-27",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2026-04-27"
+    },
+    {
+      "id": "m03-u-meses-6",
+      "start": "2026-03-27",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2026-09-28"
+    },
+    {
+      "id": "m03-u-anos-1",
+      "start": "2026-03-27",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2027-03-29"
+    },
+    {
+      "id": "m04-n-dias-1",
+      "start": "2026-04-02",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2026-04-06"
+    },
+    {
+      "id": "m04-n-dias-5",
+      "start": "2026-04-02",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2026-04-09"
+    },
+    {
+      "id": "m04-n-dias-30",
+      "start": "2026-04-02",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2026-05-04"
+    },
+    {
+      "id": "m04-n-meses-1",
+      "start": "2026-04-02",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2026-05-04"
+    },
+    {
+      "id": "m04-n-meses-6",
+      "start": "2026-04-02",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2026-10-02"
+    },
+    {
+      "id": "m04-n-anos-1",
+      "start": "2026-04-02",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2027-04-02"
+    },
+    {
+      "id": "m04-u-dias-1",
+      "start": "2026-04-02",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2026-04-06"
+    },
+    {
+      "id": "m04-u-dias-5",
+      "start": "2026-04-02",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2026-04-07"
+    },
+    {
+      "id": "m04-u-dias-30",
+      "start": "2026-04-02",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2026-05-04"
+    },
+    {
+      "id": "m04-u-meses-1",
+      "start": "2026-04-02",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2026-05-04"
+    },
+    {
+      "id": "m04-u-meses-6",
+      "start": "2026-04-02",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2026-10-02"
+    },
+    {
+      "id": "m04-u-anos-1",
+      "start": "2026-04-02",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2027-04-02"
+    },
+    {
+      "id": "m05-n-dias-1",
+      "start": "2026-06-09",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2026-06-11"
+    },
+    {
+      "id": "m05-n-dias-5",
+      "start": "2026-06-09",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2026-06-15"
+    },
+    {
+      "id": "m05-n-dias-30",
+      "start": "2026-06-09",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2026-07-09"
+    },
+    {
+      "id": "m05-n-meses-1",
+      "start": "2026-06-09",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2026-07-09"
+    },
+    {
+      "id": "m05-n-meses-6",
+      "start": "2026-06-09",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2026-12-09"
+    },
+    {
+      "id": "m05-n-anos-1",
+      "start": "2026-06-09",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2027-06-09"
+    },
+    {
+      "id": "m05-u-dias-1",
+      "start": "2026-06-09",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2026-06-11"
+    },
+    {
+      "id": "m05-u-dias-5",
+      "start": "2026-06-09",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2026-06-15"
+    },
+    {
+      "id": "m05-u-dias-30",
+      "start": "2026-06-09",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2026-07-09"
+    },
+    {
+      "id": "m05-u-meses-1",
+      "start": "2026-06-09",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2026-07-09"
+    },
+    {
+      "id": "m05-u-meses-6",
+      "start": "2026-06-09",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2026-12-09"
+    },
+    {
+      "id": "m05-u-anos-1",
+      "start": "2026-06-09",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2027-06-09"
+    },
+    {
+      "id": "m06-n-dias-1",
+      "start": "2026-06-23",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2026-06-25"
+    },
+    {
+      "id": "m06-n-dias-5",
+      "start": "2026-06-23",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2026-06-29"
+    },
+    {
+      "id": "m06-n-dias-30",
+      "start": "2026-06-23",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2026-09-08"
+    },
+    {
+      "id": "m06-n-meses-1",
+      "start": "2026-06-23",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2026-09-08"
+    },
+    {
+      "id": "m06-n-meses-6",
+      "start": "2026-06-23",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2027-01-04"
+    },
+    {
+      "id": "m06-n-anos-1",
+      "start": "2026-06-23",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2027-06-23"
+    },
+    {
+      "id": "m06-u-dias-1",
+      "start": "2026-06-23",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2026-06-25"
+    },
+    {
+      "id": "m06-u-dias-5",
+      "start": "2026-06-23",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2026-06-29"
+    },
+    {
+      "id": "m06-u-dias-30",
+      "start": "2026-06-23",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2026-07-23"
+    },
+    {
+      "id": "m06-u-meses-1",
+      "start": "2026-06-23",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2026-07-23"
+    },
+    {
+      "id": "m06-u-meses-6",
+      "start": "2026-06-23",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2026-12-23"
+    },
+    {
+      "id": "m06-u-anos-1",
+      "start": "2026-06-23",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2027-06-23"
+    },
+    {
+      "id": "m07-n-dias-1",
+      "start": "2026-07-15",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2026-09-01"
+    },
+    {
+      "id": "m07-n-dias-5",
+      "start": "2026-07-15",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2026-09-07"
+    },
+    {
+      "id": "m07-n-dias-30",
+      "start": "2026-07-15",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2026-09-30"
+    },
+    {
+      "id": "m07-n-meses-1",
+      "start": "2026-07-15",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2026-10-01"
+    },
+    {
+      "id": "m07-n-meses-6",
+      "start": "2026-07-15",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2027-01-15"
+    },
+    {
+      "id": "m07-n-anos-1",
+      "start": "2026-07-15",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2027-07-15"
+    },
+    {
+      "id": "m07-u-dias-1",
+      "start": "2026-07-15",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2026-07-16"
+    },
+    {
+      "id": "m07-u-dias-5",
+      "start": "2026-07-15",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2026-07-20"
+    },
+    {
+      "id": "m07-u-dias-30",
+      "start": "2026-07-15",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2026-08-14"
+    },
+    {
+      "id": "m07-u-meses-1",
+      "start": "2026-07-15",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2026-08-17"
+    },
+    {
+      "id": "m07-u-meses-6",
+      "start": "2026-07-15",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2027-01-15"
+    },
+    {
+      "id": "m07-u-anos-1",
+      "start": "2026-07-15",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2027-07-15"
+    },
+    {
+      "id": "m08-n-dias-1",
+      "start": "2026-08-28",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2026-09-01"
+    },
+    {
+      "id": "m08-n-dias-5",
+      "start": "2026-08-28",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2026-09-07"
+    },
+    {
+      "id": "m08-n-dias-30",
+      "start": "2026-08-28",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2026-09-30"
+    },
+    {
+      "id": "m08-n-meses-1",
+      "start": "2026-08-28",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2026-10-01"
+    },
+    {
+      "id": "m08-n-meses-6",
+      "start": "2026-08-28",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2027-03-01"
+    },
+    {
+      "id": "m08-n-anos-1",
+      "start": "2026-08-28",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2027-09-01"
+    },
+    {
+      "id": "m08-u-dias-1",
+      "start": "2026-08-28",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2026-08-31"
+    },
+    {
+      "id": "m08-u-dias-5",
+      "start": "2026-08-28",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2026-09-02"
+    },
+    {
+      "id": "m08-u-dias-30",
+      "start": "2026-08-28",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2026-09-28"
+    },
+    {
+      "id": "m08-u-meses-1",
+      "start": "2026-08-28",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2026-09-28"
+    },
+    {
+      "id": "m08-u-meses-6",
+      "start": "2026-08-28",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2027-03-01"
+    },
+    {
+      "id": "m08-u-anos-1",
+      "start": "2026-08-28",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2027-08-30"
+    },
+    {
+      "id": "m09-n-dias-1",
+      "start": "2026-09-30",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2026-10-01"
+    },
+    {
+      "id": "m09-n-dias-5",
+      "start": "2026-09-30",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2026-10-06"
+    },
+    {
+      "id": "m09-n-dias-30",
+      "start": "2026-09-30",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2026-10-30"
+    },
+    {
+      "id": "m09-n-meses-1",
+      "start": "2026-09-30",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2026-10-30"
+    },
+    {
+      "id": "m09-n-meses-6",
+      "start": "2026-09-30",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2027-03-30"
+    },
+    {
+      "id": "m09-n-anos-1",
+      "start": "2026-09-30",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2027-09-30"
+    },
+    {
+      "id": "m09-u-dias-1",
+      "start": "2026-09-30",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2026-10-01"
+    },
+    {
+      "id": "m09-u-dias-5",
+      "start": "2026-09-30",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2026-10-06"
+    },
+    {
+      "id": "m09-u-dias-30",
+      "start": "2026-09-30",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2026-10-30"
+    },
+    {
+      "id": "m09-u-meses-1",
+      "start": "2026-09-30",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2026-10-30"
+    },
+    {
+      "id": "m09-u-meses-6",
+      "start": "2026-09-30",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2027-03-30"
+    },
+    {
+      "id": "m09-u-anos-1",
+      "start": "2026-09-30",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2027-09-30"
+    },
+    {
+      "id": "m10-n-dias-1",
+      "start": "2026-11-10",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2026-11-11"
+    },
+    {
+      "id": "m10-n-dias-5",
+      "start": "2026-11-10",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2026-11-16"
+    },
+    {
+      "id": "m10-n-dias-30",
+      "start": "2026-11-10",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2026-12-10"
+    },
+    {
+      "id": "m10-n-meses-1",
+      "start": "2026-11-10",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2026-12-10"
+    },
+    {
+      "id": "m10-n-meses-6",
+      "start": "2026-11-10",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2027-05-10"
+    },
+    {
+      "id": "m10-n-anos-1",
+      "start": "2026-11-10",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2027-11-10"
+    },
+    {
+      "id": "m10-u-dias-1",
+      "start": "2026-11-10",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2026-11-11"
+    },
+    {
+      "id": "m10-u-dias-5",
+      "start": "2026-11-10",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2026-11-16"
+    },
+    {
+      "id": "m10-u-dias-30",
+      "start": "2026-11-10",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2026-12-10"
+    },
+    {
+      "id": "m10-u-meses-1",
+      "start": "2026-11-10",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2026-12-10"
+    },
+    {
+      "id": "m10-u-meses-6",
+      "start": "2026-11-10",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2027-05-10"
+    },
+    {
+      "id": "m10-u-anos-1",
+      "start": "2026-11-10",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2027-11-10"
+    },
+    {
+      "id": "m11-n-dias-1",
+      "start": "2026-12-21",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2027-01-04"
+    },
+    {
+      "id": "m11-n-dias-5",
+      "start": "2026-12-21",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2027-01-08"
+    },
+    {
+      "id": "m11-n-dias-30",
+      "start": "2026-12-21",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2027-02-02"
+    },
+    {
+      "id": "m11-n-meses-1",
+      "start": "2026-12-21",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2027-02-03"
+    },
+    {
+      "id": "m11-n-meses-6",
+      "start": "2026-12-21",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2027-06-21"
+    },
+    {
+      "id": "m11-n-anos-1",
+      "start": "2026-12-21",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2027-12-21"
+    },
+    {
+      "id": "m11-u-dias-1",
+      "start": "2026-12-21",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2026-12-22"
+    },
+    {
+      "id": "m11-u-dias-5",
+      "start": "2026-12-21",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2026-12-28"
+    },
+    {
+      "id": "m11-u-dias-30",
+      "start": "2026-12-21",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2027-01-20"
+    },
+    {
+      "id": "m11-u-meses-1",
+      "start": "2026-12-21",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2027-01-21"
+    },
+    {
+      "id": "m11-u-meses-6",
+      "start": "2026-12-21",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2027-06-21"
+    },
+    {
+      "id": "m11-u-anos-1",
+      "start": "2026-12-21",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2027-12-21"
+    },
+    {
+      "id": "m12-n-dias-1",
+      "start": "2026-12-31",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2027-01-04"
+    },
+    {
+      "id": "m12-n-dias-5",
+      "start": "2026-12-31",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2027-01-08"
+    },
+    {
+      "id": "m12-n-dias-30",
+      "start": "2026-12-31",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2027-02-02"
+    },
+    {
+      "id": "m12-n-meses-1",
+      "start": "2026-12-31",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2027-02-03"
+    },
+    {
+      "id": "m12-n-meses-6",
+      "start": "2026-12-31",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2027-06-30"
+    },
+    {
+      "id": "m12-n-anos-1",
+      "start": "2026-12-31",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2028-01-04"
+    },
+    {
+      "id": "m12-u-dias-1",
+      "start": "2026-12-31",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2027-01-04"
+    },
+    {
+      "id": "m12-u-dias-5",
+      "start": "2026-12-31",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2027-01-05"
+    },
+    {
+      "id": "m12-u-dias-30",
+      "start": "2026-12-31",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2027-02-01"
+    },
+    {
+      "id": "m12-u-meses-1",
+      "start": "2026-12-31",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2027-02-01"
+    },
+    {
+      "id": "m12-u-meses-6",
+      "start": "2026-12-31",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2027-06-30"
+    },
+    {
+      "id": "m12-u-anos-1",
+      "start": "2026-12-31",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2027-12-31"
+    },
+    {
+      "id": "m13-n-dias-1",
+      "start": "2027-01-31",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2027-02-01"
+    },
+    {
+      "id": "m13-n-dias-5",
+      "start": "2027-01-31",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2027-02-05"
+    },
+    {
+      "id": "m13-n-dias-30",
+      "start": "2027-01-31",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2027-03-02"
+    },
+    {
+      "id": "m13-n-meses-1",
+      "start": "2027-01-31",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2027-03-01"
+    },
+    {
+      "id": "m13-n-meses-6",
+      "start": "2027-01-31",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2027-09-01"
+    },
+    {
+      "id": "m13-n-anos-1",
+      "start": "2027-01-31",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2028-01-31"
+    },
+    {
+      "id": "m13-u-dias-1",
+      "start": "2027-01-31",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2027-02-01"
+    },
+    {
+      "id": "m13-u-dias-5",
+      "start": "2027-01-31",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2027-02-05"
+    },
+    {
+      "id": "m13-u-dias-30",
+      "start": "2027-01-31",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2027-03-02"
+    },
+    {
+      "id": "m13-u-meses-1",
+      "start": "2027-01-31",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2027-03-01"
+    },
+    {
+      "id": "m13-u-meses-6",
+      "start": "2027-01-31",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2027-08-02"
+    },
+    {
+      "id": "m13-u-anos-1",
+      "start": "2027-01-31",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2028-01-31"
+    },
+    {
+      "id": "m14-n-dias-1",
+      "start": "2027-03-27",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2027-03-29"
+    },
+    {
+      "id": "m14-n-dias-5",
+      "start": "2027-03-27",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2027-04-01"
+    },
+    {
+      "id": "m14-n-dias-30",
+      "start": "2027-03-27",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2027-04-26"
+    },
+    {
+      "id": "m14-n-meses-1",
+      "start": "2027-03-27",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2027-04-27"
+    },
+    {
+      "id": "m14-n-meses-6",
+      "start": "2027-03-27",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2027-09-27"
+    },
+    {
+      "id": "m14-n-anos-1",
+      "start": "2027-03-27",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2028-03-27"
+    },
+    {
+      "id": "m14-u-dias-1",
+      "start": "2027-03-27",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2027-03-29"
+    },
+    {
+      "id": "m14-u-dias-5",
+      "start": "2027-03-27",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2027-04-01"
+    },
+    {
+      "id": "m14-u-dias-30",
+      "start": "2027-03-27",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2027-04-26"
+    },
+    {
+      "id": "m14-u-meses-1",
+      "start": "2027-03-27",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2027-04-27"
+    },
+    {
+      "id": "m14-u-meses-6",
+      "start": "2027-03-27",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2027-09-27"
+    },
+    {
+      "id": "m14-u-anos-1",
+      "start": "2027-03-27",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2028-03-27"
+    },
+    {
+      "id": "m15-n-dias-1",
+      "start": "2028-02-29",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2028-03-01"
+    },
+    {
+      "id": "m15-n-dias-5",
+      "start": "2028-02-29",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2028-03-06"
+    },
+    {
+      "id": "m15-n-dias-30",
+      "start": "2028-02-29",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2028-03-30"
+    },
+    {
+      "id": "m15-n-meses-1",
+      "start": "2028-02-29",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2028-03-29"
+    },
+    {
+      "id": "m15-n-meses-6",
+      "start": "2028-02-29",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2028-09-01"
+    },
+    {
+      "id": "m15-n-anos-1",
+      "start": "2028-02-29",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2029-02-28"
+    },
+    {
+      "id": "m15-u-dias-1",
+      "start": "2028-02-29",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2028-03-01"
+    },
+    {
+      "id": "m15-u-dias-5",
+      "start": "2028-02-29",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2028-03-06"
+    },
+    {
+      "id": "m15-u-dias-30",
+      "start": "2028-02-29",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2028-03-30"
+    },
+    {
+      "id": "m15-u-meses-1",
+      "start": "2028-02-29",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2028-03-29"
+    },
+    {
+      "id": "m15-u-meses-6",
+      "start": "2028-02-29",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2028-08-29"
+    },
+    {
+      "id": "m15-u-anos-1",
+      "start": "2028-02-29",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2029-02-28"
+    },
+    {
+      "id": "m16-n-dias-1",
+      "start": "2028-06-23",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2028-06-26"
+    },
+    {
+      "id": "m16-n-dias-5",
+      "start": "2028-06-23",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2028-06-28"
+    },
+    {
+      "id": "m16-n-dias-30",
+      "start": "2028-06-23",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2028-09-08"
+    },
+    {
+      "id": "m16-n-meses-1",
+      "start": "2028-06-23",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2028-09-08"
+    },
+    {
+      "id": "m16-n-meses-6",
+      "start": "2028-06-23",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2029-01-04"
+    },
+    {
+      "id": "m16-n-anos-1",
+      "start": "2028-06-23",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2029-06-25"
+    },
+    {
+      "id": "m16-u-dias-1",
+      "start": "2028-06-23",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2028-06-26"
+    },
+    {
+      "id": "m16-u-dias-5",
+      "start": "2028-06-23",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2028-06-28"
+    },
+    {
+      "id": "m16-u-dias-30",
+      "start": "2028-06-23",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2028-07-24"
+    },
+    {
+      "id": "m16-u-meses-1",
+      "start": "2028-06-23",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2028-07-24"
+    },
+    {
+      "id": "m16-u-meses-6",
+      "start": "2028-06-23",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2028-12-26"
+    },
+    {
+      "id": "m16-u-anos-1",
+      "start": "2028-06-23",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2029-06-25"
+    },
+    {
+      "id": "m17-n-dias-1",
+      "start": "2028-07-15",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2028-09-01"
+    },
+    {
+      "id": "m17-n-dias-5",
+      "start": "2028-07-15",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2028-09-05"
+    },
+    {
+      "id": "m17-n-dias-30",
+      "start": "2028-07-15",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2028-10-02"
+    },
+    {
+      "id": "m17-n-meses-1",
+      "start": "2028-07-15",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2028-10-02"
+    },
+    {
+      "id": "m17-n-meses-6",
+      "start": "2028-07-15",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2029-01-15"
+    },
+    {
+      "id": "m17-n-anos-1",
+      "start": "2028-07-15",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2029-09-03"
+    },
+    {
+      "id": "m17-u-dias-1",
+      "start": "2028-07-15",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2028-07-17"
+    },
+    {
+      "id": "m17-u-dias-5",
+      "start": "2028-07-15",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2028-07-20"
+    },
+    {
+      "id": "m17-u-dias-30",
+      "start": "2028-07-15",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2028-08-14"
+    },
+    {
+      "id": "m17-u-meses-1",
+      "start": "2028-07-15",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2028-08-16"
+    },
+    {
+      "id": "m17-u-meses-6",
+      "start": "2028-07-15",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2029-01-15"
+    },
+    {
+      "id": "m17-u-anos-1",
+      "start": "2028-07-15",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2029-07-16"
+    },
+    {
+      "id": "m18-n-dias-1",
+      "start": "2028-12-20",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2028-12-21"
+    },
+    {
+      "id": "m18-n-dias-5",
+      "start": "2028-12-20",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "penafiel",
+      "expected": "2029-01-08"
+    },
+    {
+      "id": "m18-n-dias-30",
+      "start": "2028-12-20",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": false,
+      "municipality": "nenhum",
+      "expected": "2029-02-01"
+    },
+    {
+      "id": "m18-n-meses-1",
+      "start": "2028-12-20",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "porto",
+      "expected": "2029-02-02"
+    },
+    {
+      "id": "m18-n-meses-6",
+      "start": "2028-12-20",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "municipality": "lisboa",
+      "expected": "2029-06-20"
+    },
+    {
+      "id": "m18-n-anos-1",
+      "start": "2028-12-20",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "municipality": "braga",
+      "expected": "2029-12-20"
+    },
+    {
+      "id": "m18-u-dias-1",
+      "start": "2028-12-20",
+      "quantity": 1,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2028-12-21"
+    },
+    {
+      "id": "m18-u-dias-5",
+      "start": "2028-12-20",
+      "quantity": 5,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "porto",
+      "expected": "2028-12-26"
+    },
+    {
+      "id": "m18-u-dias-30",
+      "start": "2028-12-20",
+      "quantity": 30,
+      "unit": "dias",
+      "urgent": true,
+      "municipality": "lisboa",
+      "expected": "2029-01-19"
+    },
+    {
+      "id": "m18-u-meses-1",
+      "start": "2028-12-20",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "braga",
+      "expected": "2029-01-22"
+    },
+    {
+      "id": "m18-u-meses-6",
+      "start": "2028-12-20",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "municipality": "penafiel",
+      "expected": "2029-06-20"
+    },
+    {
+      "id": "m18-u-anos-1",
+      "start": "2028-12-20",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": true,
+      "municipality": "nenhum",
+      "expected": "2029-12-20"
+    }
+  ]
+}
