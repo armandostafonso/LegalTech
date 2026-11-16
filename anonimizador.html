@@ -279,6 +279,7 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
   <section class="card" aria-labelledby="s2">
     <h2 id="s2"><span class="n">2</span>Processar</h2>
     <button id="go" class="primary" type="button" disabled>Processar e descarregar</button>
+    <button id="clearSession" class="ghost" type="button">Limpar sessão e ficheiro</button>
     <div id="progWrap" hidden>
       <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="barBox"><div id="bar"></div></div>
       <p id="status" role="status"></p>
@@ -1100,7 +1101,7 @@ async function run(){
         if (check) { try { await check.destroy(); } catch (_) {} }
       }
     }
-    const name = lastBase + '_Anonimizado.pdf';
+    const name = 'LegalTech_Documento_Anonimizado.pdf';
     download(out, name);
     lastMap = labeler.entries();
     showResult({ count, pagesTouched, ms: performance.now() - t0, warnings, entries: lastMap, file: name });
@@ -1148,11 +1149,31 @@ $('copyMap').addEventListener('click', async () => {
   setTimeout(() => { $('copyMap').textContent = 'Copiar'; }, 1800);
 });
 
+$('clearSession').addEventListener('click', () => {
+  if (busy) { showError('A operação está a decorrer. Termine o processamento antes de limpar.'); return; }
+  selectedFile=null;
+  lastMap=[];
+  lastBase='documento';
+  $('file').value='';
+  $('hideTerms').value='';
+  $('keepTerms').value='';
+  $('dropText').textContent='Escolher PDF ou largar aqui';
+  $('fileInfo').textContent='';
+  $('result').hidden=true;
+  $('progWrap').hidden=true;
+  $('go').disabled=true;
+  $('summary').textContent='';
+  $('warnings').replaceChildren();
+  $('mapList').replaceChildren();
+  showError('');
+});
 $('saveMap').addEventListener('click', () => {
+  if (!lastMap.length) return;
+  if (!confirm('O mapa de correspondência contém os dados originais. Guardá-lo pode expor informação confidencial. Pretende continuar?')) return;
   const blob = new Blob([mapAsText() + '\n'], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = lastBase + '_Mapa.txt';
+  a.href = url; a.download = 'LegalTech_Mapa_CONFIDENCIAL.txt';
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 30000);
 });
