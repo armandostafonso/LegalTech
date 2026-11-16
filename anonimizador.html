@@ -1069,6 +1069,33 @@ async function run(){
     }
     setProgress(1, 'A gerar o ficheiro…');
     const out = await outDoc.save();
+    if (raster) {
+      // Defesa adicional: um PDF convertido integralmente em imagem não pode manter
+      // texto extraível. Bloquear a descarga se o ficheiro gerado falhar esta prova.
+      setProgress(1, 'A verificar a ausência de camada de texto no PDF final…');
+      let check = null;
+      try {
+        check = await pdfjsLib.getDocument({
+          data: new Uint8Array(out.slice()),
+          isEvalSupported: false,
+          cMapUrl: CFG.cmaps, cMapPacked: true, standardFontDataUrl: CFG.fonts
+        }).promise;
+        if (check.numPages !== n) {
+          throw new UserError('O número de páginas do PDF final não corresponde ao original. Não foi descarregado nenhum ficheiro.');
+        }
+        for (let p = 1; p <= check.numPages; p++) {
+          const page = await check.getPage(p);
+          const content = await page.getTextContent();
+          page.cleanup();
+          if (content.items.some(item => typeof item.str === 'string' && item.str.trim())) {
+            throw new UserError('Foi encontrada uma camada de texto extraível no PDF final, na página ' + p + '. A descarga foi bloqueada.');
+          }
+        }
+        warnings.push('Verificação automática do PDF final: sem camada de texto extraível. É indispensável rever visualmente todas as páginas.');
+      } finally {
+        if (check) { try { await check.destroy(); } catch (_) {} }
+      }
+    }
     const name = lastBase + '_Anonimizado.pdf';
     download(out, name);
     lastMap = labeler.entries();
