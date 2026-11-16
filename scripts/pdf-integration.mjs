@@ -33,6 +33,9 @@ try {
     const font=await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
     p.drawText("FULANO DEMONSTRATIVO",{x:90,y:700,size:16,font});
     p.drawText("DOCUMENTO DE TESTE SEM DADOS REAIS",{x:90,y:660,size:12,font});
+    const second=pdf.addPage([595,842]);
+    second.drawText("FULANO DEMONSTRATIVO",{x:110,y:640,size:14,font});
+    second.drawText("SEGUNDA PAGINA FICTICIA",{x:100,y:600,size:12,font});
     return Array.from(await pdf.save());
   });
   await page.locator("#file").setInputFiles({name:"ficheiro-ficticio.pdf",mimeType:"application/pdf",buffer:Buffer.from(bytes)});
@@ -56,11 +59,30 @@ try {
     await doc.destroy();
     return {pages:n,text};
   },out);
-  if(result.pages!==1)throw Error("Foi alterado o número de páginas");
+  if(result.pages!==2)throw Error("Foi alterado o número de páginas");
   if(result.text.trim())throw Error("O PDF anonimizado contém texto extraível");
   const summary=await page.locator("#summary").innerText();
   if(!summary.includes("ocorrências expurgadas"))throw Error("A interface não confirmou ocorrências");
-  console.log("PASSOU: PDF inteiramente fictício; rasterização, saída descarregada, 1 página, sem texto extraível.");
+  console.log("PASSOU: PDF fictício de 2 páginas rasterizadas, sem texto extraível.");
+  // Documento misto: uma página textual e uma página digitalizada/sem texto.
+  // O processamento deve ser bloqueado sem descarregar um PDF incompleto.
+  const mixed=await page.evaluate(async()=>{
+    const pdf=await PDFLib.PDFDocument.create();
+    const p=pdf.addPage([595,842]),font=await pdf.embedFont(PDFLib.StandardFonts.Helvetica);
+    p.drawText("FULANO DEMONSTRATIVO",{x:90,y:700,size:16,font});
+    const scanned=pdf.addPage([595,842]);
+    scanned.drawRectangle({x:50,y:300,width:350,height:220,color:PDFLib.rgb(.7,.7,.7)});
+    return Array.from(await pdf.save());
+  });
+  let extraDownloads=0;
+  page.on("download",()=>extraDownloads++);
+  await page.locator("#file").setInputFiles({name:"misto-ficticio.pdf",mimeType:"application/pdf",buffer:Buffer.from(mixed)});
+  await page.locator("#go").click();
+  await page.locator("#error").waitFor({state:"visible",timeout:30000});
+  const warning=await page.locator("#error").innerText();
+  if(!warning.includes("páginas sem camada de texto")||!warning.includes("2"))throw Error("Documento misto não bloqueado: "+warning);
+  if(extraDownloads)throw Error("O documento misto foi descarregado apesar de página sem texto");
+  console.log("PASSOU: PDF misto com página digitalizada bloqueado sem exportação.");
 }finally{
   await browser.close();
 }
