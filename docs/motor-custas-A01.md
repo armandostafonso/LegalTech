@@ -245,7 +245,7 @@ A versão 2.0 acrescenta uma **contabilidade multissujeito autónoma**, para os 
 
 ### Controlos de integridade
 
-- Atribuição de pagamento a obrigação pertencente a outra pessoa é bloqueada.
+- Atribuição de pagamento a obrigação pertencente a outra pessoa é bloqueada. Uma referência de guia, pagamento ou restituição não pode ser reutilizada para obrigações distintas do mesmo sujeito.
 - Restituição confirmada exige pagamento confirmado da **mesma pessoa, referência e obrigação**, e não pode exceder o saldo ainda disponível.
 - Não se admite retirar um pagamento que sustente uma restituição confirmada, nem uma obrigação com movimentos associados.
 - Não é permitido apagar intervenientes, encargos ou mapas quando existam movimentos ou obrigações dependentes.
@@ -272,7 +272,7 @@ A versão 2.0 acrescenta uma **contabilidade multissujeito autónoma**, para os 
 
 ## Testes
 
-- Script: `node scripts/test-custas.mjs` (152 casos técnicos na versão 2.0).
+- Script: `node scripts/test-custas.mjs` (157 casos técnicos na versão 2.0).
 - Verificação global da página: `node scripts/validate-site.mjs`.
 - Integração contínua: `.github/workflows/custas-tests.yml`.
 
