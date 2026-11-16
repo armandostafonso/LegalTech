@@ -10,7 +10,7 @@
 </style><script>try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||"light"}catch(e){}</script><link rel="stylesheet" href="assets/brand.css">
 </head>
 <body><main><header><a class="brand" href="index.html">LegalTech <span class="lt-suite">Suite</span></a><button class="secondary" id="theme" type="button">◐ Tema</button></header>
-<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.7</p>
+<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.8</p>
 <div class="notice"><strong>Âmbito:</strong> cálculo limitado da taxa-base por impulso com Tabela I-A/I-B e conferência de valores. Não determina automaticamente o total legalmente exigível, não lê PDF e não emite conta oficial. Não introduzas dados pessoais ou processuais confidenciais. Os dados não são enviados nem guardados por esta página.</div>
 <section class="panel"><h2>1. Identificação e regime</h2><div class="grid">
 <div class="field"><label for="process">Referência fictícia / interna</label><input id="process" placeholder="Ex.: TESTE-A01"></div>
@@ -184,6 +184,20 @@
 <div class="actions"><button type="button" id="calc">Conferir valores</button><button class="secondary" type="button" id="reset">Limpar</button></div></section>
 <section class="panel" aria-live="polite"><h2>9. Resultado</h2><p id="status" class="status">Aguardam-se dados.</p><table><tbody><tr><th>Total exigível</th><td id="due">—</td></tr><tr><th>Total confirmado</th><td id="paid">—</td></tr><tr><th>Diferença aritmética positiva</th><td id="debt">—</td></tr><tr><th>Potencial excesso</th><td id="over">—</td></tr></tbody></table><p id="notes" class="muted">A ausência de diferenças aritméticas não basta para dispensar a elaboração da conta: confirmar os pressupostos do artigo 29.º do RCP.</p><div class="actions"><button type="button" class="secondary" id="copy">Copiar relatório</button><button type="button" class="secondary" onclick="window.print()">Imprimir</button></div><pre id="report" hidden></pre></section>
 
+<section class="panel" id="conciliacao-impulsos">
+<h2>Reconciliação financeira por impulso</h2>
+<p class="muted">Cruza as obrigações processuais com pagamentos e restituições <strong>confirmados e imputados à mesma obrigação</strong>. Movimentos pendentes não contam como pagos. Montantes não imputados surgem separadamente e não são distribuídos automaticamente entre impulsos.</p>
+<div class="actions"><button type="button" id="reconcile" class="secondary">Conferir imputações</button><button type="button" id="reconcileCopy" class="secondary">Copiar mapa financeiro</button></div>
+<p class="notice" id="reconcileNote" aria-live="polite">Aguarda conferência. Diferenças positivas não constituem, por si só, dívida vencida.</p>
+<div class="grid" style="margin-top:14px">
+<div class="notice"><small>Pagamentos confirmados sem imputação</small><div class="status" id="reconcileUnassigned">0,00 €</div></div>
+<div class="notice"><small>Movimentos pendentes</small><div class="status" id="reconcilePending">0</div></div>
+<div class="notice"><small>Impulsos com excesso aritmético</small><div class="status" id="reconcileOver">0</div></div>
+<div class="notice"><small>Impulsos com saldo negativo de pagamentos</small><div class="status" id="reconcileNegative">0</div></div>
+</div>
+<div class="table-scroll"><table aria-label="Mapa financeiro por impulso"><thead><tr><th>Parte / impulso</th><th>Obrigação</th><th>Pago líquido imputado</th><th>Diferença positiva</th><th>Excesso potencial</th><th>Estado</th></tr></thead><tbody id="reconcileRows"><tr><td colspan="6">Ainda não foi efectuada a reconciliação.</td></tr></tbody></table></div>
+<p class="muted"><small>Nota: este mapa é uma operação aritmética, não decide vencimento, restituição, compensação, dispensa de pagamento prévio ou responsabilidade final. Para a proposta de conferência, regista as decisões e documentos relevantes.</small></p>
+</section>
 <section class="panel" id="proposta-conferencia">
   <h2>Proposta de conferência por sujeito processual</h2>
   <p class="muted">Prévia de trabalho da secretaria, <strong>não é uma conta judicial oficial</strong>. Consolida as obrigações introduzidas, pagamentos confirmados e encargos distribuídos, com indicação de divergências e pressupostos em falta. Não calcula custas de parte nem presume que toda a diferença aritmética seja legalmente exigível.</p>
@@ -821,6 +835,69 @@ for(const id of ["ap","bp","extrap"])el(id).addEventListener("input",()=>{
 
 const ids=["process","date","value","subject","a","ap","b","bp","extra","extrap","law","table","exempt","remainder","charges","hearing","endbefore","opp","priority","authorcontinue","remvalue","remdisp","remcost","instruction","actdate","entrydate","calcvalue"];
 
+
+/* Reconciliação por ID de obrigação, sem imputação tácita nem encontro de contas entre partes. */
+let reconcileCache=null;
+function reconcileSnapshot(){
+ return JSON.stringify({
+ obligations:obligations.map(o=>[o.id,o.party,o.ref,o.cents,o.checked,o.paymentTiming,o.benefitAuditCurrent]),
+ ledger:ledgerEntries.map(m=>[m.id,m.party,m.kind,m.ref,m.cents,m.status,m.obId]),
+ obSynced,ledgerSynced
+ });
+}
+function reconcileBuild(){
+ const rows=[],warnings=[];
+ const all=ledgerEntries.filter(m=>m.kind==="payment"||m.kind==="refund");
+ const unmatched=all.filter(m=>m.status==="confirmed"&&!m.obId);
+ const pending=all.filter(m=>m.status==="pending");
+ const unassigned=unmatched.reduce((sum,m)=>sum+(m.kind==="payment"?m.cents:-m.cents),0);
+ let overCount=0,negativeCount=0;
+ for(const o of obligations){
+  const movements=all.filter(m=>m.obId===o.id&&m.status==="confirmed");
+  const paid=movements.reduce((sum,m)=>sum+(m.kind==="payment"?m.cents:-m.cents),0);
+  const positive=Math.max(0,o.cents-paid),excess=Math.max(0,paid-o.cents);
+  const state=[];
+  if(paid<0){negativeCount++;state.push("pagamento líquido negativo")}
+  if(excess){overCount++;state.push("excesso potencial")}
+  if(o.paymentTiming==="deferred")state.push("dispensa de pagamento prévio");
+  if(!o.checked||o.benefitAuditCurrent===false)state.push("enquadramento jurídico por conferir");
+  if(all.some(m=>m.obId===o.id&&m.status==="pending"))state.push("movimento pendente");
+  if(!state.length)state.push("conferência aritmética, exigibilidade não decidida");
+  rows.push({party:o.party,ref:o.ref,kind:obTypes[o.type]||"Outro",due:o.cents,paid,positive,excess,state});
+ }
+ if(unmatched.length)warnings.push(unmatched.length+" movimento(s) confirmados sem obrigação atribuída");
+ if(pending.length)warnings.push(pending.length+" movimento(s) financeiros pendentes de confirmação");
+ if(overCount)warnings.push(overCount+" obrigação(ões) com excesso aritmético, sem presumir restituição");
+ if(negativeCount)warnings.push(negativeCount+" obrigação(ões) com pagamento líquido negativo; verificar restituições");
+ if(rows.some(x=>x.state.includes("dispensa de pagamento prévio")))warnings.push("Há obrigações com dispensa de pagamento prévio; a diferença positiva não corresponde a pagamento vencido");
+ if(!obSynced)warnings.push("Totais de obrigações ainda não transferidos ou actualizados");
+ if(ledgerEntries.length&&!ledgerSynced)warnings.push("Totais de pagamentos ainda não transferidos ou actualizados");
+ const lines=[
+  "LEGALTECH SUITE | RECONCILIAÇÃO EXPERIMENTAL POR IMPULSO",
+  "NÃO É CONTA OFICIAL; não valida comprovativos.",
+  ...warnings.map((w,i)=>"ALERTA "+(i+1)+": "+w),
+  ...rows.map(x=>ledgerParties[x.party]+" | "+x.kind+" | "+x.ref+" | obrigação "+ledgerFmt(x.due)+" | pago imputado "+ledgerFmt(x.paid)+" | diferença positiva "+ledgerFmt(x.positive)+" | excesso potencial "+ledgerFmt(x.excess)+" | "+x.state.join("; ")),
+  "Movimentos confirmados sem imputação (líquidos): "+ledgerFmt(unassigned),
+  "Movimentos pendentes: "+pending.length,
+  "Custas de parte não incluídas; exigibilidade e restituições por confirmar."
+ ];
+ return {rows,warnings,pending:pending.length,unmatched:unmatched.length,unassigned,overCount,negativeCount,text:lines.join("\n"),snapshot:reconcileSnapshot()};
+}
+el("reconcile").addEventListener("click",()=>{
+ const r=reconcileBuild();reconcileCache=r;
+ el("reconcileUnassigned").textContent=ledgerFmt(r.unassigned);
+ el("reconcilePending").textContent=String(r.pending);
+ el("reconcileOver").textContent=String(r.overCount);
+ el("reconcileNegative").textContent=String(r.negativeCount);
+ el("reconcileRows").innerHTML=r.rows.length?r.rows.map(x=>"<tr><td>"+ledgerEscape(ledgerParties[x.party]+" · "+x.kind+" · "+x.ref)+"</td><td>"+ledgerFmt(x.due)+"</td><td>"+ledgerFmt(x.paid)+"</td><td>"+ledgerFmt(x.positive)+"</td><td>"+ledgerFmt(x.excess)+"</td><td>"+ledgerEscape(x.state.join("; "))+"</td></tr>").join(""):'<tr><td colspan="6">Não existem obrigações para reconciliar.</td></tr>';
+ el("reconcileNote").textContent=r.warnings.length?"Conferência com advertências: "+r.warnings.join("; ")+".":"Conferência aritmética sem alertas internos; a exigibilidade depende de verificação jurídica.";
+});
+el("reconcileCopy").addEventListener("click",async()=>{
+ if(!reconcileCache||reconcileCache.snapshot!==reconcileSnapshot()){el("reconcileNote").textContent="O mapa financeiro está desactualizado. Executa novamente «Conferir imputações».";return}
+ try{await navigator.clipboard.writeText(reconcileCache.text);el("reconcileNote").textContent="Mapa financeiro copiado; não é conta oficial."}
+ catch(e){el("reconcileNote").textContent="Não foi possível copiar. Verifica as permissões do navegador."}
+});
+
 /* Prévia de conferência por sujeito responsável. Os valores são aritméticos,
    nunca assumidos automaticamente como dívida, restituição ou conta definitiva. */
 let proposalCache=null;
@@ -854,6 +931,8 @@ function proposalBuild(){
  if(hasLedger&&!ledgerSynced)blockers.push("Livro de pagamentos ainda não conciliado com a conferência");
  if(hasLedger&&confirmed.pending)blockers.push("Existem pagamentos ou restituições pendentes");
  if(hasLedger&&ledgerEntries.some(m=>["payment","refund"].includes(m.kind)&&m.status==="confirmed"&&!m.obId))blockers.push("Existem pagamentos confirmados sem afectação individual a uma obrigação");
+ const reconciliation=reconcileBuild();
+ for(const warning of reconciliation.warnings)blockers.push("Reconciliação por impulso: "+warning);
  const rows=proposalParts.map(([key,label,paymentId])=>{
   const paid=hasLedger?confirmed.balances[key]:cents(paymentId);
   if(cents(key)!==totals[key])blockers.push("Valor devido no quadro de conferência diverge das obrigações de "+label);
@@ -875,12 +954,14 @@ function proposalBuild(){
   "",
   ...obligations.map(o=>"Impulso "+o.id+": "+ledgerParties[o.party]+"; "+obTypes[o.type]+"; "+o.ref+"; valor "+ledgerFmt(o.cents)+"; fundamento "+o.basis),
   ...respEntries.map(x=>"Encargo "+x.ref+"; A "+ledgerFmt(x.a)+"; B "+ledgerFmt(x.b)+"; "+(x.posted?"lançado":"não lançado")),
+  "", "RECONCILIAÇÃO POR IMPULSO:", ...reconciliation.rows.map(x=>ledgerParties[x.party]+"; "+x.ref+"; devido "+ledgerFmt(x.due)+"; imputado "+ledgerFmt(x.paid)+"; diferença "+ledgerFmt(x.positive)+"; excesso "+ledgerFmt(x.excess)+"; "+x.state.join(", ")),
+  "Não imputados (líquidos): "+ledgerFmt(reconciliation.unassigned),
   "",
   "Diferenças aritméticas não equivalem necessariamente a dívidas.",
   "Custas de parte excluídas. Verificar RCP 29.º/30.º e CPC 527.º, 529.º e 532.º.",
   "Documento não oficial; não inserir dados pessoais ou processuais confidenciais."
  ];
- return {rows,blockers,text:lines.join("\n"),snapshot:proposalSnapshot()};
+ return {rows,blockers,reconciliation,text:lines.join("\n"),snapshot:proposalSnapshot()};
 }
 el("proposalPreview").addEventListener("click",()=>{
  const p=proposalBuild();proposalCache=p;
@@ -907,6 +988,9 @@ el("proposalExport").addEventListener("click",()=>{
  const csv=[
   "Estado;"+quote(p.blockers.length?"INCOMPLETA, "+p.blockers.length+" advertências":"Prévia sem bloqueios técnicos"),
   ...p.blockers.map((v,i)=>"PENDENTE "+(i+1)+";"+quote(v)),
+  "Mapa por impulso;Obrigação (€);Pago imputado (€);Diferença positiva (€);Excesso potencial (€);Estado",
+  ...p.reconciliation.rows.map(x=>[quote(ledgerParties[x.party]+" · "+x.ref),x.due,x.paid,x.positive,x.excess,quote(x.state.join("; "))].map((v,i)=>i>=1&&i<=4?String((v/100).toFixed(2)).replace(".",","):v).join(";")),
+  "Não imputados (líquidos);"+String((p.reconciliation.unassigned/100).toFixed(2)).replace(".",","),
   "Sujeito;Obrigações (€);Pagamentos confirmados (€);Diferença positiva (€);Excesso potencial (€)",
   ...p.rows.map(x=>[x.label,x.due,x.paid,x.positive,x.excess].map((v,i)=>i?String((v/100).toFixed(2)).replace(".",","):quote(v)).join(";")),
   "AVISO;"+quote("Documento não oficial. Diferenças não são necessariamente dívida. Custas de parte excluídas.")
