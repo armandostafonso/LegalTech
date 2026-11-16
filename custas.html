@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Conferência experimental de taxas de justiça para ações administrativas.">
+<title>Conferência de custas · LegalTech</title>
+<style>
+:root{color-scheme:light;--bg:#f7f8fb;--paper:#fff;--ink:#152035;--muted:#5c6b7d;--line:#e2e7ee;--accent:#2554a6;--soft:#eef4ff}
+:root[data-theme=dark]{color-scheme:dark;--bg:#11151d;--paper:#1a202b;--ink:#f3f6fc;--muted:#bbc7d7;--line:#313949;--accent:#94baff;--soft:#222d41}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:980px;margin:auto;padding:24px 18px 60px}a{color:var(--accent)}header{display:flex;align-items:center;justify-content:space-between;gap:12px}h1{font-size:clamp(28px,4vw,40px);letter-spacing:-1.2px;margin:25px 0 6px}h2{font-size:19px;margin:0 0 14px}.muted,small{color:var(--muted)}.panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:16px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.field{display:flex;flex-direction:column;gap:5px}label{font-size:13px;font-weight:650}input,select,textarea{width:100%;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:12px;border-radius:10px;font:inherit}button{background:var(--ink);color:var(--paper);border:0;border-radius:10px;padding:12px 16px;cursor:pointer;font:inherit}button.secondary{background:var(--soft);color:var(--accent)}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.notice{padding:14px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:13px}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}td:last-child,th:last-child{text-align:right}fieldset{border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:12px}legend{font-weight:700}fieldset label{display:block;font-weight:400;margin:9px 0}fieldset input{width:auto;margin-right:8px}.status{font-weight:750;font-size:18px}#report{white-space:pre-wrap;background:var(--soft);padding:16px;border-radius:12px} @media(max-width:650px){.grid{grid-template-columns:1fr}.panel{padding:16px}}@media print{button,.actions,header{display:none!important}body{background:white}.panel{break-inside:avoid}}
+</style><script>try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||"light"}catch(e){}</script></head>
+<body><main><header><a href="index.html">← LegalTech</a><button class="secondary" id="theme" type="button">◐ Tema</button></header>
+<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 0.3</p>
+<div class="notice"><strong>Âmbito:</strong> conferência aritmética de valores introduzidos e verificação de pressupostos. Não calcula autonomamente taxas legais, não lê PDF e não emite conta oficial. Não introduzas dados pessoais ou processuais confidenciais. Os dados não são enviados nem guardados por esta página.</div>
+<section class="panel"><h2>1. Identificação e regime</h2><div class="grid">
+<div class="field"><label for="process">Referência fictícia / interna</label><input id="process" placeholder="Ex.: TESTE-A01"></div>
+<div class="field"><label for="date">Data de entrada</label><input id="date" type="date"></div>
+<div class="field"><label for="value">Valor da causa (€)</label><input id="value" type="number" min="0" step="0.01" placeholder="0,00"></div>
+<div class="field"><label for="subject">Objecto principal</label><select id="subject"><option value="">Seleccionar</option><option>Impugnação de acto</option><option>Condenação à prática de acto</option><option>Responsabilidade civil</option><option>Contrato administrativo</option><option>Reconhecimento de direito</option><option>Outro / cumulação</option></select></div>
+</div><fieldset><legend>Validação jurídica</legend>
+<label><input type="checkbox" id="law">Versão temporal do RCP e regras transitórias verificadas</label>
+<label><input type="checkbox" id="table">Tabela e montantes legais conferidos (incluindo UC e prestações)</label>
+<label><input type="checkbox" id="exempt">Isenções, apoio judiciário e dispensa de pagamento prévio verificados</label>
+<label><input type="checkbox" id="remainder">Remanescente, dispensa judicial e eventuais recursos verificados</label>
+<label><input type="checkbox" id="charges">Encargos, multas e outros movimentos verificados</label>
+</fieldset><small>Referências: CPTA, arts. 31.º a 37.º; RCP, arts. 4.º a 7.º, 14.º, 14.º-A, 15.º, 16.º, 29.º e 30.º. A versão aplicável tem de ser confirmada no <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975" target="_blank" rel="noopener">Diário da República</a>.</small></section>
+<section class="panel"><h2>2. Conferência por parte</h2><div class="grid">
+<div class="field"><label for="a">Parte A — taxa total exigível (€)</label><input id="a" type="number" min="0" step="0.01"></div>
+<div class="field"><label for="ap">Parte A — pagamento confirmado (€)</label><input id="ap" type="number" min="0" step="0.01"></div>
+<div class="field"><label for="b">Parte B — taxa total exigível (€)</label><input id="b" type="number" min="0" step="0.01"></div>
+<div class="field"><label for="bp">Parte B — pagamento confirmado (€)</label><input id="bp" type="number" min="0" step="0.01"></div>
+<div class="field"><label for="extra">Outras quantias exigíveis à secretaria (€)</label><input id="extra" type="number" min="0" step="0.01" value="0"></div>
+<div class="field"><label for="extrap">Pagamentos dessas quantias (€)</label><input id="extrap" type="number" min="0" step="0.01" value="0"></div>
+</div><p class="muted">Introduz os valores já determinados segundo o regime jurídico aplicável. Custas de parte não entram nesta conferência.</p>
+<div class="actions"><button type="button" id="calc">Conferir valores</button><button class="secondary" type="button" id="reset">Limpar</button></div></section>
+<section class="panel" aria-live="polite"><h2>3. Resultado</h2><p id="status" class="status">Aguardam-se dados.</p><table><tbody><tr><th>Total exigível</th><td id="due">—</td></tr><tr><th>Total confirmado</th><td id="paid">—</td></tr><tr><th>Diferença por cobrar</th><td id="debt">—</td></tr><tr><th>Potencial excesso</th><td id="over">—</td></tr></tbody></table><p id="notes" class="muted">A ausência de dívida apenas pode fundamentar dispensa de conta após validação dos pressupostos do artigo 29.º do RCP.</p><div class="actions"><button type="button" class="secondary" id="copy">Copiar relatório</button><button type="button" class="secondary" onclick="window.print()">Imprimir</button></div><pre id="report" hidden></pre></section>
+</main><script>
+const ids=["process","date","value","subject","a","ap","b","bp","extra","extrap","law","table","exempt","remainder","charges"];
+const el=id=>document.getElementById(id);const euro=n=>new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR"}).format(n/100);
+function cents(id){const s=el(id).value;if(s===""||!Number.isFinite(Number(s))||Number(s)<0)return null;return Math.round(Number(s)*100)}
+let report="";
+el("calc").addEventListener("click",()=>{const fields=["a","ap","b","bp","extra","extrap"],nums=fields.map(cents);
+if(nums.some(v=>v===null)){el("status").textContent="Dados incompletos ou inválidos.";return}
+const [a,ap,b,bp,extra,extrap]=nums;const due=a+b+extra,paid=ap+bp+extrap;const debt=Math.max(0,a-ap)+Math.max(0,b-bp)+Math.max(0,extra-extrap);const over=Math.max(0,ap-a)+Math.max(0,bp-b)+Math.max(0,extrap-extra);
+const checks=["law","table","exempt","remainder","charges"];const validated=checks.every(id=>el(id).checked);
+el("due").textContent=euro(due);el("paid").textContent=euro(paid);el("debt").textContent=euro(debt);el("over").textContent=euro(over);
+el("status").textContent=!validated?"Conferência jurídica incompleta":debt?"Diferenças por regularizar":over?"Potencial excesso a verificar":"Sem dívida nos valores introduzidos";
+el("notes").textContent=(!validated?"Existem pressupostos jurídicos por confirmar. ":"")+(debt?"Há diferenças positivas por parte/rubrica. ":"")+(over?"O excesso não implica restituição automática. ":"")+(debt===0?"Verificar a dispensa de elaboração da conta do artigo 29.º, n.º 1, alínea a), do RCP. ":"")+"Não inclui custas de parte nem valida comprovativos automaticamente.";
+report=["CONFERÊNCIA EXPERIMENTAL DE CUSTAS · A01", "Referência: "+(el("process").value||"não indicada"),"Entrada: "+(el("date").value||"não indicada"),"Valor da causa: "+(el("value").value||"não indicado"),"Objecto: "+(el("subject").value||"não indicado"),"Parte A: devido "+euro(a)+"; pago "+euro(ap),"Parte B: devido "+euro(b)+"; pago "+euro(bp),"Outras quantias: devido "+euro(extra)+"; pago "+euro(extrap),"Total exigível: "+euro(due),"Total confirmado: "+euro(paid),"Diferença por cobrar: "+euro(debt),"Potencial excesso: "+euro(over),"Validação jurídica: "+(validated?"assinalada pelo utilizador":"incompleta"),"Resultado não oficial. Verificar legislação e documentos."].join("\n");el("report").textContent=report;el("report").hidden=false;});
+el("copy").addEventListener("click",async()=>{if(!report)return;try{await navigator.clipboard.writeText(report)}catch(e){const ta=document.createElement("textarea");ta.value=report;document.body.append(ta);ta.select();document.execCommand("copy");ta.remove()}});
+el("reset").addEventListener("click",()=>{for(const id of ids){const x=el(id);if(x.type==="checkbox")x.checked=false;else x.value=(id==="extra"||id==="extrap")?"0":""}el("status").textContent="Aguardam-se dados.";for(const id of ["due","paid","debt","over"])el(id).textContent="—";el("report").hidden=true;report=""});
+el("theme").addEventListener("click",()=>{const v=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=v;try{localStorage.setItem("legaltech_theme",v)}catch(e){}});
+</script></body></html>
