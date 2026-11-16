@@ -1,0 +1,48 @@
+{
+  "version": "2026-11-16",
+  "source": "Lei 62/2013, artigo 28.º (LOSJ); CPC artigo 138.º",
+  "references": [
+    "https://dgaj.justica.gov.pt/Noticias-da-DGAJ/DGAJ-elabora-e-divulga-o-calendario-judicial-para-2026",
+    "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2013-34580575-53370775"
+  ],
+  "vacations": {
+    "winter": {
+      "begin": "12-22",
+      "end": "01-03"
+    },
+    "summer": {
+      "begin": "07-16",
+      "end": "08-31"
+    },
+    "easter": {
+      "before_days": 7,
+      "after_days": 1
+    }
+  },
+  "fixed_holidays": [
+    "01-01",
+    "04-25",
+    "05-01",
+    "06-10",
+    "08-15",
+    "10-05",
+    "11-01",
+    "12-01",
+    "12-08",
+    "12-25"
+  ],
+  "mobile_holidays": [
+    {
+      "name": "Sexta-Feira Santa",
+      "relative_to_easter": -2
+    },
+    {
+      "name": "Páscoa",
+      "relative_to_easter": 0
+    },
+    {
+      "name": "Corpo de Deus",
+      "relative_to_easter": 60
+    }
+  ]
+}
