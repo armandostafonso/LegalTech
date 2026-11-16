@@ -1,6 +1,6 @@
 # Motor de Custas A01 — Caderno jurídico e técnico
 
-**Versão da interface:** 1.0 (experimental, novembro de 2026)  
+**Versão da interface:** 1.1 (experimental, novembro de 2026)  
 **Espécie:** acção administrativa (CPTA)  
 **Página:** `custas.html`
 
@@ -16,7 +16,10 @@
 8. Transferência explícita dos pagamentos líquidos confirmados para a conferência, separada por parte. A emissão e a anulação de guias não constituem pagamento.
 9. Validação de referências duplicadas por parte, tipo, data e valor; restrições à anulação sem guia correspondente e à restituição superior ao pagamento confirmado da mesma referência.
 10. Conferência aritmética de valores devidos **introduzidos manualmente**, sem compensar quantias de partes diferentes.
-11. Relatório copiável/imprimível com movimentos, montantes e advertências. Alterar movimentos invalida o relatório anterior.
+11. Registo **manual de obrigações por impulso processual**, com parte responsável, tipo (petição, contestação, segunda prestação, recurso, incidente, remanescente e encargos), referência única por parte, montante em cêntimos e fundamento jurídico declarado pelo utilizador.
+12. **Afectação facultativa dos movimentos financeiros** a obrigações da mesma parte, para apuramento de pagamento imputado e diferença por impulso. O pagamento confirmado continua a contar uma única vez no saldo da parte.
+13. Transferência explícita **por substituição**, nunca por soma, dos totais das obrigações para a conferência, com detecção de duplicações e bloqueio da remoção de obrigações a que estejam associados movimentos.
+14. Relatório copiável/imprimível com obrigações, movimentos, montantes e advertências. Alterar movimentos ou obrigações invalida o relatório anterior.
 
 ## Normas confirmadas e cuidados de aplicação
 
@@ -40,7 +43,7 @@
 
 ## Limitações que bloqueiam o uso como conta oficial
 
-- A taxa-base simulada não contempla isenções, reduções, prestações, regimes especiais, custas de recursos e incidentes.
+- A taxa-base simulada não contempla isenções, reduções, prestações, regimes especiais, custas de recursos e incidentes. As obrigações de recurso ou incidente são valores **manuais**, não calculados automaticamente.
 - A selecção de uma alínea de isenção ou modalidade de apoio judiciário **não valida os respectivos requisitos materiais**.
 - A ferramenta não lê autos nem comprovativos. Os pagamentos tidos como confirmados são declarados manualmente.
 - O programa não determina a responsabilidade por custas nem executa o seu rateio em caso de decaimento.
@@ -48,10 +51,12 @@
 - Nem toda a quantia matematicamente positiva é legalmente exigível à parte que a introduziu.
 - A aplicação usa memória temporária do navegador, sem envio ou gravação das respostas pelo próprio módulo. O livro perde-se ao actualizar ou fechar a página. Evitar dados identificativos e informação confidencial.
 - A ferramenta apresenta, por enquanto, apenas duas fichas individualizadas (A/B), e uma rubrica agregada de outras quantias; não resolve a pluralidade de intervenientes.
+- Um pagamento não imputado a obrigação específica integra o saldo financeiro por parte, mas não o saldo por impulso. A conferência é assinalada como incompleta se coexistirem obrigações e pagamentos confirmados sem imputação.
+- A indicação «verificado» é uma declaração manual, não uma certificação do programa ou de uma autoridade judicial.
 
 ## Testes
 
-- Script: `node scripts/test-custas.mjs`.
+- Script: `node scripts/test-custas.mjs` (34 casos técnicos na versão 1.1).
 - Verificação global da página: `node scripts/validate-site.mjs`.
 - Integração contínua: `.github/workflows/custas-tests.yml`.
 
@@ -61,7 +66,7 @@
 
 1. Catálogo de versões legais e UC histórica.
 2. Motor de prestações com estrutura de **obrigações por impulso**, para impedir duplicações.
-3. Evoluir o livro de movimentos para várias partes, tipologia de impulso e conciliação documental segura.
+3. Evoluir a ligação entre movimentos e impulsos para várias partes, classificação do pagamento e conciliação documental segura.
 4. Regimes de isenção, apoio judiciário, dispensa prévia e reduções, com fundamentação e controlo de efeitos temporais.
 5. Repartição de encargos e remanescente conforme condenação e decisões judiciais.
 6. Exportação da proposta de conferência, com indicação do grau de certeza e referências legais.
