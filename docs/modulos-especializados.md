@@ -14,7 +14,7 @@ Esta versão aumenta o catálogo público para 21 ferramentas, mantendo o módul
 | [Compare](../compare.html) | Duas versões de texto, até 250 linhas por versão | Linhas acrescentadas/removidas | Não avalia sentido, efeitos ou relevância jurídica |
 | [Remessas](../remessas.html) | Tipo de remessa e verificações manuais | Relatório textual | Não certifica despacho ou envio |
 | [Appeals](../appeals.html) | Regime administrativo, urgente ou tributário | Checklist com fontes de consulta | Não calcula prazos nem decide admissão, efeito ou subida |
-| [PA](../pa.html) | Texto colado ou ficheiro TXT/CSV/MD/JSON até 1,5 MB | Referências cronológicas, CSV e TXT | Não suporta PDF; datas e integridade do PA não são certificadas |
+| [PA](../pa.html) | Texto TXT/CSV/MD/JSON ou PDF com texto selecionável (até 12 MB/120 páginas) | Índice cronológico preliminar com página de origem | Sem OCR; bloqueia se alguma página não tiver texto; biblioteca PDF.js obtida de CDN externo a pedido |
 | [Termos](../termos.html) | Datas previamente validadas e pressupostos manuais | Cota editável e evento de calendário | Não calcula automaticamente o termo ou a perfeição da notificação |
 | [Lex Audit](../lex-monitor.html) | Data e estado de conferência indicados manualmente | Registo temporário e CSV | **Não monitoriza** nem deteta alterações legislativas automaticamente |
 | [Privacy Check](../privacy-check.html) | Texto local autorizado | Indicação de padrões e substituições sugeridas | Não deteta todos os nomes/dados; não torna o documento seguro para divulgação |
@@ -28,7 +28,7 @@ Esta versão aumenta o catálogo público para 21 ferramentas, mantendo o módul
 3. Nenhum módulo mantém conteúdo no `localStorage`, `sessionStorage`, `IndexedDB` ou numa base de dados; preferências do modo Claro/Escuro são a exceção e não contêm documentos.
 4. Os descarregamentos em TXT, CSV, RTF ou ICS são ficheiros locais; quem os importar para outros serviços passa a estar sujeito às regras desses serviços.
 5. Não colocar documentos, dados pessoais ou informação sob segredo de justiça em dispositivos ou redes sem autorização institucional. Os resultados não substituem apreciação judicial ou atos certificados.
-6. O **anonimizador PDF é uma ferramenta separada** e tem outras dependências e riscos; não presumir que o seu comportamento de rede é igual ao destes módulos.
+6. O **organizador PA** carrega código PDF.js de um CDN externo apenas quando o utilizador escolhe importar PDF; a aplicação não transmite intencionalmente os bytes, mas dependências remotas exigem avaliação de segurança antes de tratar informação confidencial. O **anonimizador PDF é uma ferramenta separada** e tem outras dependências e riscos; não presumir que o seu comportamento de rede é igual ao destes módulos.
 7. A exportação de textos introduzidos em ferramentas locais pode conter dados pessoais: a ausência de transmissão pela ferramenta não elimina o risco de armazenamento no dispositivo de destino.
 
 ## Manutenção e validação
