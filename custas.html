@@ -201,8 +201,8 @@ function ledgerRender(message){
  el("ledgerPending").textContent=String(t.pending);
  el("ledgerRows").innerHTML=ledgerEntries.length?ledgerEntries.map(m=>{
   const label=m.kind==="guide"?"Emitida":m.kind==="cancel"?"Anulada":m.status==="confirmed"?"Confirmado":"Pendente";
-  const confirm=(["payment","refund"].includes(m.kind)&&m.status==="pending")?'<button type="button" data-action="confirm" data-id="'+m.id+'">Confirmar</button>':"";
-  return "<tr><td>"+ledgerParties[m.party]+"</td><td>"+ledgerKinds[m.kind]+"</td><td>"+ledgerEscape(m.ref)+"</td><td>"+m.date+"</td><td>"+ledgerFmt(m.cents)+"</td><td>"+label+" "+confirm+'<button type="button" data-action="remove" data-id="'+m.id+'">Retirar</button></td></tr>';
+  const confirm=(["payment","refund"].includes(m.kind)&&m.status==="pending")?'<button type="button" data-action="confirm" data-record="'+m.id+'">Confirmar</button>':"";
+  return "<tr><td>"+ledgerParties[m.party]+"</td><td>"+ledgerKinds[m.kind]+"</td><td>"+ledgerEscape(m.ref)+"</td><td>"+m.date+"</td><td>"+ledgerFmt(m.cents)+"</td><td>"+label+" "+confirm+'<button type="button" data-action="remove" data-record="'+m.id+'">Retirar</button></td></tr>';
  }).join(""):'<tr><td colspan="6">Ainda não existem movimentos.</td></tr>';
  if(message)el("ledgerMessage").textContent=message;
  el("ledgerSync").textContent=ledgerSynced?"Pagamentos líquidos confirmados transferidos para a conferência. Verifica os valores e executa «Conferir valores».":"Os pagamentos inseridos manualmente podem estar desactualizados relativamente ao livro. Volta a preencher a partir dos movimentos confirmados.";
@@ -217,8 +217,8 @@ el("ledgerAdd").addEventListener("click",()=>{
  ledgerRender("Movimento registado no navegador. Confirma a documentação dos pagamentos antes de transferir.");
 });
 el("ledgerRows").addEventListener("click",event=>{
- const btn=event.target.closest("button[data-id]");if(!btn)return;
- const id=Number(btn.dataset.id),i=ledgerEntries.findIndex(x=>x.id===id);if(i<0)return;
+ const btn=event.target.closest("button[data-record]");if(!btn)return;
+ const id=Number(btn.dataset.record),i=ledgerEntries.findIndex(x=>x.id===id);if(i<0)return;
  const m=ledgerEntries[i];
  if(btn.dataset.action==="confirm"){
   if(!["payment","refund"].includes(m.kind)||m.status!=="pending")return;
