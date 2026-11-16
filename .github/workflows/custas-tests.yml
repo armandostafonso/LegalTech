@@ -1,0 +1,30 @@
+name: Verificar motor de custas A01
+
+on:
+  push:
+    paths:
+      - 'custas.html'
+      - 'scripts/test-custas.mjs'
+      - 'scripts/validate-site.mjs'
+      - '.github/workflows/custas-tests.yml'
+  pull_request:
+    paths:
+      - 'custas.html'
+      - 'scripts/test-custas.mjs'
+      - 'scripts/validate-site.mjs'
+      - '.github/workflows/custas-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verificar sintaxe e ligações do site
+        run: node scripts/validate-site.mjs
+      - name: Testes de regressão do módulo A01
+        run: node scripts/test-custas.mjs
