@@ -19,7 +19,29 @@ await check("Página inicial e pesquisa",async()=>{
  await page.locator("#search").fill("minuta");
  if(await page.locator(".tool:visible").count()!==1)throw Error("Pesquisa não filtra para uma ferramenta");
  await page.locator("#search").fill("");
- if(await page.locator(".tool:visible").count()!==7)throw Error("Ferramentas não recuperadas");
+ if(await page.locator(".tool:visible").count()!==8)throw Error("Ferramentas não recuperadas");
+});
+await check("Conferência de expediente: seis atos e exportação segura",async()=>{
+ await open("expediente.html");
+ if(await page.locator("#type option").count()!==6)throw Error("Seis modelos de expediente não carregados");
+ await page.locator("#type").selectOption("notificacao");
+ if(await page.locator("#items input").count()!==7)throw Error("Lista de notificação incompleta");
+ await page.locator("#items input").first().check();
+ if(!(await page.locator("#metric").innerText()).includes("1 de 7"))throw Error("Progresso de conferência incorreto");
+ await page.locator("#type").selectOption("oficio");
+ await page.locator("#type").selectOption("notificacao");
+ if(!(await page.locator("#items input").first().isChecked()))throw Error("Progresso não conservado na página");
+ const download=page.waitForEvent("download");
+ await page.locator("#txt").click();
+ const file=await download;
+ if(!file.suggestedFilename().endsWith(".txt"))throw Error("Exportação TXT falhou");
+ const fs=await import("node:fs");
+ const data=fs.readFileSync(await file.path(),"utf8");
+ if(!data.includes("[x]")||!data.includes("NOTIFICAÇÃO")&&!data.includes("Notificação"))throw Error("Checklist exportada incorretamente");
+ await page.locator("#reset").click();
+ if(!(await page.locator("#metric").innerText()).includes("0 de 7"))throw Error("Reposição falhou");
+ await page.reload();
+ if(!(await page.locator("#metric").innerText()).includes("0 de 7"))throw Error("Dados de conferência ficaram guardados");
 });
 await check("Agenda local: eventos, exportação ICS e limpeza",async()=>{
  await open("agenda.html");
