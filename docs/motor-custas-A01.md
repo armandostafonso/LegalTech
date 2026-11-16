@@ -1,6 +1,6 @@
 # Motor de Custas A01 — Caderno jurídico e técnico
 
-**Versão da interface:** 0.9 (experimental, novembro de 2026)  
+**Versão da interface:** 1.0 (experimental, novembro de 2026)  
 **Espécie:** acção administrativa (CPTA)  
 **Página:** `custas.html`
 
@@ -12,8 +12,11 @@
 4. Triagem dos casos de não pagamento de segunda prestação previstos nas alíneas c) a f) do artigo 14.º-A do RCP.
 5. Verificação do marco de 1 de dezembro de 2026 quanto à data do acto e da propositura da acção.
 6. Fichas dos intervenientes A/B, com posição processual, entidade, isenção invocada, apoio judiciário, excepção à dispensa de pagamento prévio, condenação final e indicação de conferência documental.
-7. Conferência aritmética de valores **introduzidos manualmente**, sem compensar quantias devidas ou pagas de partes diferentes.
-8. Relatório de texto copiável e impressão.
+7. Livro de movimentos financeiros **temporário**, com guias emitidas, anulações, pagamentos e restituições. Apenas movimentos financeiros confirmados pelo utilizador alteram os saldos; movimentos pendentes não entram no valor pago.
+8. Transferência explícita dos pagamentos líquidos confirmados para a conferência, separada por parte. A emissão e a anulação de guias não constituem pagamento.
+9. Validação de referências duplicadas por parte, tipo, data e valor; restrições à anulação sem guia correspondente e à restituição superior ao pagamento confirmado da mesma referência.
+10. Conferência aritmética de valores devidos **introduzidos manualmente**, sem compensar quantias de partes diferentes.
+11. Relatório copiável/imprimível com movimentos, montantes e advertências. Alterar movimentos invalida o relatório anterior.
 
 ## Normas confirmadas e cuidados de aplicação
 
@@ -40,9 +43,10 @@
 - A selecção de uma alínea de isenção ou modalidade de apoio judiciário **não valida os respectivos requisitos materiais**.
 - A ferramenta não lê autos nem comprovativos. Os pagamentos tidos como confirmados são declarados manualmente.
 - O programa não determina a responsabilidade por custas nem executa o seu rateio em caso de decaimento.
-- Não existe ainda razão de movimentos DUC, guia emitida, pagamento confirmado, anulação ou reembolso.
+- Existe um livro experimental de movimentos, mas não existe **conciliação automática documental** com CITIUS/SITAF, sistemas de pagamentos ou extratos oficiais. O estado «confirmado» é declarado pelo utilizador.
 - Nem toda a quantia matematicamente positiva é legalmente exigível à parte que a introduziu.
-- A aplicação usa memória temporária do navegador, sem envio ou gravação das respostas pelo próprio módulo. Evitar dados identificativos e informação confidencial.
+- A aplicação usa memória temporária do navegador, sem envio ou gravação das respostas pelo próprio módulo. O livro perde-se ao actualizar ou fechar a página. Evitar dados identificativos e informação confidencial.
+- A ferramenta apresenta, por enquanto, apenas duas fichas individualizadas (A/B), e uma rubrica agregada de outras quantias; não resolve a pluralidade de intervenientes.
 
 ## Testes
 
@@ -56,7 +60,7 @@
 
 1. Catálogo de versões legais e UC histórica.
 2. Motor de prestações com estrutura de **obrigações por impulso**, para impedir duplicações.
-3. Livro de movimentos por parte, documento e confirmação de pagamento, com tratamento de anulações e restituições.
+3. Evoluir o livro de movimentos para várias partes, tipologia de impulso e conciliação documental segura.
 4. Regimes de isenção, apoio judiciário, dispensa prévia e reduções, com fundamentação e controlo de efeitos temporais.
 5. Repartição de encargos e remanescente conforme condenação e decisões judiciais.
 6. Exportação da proposta de conferência, com indicação do grau de certeza e referências legais.
