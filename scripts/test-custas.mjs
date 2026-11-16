@@ -140,7 +140,7 @@ check("Taxa-base: não cria obrigação sem confirmação das premissas",()=>{
  click("autoPreview");click("autoInsert");assert.match(read("autoResult"),/não criada/);
 });
 check("Taxa-base: cria obrigação controlada e impede repetição",()=>{
- els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");assert.match(read("autoResult"),/criada/);
+ put("pa_exemption","none");put("pa_aid","none");put("pa_entity","person");els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");assert.match(read("autoResult"),/criada/);
  assert.match(read("obA"),/510,00/);
  els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");
  assert.match(read("autoResult"),/já registada/);assert.match(read("obA"),/510,00/);
@@ -153,5 +153,22 @@ check("Taxa-base: transferência é substitutiva",()=>{
  els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");
  assert.match(read("obA"),/765,00/);
  click("obApply");assert.equal(els.get("a").value,"765.00");click("obApply");assert.equal(els.get("a").value,"765.00");
+});
+
+check("Taxa-base: bloqueia isenção ou apoio judiciário",()=>{
+ put("autoType","peticao");put("autoRef","AUTO-BLOCK-001");put("pa_exemption","mp");put("pa_aid","none");els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");
+ assert.match(read("autoResult"),/isenção e apoio judiciário/);
+ put("pa_exemption","none");put("pa_aid","exempt");click("autoPreview");click("autoInsert");assert.match(read("autoResult"),/isenção e apoio judiciário/);
+ put("pa_aid","none");
+});
+check("Taxa-base: bloqueia dispensa prévia de entidade pública",()=>{
+ put("pa_entity","state");put("pa_excluded","no");els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");assert.match(read("autoResult"),/dispensa de pagamento prévio/);
+ put("pa_entity","person");
+});
+check("Taxa-base: montantes com mais de duas casas são rejeitados",()=>{
+ put("autoValue","100.001");click("autoPreview");assert.match(read("autoResult"),/válidos/);
+});
+check("Taxa-base: limpar apaga estado da simulação",()=>{
+ click("reset");assert.equal(els.get("autoValue").value,"");assert.match(read("autoResult"),/Indica os dados/);
 });
 console.log(tests+" testes do módulo A01 concluídos.");
