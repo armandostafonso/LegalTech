@@ -12,6 +12,8 @@ Ferramentas jurídicas práticas em português de Portugal. Projeto estático pu
 | Minutas | `minutas.html` | Rascunhos de cotas, certidões, notificações e ofícios |
 | Roteiros | `roteiros.html` | Checklists operacionais de secretaria |
 | Tramitação TAF | `tramitação-taf.html` | Sete roteiros: intimações, ação administrativa, impugnação tributária, cautelar e recursos, com fases e artigos |
+
+As 25 fases dispõem de [fichas complementares](docs/fichas-taf.md), com dados a conferir, alertas, atos dependentes de despacho e minutas genéricas. A checklist conserva verificações apenas durante a sessão da página, sem guardar dados processuais.
 | Prazos CPA e CPPT | `regimes.html` | Contagem auxiliar em dias com regras dos artigos 87.º CPA e 20.º/1 CPPT |
 | Conferência de custas (A01) | `custas.html` | Conferência manual de taxas e pagamentos, sem cálculo jurídico automático |
 | Privacidade | `privacidade.html` | Informação sobre limites, dependências e tratamento local |
