@@ -270,7 +270,7 @@ function ledgerValidate(m,skipId=null){
  if(!["a","b","extra"].includes(m.party)||!Object.hasOwn(ledgerKinds,m.kind)||!/^\d{4}-\d{2}-\d{2}$/.test(m.date))return "Indica parte, tipo e data válidos.";
  if(!m.ref||m.ref.length>70)return "Indica uma referência de movimento com, no máximo, 70 caracteres.";
  if(m.obId!==null){const ob=obligations.find(x=>x.id===m.obId);if(!ob||ob.party!==m.party)return "O impulso associado não pertence a este interveniente.";}
- if(m.kind==="refund"&&m.obId!==null){const same=otherOrEmptyForRefund(m,skipId);if(same.some(x=>x.obId!==m.obId))return "A restituição tem de manter o impulso atribuído aos pagamentos da mesma referência."; }
+ if(m.kind==="refund"){const same=otherOrEmptyForRefund(m,skipId);if(same.some(x=>(x.obId??null)!==(m.obId??null)))return "A restituição tem de manter o impulso atribuído aos pagamentos da mesma referência."; }
  if(!Number.isSafeInteger(m.cents)||m.cents<=0)return "Indica um montante positivo, com até duas casas decimais.";
  const other=ledgerEntries.filter(x=>x.id!==skipId);
  if(other.some(x=>x.party===m.party&&x.kind===m.kind&&x.ref===m.ref&&x.date===m.date&&x.cents===m.cents))return "Possível duplicado: já existe um movimento idêntico (parte, tipo, referência, data e montante).";
@@ -357,7 +357,7 @@ let report="";
 el("calc").addEventListener("click",()=>{const fields=["a","ap","b","bp","extra","extrap"],nums=fields.map(cents);
 if(nums.some(v=>v===null)){el("status").textContent="Dados incompletos ou inválidos.";return}
 const [a,ap,b,bp,extra,extrap]=nums;const due=a+b+extra,paid=ap+bp+extrap;const debt=Math.max(0,a-ap)+Math.max(0,b-bp)+Math.max(0,extra-extrap);const over=Math.max(0,ap-a)+Math.max(0,bp-b)+Math.max(0,extrap-extra);
-const checks=["law","table","exempt","remainder","charges"];const validated=checks.every(id=>el(id).checked)&&profilesReady&&(!obligations.length||obSynced)&&(!ledgerEntries.length||(ledgerSynced&&ledgerBalances().pending===0));
+const checks=["law","table","exempt","remainder","charges"];const validated=checks.every(id=>el(id).checked)&&profilesReady&&(!obligations.length||obSynced)&&(!obligations.length||!ledgerEntries.some(m=>["payment","refund"].includes(m.kind)&&m.status==="confirmed"&&!m.obId))&&(!ledgerEntries.length||(ledgerSynced&&ledgerBalances().pending===0));
 el("due").textContent=euro(due);el("paid").textContent=euro(paid);el("debt").textContent=euro(debt);el("over").textContent=euro(over);
 el("status").textContent=!validated?"Conferência jurídica incompleta":debt?"Diferenças a analisar":over?"Potencial excesso a verificar":"Sem diferenças nos valores introduzidos";
 el("notes").textContent=(!validated?"Existem pressupostos jurídicos por confirmar. ":"")+(debt?"Há diferenças positivas por parte/rubrica. ":"")+(over?"O excesso não implica restituição automática. ":"")+(debt===0?"Conferir, apenas após validação completa dos autos, a eventual dispensa de conta prevista no artigo 29.º, n.º 1, alínea a), do RCP. ":"")+"Não inclui custas de parte nem valida comprovativos automaticamente.";
