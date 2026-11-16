@@ -1,6 +1,6 @@
 # Motor de Custas A01 — Caderno jurídico e técnico
 
-**Versão da interface:** 1.1 (experimental, novembro de 2026)  
+**Versão da interface:** 1.2 (experimental, novembro de 2026)  
 **Espécie:** acção administrativa (CPTA)  
 **Página:** `custas.html`
 
@@ -41,6 +41,26 @@
 
 **Regra de separação:** as custas de parte não entram no cálculo da conta da secretaria. O programa não as soma às quantias a conferir.
 
+## Cálculo controlado da taxa-base (v1.2)
+
+A partir da versão 1.2, a interface contém uma calculadora autónoma **limitada** à taxa-base dos impulsos «petição inicial», «contestação» (coluna I-A) e «recurso» (coluna I-B). Os treze escalões da Tabela I do RCP foram conferidos no texto legal aplicável desde **29 de março de 2012**. A unidade de conta processual é introduzida e confirmada pelo utilizador, atendendo à regra do artigo 5.º do RCP.
+
+- Escalões da coluna I-A: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14 e 16 UC.
+- Coluna I-B: metade dos valores da coluna A para os mesmos escalões.
+- Acima de **275.000 €**, o programa limita o cálculo da taxa-base a 275.000 € e **não inclui o remanescente**.
+- Acções anteriores a **29-03-2012** ficam bloqueadas para exigir enquadramento histórico específico.
+- O cálculo **não determina** automaticamente a segunda prestação, o montante final da conta, as isenções, as reduções ou o regime de pagamento diferido.
+- Uma obrigação calculada só é criada após confirmação expressa dos pressupostos pelo utilizador. Se a ficha da parte declarar isenção, apoio judiciário ou possível dispensa prévia, a criação fica bloqueada.
+- As obrigações são criadas com referência única por parte; o mesmo impulso não é duplicado e os totais devidos continuam a ser transferidos **por substituição**.
+
+### Referências para validação
+
+- RCP, artigos 5.º, 6.º, 11.º e Tabela I.
+- Lei n.º 7/2012, de 13 de fevereiro (vigência da tabela a partir de 29 de março de 2012).
+- Decreto-Lei n.º 164/2026, artigos 8.º e 9.º: o novo artigo 6.º do RCP aplica-se apenas a acções propostas após 01-12-2026.
+
+A data de propositura da acção não resolve isoladamente todas as regras transitórias, pelo que o cálculo fica sujeito a confirmação jurídica.
+
 ## Limitações que bloqueiam o uso como conta oficial
 
 - A taxa-base simulada não contempla isenções, reduções, prestações, regimes especiais, custas de recursos e incidentes. As obrigações de recurso ou incidente são valores **manuais**, não calculados automaticamente.
@@ -56,7 +76,7 @@
 
 ## Testes
 
-- Script: `node scripts/test-custas.mjs` (34 casos técnicos na versão 1.1).
+- Script: `node scripts/test-custas.mjs` (46 casos técnicos na versão 1.2).
 - Verificação global da página: `node scripts/validate-site.mjs`.
 - Integração contínua: `.github/workflows/custas-tests.yml`.
 
