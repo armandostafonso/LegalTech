@@ -1,0 +1,28 @@
+/* LegalTech UX / acessibilidade v1.0.
+   Camada exclusivamente visual: não altera quaisquer regras jurídicas. */
+:root{--touch:44px}
+html{scroll-padding-top:20px;-webkit-text-size-adjust:100%}
+body{overflow-wrap:break-word}
+button,a,input,select,textarea{touch-action:manipulation}
+button,.btn,.lt-theme-control{min-height:var(--touch)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{
+ outline:3px solid var(--lt-gold,#b78a39)!important;outline-offset:3px!important}
+body>header nav{row-gap:9px}
+body>header nav>div{display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px}
+body>header nav>div a{padding:7px 3px;margin-right:0;display:inline-flex;align-items:center;min-height:40px}
+:root[data-theme="dark"] .note{border-color:var(--line);color:var(--muted)}
+:root[data-theme="dark"] .event{background:var(--paper)}
+:root[data-theme="dark"] .blank{background:var(--soft)}
+.note a{text-underline-offset:3px}
+.panel img,.panel svg{max-width:100%}
+@media(max-width:700px){
+ body>header nav{padding:12px 17px;align-items:flex-start}
+ body>header nav>div{flex-basis:100%;order:2}
+ body>header nav .lt-theme-added{order:1;margin-left:auto}
+ .wrap{padding-left:16px;padding-right:16px}
+ .panel{padding:17px}
+ input,select,textarea{font-size:16px}
+ .actions .btn{min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media print{body>header,.lt-theme-control,.actions{display:none!important}.panel{box-shadow:none!important;color:#000}}
