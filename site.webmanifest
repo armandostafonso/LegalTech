@@ -1,8 +1,8 @@
 {
   "id": "./index.html",
-  "name": "LegalTech · Ferramentas Jurídicas",
-  "short_name": "LegalTech",
-  "description": "Ferramentas jurídicas auxiliares, com validação humana obrigatória.",
+  "name": "LegalTech Suite · Ferramentas Jurídicas",
+  "short_name": "LegalTech Suite",
+  "description": "Suite integrada de ferramentas jurídicas auxiliares, com validação humana obrigatória.",
   "lang": "pt-PT",
   "start_url": "./index.html",
   "scope": "./",
