@@ -22,3 +22,5 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Exercitar ferramentas no navegador
         run: node scripts/browser-smoke.mjs
+      - name: Casos de regressão Cita-Check
+        run: node scripts/citacheck-regression.mjs
