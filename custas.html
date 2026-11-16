@@ -10,7 +10,7 @@
 </style><script>try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||"light"}catch(e){}</script><link rel="stylesheet" href="assets/brand.css">
 </head>
 <body><main><header><a class="brand" href="index.html">LegalTech</a><button class="secondary" id="theme" type="button">◐ Tema</button></header>
-<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.0</p>
+<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.1</p>
 <div class="notice"><strong>Âmbito:</strong> conferência aritmética de valores introduzidos e verificação de pressupostos. Não calcula autonomamente taxas legais, não lê PDF e não emite conta oficial. Não introduzas dados pessoais ou processuais confidenciais. Os dados não são enviados nem guardados por esta página.</div>
 <section class="panel"><h2>1. Identificação e regime</h2><div class="grid">
 <div class="field"><label for="process">Referência fictícia / interna</label><input id="process" placeholder="Ex.: TESTE-A01"></div>
@@ -51,7 +51,30 @@
 <div class="actions"><button type="button" class="secondary" id="analyseparties">Analisar estatutos jurídicos</button></div>
 <p id="partiesstatus" class="muted" aria-live="polite">A análise exige revisão documental e legal individualizada.</p>
 <p class="muted"><small>Fundamentos: <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975" target="_blank" rel="noopener">RCP, arts. 4.º e 15.º</a>; <a href="https://diariodarepublica.pt/dr/detalhe/decreto-lei/164-2026-1154555254" target="_blank" rel="noopener">DL n.º 164/2026, arts. 8.º e 9.º</a>; Lei n.º 34/2004. As isenções podem ter efeitos específicos sobre encargos. A aplicação das novas regras depende também da data do acto.</small></p></section>
-<section class="panel" id="livro-movimentos"><h2>6. Livro de movimentos financeiros</h2>
+
+<section class="panel" id="obrigacoes">
+<h2>6. Obrigações por impulso processual</h2>
+<p class="muted">Regista os montantes <strong>já determinados juridicamente</strong> para cada impulso. Não existe cálculo legal automático nesta secção. A transferência substitui os totais devidos, sem os somar aos valores anteriores.</p>
+<div class="grid">
+<div class="field"><label for="obParty">Responsável / rubrica</label><select id="obParty"><option value="a">Parte A</option><option value="b">Parte B</option><option value="extra">Outras quantias</option></select></div>
+<div class="field"><label for="obType">Impulso processual</label><select id="obType"><option value="peticao">Petição inicial</option><option value="contestacao">Contestação / oposição</option><option value="segunda">Segunda prestação</option><option value="recurso">Recurso</option><option value="incidente">Incidente</option><option value="remanescente">Remanescente</option><option value="encargo">Encargo ou multa</option><option value="outro">Outro</option></select></div>
+<div class="field"><label for="obRef">Identificador do impulso (fictício)</label><input id="obRef" maxlength="70" autocomplete="off" placeholder="Ex.: PET-001 ou REC-001"></div>
+<div class="field"><label for="obAmount">Montante exigível (€)</label><input id="obAmount" type="number" min="0" step="0.01" placeholder="Ex.: 612.00"></div>
+<div class="field"><label for="obBasis">Fundamento e versão legal aplicável</label><input id="obBasis" maxlength="200" placeholder="Ex.: RCP, art. 6.º/1, Tabela I-A, versão aplicável"></div>
+<div class="field"><label for="obChecked">Revisão jurídica</label><label class="checkrow"><input id="obChecked" type="checkbox"> Valor e exigibilidade verificados documentalmente</label></div>
+</div>
+<div class="actions"><button type="button" id="obAdd">Adicionar obrigação</button><button type="button" class="secondary" id="obApply">Transferir os totais devidos</button><button type="button" class="secondary" id="obClear">Limpar obrigações</button></div>
+<p id="obMessage" class="notice" role="status" aria-live="polite">Sem obrigações. O valor zero exige fundamento expresso.</p>
+<div class="grid" style="margin-top:14px">
+<div class="notice"><small>Total introduzido para a parte A</small><div class="status" id="obA">0,00 €</div></div>
+<div class="notice"><small>Total introduzido para a parte B</small><div class="status" id="obB">0,00 €</div></div>
+<div class="notice"><small>Outras quantias</small><div class="status" id="obExtra">0,00 €</div></div>
+<div class="notice"><small>Movimentos financeiros sem impulso associado</small><div class="status" id="obUnassigned">0</div></div>
+</div>
+<div class="table-scroll"><table aria-label="Obrigações identificadas"><thead><tr><th>Parte</th><th>Impulso</th><th>Referência</th><th>Fundamento</th><th>Exigível</th><th>Pago imputado</th><th>Diferença</th><th>Acção</th></tr></thead><tbody id="obRows"><tr><td colspan="8">Ainda não existem obrigações.</td></tr></tbody></table></div>
+<p class="muted" id="obSync">Os totais devidos só passam para a conferência quando o utilizador acciona a transferência. A afectação de pagamentos ao impulso é opcional e não transfere quantias duas vezes.</p>
+</section>
+<section class="panel" id="livro-movimentos"><h2>7. Livro de movimentos financeiros</h2>
 <p class="muted">Registo temporário, neste navegador, de guias e movimentos. <strong>Uma guia emitida ou anulada não é um pagamento.</strong> Só pagamentos ou restituições marcados como confirmados entram nos saldos. Não introduzas referências processuais reais em testes públicos.</p>
 <div class="grid">
 <div class="field"><label for="ledgerParty">Interveniente</label><select id="ledgerParty"><option value="a">Parte A</option><option value="b">Parte B</option><option value="extra">Outras quantias</option></select></div>
@@ -59,7 +82,7 @@
 <div class="field"><label for="ledgerRef">Referência da guia ou movimento</label><input id="ledgerRef" maxlength="70" autocomplete="off" placeholder="Ex.: GUIA-TESTE-001"></div>
 <div class="field"><label for="ledgerDate">Data do movimento</label><input id="ledgerDate" type="date"></div>
 <div class="field"><label for="ledgerAmount">Montante (€)</label><input id="ledgerAmount" type="number" min="0.01" step="0.01" placeholder="102.00"></div>
-<div class="field"><label for="ledgerStatus">Situação documental</label><select id="ledgerStatus"><option value="pending">Pendente de confirmação</option><option value="confirmed">Confirmado documentalmente</option></select></div>
+<div class="field"><label for="ledgerStatus">Situação documental</label><select id="ledgerStatus"><option value="pending">Pendente de confirmação</option><option value="confirmed">Confirmado documentalmente</option></select></div><div class="field"><label for="ledgerObligation">Imputar a impulso (facultativo)</label><select id="ledgerObligation"><option value="">Sem afectação individual</option></select></div>
 </div>
 <div class="actions"><button type="button" id="ledgerAdd">Adicionar movimento</button><button type="button" id="ledgerApply" class="secondary">Preencher pagamentos confirmados</button><button type="button" id="ledgerClear" class="secondary">Limpar movimentos</button></div>
 <p id="ledgerMessage" class="notice" role="status" aria-live="polite">Sem movimentos. O livro não é guardado nem enviado para servidores por esta ferramenta.</p>
@@ -72,7 +95,7 @@
 <div class="table-scroll"><table aria-label="Movimentos financeiros"><thead><tr><th>Parte</th><th>Natureza</th><th>Referência</th><th>Data</th><th>Montante</th><th>Situação e acções</th></tr></thead><tbody id="ledgerRows"><tr><td colspan="6">Ainda não existem movimentos.</td></tr></tbody></table></div>
 <p id="ledgerSync" class="muted">Os valores do livro não são transferidos automaticamente. Após registar e confirmar, utiliza «Preencher pagamentos confirmados» e executa a conferência.</p>
 </section>
-<section class="panel"><h2>7. Conferência por parte</h2><div class="grid">
+<section class="panel"><h2>8. Conferência por parte</h2><div class="grid">
 <div class="field"><label for="a">Parte A — taxa total exigível (€)</label><input id="a" type="number" min="0" step="0.01"></div>
 <div class="field"><label for="ap">Parte A — pagamento confirmado (€)</label><input id="ap" type="number" min="0" step="0.01"></div>
 <div class="field"><label for="b">Parte B — taxa total exigível (€)</label><input id="b" type="number" min="0" step="0.01"></div>
@@ -81,13 +104,13 @@
 <div class="field"><label for="extrap">Pagamentos dessas quantias (€)</label><input id="extrap" type="number" min="0" step="0.01" value="0"></div>
 </div><p class="muted">Introduz os valores já determinados segundo o regime jurídico aplicável. Custas de parte não entram nesta conferência.</p>
 <div class="actions"><button type="button" id="calc">Conferir valores</button><button class="secondary" type="button" id="reset">Limpar</button></div></section>
-<section class="panel" aria-live="polite"><h2>8. Resultado</h2><p id="status" class="status">Aguardam-se dados.</p><table><tbody><tr><th>Total exigível</th><td id="due">—</td></tr><tr><th>Total confirmado</th><td id="paid">—</td></tr><tr><th>Diferença aritmética positiva</th><td id="debt">—</td></tr><tr><th>Potencial excesso</th><td id="over">—</td></tr></tbody></table><p id="notes" class="muted">A ausência de diferenças aritméticas não basta para dispensar a elaboração da conta: confirmar os pressupostos do artigo 29.º do RCP.</p><div class="actions"><button type="button" class="secondary" id="copy">Copiar relatório</button><button type="button" class="secondary" onclick="window.print()">Imprimir</button></div><pre id="report" hidden></pre></section>
+<section class="panel" aria-live="polite"><h2>9. Resultado</h2><p id="status" class="status">Aguardam-se dados.</p><table><tbody><tr><th>Total exigível</th><td id="due">—</td></tr><tr><th>Total confirmado</th><td id="paid">—</td></tr><tr><th>Diferença aritmética positiva</th><td id="debt">—</td></tr><tr><th>Potencial excesso</th><td id="over">—</td></tr></tbody></table><p id="notes" class="muted">A ausência de diferenças aritméticas não basta para dispensar a elaboração da conta: confirmar os pressupostos do artigo 29.º do RCP.</p><div class="actions"><button type="button" class="secondary" id="copy">Copiar relatório</button><button type="button" class="secondary" onclick="window.print()">Imprimir</button></div><pre id="report" hidden></pre></section>
 </main><script>
 const el=id=>document.getElementById(id);
 let profilesReady=false,profilesText="";
 const partyFields=["role","entity","exemption","aid","excluded","outcome","decision","evidence"];
 for(const p of ["pa","pb"])for(const field of partyFields){
-  el(p+"_"+field).addEventListener("change",()=>{ledgerEntries.length=0;ledgerNextId=1;ledgerSynced=false;ledgerRender("Livro de movimentos limpo.");profilesReady=false;profilesText="";el("partiesstatus").textContent="Dados alterados: volta a analisar os intervenientes.";});
+  el(p+"_"+field).addEventListener("change",()=>{profilesReady=false;profilesText="";report="";el("report").hidden=true;el("status").textContent="Enquadramento jurídico por reconferir";el("partiesstatus").textContent="Dados alterados: volta a analisar os intervenientes.";});
 }
 function analyseParty(p){
  const v=id=>el(p+"_"+id).value, ev=el(p+"_evidence").checked;
@@ -158,6 +181,72 @@ document.getElementById("timecheck").addEventListener("click",()=>{
 const brackets=[[2000,1],[8000,2],[16000,3],[24000,4],[30000,5],[40000,6],[60000,7],[80000,8],[100000,9],[150000,10],[200000,12],[250000,14],[275000,16]];
 el("suggest").addEventListener("click",()=>{const v=Number(el("calcvalue").value),uc=Number(el("uc").value),out=el("suggestion");if(el("calcvalue").value===""||!Number.isFinite(v)||v<0||!Number.isFinite(uc)||uc<=0){out.textContent="Indica um valor tributário e uma UC válidos.";return}const row=brackets.find(x=>v<=x[0]);if(!row){out.textContent="Cálculo bloqueado: escalão superior a 275.000 €; usa a secção do remanescente, após conferir os pressupostos neste módulo.";return}out.textContent="Escalão I-A: "+row[1]+" UC = "+new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR"}).format(row[1]*uc)+". Valor orientador por impulso; não inclui prestações adicionais nem benefícios. Não transfere automaticamente para a conta.";});
 
+
+/* Obrigações declaradas manualmente, por impulso e parte.
+   Não são automaticamente convertidas em taxa legalmente devida. */
+const obligations=[],obTypes={peticao:"Petição inicial",contestacao:"Contestação / oposição",segunda:"Segunda prestação",recurso:"Recurso",incidente:"Incidente",remanescente:"Remanescente",encargo:"Encargo / multa",outro:"Outro impulso"};
+let obNextId=1,obSynced=false;
+function obAmounts(){
+ const totals={a:0,b:0,extra:0};
+ for(const ob of obligations)totals[ob.party]+=ob.cents;
+ return totals;
+}
+function obInvalidate(){
+ obSynced=false;report="";el("report").hidden=true;el("status").textContent="Valores por reconferir";
+}
+function obOptions(){
+ const party=el("ledgerParty").value,current=el("ledgerObligation").value;
+ const valid=obligations.filter(x=>x.party===party);
+ el("ledgerObligation").innerHTML='<option value="">Sem afectação individual</option>'+valid.map(x=>'<option value="'+x.id+'">'+ledgerEscape(x.ref)+" · "+ledgerEscape(obTypes[x.type])+"</option>").join("");
+ el("ledgerObligation").value=valid.some(x=>String(x.id)===current)?current:"";
+}
+function obSummary(){
+ const totals=obAmounts(),unassigned=ledgerEntries.filter(m=>["payment","refund"].includes(m.kind)&&m.status==="confirmed"&&!m.obId).length;
+ for(const p of ["a","b","extra"])el("ob"+({a:"A",b:"B",extra:"Extra"}[p])).textContent=ledgerFmt(totals[p]);
+ el("obUnassigned").textContent=String(unassigned);
+ el("obRows").innerHTML=obligations.length?obligations.map(ob=>{
+   const applied=ledgerEntries.filter(m=>m.obId===ob.id&&m.status==="confirmed").reduce((sum,m)=>sum+(m.kind==="payment"?m.cents:m.kind==="refund"?-m.cents:0),0);
+   const diff=ob.cents-applied;
+   return "<tr><td>"+ledgerParties[ob.party]+"</td><td>"+obTypes[ob.type]+"</td><td>"+ledgerEscape(ob.ref)+"</td><td>"+ledgerEscape(ob.basis)+(ob.checked?" ✓":" (por verificar)")+"</td><td>"+ledgerFmt(ob.cents)+"</td><td>"+ledgerFmt(applied)+"</td><td>"+(diff>=0?ledgerFmt(diff):"Excesso "+ledgerFmt(-diff))+'</td><td><button type="button" data-remove-ob="'+ob.id+'">Retirar</button></td></tr>';
+ }).join(""):'<tr><td colspan="8">Ainda não existem obrigações.</td></tr>';
+ el("obSync").textContent=obSynced?"Totais devidos transferidos por substituição. Não alterar valores manualmente sem reconferir.":"Totais não transferidos ou desactualizados. Valores do quadro de conferência podem divergir.";
+ obOptions();
+}
+el("obAdd").addEventListener("click",()=>{
+ const raw=el("obAmount").value.trim(),value=Number(raw),ref=el("obRef").value.trim(),basis=el("obBasis").value.trim(),party=el("obParty").value,type=el("obType").value,checked=el("obChecked").checked;
+ if(raw===""||!Number.isFinite(value)||value<0||Math.abs(value*100-Math.round(value*100))>1e-6||!Number.isSafeInteger(Math.round(value*100))){el("obMessage").textContent="Montante inválido: utiliza valor não negativo com até duas casas decimais.";return}
+ if(!["a","b","extra"].includes(party)||!Object.hasOwn(obTypes,type)){el("obMessage").textContent="Parte ou impulso inválidos.";return}
+ if(!ref||ref.length>70||basis.length<8||basis.length>200){el("obMessage").textContent="Identifica o impulso e indica o fundamento jurídico (8 a 200 caracteres).";return}
+ if(!checked){el("obMessage").textContent="Confirma primeiro a revisão jurídica e documental do montante.";return}
+ if(obligations.some(x=>x.party===party&&x.ref.toLocaleLowerCase("pt-PT")===ref.toLocaleLowerCase("pt-PT"))){el("obMessage").textContent="Impulso duplicado para esta parte: usa uma referência distinta para cada obrigação.";return}
+ obligations.push({id:obNextId++,party,type,ref,basis,cents:Math.round(value*100),checked:true});
+ el("obRef").value="";el("obAmount").value="";el("obBasis").value="";el("obChecked").checked=false;
+ obInvalidate();obSummary();el("obMessage").textContent="Obrigação adicionada. O montante declarado ainda não foi transferido para a conferência.";
+});
+el("obRows").addEventListener("click",event=>{
+ const button=event.target.closest("button[data-remove-ob]");if(!button)return;
+ const id=Number(button.dataset.removeOb),index=obligations.findIndex(x=>x.id===id);if(index<0)return;
+ if(ledgerEntries.some(m=>m.obId===id)){el("obMessage").textContent="Retira primeiro os movimentos financeiros imputados a esta obrigação.";return}
+ obligations.splice(index,1);obInvalidate();obSummary();el("obMessage").textContent="Obrigação retirada; os totais precisam de nova conferência.";
+});
+el("obApply").addEventListener("click",()=>{
+ if(!obligations.length){el("obMessage").textContent="Regista primeiro as obrigações que pretendes conferir.";return}
+ if(obligations.some(x=>!x.checked)){el("obMessage").textContent="Existem obrigações sem verificação jurídica.";return}
+ const totals=obAmounts();
+ for(const [party,id] of [["a","a"],["b","b"],["extra","extra"]])el(id).value=(totals[party]/100).toFixed(2);
+ obSynced=true;obSummary();el("obMessage").textContent="Valores transferidos por substituição, sem adição aos totais anteriores. Confere a responsabilidade final antes de emitir a conta.";
+});
+el("obClear").addEventListener("click",()=>{
+ if(ledgerEntries.some(m=>m.obId)){el("obMessage").textContent="Há movimentos associados: retira-os antes de limpar as obrigações.";return}
+ if(obSynced){for(const id of ["a","b","extra"])el(id).value="";}
+ obligations.length=0;obNextId=1;obInvalidate();obSummary();el("obMessage").textContent="Obrigações limpas; valores previamente transferidos foram invalidados.";
+});
+for(const id of ["a","b","extra"])el(id).addEventListener("input",()=>{
+ if(!obligations.length)return;
+ obInvalidate();el("obSync").textContent="Total devido alterado manualmente: volta a transferir para garantir a correspondência com os impulsos.";
+});
+el("ledgerParty").addEventListener("change",obOptions);
+
 /* Livro de movimentos: centimos inteiros, sem armazenamento, sem rede e sem compensação entre partes. */
 const ledgerEntries=[];
 let ledgerNextId=1, ledgerSynced=false;
@@ -176,9 +265,12 @@ function ledgerBalances(){
  }
  return {balances:b,totals,pending};
 }
+function otherOrEmptyForRefund(m,skipId){return ledgerEntries.filter(x=>x.id!==skipId&&x.party===m.party&&x.ref===m.ref&&x.kind==="payment"&&x.status==="confirmed")}
 function ledgerValidate(m,skipId=null){
  if(!["a","b","extra"].includes(m.party)||!Object.hasOwn(ledgerKinds,m.kind)||!/^\d{4}-\d{2}-\d{2}$/.test(m.date))return "Indica parte, tipo e data válidos.";
  if(!m.ref||m.ref.length>70)return "Indica uma referência de movimento com, no máximo, 70 caracteres.";
+ if(m.obId!==null){const ob=obligations.find(x=>x.id===m.obId);if(!ob||ob.party!==m.party)return "O impulso associado não pertence a este interveniente.";}
+ if(m.kind==="refund"&&m.obId!==null){const same=otherOrEmptyForRefund(m,skipId);if(same.some(x=>x.obId!==m.obId))return "A restituição tem de manter o impulso atribuído aos pagamentos da mesma referência."; }
  if(!Number.isSafeInteger(m.cents)||m.cents<=0)return "Indica um montante positivo, com até duas casas decimais.";
  const other=ledgerEntries.filter(x=>x.id!==skipId);
  if(other.some(x=>x.party===m.party&&x.kind===m.kind&&x.ref===m.ref&&x.date===m.date&&x.cents===m.cents))return "Possível duplicado: já existe um movimento idêntico (parte, tipo, referência, data e montante).";
@@ -206,12 +298,14 @@ function ledgerRender(message){
   return "<tr><td>"+ledgerParties[m.party]+"</td><td>"+ledgerKinds[m.kind]+"</td><td>"+ledgerEscape(m.ref)+"</td><td>"+m.date+"</td><td>"+ledgerFmt(m.cents)+"</td><td>"+label+" "+confirm+'<button type="button" data-action="remove" data-record="'+m.id+'">Retirar</button></td></tr>';
  }).join(""):'<tr><td colspan="6">Ainda não existem movimentos.</td></tr>';
  if(message)el("ledgerMessage").textContent=message;
+ obSummary();
  el("ledgerSync").textContent=ledgerSynced?"Pagamentos líquidos confirmados transferidos para a conferência. Verifica os valores e executa «Conferir valores».":"Os pagamentos inseridos manualmente podem estar desactualizados relativamente ao livro. Volta a preencher a partir dos movimentos confirmados.";
 }
 el("ledgerAdd").addEventListener("click",()=>{
  const raw=el("ledgerAmount").value.trim(),num=Number(raw),ref=el("ledgerRef").value.trim(),kind=el("ledgerKind").value;
  if(raw===""||!Number.isFinite(num)||num<=0||Math.abs(num*100-Math.round(num*100))>1e-6){el("ledgerMessage").textContent="Indica um montante válido com duas casas decimais, no máximo.";return}
- const m={id:ledgerNextId,party:el("ledgerParty").value,kind,ref,date:el("ledgerDate").value,cents:Math.round(num*100),status:["payment","refund"].includes(kind)?el("ledgerStatus").value:"recorded"};
+ const obId=(["payment","refund"].includes(kind)&&el("ledgerObligation").value)?Number(el("ledgerObligation").value):null;
+ const m={id:ledgerNextId,party:el("ledgerParty").value,kind,ref,date:el("ledgerDate").value,cents:Math.round(num*100),obId,status:["payment","refund"].includes(kind)?el("ledgerStatus").value:"recorded"};
  const err=ledgerValidate(m);if(err){el("ledgerMessage").textContent=err;return}
  ledgerNextId++;ledgerEntries.push(m);ledgerSynced=false;
  el("ledgerRef").value="";el("ledgerAmount").value="";
@@ -263,13 +357,13 @@ let report="";
 el("calc").addEventListener("click",()=>{const fields=["a","ap","b","bp","extra","extrap"],nums=fields.map(cents);
 if(nums.some(v=>v===null)){el("status").textContent="Dados incompletos ou inválidos.";return}
 const [a,ap,b,bp,extra,extrap]=nums;const due=a+b+extra,paid=ap+bp+extrap;const debt=Math.max(0,a-ap)+Math.max(0,b-bp)+Math.max(0,extra-extrap);const over=Math.max(0,ap-a)+Math.max(0,bp-b)+Math.max(0,extrap-extra);
-const checks=["law","table","exempt","remainder","charges"];const validated=checks.every(id=>el(id).checked)&&profilesReady&&(!ledgerEntries.length||(ledgerSynced&&ledgerBalances().pending===0));
+const checks=["law","table","exempt","remainder","charges"];const validated=checks.every(id=>el(id).checked)&&profilesReady&&(!obligations.length||obSynced)&&(!ledgerEntries.length||(ledgerSynced&&ledgerBalances().pending===0));
 el("due").textContent=euro(due);el("paid").textContent=euro(paid);el("debt").textContent=euro(debt);el("over").textContent=euro(over);
 el("status").textContent=!validated?"Conferência jurídica incompleta":debt?"Diferenças a analisar":over?"Potencial excesso a verificar":"Sem diferenças nos valores introduzidos";
 el("notes").textContent=(!validated?"Existem pressupostos jurídicos por confirmar. ":"")+(debt?"Há diferenças positivas por parte/rubrica. ":"")+(over?"O excesso não implica restituição automática. ":"")+(debt===0?"Conferir, apenas após validação completa dos autos, a eventual dispensa de conta prevista no artigo 29.º, n.º 1, alínea a), do RCP. ":"")+"Não inclui custas de parte nem valida comprovativos automaticamente.";
-report=["CONFERÊNCIA EXPERIMENTAL DE CUSTAS · A01", "Referência: "+(el("process").value||"não indicada"),"Entrada: "+(el("date").value||"não indicada"),"Valor da causa: "+(el("value").value||"não indicado"),"Objecto: "+(el("subject").value||"não indicado"),"Parte A: devido "+euro(a)+"; pago "+euro(ap),"Parte B: devido "+euro(b)+"; pago "+euro(bp),"Outras quantias: devido "+euro(extra)+"; pago "+euro(extrap),"Total exigível: "+euro(due),"Total confirmado: "+euro(paid),"Diferença aritmética positiva (não é dívida confirmada): "+euro(debt),"Potencial excesso: "+euro(over),"Validação jurídica: "+(validated?"assinalada pelo utilizador":"incompleta"),"Livro de movimentos: "+(ledgerEntries.length?ledgerEntries.length+" movimento(s), "+ledgerBalances().pending+" pagamento(s)/restituição(ões) pendente(s), "+(ledgerSynced?"saldos transferidos":"saldos não transferidos"):"sem movimentos; pagamentos preenchidos manualmente"),profilesText||"Fichas dos intervenientes: não analisadas",...ledgerEntries.map(m=>"Movimento "+m.id+": "+ledgerParties[m.party]+"; "+ledgerKinds[m.kind]+"; "+m.ref+"; "+m.date+"; "+ledgerFmt(m.cents)+"; "+(m.status==="confirmed"?"confirmado":m.status==="pending"?"pendente":"registado")),"Resultado não oficial. Verificar legislação e documentos."].join("\n");el("report").textContent=report;el("report").hidden=false;});
+report=["CONFERÊNCIA EXPERIMENTAL DE CUSTAS · A01", "Referência: "+(el("process").value||"não indicada"),"Entrada: "+(el("date").value||"não indicada"),"Valor da causa: "+(el("value").value||"não indicado"),"Objecto: "+(el("subject").value||"não indicado"),"Parte A: devido "+euro(a)+"; pago "+euro(ap),"Parte B: devido "+euro(b)+"; pago "+euro(bp),"Outras quantias: devido "+euro(extra)+"; pago "+euro(extrap),"Total exigível: "+euro(due),"Total confirmado: "+euro(paid),"Diferença aritmética positiva (não é dívida confirmada): "+euro(debt),"Potencial excesso: "+euro(over),"Validação jurídica: "+(validated?"assinalada pelo utilizador":"incompleta"),"Obrigações por impulso: "+(obligations.length?obligations.length+"; "+(obSynced?"totais transferidos":"totais por transferir"):"sem obrigações; totais introduzidos manualmente"),...obligations.map(ob=>"Obrigação "+ob.id+": "+ledgerParties[ob.party]+"; "+obTypes[ob.type]+"; "+ob.ref+"; "+ledgerFmt(ob.cents)+"; "+ob.basis),"Livro de movimentos: "+(ledgerEntries.length?ledgerEntries.length+" movimento(s), "+ledgerBalances().pending+" pagamento(s)/restituição(ões) pendente(s), "+(ledgerSynced?"saldos transferidos":"saldos não transferidos"):"sem movimentos; pagamentos preenchidos manualmente"),profilesText||"Fichas dos intervenientes: não analisadas",...ledgerEntries.map(m=>"Movimento "+m.id+": "+ledgerParties[m.party]+"; "+ledgerKinds[m.kind]+"; "+m.ref+"; "+m.date+"; "+ledgerFmt(m.cents)+"; "+(m.status==="confirmed"?"confirmado":m.status==="pending"?"pendente":"registado")),"Resultado não oficial. Verificar legislação e documentos."].join("\n");el("report").textContent=report;el("report").hidden=false;});
 el("copy").addEventListener("click",async()=>{if(!report)return;try{await navigator.clipboard.writeText(report)}catch(e){const ta=document.createElement("textarea");ta.value=report;document.body.append(ta);ta.select();document.execCommand("copy");ta.remove()}});
-el("reset").addEventListener("click",()=>{for(const id of ids){const x=el(id);if(x.type==="checkbox")x.checked=false;else if(x.tagName==="SELECT")x.selectedIndex=0;else x.value=(id==="extra"||id==="extrap")?"0":""}ledgerEntries.length=0;ledgerNextId=1;ledgerSynced=false;ledgerRender("Livro de movimentos limpo.");for(const id of ["ledgerRef","ledgerDate","ledgerAmount"])el(id).value="";for(const id of ["ledgerParty","ledgerKind","ledgerStatus"])el(id).selectedIndex=0;profilesReady=false;profilesText="";el("partiesstatus").textContent="A análise exige revisão documental e legal individualizada.";for(const p of ["pa","pb"]){for(const field of partyFields){const x=el(p+"_"+field);if(x.type==="checkbox")x.checked=false;else if(x.tagName==="SELECT")x.selectedIndex=0;else x.value=""}el(p+"_result").textContent="Aguardam-se os dados do interveniente.";}el("status").textContent="Aguardam-se dados.";for(const id of ["due","paid","debt","over"])el(id).textContent="—";el("report").hidden=true;report=""});
+el("reset").addEventListener("click",()=>{obligations.length=0;obNextId=1;obSynced=false;for(const id of ["obRef","obAmount","obBasis"])el(id).value="";el("obChecked").checked=false;for(const id of ["obParty","obType"])el(id).selectedIndex=0;for(const id of ids){const x=el(id);if(x.type==="checkbox")x.checked=false;else if(x.tagName==="SELECT")x.selectedIndex=0;else x.value=(id==="extra"||id==="extrap")?"0":""}ledgerEntries.length=0;ledgerNextId=1;ledgerSynced=false;ledgerRender("Livro de movimentos limpo.");obSummary();el("obMessage").textContent="Sem obrigações.";for(const id of ["ledgerRef","ledgerDate","ledgerAmount"])el(id).value="";for(const id of ["ledgerParty","ledgerKind","ledgerStatus"])el(id).selectedIndex=0;profilesReady=false;profilesText="";el("partiesstatus").textContent="A análise exige revisão documental e legal individualizada.";for(const p of ["pa","pb"]){for(const field of partyFields){const x=el(p+"_"+field);if(x.type==="checkbox")x.checked=false;else if(x.tagName==="SELECT")x.selectedIndex=0;else x.value=""}el(p+"_result").textContent="Aguardam-se os dados do interveniente.";}el("status").textContent="Aguardam-se dados.";for(const id of ["due","paid","debt","over"])el(id).textContent="—";el("report").hidden=true;report=""});
 el("theme").addEventListener("click",()=>{const v=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=v;try{localStorage.setItem("legaltech_theme",v)}catch(e){}});
 </script><script src="assets/theme.js"></script>
 </body></html>
