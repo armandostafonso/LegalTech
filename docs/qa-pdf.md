@@ -20,8 +20,11 @@
 
 ## Plano de testes funcionais pendentes (ficheiros exclusivamente fictícios)
 
-- [x] Ensaio automatizado de PDF fictício com termo identificativo inventado, exportação em imagem e confirmação de uma página sem texto extraível. Execução GitHub Actions aprovada em 16-11-2026. A cobertura de múltiplas páginas, NIF e variações permanece pendente.
-- [ ] PDF de duas páginas com uma página digitalizada sem camada de texto; deve ser bloqueado.
+- [x] Ensaio automatizado com duas páginas fictícias, termo inventado em ambas, exportação em imagem e confirmação de ausência de texto extraível.
+- [x] Ensaio com PDF misto fictício (uma página textual e uma página sem camada de texto), com bloqueio de exportação.
+- [x] Verificação de nome genérico do PDF exportado e limpeza do conteúdo de sessão.
+- [ ] Testes com NIF fictícios em várias posições, fontes não usuais, anotações e formulários.
+- [x] PDF de duas páginas com uma página sem camada de texto; deve ser bloqueado (ensaio sintético).
 - [ ] PDF com dados sensíveis em cabeçalho, rodapé, tabelas e orientação horizontal.
 - [ ] PDF com texto rotacionado, fontes incorporadas e letras sobrepostas.
 - [ ] PDF com anotações, comentários, anexos e marcadores.
@@ -37,7 +40,7 @@
 - Ensaio real do PDF fictício: `node scripts/pdf-integration.mjs` (necessita de Playwright/Chromium e bibliotecas remotas).
 - Automação GitHub: [Auditoria de PDF fictício](../.github/workflows/auditoria-pdf.yml).
 
-O ensaio atual comprova apenas que **um documento sintético de uma página**, após rasterização, não manteve camada de texto extraível. Não constitui validação de anonimização de qualquer documento real.
+Os ensaios atuais comprovam que **um documento sintético de duas páginas**, após rasterização, não manteve camada de texto extraível e que um documento misto sem texto foi bloqueado. Não constitui validação de anonimização de qualquer documento real.
 
 ## Critérios para utilização institucional
 
