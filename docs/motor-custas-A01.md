@@ -1,6 +1,6 @@
 # Motor de Custas A01 — Caderno jurídico e técnico
 
-**Versão da interface:** 1.5 (experimental, novembro de 2026)  
+**Versão da interface:** 1.6 (experimental, novembro de 2026)  
 **Espécie:** acção administrativa (CPTA)  
 **Página:** `custas.html`
 
@@ -111,6 +111,37 @@ Um impulso com dispensa prévia impede que a conferência seja apresentada como 
 
 **Atenção:** as verificações são restritivas e não abrangem todos os benefícios legais, hipóteses de isenção, incidentes ou regimes históricos; não substituem a conferência dos autos e a decisão judicial.
 
+## Responsabilidade final e repartição de encargos (v1.6)
+
+A ferramenta dispõe de um **mapa de encargos concretos**, distinto da taxa de justiça devida pelo impulso processual. A base jurídica é a seguinte:
+
+- **CPC, artigo 527.º:** responsabilidade por custas segundo o vencimento, na proporção do decaimento, ou segundo o proveito quando não há vencimento.
+- **CPC, artigo 528.º:** situações de litisconsórcio e coligação, que exigem tratamento específico ainda **não automatizado**.
+- **CPC, artigo 529.º:** distingue taxa de justiça, encargos e custas de parte.
+- **CPC, artigo 532.º:** responsabilização pelos encargos, incluindo o interessado na diligência, proveito, interesses comuns e diligências dilatórias.
+- **CPC, artigo 533.º:** custas de parte, que **não são inseridas** na conta da secretaria por este módulo.
+- **RCP, artigos 29.º e 30.º:** ocasião e elaboração da conta, de harmonia com a última decisão e por sujeito responsável.
+
+### Operação técnica
+
+1. O utilizador regista um encargo específico e a percentagem atribuída à parte A conforme decisão/fundamento. A parte B recebe automaticamente a percentagem complementar, para um total de 100%.
+2. Os valores são calculados em **cêntimos inteiros**. Qualquer cêntimo residual é atribuído à parte B, evitando perdas ou somas superiores ao total.
+3. A decisão sobre custas, a data, a responsabilidade e a ausência de duplicação carecem de **confirmação expressa**.
+4. O mapa permite criar, apenas por acção explícita, obrigações individuais de encargos para cada parte, identificadas por referência e com origem no mapa.
+5. Depois de criadas, essas obrigações entram no livro de obrigações, mas **não constituem pagamentos**. A transferência dos totais devidos à conferência continua a ser separada e substitutiva.
+6. Uma obrigação gerada pelo mapa não pode ser retirada isoladamente. O mapa apenas permite desfazer lançamentos quando não existam pagamentos ou restituições associados.
+7. A opção de limpar todas as obrigações é bloqueada enquanto existirem encargos lançados a partir do mapa. Os registos são temporários, sem persistência.
+
+### Limites jurídicos expressos
+
+**O mapa não aplica automaticamente uma percentagem de decaimento à taxa de justiça já paga por cada parte.** Não interpreta o dispositivo da sentença, não calcula custas de parte, não determina a incidência de encargos não documentados e não resolve litisconsórcio, coligação, solidariedade ou pluralidade de intervenientes além das partes A e B.
+
+Uma percentagem introduzida pelo utilizador é um dado **declarado e conferido**, não uma conclusão jurídica do motor. O mapa serve para um conjunto de encargos concretamente identificados, não para calcular a totalidade das custas finais do processo.
+
+### Testes
+
+A versão 1.6 inclui casos para montantes repartidos com arredondamento de cêntimos, duplicação de lançamentos, responsabilidades de 100% para uma das partes, conservação dos pagamentos por parte, bloqueio de remoção de obrigações dependentes, desfazer operações e limpeza segura.
+
 ## Limitações que bloqueiam o uso como conta oficial
 
 - A taxa-base simulada não contempla isenções, reduções, prestações, regimes especiais, custas de recursos e incidentes. As obrigações de recurso ou incidente são valores **manuais**, não calculados automaticamente.
@@ -120,13 +151,13 @@ Um impulso com dispensa prévia impede que a conferência seja apresentada como 
 - Existe um livro experimental de movimentos, mas não existe **conciliação automática documental** com CITIUS/SITAF, sistemas de pagamentos ou extratos oficiais. O estado «confirmado» é declarado pelo utilizador.
 - Nem toda a quantia matematicamente positiva é legalmente exigível à parte que a introduziu.
 - A aplicação usa memória temporária do navegador, sem envio ou gravação das respostas pelo próprio módulo. O livro perde-se ao actualizar ou fechar a página. Evitar dados identificativos e informação confidencial.
-- A ferramenta apresenta, por enquanto, apenas duas fichas individualizadas (A/B), e uma rubrica agregada de outras quantias; não resolve a pluralidade de intervenientes.
+- A ferramenta apresenta, por enquanto, apenas duas fichas individualizadas (A/B), e uma rubrica agregada de outras quantias; não resolve a pluralidade de intervenientes, a solidariedade ou a responsabilidade específica do litisconsórcio.
 - Um pagamento não imputado a obrigação específica integra o saldo financeiro por parte, mas não o saldo por impulso. A conferência é assinalada como incompleta se coexistirem obrigações e pagamentos confirmados sem imputação.
 - A indicação «verificado» é uma declaração manual, não uma certificação do programa ou de uma autoridade judicial.
 
 ## Testes
 
-- Script: `node scripts/test-custas.mjs` (77 casos técnicos na versão 1.5).
+- Script: `node scripts/test-custas.mjs` (89 casos técnicos na versão 1.6).
 - Verificação global da página: `node scripts/validate-site.mjs`.
 - Integração contínua: `.github/workflows/custas-tests.yml`.
 
