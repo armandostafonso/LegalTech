@@ -4,7 +4,7 @@
  * Não certifica equivalência dos motores de cálculo ou resultados jurídicos. */
 import fs from "node:fs";
 import { createHash } from "node:crypto";
-const files=["rules/calendario.json","rules/municipais.json","tests/shared-cases.json"];
+const files=["rules/calendario.json","rules/municipais.json","tests/shared-cases.json","tests/parity-extended.json"];
 const remoteRepo="armandostafonso/Cita-Check-Desktop";
 const token=process.env.DESKTOP_REPO_TOKEN?.trim();
 const opts=new Set(process.argv.slice(2));
@@ -17,7 +17,7 @@ function canonical(value){
 }
 const gitBlobSha=buf=>createHash("sha1").update("blob "+buf.length+"\0").update(buf).digest("hex");
 const manifest=JSON.parse(fs.readFileSync("rules/parity-manifest.json","utf8"));
-if(manifest.version!==1||Object.keys(manifest.hashes).length!==files.length)throw Error("Manifesto de paridade inválido");
+if(manifest.version!==2||Object.keys(manifest.hashes).length!==files.length)throw Error("Manifesto de paridade inválido");
 const local={};
 for(const path of files){
  const bytes=fs.readFileSync(path);
@@ -28,7 +28,7 @@ for(const path of files){
  local[path]=obj;
 }
 if(failures.length){console.error(failures.join("\n"));process.exit(1)}
-console.log("Três contratos locais iguais às versões fixadas no manifesto de paridade.");
+console.log("Quatro contratos locais iguais às versões fixadas no manifesto de paridade.");
 async function writeSummary(content){
  if(process.env.GITHUB_STEP_SUMMARY)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,content+"\n");
 }
@@ -39,7 +39,7 @@ if(offline){
 }
 if(!token){
  console.log("::warning::Cita-Check Desktop é privado; sem DESKTOP_REPO_TOKEN só é possível verificar contratos locais. A paridade remota NÃO foi verificada.");
- await writeSummary("### Cita-Check: comparação remota não efetuada\nO repositório Desktop é privado. Os três contratos locais passaram; para comparar os dois repositórios é necessário um token de leitura configurado como DESKTOP_REPO_TOKEN. Não se afirma paridade remota.");
+ await writeSummary("### Cita-Check: comparação remota não efetuada\nO repositório Desktop é privado. Os quatro contratos locais passaram; para comparar os dois repositórios é necessário um token de leitura configurado como DESKTOP_REPO_TOKEN. Não se afirma paridade remota.");
  process.exit(0);
 }
 for(const path of files){
@@ -66,5 +66,5 @@ if(failures.length){
  await writeSummary("### Cita-Check: comparação remota falhou\n"+failures.map(x=>"- "+x).join("\n"));
  process.exit(1);
 }
-console.log("Três contratos Web/Desktop iguais, comparação remota autenticada concluída.");
-await writeSummary("### Cita-Check: três contratos remotos confirmados\nEsta verificação não prova igualdade dos algoritmos de contagem.");
+console.log("Quatro contratos Web/Desktop iguais, comparação remota autenticada concluída.");
+await writeSummary("### Cita-Check: quatro contratos remotos confirmados\nEsta verificação não prova igualdade dos algoritmos de contagem.");
