@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 
 const browser=await chromium.launch({headless:true});
-const pages=["index.html","minutas.html","roteiros.html","tramitação-taf.html","regimes.html","agenda.html","expediente.html"];
+const pages=["index.html","minutas.html","roteiros.html","tramitação-taf.html","regimes.html","agenda.html","expediente.html","fontes.html"];
 const problems=[];
 for(const filename of pages){
  for(const width of [390,820]){
