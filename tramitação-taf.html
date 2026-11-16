@@ -23,7 +23,14 @@
 const $=id=>document.getElementById(id);
 const model=window.LegalTechRoteirosTAF,fmodel=window.LegalTechFichasTAF;let workflow=null,stage=null;const state=new Map();
 function node(tag,text){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;return el}
-function fillWorkflows(){for(const item of model.workflows){const o=node("option",item.name);o.value=item.id;$("workflow").append(o)}$("workflow").addEventListener("change",chooseWorkflow);$("phase").addEventListener("change",render);chooseWorkflow()}
+function fillWorkflows(){for(const item of model.workflows){const o=node("option",item.name);o.value=item.id;$("workflow").append(o)}$("workflow").addEventListener("change",chooseWorkflow);$("phase").addEventListener("change",render);
+const params=new URLSearchParams(location.search);
+const requested=params.get("especie");
+if(model.workflows.some(x=>x.id===requested))$("workflow").value=requested;
+chooseWorkflow();
+const phase=params.get("fase");
+if(workflow?.stages.some(x=>x.id===phase)){$("phase").value=phase;render()}
+}
 function chooseWorkflow(){workflow=model.workflows.find(x=>x.id===$("workflow").value);if(!workflow)return;$("phase").replaceChildren();for(const item of workflow.stages){const opt=node("option",item.name);opt.value=item.id;$("phase").append(opt)}
 $("urgency").textContent="Natureza: "+workflow.urgency+" · Jurisdição: "+workflow.jurisdiction;
 $("warning").textContent=workflow.notes;
@@ -80,7 +87,15 @@ function renderGuide(){
    ["Prazos CPA/CPPT · contagem procedimental","regimes.html"],
    ["Agenda local · datas previamente confirmadas","agenda.html"],
    ["Conferência de expediente · verificação formal", "expediente.html"+(stage.id==="citacao"||stage.id==="oposicao"?"?tipo=citacao":stage.id==="entrada"?"?tipo=conclusao":"")],
-   ["Fontes normativas · rever artigos vigentes","fontes.html"]
+   ["Fontes normativas · rever artigos vigentes","fontes.html"],
+   ["Mapa visual · fases do processo","mapa-taf.html"],
+   ["Assistant · despacho para tarefas","assistant.html"],
+   ["Notify · notificações e citação","notify.html"],
+   ["Hearing · atas e diligências","hearing.html"],
+   ["Appeals · recursos","appeals.html"],
+   ["Remessas · conferência documental","remessas.html"],
+   ["Termos · controlo do decurso","termos.html"],
+   ["Lex Audit · revisão de diplomas","lex-monitor.html"]
  ]){const a=node("a",title);a.href=href;target.append(a)}
  target.append(node("p","As ligações auxiliares não transportam datas, nomes, números de processos ou documentos. Confirme sempre a norma e os despachos."));
 }
