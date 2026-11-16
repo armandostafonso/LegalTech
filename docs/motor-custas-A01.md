@@ -154,6 +154,9 @@ A versão 1.7 acrescenta uma prévia de conferência **expressamente não oficia
 
 ### Bloqueios e advertências
 
+Os montantes são tratados em cêntimos inteiros e a conferência rejeita valores com mais de duas casas decimais.
+
+
 O programa **assinala a proposta como incompleta** caso faltem obrigações, não estejam sincronizados os totais, existam benefícios sem revalidação, pagamento prévio dispensado, movimentos financeiros pendentes ou não imputados, encargos ainda por lançar, fichas de partes não conferidas, datas em falta, ou divergências entre o quadro e o livro de movimentos.
 
 A prévia pode ser consultada mesmo quando incompleta, **sempre acompanhada da lista de avisos**. Não se altera o resultado para "conta oficial" quando as advertências desaparecem: significa apenas que os controlos internos desta versão não detectaram bloqueios.
@@ -182,7 +185,7 @@ A prévia pode ser consultada mesmo quando incompleta, **sempre acompanhada da l
 
 ## Testes
 
-- Script: `node scripts/test-custas.mjs` (99 casos técnicos na versão 1.7).
+- Script: `node scripts/test-custas.mjs` (101 casos técnicos na versão 1.7).
 - Verificação global da página: `node scripts/validate-site.mjs`.
 - Integração contínua: `.github/workflows/custas-tests.yml`.
 
