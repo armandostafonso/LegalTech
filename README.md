@@ -36,6 +36,10 @@ O motor de cálculo do Cita-Check atual continua integrado em `citacheck.html` e
 
 A aplicação de Windows é um projeto independente, em outro repositório.
 
+## Testes de custas A01
+
+Executar `node scripts/test-custas.mjs` para verificar os escalões, o remanescente, as condições do artigo 14.º-A, as regras transitórias e o apuramento separado por parte. Os testes são técnicos e não certificam a interpretação jurídica. O módulo continua experimental e não emite conta oficial.
+
 ## Validação
 
 A workflow `Verificar LegalTech` executa `node scripts/validate-site.mjs` para validar sintaxe dos scripts embebidos, identificadores HTML duplicados e referências a recursos locais. Este teste técnico **não certifica a correção jurídica dos resultados nem a segurança da anonimização**.
