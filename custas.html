@@ -10,7 +10,7 @@
 </style><script>try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||"light"}catch(e){}</script><link rel="stylesheet" href="assets/brand.css">
 </head>
 <body><main><header><a class="brand" href="index.html">LegalTech</a><button class="secondary" id="theme" type="button">◐ Tema</button></header>
-<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.1</p>
+<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.2</p>
 <div class="notice"><strong>Âmbito:</strong> conferência aritmética de valores introduzidos e verificação de pressupostos. Não calcula autonomamente taxas legais, não lê PDF e não emite conta oficial. Não introduzas dados pessoais ou processuais confidenciais. Os dados não são enviados nem guardados por esta página.</div>
 <section class="panel"><h2>1. Identificação e regime</h2><div class="grid">
 <div class="field"><label for="process">Referência fictícia / interna</label><input id="process" placeholder="Ex.: TESTE-A01"></div>
@@ -52,6 +52,21 @@
 <p id="partiesstatus" class="muted" aria-live="polite">A análise exige revisão documental e legal individualizada.</p>
 <p class="muted"><small>Fundamentos: <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975" target="_blank" rel="noopener">RCP, arts. 4.º e 15.º</a>; <a href="https://diariodarepublica.pt/dr/detalhe/decreto-lei/164-2026-1154555254" target="_blank" rel="noopener">DL n.º 164/2026, arts. 8.º e 9.º</a>; Lei n.º 34/2004. As isenções podem ter efeitos específicos sobre encargos. A aplicação das novas regras depende também da data do acto.</small></p></section>
 
+<section class="panel" id="automatico-a01"><h2>Calculadora normativa de taxa-base · A01</h2>
+<p class="muted">Apura a taxa-base de um impulso segundo os 13 escalões da Tabela I do RCP, na versão aplicável a acções iniciadas a partir de 29 de março de 2012. O resultado <strong>não inclui</strong> remanescente, segunda prestação, reduções, isenções, apoio judiciário ou despesas. Para valores superiores a 275.000 €, calcula apenas a parcela até esse limite.</p>
+<div class="grid">
+<div class="field"><label for="autoParty">Parte responsável</label><select id="autoParty"><option value="a">Parte A</option><option value="b">Parte B</option></select></div>
+<div class="field"><label for="autoType">Impulso</label><select id="autoType"><option value="peticao">Petição inicial (I-A)</option><option value="contestacao">Contestação (I-A)</option><option value="recurso">Recurso (I-B)</option></select></div>
+<div class="field"><label for="autoDate">Data de propositura da acção</label><input id="autoDate" type="date"></div>
+<div class="field"><label for="autoValue">Valor tributário (€)</label><input id="autoValue" type="number" min="0" step="0.01" placeholder="Ex.: 400000"></div>
+<div class="field"><label for="autoUC">UC do processo (€)</label><input id="autoUC" type="number" min="0.01" step="0.01" placeholder="Confirmar UC legal"></div>
+<div class="field"><label for="autoRef">Identificador único do impulso</label><input id="autoRef" maxlength="70" placeholder="Ex.: PI-001"></div>
+</div>
+<label class="checkrow"><input id="autoVerified" type="checkbox"> Confirmei a versão do RCP, a UC, a existência do impulso e que <strong>não há isenção, redução ou regime especial</strong> que altere esta taxa-base.</label>
+<div class="actions"><button type="button" class="secondary" id="autoPreview">Calcular taxa-base</button><button type="button" id="autoInsert">Criar obrigação calculada</button></div>
+<p id="autoResult" class="notice" role="status" aria-live="polite">Indica os dados do impulso. A taxa calculada é apenas uma componente do total de custas.</p>
+<p class="muted"><small>Base legal: RCP, artigos <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975-1127127275" target="_blank" rel="noopener">6.º</a>, 11.º e <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975-1123572475" target="_blank" rel="noopener">Tabela I</a> (Lei n.º 7/2012). A data do impulso e a redacção da lei devem ser conferidas; o sistema não aplica automaticamente benefícios.</small></p>
+</section>
 <section class="panel" id="obrigacoes">
 <h2>6. Obrigações por impulso processual</h2>
 <p class="muted">Regista os montantes <strong>já determinados juridicamente</strong> para cada impulso. Não existe cálculo legal automático nesta secção. A transferência substitui os totais devidos, sem os somar aos valores anteriores.</p>
@@ -247,6 +262,56 @@ for(const id of ["a","b","extra"])el(id).addEventListener("input",()=>{
  obInvalidate();el("obSync").textContent="Total devido alterado manualmente: volta a transferir para garantir a correspondência com os impulsos.";
 });
 el("ledgerParty").addEventListener("change",obOptions);
+
+
+/* Tabela I em centésimos de UC, publicada com a Lei n.º 7/2012.
+   Na coluna B aplica-se metade da coluna A; coluna C requer despacho judicial. */
+const autoRows=[[200000,100],[800000,200],[1600000,300],[2400000,400],[3000000,500],[4000000,600],[6000000,700],[8000000,800],[10000000,900],[15000000,1000],[20000000,1200],[25000000,1400],[27500000,1600]];
+let autoPreviewState=null;
+function autoData(){
+ const valRaw=el("autoValue").value,ucRaw=el("autoUC").value,entry=el("autoDate").value;
+ const v=Number(valRaw),uc=Number(ucRaw),party=el("autoParty").value,type=el("autoType").value,ref=el("autoRef").value.trim();
+ if(!valRaw||!ucRaw||!Number.isFinite(v)||v<0||!Number.isFinite(uc)||uc<=0||!Number.isSafeInteger(Math.round(v*100))||!Number.isSafeInteger(Math.round(uc*100)))return {error:"Indica valor tributário e UC válidos, em euros, com duas casas decimais."};
+ if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(entry))return {error:"Indica a data de propositura da acção."};
+ if(entry<"2012-03-29")return {error:"Cálculo bloqueado: acção anterior a 29-03-2012. Exige regime histórico próprio."};
+ if(!["a","b"].includes(party)||!["peticao","contestacao","recurso"].includes(type))return {error:"Parte ou impulso não suportados."};
+ const cents=Math.round(v*100),ucCents=Math.round(uc*100),capped=Math.min(cents,27500000);
+ const row=autoRows.find(x=>capped<=x[0]);
+ if(!row)return {error:"Escalão não identificado."};
+ const col=type==="recurso"?"B":"A",unitsHundredths=col==="B"?row[1]/2:row[1];
+ const resultCents=Math.round(unitsHundredths*ucCents/100);
+ const warn=cents>27500000?" Valor superior a 275.000 €: remanescente não incluído, apurar separadamente.":"";
+ const cutoff=entry<"2026-12-01"?" Aplica-se ao artigo 6.º o regime anterior ao DL 164/2026, mesmo em actos posteriores.":" Confirmar a redacção de 2026 do artigo 6.º para os actos relevantes.";
+ return {party,type,ref,entry,col,euros:cents,ucCents,resultCents,unitsHundredths,warning:warn+cutoff};
+}
+function autoExplain(d){
+ return "Tabela I-"+d.col+"; "+(d.unitsHundredths/100).toLocaleString("pt-PT")+" UC × "+(d.ucCents/100).toLocaleString("pt-PT")+" € = "+ledgerFmt(d.resultCents)+". "+d.warning+" A taxa-base não corresponde necessariamente ao montante actualmente exigível.";
+}
+function autoInvalidate(){
+ autoPreviewState=null;el("autoResult").textContent="Dados alterados. Volta a calcular para validar a taxa-base.";
+}
+for(const id of ["autoParty","autoType","autoDate","autoValue","autoUC","autoRef"]) {
+ el(id).addEventListener("input",autoInvalidate);
+ el(id).addEventListener("change",autoInvalidate);
+}
+el("autoVerified").addEventListener("change",autoInvalidate);
+el("autoPreview").addEventListener("click",()=>{
+ const d=autoData();if(d.error){autoPreviewState=null;el("autoResult").textContent=d.error;return}
+ autoPreviewState=d;
+ el("autoResult").textContent=autoExplain(d)+(el("autoVerified").checked?" Premissas legais confirmadas pelo utilizador.":" A criação da obrigação está bloqueada até à confirmação das premissas.");
+});
+el("autoInsert").addEventListener("click",()=>{
+ const d=autoData();
+ if(d.error){el("autoResult").textContent=d.error;return}
+ if(!el("autoVerified").checked){el("autoResult").textContent="Obrigação não criada: confirma previamente todos os pressupostos jurídicos no campo de revisão.";return}
+ if(!autoPreviewState||JSON.stringify(d)!==JSON.stringify(autoPreviewState)){el("autoResult").textContent="Calcula novamente antes de criar a obrigação.";return}
+ if(!d.ref||d.ref.length>70){el("autoResult").textContent="Identifica o impulso com uma referência de até 70 caracteres.";return}
+ if(obligations.some(x=>x.party===d.party&&x.ref.toLocaleLowerCase("pt-PT")===d.ref.toLocaleLowerCase("pt-PT"))){el("autoResult").textContent="Obrigação já registada para esta parte e referência. Não foi adicionada novamente.";return}
+ const basis="RCP art. 6.º/"+(d.col==="A"?"1":"2")+"; Tabela I-"+d.col+"; "+d.unitsHundredths/100+" UC; base limitada a 275.000 €; versão legal a conferir";
+ obligations.push({id:obNextId++,party:d.party,type:d.type,ref:d.ref,basis,cents:d.resultCents,checked:true,origin:"tabela-i-base"});
+ obInvalidate();obSummary();autoPreviewState=null;el("autoVerified").checked=false;
+ el("autoResult").textContent="Obrigação de taxa-base criada por "+ledgerFmt(d.resultCents)+". "+d.warning+" Total devido só passa à conferência depois de premir «Transferir os totais devidos».";
+});
 
 /* Livro de movimentos: centimos inteiros, sem armazenamento, sem rede e sem compensação entre partes. */
 const ledgerEntries=[];
