@@ -29,7 +29,7 @@ Suite integrada de ferramentas jurídicas práticas em português de Portugal. P
 | Mapa TAF | `mapa-taf.html` | Navegação visual pelas fases dos nove roteiros processuais |
 | Tramitação TAF | `tramitação-taf.html` | Nove roteiros: intimações, ações, impugnações, cautelares, recursos, pré-contratual e reclamações OEF |
 | Prazos CPA e CPPT | `regimes.html` | Contagem auxiliar em dias com regras dos artigos 87.º CPA e 20.º/1 CPPT |
-| Conferência de custas (A01) | `custas.html` | Taxas, encargos, mapas multissujeito, benefícios e reconciliação de pagamentos por impulso |
+| Conferência de custas (A01) | `custas.html` | Taxas, encargos, contas individualizadas multissujeito, benefícios e reconciliação financeira |
 | Privacidade | `privacidade.html` | Informação sobre limites, dependências e tratamento local |
 | Agenda local | `agenda.html` | Datas previamente conferidas, exportação ICS e CSV, sem armazenamento persistente |
 
@@ -37,7 +37,7 @@ A Tramitação TAF reúne [33 fichas por fase](docs/fichas-taf.md), com cautelas
 
 **Atenção:** não são instrumentos oficiais e não substituem despacho, verificação dos autos ou enquadramento legal. Não se deve utilizar um cálculo sem confirmar as normas concretamente aplicáveis.
 
-O módulo A01 está na versão experimental 1.9: calcula taxas-base da Tabela I-A/I-B com pressupostos verificados, prestações I-A e remanescente condicionado. Regista obrigações, pagamentos e fichas das partes; distingue isenção, apoio judiciário, redução a 90% e dispensa de pagamento prévio. Acrescenta um mapa de repartição de encargos individuais por decisão judicial, sem redistribuir automaticamente as taxas de justiça nem calcular custas de parte. A reconciliação por impulso distingue pagamentos confirmados, restituições, movimentos pendentes, excessos potenciais e pagamentos sem imputação. O mapa multissujeito acrescenta repartição fundamentada de encargos entre até 12 intervenientes, com quotas expressas e divisão igual condicionada pelo artigo 528.º, n.º 1, do CPC. Mantém-se autónomo face à conta A/B e bloqueia automatismos perante solidariedade e transacção. A prévia de conferência por sujeito permite copiar a discriminação e exportar um resumo CSV com bloqueios expressos, não sendo uma conta oficial. Não recebe PDFs nem emite conta oficial. Exige verificação da versão do RCP, do regime de cada parte, das reduções, remanescente e pagamentos. Não introduzir dados confidenciais. Especificação: [Caderno jurídico e técnico A01](docs/motor-custas-A01.md).
+O módulo A01 está na versão experimental 2.0: calcula taxas-base da Tabela I-A/I-B com pressupostos verificados, prestações I-A e remanescente condicionado. Regista obrigações, pagamentos e fichas das partes; distingue isenção, apoio judiciário, redução a 90% e dispensa de pagamento prévio. Acrescenta um mapa de repartição de encargos individuais por decisão judicial, sem redistribuir automaticamente as taxas de justiça nem calcular custas de parte. A reconciliação por impulso distingue pagamentos confirmados, restituições, movimentos pendentes, excessos potenciais e pagamentos sem imputação. O mapa multissujeito acrescenta repartição fundamentada de encargos entre até 12 intervenientes, com quotas expressas e divisão igual condicionada pelo artigo 528.º, n.º 1, do CPC. A versão 2.0 permite registar obrigações, guias, pagamentos e restituições por interveniente, importar encargos repartidos e reconciliar diferenças e pagamentos sem imputação. O mapa mantém-se autónomo face à conta A/B e bloqueia automatismos perante solidariedade e transacção. A prévia de conferência por sujeito permite copiar a discriminação e exportar um resumo CSV com bloqueios expressos, não sendo uma conta oficial. Não recebe PDFs nem emite conta oficial. Exige verificação da versão do RCP, do regime de cada parte, das reduções, remanescente e pagamentos. Não introduzir dados confidenciais. Especificação: [Caderno jurídico e técnico A01](docs/motor-custas-A01.md).
 
 ## Módulos especializados
 
@@ -45,7 +45,7 @@ Foram acrescentados doze módulos de apoio à produtividade, com [matriz de func
 
 ## Testes de qualidade
 
-O módulo A01 dispõe de **132 testes técnicos de regressão** em `scripts/test-custas.mjs`, incluindo prestações, remanescente, reduções, apoio judiciário e dispensa de pagamento prévio. Estes testes não certificam a interpretação jurídica nem os resultados em processos reais.
+O módulo A01 dispõe de **152 testes técnicos de regressão** em `scripts/test-custas.mjs`, incluindo prestações, remanescente, reduções, apoio judiciário e dispensa de pagamento prévio. Estes testes não certificam a interpretação jurídica nem os resultados em processos reais.
 
 
 O GitHub Actions executa também a bateria `scripts/next-smoke.mjs` para os doze módulos especializados, além das verificações de estrutura, de contrato do calendário e da Tramitação TAF, de navegação, de modo Claro-Escuro e acessibilidade WCAG A/AA nas ferramentas principais, de privacidade e de regressão do Cita-Check. A auditoria isolada do anonimizador usa PDFs fictícios com duas páginas e documentos mistos sem texto.
