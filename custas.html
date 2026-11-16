@@ -910,7 +910,7 @@ el("proposalExport").addEventListener("click",()=>{
   "Sujeito;Obrigações (€);Pagamentos confirmados (€);Diferença positiva (€);Excesso potencial (€)",
   ...p.rows.map(x=>[x.label,x.due,x.paid,x.positive,x.excess].map((v,i)=>i?String((v/100).toFixed(2)).replace(".",","):quote(v)).join(";")),
   "AVISO;"+quote("Documento não oficial. Diferenças não são necessariamente dívida. Custas de parte excluídas.")
- ].join("\\r\\n");
+ ].join("\r\n");
  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
  const href=URL.createObjectURL(blob),a=document.createElement("a");
  a.href=href;a.download="legaltech-a01-conferencia-experimental.csv";
