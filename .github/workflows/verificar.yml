@@ -40,5 +40,13 @@ jobs:
         run: node scripts/privacy-smoke.mjs
       - name: Percursos Safari/WebKit com dimensões de iPad
         run: node scripts/webkit-smoke.mjs
+      - name: Disponibilizar capturas de interface iPad Claro/Escuro
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: legaltech-snapshots-webkit-ipad
+          path: qa/ui-snapshots/*.png
+          if-no-files-found: warn
+          retention-days: 14
       - name: Casos de regressão Cita-Check
         run: node scripts/citacheck-regression.mjs
