@@ -47,7 +47,7 @@ window.LegalTechFichasTAF = Object.freeze({
           ],
           "secretaria": 0,
           "judicial": 0,
-          "draft_kind": "notificacao",
+          "draft_kind": "cota",
           "draft_subject": "Intimação para informações, consulta ou certidões | Citação e resposta"
         },
         {
@@ -112,7 +112,7 @@ window.LegalTechFichasTAF = Object.freeze({
           ],
           "secretaria": 0,
           "judicial": 0,
-          "draft_kind": "notificacao",
+          "draft_kind": "cota",
           "draft_subject": "Intimação para proteção de direitos, liberdades e garantias | Execução do despacho liminar"
         },
         {
@@ -177,7 +177,7 @@ window.LegalTechFichasTAF = Object.freeze({
           ],
           "secretaria": 0,
           "judicial": 0,
-          "draft_kind": "notificacao",
+          "draft_kind": "cota",
           "draft_subject": "Intimação tributária para consulta de documentos ou certidões | Citação e contraditório"
         },
         {
@@ -243,7 +243,7 @@ window.LegalTechFichasTAF = Object.freeze({
           ],
           "secretaria": 4,
           "judicial": 0,
-          "draft_kind": "notificacao",
+          "draft_kind": "cota",
           "draft_subject": "Ação administrativa (A01) | Citação e contestação"
         },
         {
@@ -407,7 +407,7 @@ window.LegalTechFichasTAF = Object.freeze({
           ],
           "secretaria": 4,
           "judicial": 0,
-          "draft_kind": "notificacao",
+          "draft_kind": "cota",
           "draft_subject": "Providência cautelar administrativa | Citação e oposição"
         },
         {
