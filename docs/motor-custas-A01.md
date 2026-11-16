@@ -257,6 +257,38 @@ A versão 2.0 acrescenta uma **contabilidade multissujeito autónoma**, para os 
 
 **Faltam:** interpretação completa da sentença e dos incidentes, normas temporais e regimes especiais por sujeito, verificação de DUC/comprovativos junto de sistemas oficiais, controlo de custas de parte fora da conta da secretaria, decisão sobre restituições e revisão jurídica independente de exemplos de contas reais devidamente anonimizados.
 
+## Plano de validação funcional e casos sintéticos (QA v2.0)
+
+O motor passou a dispor de uma **bateria reprodutível de cenários fictícios** separada dos testes unitários anteriores. Os dados estão em `scripts/fixtures/custas-a01-cenarios.json` e podem ser auditados sem consultar qualquer processo real.
+
+### Cenários cobertos
+
+| Código | Hipótese fictícia | Resultado esperado e âmbito |
+|---|---|---|
+| LIT-3 | Três autores litisconsortes, todos totalmente vencidos, e encargo de 100,01 € | Repartição aritmética igual: 33,34 €, 33,34 € e 33,33 €, **apenas após confirmação do artigo 528.º/1 do CPC** |
+| EXP-2 | Duas quotas expressas de 40% e 60%, encargo de 99,99 € | 40,00 € e 59,99 € |
+| MIN-3 | Encargo de 0,01 €, quotas de 33,33%, 33,33% e 33,34% | 0,00 €, 0,00 € e 0,01 €, por regra técnica de maior resto |
+| BLO-SOL | Solidariedade assinalada | Operação bloqueada, sem repartir automaticamente a obrigação |
+| BLO-TRANS | Transacção de litisconsorte assinalada | Operação bloqueada para apreciação do regime jurídico |
+| M01 | Três sujeitos, taxa manual, guia, pagamento confirmado, restituição, pagamento pendente e outro não imputado | Saldos separados por sujeito, sem compensação, com movimentos pendentes e não imputados explicitamente identificados |
+
+As contas dos exemplos foram previamente determinadas por aritmética de cêntimos e regras declaradas nos dados de teste. **Não são contas judiciais reais nem aferição independente da validade do fundamento jurídico.**
+
+### Verificações disponíveis
+
+1. `node scripts/validate-site.mjs`: estrutura, ligações e sintaxe do site.
+2. `node scripts/test-custas.mjs`: 157 regressões técnicas do módulo A01, incluindo incentivos, remanescente, encargos, contabilidade multissujeito e protecção dos movimentos.
+3. `node scripts/test-custas-cenarios.mjs`: seis cenários sintéticos completos, com resultados esperados explícitos no ficheiro de dados.
+4. `node scripts/test-custas-browser.mjs`: teste de interface real em Chromium (Node.js 22 e Chromium/Chrome instalados), para inserção de partes, quotas percentuais, importação de encargos e reconciliação de um pagamento. Utiliza DevTools no computador de teste e uma página `about:blank` com o HTML real do módulo, sem bibliotecas de teste externas nem comunicação com sistemas judiciais.
+
+O workflow `.github/workflows/custas-tests.yml` está configurado para executar estas quatro verificações em `push`, `pull_request` ou manualmente, conforme os caminhos alterados. **A configuração do workflow não constitui prova de execução bem-sucedida**: o respectivo estado e os logs devem ser verificados no GitHub Actions.
+
+### Requisitos para validação jurídica independente
+
+Antes de usar a ferramenta como apoio a contas reais, é necessário submeter os resultados à revisão de um profissional competente, com exemplos de processos **devidamente anonimizados**, confirmando a data de propositura, o regime transitório, a UC histórica, a tabela aplicável, a natureza do impulso, as isenções, os encargos, a responsabilidade final e a exactidão documental dos pagamentos.
+
+Não carregar autos reais em páginas públicas ou ambientes de teste não autorizados. Os testes actuais utilizam **apenas identificadores e valores fictícios**.
+
 ## Limitações que bloqueiam o uso como conta oficial
 
 - A taxa-base simulada não contempla isenções, reduções, prestações, regimes especiais, custas de recursos e incidentes. As obrigações de recurso ou incidente são valores **manuais**, não calculados automaticamente.
