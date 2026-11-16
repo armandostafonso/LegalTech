@@ -21,7 +21,7 @@ Suite integrada de ferramentas jurídicas práticas em português de Portugal. P
 | Compare | `compare.html` | Comparação local de linhas de duas versões de texto |
 | Remessas | `remessas.html` | Conferência de remessas e anexos com relatório editável |
 | Appeals | `appeals.html` | Conferência orientadora de recursos CPTA e CPPT, sem cálculo automático |
-| PA | `pa.html` | Extração de datas e cronologia textual, sem PDF nem OCR |
+| PA | `pa.html` | Extração local de datas de texto ou PDF com camada de texto (sem OCR), com página de origem e limites de processamento |
 | Termos | `termos.html` | Registo auxiliar de termo previamente conferido, rascunho de cota e ICS |
 | Lex Audit | `lex-monitor.html` | Registo manual e temporário de revisões normativas; não faz vigilância automática |
 | Privacy Check | `privacy-check.html` | Detetor por padrões de identificadores em texto, não anonimização certificada |
