@@ -1,6 +1,6 @@
 # Motor de Custas A01 — Caderno jurídico e técnico
 
-**Versão da interface:** 1.8 (experimental, novembro de 2026)  
+**Versão da interface:** 1.9 (experimental, novembro de 2026)  
 **Espécie:** acção administrativa (CPTA)  
 **Página:** `custas.html`
 
@@ -192,6 +192,36 @@ A versão 1.8 acrescenta um mapa de reconciliação que cruza os dados das **obr
 - Movimentos pendentes não integram o saldo pago; movimentos sem afectação não são presumidos como pagamento de um impulso específico.
 - A reconciliação ocorre localmente e os dados são temporários. Não existem transferências financeiras, acesso a bases judiciais ou arquivo persistente de comprovativos.
 
+## Pluralidade de intervenientes, litisconsórcio e coligação (v1.9)
+
+A versão 1.9 acrescenta um **mapa autónomo multissujeito**, limitado a 12 participantes identificados por referências fictícias. Esta estrutura serve para registar e conferir a repartição de **encargos concretamente identificados**, mantendo-a separada da conta financeira A/B, das taxas de justiça devidas por impulso e dos pagamentos registados.
+
+### Enquadramento jurídico
+
+- **CPC 527.º, n.ºs 1 e 2:** vencimento e decaimento proporcional, ou proveito quando não haja vencimento. O mapa não interpreta autonomamente a sentença.
+- **CPC 527.º, n.º 3:** quando a obrigação condenatória é solidária, a solidariedade estende-se às custas. O mapa bloqueia a repartição automática perante solidariedade indicada ou por confirmar.
+- **CPC 528.º, n.º 1:** litisconsortes do mesmo lado (vários autores ou vários réus), todos totalmente vencidos, respondem pelas custas em partes iguais. Esta divisão só pode ser seleccionada após confirmação expressa dos pressupostos.
+- **CPC 528.º, n.º 2:** transacção de litisconsorte pode determinar redução de 50% do valor das custas. O módulo **não aplica automaticamente** esta redução e bloqueia lançamentos com transacção assinalada ou por verificar.
+- **CPC 528.º, n.º 3:** vencimento parcial de litisconsorte exige consideração específica, pelo que só se admitem quotas declaradas como expressamente determinadas na decisão, sem inferir a percentagem.
+- **CPC 528.º, n.º 4:** coligação de autores ou réus implica responsabilidade individual nos termos gerais do artigo 527.º, n.º 2. O módulo pode registar quotas expressas e verificadas, mas não aplica divisão igual por mera coligação.
+- **CPC 530.º, n.º 4:** no litisconsórcio, o litisconsorte que figure como parte primeira no impulso suporta o pagamento da totalidade da taxa de justiça, sem prejuízo do direito de regresso. **Não é a mesma operação** que repartir os encargos finais.
+- **CPC 530.º, n.º 5:** na coligação, os sujeitos aí referidos são responsáveis pela respectiva taxa de justiça.
+- **RCP 30.º, n.º 2:** uma conta por cada sujeito processual responsável, abrangendo os elementos legalmente relevantes do processo e apensos. O mapa multissujeito não equivale a essas contas.
+
+### Registo, validações e resultados
+
+O utilizador adiciona cada interveniente e indica posição processual, inclui apenas os intervenientes abrangidos por cada encargo e selecciona um de dois critérios: **quotas percentuais expressas na decisão**, que têm de somar exactamente 100%, ou **partes iguais** quando se verificam os requisitos restritos do artigo 528.º, n.º 1.
+
+A divisão é feita em cêntimos inteiros e conserva sempre o total. Quando a divisão não é exacta, os cêntimos residuais são distribuídos por maior resto e, em caso de igualdade, por ordem de registo dos participantes. Esta é apenas uma regra técnica ilustrativa: eventuais particularidades da decisão judicial prevalecem.
+
+São bloqueados referências repetidas, percentagens inválidas, solidariedade ou transacção por verificar, repartições não confirmadas, retirada de participantes que já integram encargos e montantes acima do limite técnico de 100 milhões de euros. O mapa gera totais por participante, relatório copiável e exportação CSV temporária, com sanitização de células que poderiam ser interpretadas como fórmulas por programas de folha de cálculo.
+
+### Separação dos dois motores
+
+O **mapa multissujeito não altera automaticamente** os campos A/B, as obrigações, o livro de pagamentos ou a proposta anterior. Sempre que existem intervenientes ou repartições no mapa, a proposta A/B apresenta uma advertência expressa de **não integração**, com listagem informativa das repartições. Isto impede que o mesmo encargo seja contabilizado inadvertidamente duas vezes. A junção de contas por vários sujeitos exige ainda modelo de obrigações e conciliação documental mais abrangente.
+
+O módulo não interpreta decisões, não calcula automaticamente solidariedade, transacções ou decaimento parcial, não determina custas de parte e não produz contas oficiais.
+
 ## Limitações que bloqueiam o uso como conta oficial
 
 - A taxa-base simulada não contempla isenções, reduções, prestações, regimes especiais, custas de recursos e incidentes. As obrigações de recurso ou incidente são valores **manuais**, não calculados automaticamente.
@@ -207,7 +237,7 @@ A versão 1.8 acrescenta um mapa de reconciliação que cruza os dados das **obr
 
 ## Testes
 
-- Script: `node scripts/test-custas.mjs` (111 casos técnicos na versão 1.8).
+- Script: `node scripts/test-custas.mjs` (132 casos técnicos na versão 1.9).
 - Verificação global da página: `node scripts/validate-site.mjs`.
 - Integração contínua: `.github/workflows/custas-tests.yml`.
 
@@ -217,7 +247,7 @@ A versão 1.8 acrescenta um mapa de reconciliação que cruza os dados das **obr
 
 1. Catálogo de versões legais e UC histórica.
 2. Motor de prestações com estrutura de **obrigações por impulso**, para impedir duplicações.
-3. Evoluir a ligação entre movimentos e impulsos para várias partes, classificação do pagamento e conciliação documental segura.
+3. Integrar progressivamente os mapas multissujeito com obrigações e pagamentos individualizados, sem misturar os valores da conta A/B e sem compensações de terceiros.
 4. Expandir a triagem de isenção, apoio judiciário, dispensa prévia e reduções para regimes especiais, com fundamentação, efeitos temporais e validação da decisão de benefícios.
 5. Repartição de encargos e remanescente conforme condenação e decisões judiciais.
 6. Exportação da proposta de conferência, com indicação do grau de certeza e referências legais.
