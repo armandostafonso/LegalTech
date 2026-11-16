@@ -15,6 +15,13 @@ body>header nav>div a{padding:7px 3px;margin-right:0;display:inline-flex;align-i
 :root[data-theme="dark"] .blank{background:var(--soft)}
 .note a{text-underline-offset:3px}
 .panel img,.panel svg{max-width:100%}
+@media(max-width:740px){
+ header .top{height:auto;flex-wrap:wrap;align-items:center;row-gap:10px}
+ header .top .brand{order:1;min-width:0}
+ header .top .theme,header .top .lt-theme-control{order:2;margin-left:auto}
+ header .top .nav{order:3;flex:1 0 100%;min-width:0;width:100%;justify-content:flex-start;flex-wrap:wrap;gap:4px 12px}
+ header .top .nav a{min-height:40px;display:inline-flex;align-items:center}
+}
 @media(max-width:700px){
  body>header nav{padding:12px 17px;align-items:flex-start}
  body>header nav>div{flex-basis:100%;order:2}
