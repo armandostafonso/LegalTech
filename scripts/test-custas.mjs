@@ -310,4 +310,64 @@ check("Benefícios: transferência após revalidação sem somas duplicadas",()=
 check("Benefícios: limpeza final mantém o módulo disponível",()=>{
  click("reset");assert.match(read("obA"),/0,00/);assert.match(read("benefitResult"),/Selecciona uma obrigação/);
 });
+
+check("Responsabilidade: bloqueia encargos sem confirmação da decisão",()=>{
+ put("respPhase","acao");put("respBasis","loss");put("respRef","ENC-001");put("respAmount","100.01");
+ put("respShareA","30");put("respDecisionDate","2026-11-16");put("respDecisionRef","SENTENCA-TESTE-1");
+ click("respPreview");assert.match(read("respResult"),/Confirma a decisão/);
+});
+check("Responsabilidade: reparte 100,01 € com acerto de cêntimos",()=>{
+ els.get("respVerified").checked=true;click("respPreview");
+ assert.match(read("respResult"),/30,00/);assert.match(read("respResult"),/70,01/);
+ click("respAdd");assert.match(read("respTotalA"),/30,00/);assert.match(read("respTotalB"),/70,01/);
+ assert.equal(read("respPending"),"1");assert.match(read("obA"),/0,00/);
+});
+check("Responsabilidade: lançar encargos uma só vez nas duas partes",()=>{
+ els.get("respRows").listeners.click({target:{closest:()=>({dataset:{respId:"1",respAction:"post"}})}});
+ assert.match(read("respResult"),/lançado uma única vez/);
+ assert.match(read("obA"),/30,00/);assert.match(read("obB"),/70,01/);
+ assert.equal(read("respPending"),"0");
+ els.get("respRows").listeners.click({target:{closest:()=>({dataset:{respId:"1",respAction:"post"}})}});
+ assert.match(read("respResult"),/já lançado/);assert.match(read("obA"),/30,00/);
+});
+check("Responsabilidade: impedir remover lançamento fora do mapa",()=>{
+ els.get("obRows").listeners.click({target:{closest:()=>({dataset:{removeOb:"1"}})}});
+ assert.match(read("obMessage"),/pertence ao mapa de responsabilidade/);
+ click("obClear");assert.match(read("obMessage"),/retira primeiro/);
+});
+check("Responsabilidade: transferência não soma duas vezes",()=>{
+ click("obApply");assert.equal(els.get("a").value,"30.00");assert.equal(els.get("b").value,"70.01");
+ click("obApply");assert.equal(els.get("a").value,"30.00");assert.equal(els.get("b").value,"70.01");
+});
+check("Responsabilidade: não permite remover mapa lançado sem desfazer obrigações",()=>{
+ els.get("respRows").listeners.click({target:{closest:()=>({dataset:{respId:"1",respAction:"remove"}})}});
+ assert.match(read("respResult"),/Retira primeiro os lançamentos/);assert.equal(read("respCount"),"1");
+});
+check("Responsabilidade: não desfaz encargos com pagamentos imputados",()=>{
+ put("ledgerParty","a");put("ledgerKind","payment");put("ledgerStatus","confirmed");put("ledgerObligation","1");put("ledgerRef","PAG-ENC-001");put("ledgerDate","2026-11-16");put("ledgerAmount","10");click("ledgerAdd");
+ els.get("respRows").listeners.click({target:{closest:()=>({dataset:{respId:"1",respAction:"undo"}})}});
+ assert.match(read("respResult"),/movimentos financeiros/);
+});
+check("Responsabilidade: retirar movimento permite desfazer lançamentos",()=>{
+ els.get("ledgerRows").listeners.click({target:{closest:()=>({dataset:{record:"1",action:"remove"}})}});
+ els.get("respRows").listeners.click({target:{closest:()=>({dataset:{respId:"1",respAction:"undo"}})}});
+ assert.match(read("respResult"),/retiradas/);
+ assert.match(read("obA"),/0,00/);assert.match(read("obB"),/0,00/);
+});
+check("Responsabilidade: repartição com uma parte responsável a 100%",()=>{
+ put("respRef","ENC-002");put("respAmount","51");put("respShareA","0");els.get("respVerified").checked=true;
+ click("respPreview");assert.match(read("respResult"),/51,00/);click("respAdd");
+ els.get("respRows").listeners.click({target:{closest:()=>({dataset:{respId:"2",respAction:"post"}})}});
+ assert.match(read("obA"),/0,00/);assert.match(read("obB"),/51,00/);
+});
+check("Responsabilidade: não duplica encargos de referência igual",()=>{
+ put("respRef","ENC-002");put("respAmount","51");els.get("respVerified").checked=true;click("respPreview");
+ assert.match(read("respResult"),/Já existe encargo/);
+});
+check("Responsabilidade: limpeza bloqueada enquanto houver obrigações",()=>{
+ click("respClear");assert.match(read("respResult"),/Existem encargos lançados/);
+});
+check("Responsabilidade: reposição integral limpa mapa e obrigações",()=>{
+ click("reset");assert.equal(read("respCount"),"0");assert.match(read("respTotalA"),/0,00/);assert.match(read("obB"),/0,00/);
+});
 console.log(tests+" testes do módulo A01 concluídos.");
