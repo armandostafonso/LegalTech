@@ -23,7 +23,7 @@ await check("Página inicial e pesquisa",async()=>{
 });
 await check("Tramitação TAF: fases, urgência, progressão e remissão CPPT",async()=>{
  await open("tramitação-taf.html");
- if(await page.locator("#workflow option").count()!==3)throw Error("Roteiros TAF incompletos");
+ if(await page.locator("#workflow option").count()!==7)throw Error("Roteiros TAF incompletos");
  await page.locator("#workflow").selectOption("intimacao-informacao");
  await page.locator("#phase").selectOption("citacao");
  const text=await page.locator("#steps").innerText();
@@ -37,6 +37,15 @@ await check("Tramitação TAF: fases, urgência, progressão e remissão CPPT",a
  if(!sources.includes("146.º"))throw Error("Remissão CPPT 146 ausente");
  await page.locator("#phase").selectOption("decisao");
  if(await page.locator("#steps input").count()!==4)throw Error("Verificações por fase ausentes");
+ await page.locator("#workflow").selectOption("acao-administrativa");
+ if(!(await page.locator("#temporal").innerText()).includes("01/12/2026"))throw Error("Aviso transitório da ação ausente");
+ if(await page.locator("#steps .actor").count()!==4)throw Error("Distinção secretaria/despacho ausente");
+ await page.locator("#workflow").selectOption("impugnacao-judicial");
+ if(!(await page.locator("#warning").innerText()).includes("três meses"))throw Error("Prazo de contestação CPPT ausente");
+ await page.locator("#workflow").selectOption("providencia-cautelar");
+ if(!(await page.locator("#warning").innerText()).includes("48 horas"))throw Error("Urgência cautelar ausente");
+ await page.locator("#workflow").selectOption("recurso");
+ if(!(await page.locator("#sources").innerText()).includes("279.º"))throw Error("Recursos CPPT ausentes");
 });
 await check("Minutas: gerar texto e manter nomes introduzidos",async()=>{
  await open("minutas.html");
