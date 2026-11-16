@@ -67,6 +67,7 @@ await check("Fichas TAF: 25 fases, direito transitório e minutas seguras",async
  await page.goto(new URL(url,page.url()).href);
  if(!(await page.locator("#assunto").inputValue()).includes("Ação administrativa"))throw Error("Assunto genérico não importado");
  if((await page.locator("#processo").inputValue())!=="")throw Error("Dados de processo transportados");
+ if(!(await page.locator("#saida").innerText()).includes("Ação administrativa"))throw Error("Assunto não incorporado na minuta");
 });
 await check("Minutas: gerar texto e manter nomes introduzidos",async()=>{
  await open("minutas.html");
