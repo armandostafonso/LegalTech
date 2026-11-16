@@ -101,5 +101,5 @@ function summary(){if(!stage)return"";const boxes=[...$("steps").querySelectorAl
 async function copy(){try{await navigator.clipboard.writeText(summary());$("feedback").textContent="Resumo copiado."}catch(e){$("feedback").textContent="Cópia automática indisponível neste navegador."}}
 function download(){const blob=new Blob([summary()],{type:"text/plain;charset=utf-8"});const u=URL.createObjectURL(blob);const a=node("a");a.href=u;a.download="roteiro-taf.txt";a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 $("reset").addEventListener("click",()=>{if(workflow&&stage)state.delete(workflow.id+"/"+stage.id);render()});$("copy").addEventListener("click",copy);$("download").addEventListener("click",download);$("print").addEventListener("click",()=>window.print());fillWorkflows();
-</script><script src="assets/theme.js"></script>
+</script><script src="assets/suite-nav.js"></script><script src="assets/theme.js"></script>
 </body></html>
