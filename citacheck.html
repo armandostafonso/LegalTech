@@ -519,7 +519,8 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
     };
 
     const key = `${m}-${d}`;
-    if (fixos[key]) return fixos[key];
+    const codigo = String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    if (LegalTechCalendario.rules.fixed_holidays.includes(codigo)) return fixos[key] || 'Feriado nacional';
 
     if (OPC.tol24dez && m === 12 && d === 24) return '24 de dezembro (tolerância de ponto)';
     if (OPC.tol31dez && m === 12 && d === 31) return '31 de dezembro (tolerância de ponto)';
