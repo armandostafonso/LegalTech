@@ -1,0 +1,19 @@
+name: Auditoria de PDF fictício
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  pdf:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar navegador de ensaio
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Gerar PDF fictício e verificar resultado anonimizado
+        run: node scripts/pdf-integration.mjs
