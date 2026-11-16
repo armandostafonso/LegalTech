@@ -12,7 +12,7 @@ async function test(name, task){
  catch(e){console.error("✗",name,String(e));failures.push(name+": "+String(e));}
 }
 await page.goto(pathToFileURL(resolve("citacheck.html")).href,{waitUntil:"domcontentloaded"});
-async function setBase({start,quantity,unit="dias",urgent=false,type="cit_singular",option="si_proprio"}){
+async function setBase({start,quantity,unit="dias",urgent=false,type="cit_singular",option="si_proprio",municipality="porto"}){
  await page.locator("#tipoAto").selectOption(type);
  if(type==="cit_singular")await page.locator("#subOpcao").selectOption(option);
  await page.locator("#dataBase").fill(start);
@@ -20,7 +20,7 @@ async function setBase({start,quantity,unit="dias",urgent=false,type="cit_singul
  await page.locator("#prazoUnidade").selectOption(unit);
  await page.locator("#dilacaoExtra").selectOption("0");
  await page.locator("#processoUrgente").selectOption(urgent?"sim":"nao");
- await page.locator("#feriadoMunicipal").selectOption("porto");
+ await page.locator("#feriadoMunicipal").selectOption(municipality);
 }
 async function expectTerm(expected){
  const value=await page.locator("#resTermoPrazo").innerText();
@@ -29,7 +29,7 @@ async function expectTerm(expected){
 const shared=JSON.parse(fs.readFileSync(resolve("tests/shared-cases.json"),"utf8"));
 for(const testCase of shared.cases) {
  await test("Paridade Web/Desktop: "+testCase.id,async()=>{
-   await setBase({start:testCase.start,quantity:testCase.quantity,unit:testCase.unit,urgent:testCase.urgent});
+   await setBase({start:testCase.start,quantity:testCase.quantity,unit:testCase.unit,urgent:testCase.urgent,municipality:testCase.municipality||"porto"});
    const [y,m,d]=testCase.expected.split("-");
    await expectTerm(d+"/"+m+"/"+y);
  });
