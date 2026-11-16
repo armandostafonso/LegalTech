@@ -1,0 +1,34 @@
+{
+  "version": "2026-11-16",
+  "description": "Feriados municipais de referência; confirmar a data e aplicabilidade no tribunal competente antes de considerar o termo.",
+  "municipalities": [
+    {
+      "id": "porto",
+      "name": "Porto",
+      "day": "06-24",
+      "label": "São João"
+    },
+    {
+      "id": "lisboa",
+      "name": "Lisboa",
+      "day": "06-13",
+      "label": "Santo António"
+    },
+    {
+      "id": "braga",
+      "name": "Braga",
+      "day": "06-24",
+      "label": "São João"
+    },
+    {
+      "id": "penafiel",
+      "name": "Penafiel",
+      "day": "11-11",
+      "label": "São Martinho"
+    }
+  ],
+  "references": [
+    "https://icalendario.pt/feriados/municipais/",
+    "https://zavo.pt/feriados-municipais"
+  ]
+}
