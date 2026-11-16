@@ -41,6 +41,6 @@ function analyse(){
  $("copy").disabled=$("txt").disabled=false;
  N.status(selected.length+" categoria(s) sugerida(s), "+suggestions.length+" verificações. Não foram interpretadas condições ou prazos de forma automática.");
 }
-function summary(){return ["LEGALTECH ASSISTANT — PLANO ORIENTADOR","Revisão humana obrigatória, sem identificação do processo.","",...selected.flatMap(a=>[a.name,...a.checks.map(t=>"  • "+t)]),"","Nenhum ato é considerado praticado ou autorizado pelo simples resultado."].join("\n")}
-$("analyse").addEventListener("click",analyse);$("clear").addEventListener("click",()=>{$("source").value="";$("items").replaceChildren();$("links").replaceChildren();selected=[];N.status("Texto limpo.");$("copy").disabled=$("txt").disabled=true});
+function summary(){return ["LEGALTECH ASSISTANT — PLANO ORIENTADOR","Revisão humana obrigatória, sem identificação do processo.","",...(!$("warning").hidden?["ALERTA: "+$("warning").textContent,""]:[]),...selected.flatMap(a=>[a.name,...a.checks.map(t=>"  • "+t)]),"","Nenhum ato é considerado praticado ou autorizado pelo simples resultado."].join("\n")}
+$("analyse").addEventListener("click",analyse);$("clear").addEventListener("click",()=>{$("source").value="";$("items").replaceChildren();$("links").replaceChildren();selected=[];$("warning").hidden=true;$("warning").textContent="";N.status("Texto limpo.");$("copy").disabled=$("txt").disabled=true});
 $("copy").addEventListener("click",()=>N.copy(summary()));$("txt").addEventListener("click",()=>N.save(summary()+"\n","legaltech-assistant.txt"));</script><script src="assets/theme.js"></script></body></html>
