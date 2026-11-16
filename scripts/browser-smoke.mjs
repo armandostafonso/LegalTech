@@ -21,6 +21,17 @@ await check("Página inicial e pesquisa",async()=>{
  await page.locator("#search").fill("");
  if(await page.locator(".tool:visible").count()!==21)throw Error("Ferramentas não recuperadas");
 });
+await check("Catálogo por categorias: filtros e pesquisa combinada",async()=>{
+ await open("index.html");
+ await page.locator('.filters button[data-filter="prazos"]').click();
+ if(await page.locator(".tool:visible").count()!==4)throw Error("Quatro ferramentas de prazos esperadas");
+ if(await page.locator('.filters button[data-filter="prazos"]').getAttribute("aria-pressed")!=="true")throw Error("Estado do filtro não exposto");
+ await page.locator("#search").fill("Cita-Check");
+ if(await page.locator(".tool:visible").count()!==1)throw Error("Pesquisa combinada falhou");
+ await page.locator("#search").fill("");
+ await page.locator('.filters button[data-filter="all"]').click();
+ if(await page.locator(".tool:visible").count()!==21)throw Error("Restauro de ferramentas falhou");
+});
 await check("Fontes normativas: inventário, filtro e marcas temporárias",async()=>{
  await open("fontes.html");
  if(await page.locator(".audit").count()!==9)throw Error("Inventário normativo incompleto");
