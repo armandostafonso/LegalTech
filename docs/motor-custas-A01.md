@@ -1,6 +1,6 @@
 # Motor de Custas A01 — Caderno jurídico e técnico
 
-**Versão da interface:** 1.6 (experimental, novembro de 2026)  
+**Versão da interface:** 1.7 (experimental, novembro de 2026)  
 **Espécie:** acção administrativa (CPTA)  
 **Página:** `custas.html`
 
@@ -142,6 +142,31 @@ Uma percentagem introduzida pelo utilizador é um dado **declarado e conferido**
 
 A versão 1.6 inclui casos para montantes repartidos com arredondamento de cêntimos, duplicação de lançamentos, responsabilidades de 100% para uma das partes, conservação dos pagamentos por parte, bloqueio de remoção de obrigações dependentes, desfazer operações e limpeza segura.
 
+## Proposta de conferência por sujeito processual (v1.7)
+
+A versão 1.7 acrescenta uma prévia de conferência **expressamente não oficial**, com os seguintes campos, separadamente para a parte A, a parte B e a rubrica de outras quantias:
+
+- Obrigações processuais registadas, incluindo encargos lançados pelo mapa de responsabilidade;
+- Pagamentos líquidos confirmados por parte, ou montantes introduzidos manualmente na ausência de livro de movimentos;
+- Diferença aritmética positiva e excesso potencial, sem concluir automaticamente pela existência de dívida ou direito a restituição;
+- Data do trânsito em julgado indicada e confirmação de conferência final dos documentos;
+- Discriminação dos impulsos processuais, encargos repartidos e fundamento introduzido.
+
+### Bloqueios e advertências
+
+O programa **assinala a proposta como incompleta** caso faltem obrigações, não estejam sincronizados os totais, existam benefícios sem revalidação, pagamento prévio dispensado, movimentos financeiros pendentes ou não imputados, encargos ainda por lançar, fichas de partes não conferidas, datas em falta, ou divergências entre o quadro e o livro de movimentos.
+
+A prévia pode ser consultada mesmo quando incompleta, **sempre acompanhada da lista de avisos**. Não se altera o resultado para "conta oficial" quando as advertências desaparecem: significa apenas que os controlos internos desta versão não detectaram bloqueios.
+
+### Saídas locais
+
+- Cópia de texto legível com discriminação e advertências.
+- Resumo CSV com valores por sujeito e identificação expressa das pendências.
+- Ambos são gerados localmente pelo navegador.
+- A cópia ou exportação exige prévia actual: quando mudam montantes, movimentos, identificação ou documentos confirmados, o resultado anterior não pode ser reutilizado sem novo cálculo.
+
+**Limitação:** esta proposta não inclui custas de parte, não executa pagamentos, não apura encargos omissos nem substitui o processamento da conta da secretaria nos meios oficiais. Não existe integração com os sistemas CITIUS/SITAF ou serviços de pagamento.
+
 ## Limitações que bloqueiam o uso como conta oficial
 
 - A taxa-base simulada não contempla isenções, reduções, prestações, regimes especiais, custas de recursos e incidentes. As obrigações de recurso ou incidente são valores **manuais**, não calculados automaticamente.
@@ -157,7 +182,7 @@ A versão 1.6 inclui casos para montantes repartidos com arredondamento de cênt
 
 ## Testes
 
-- Script: `node scripts/test-custas.mjs` (89 casos técnicos na versão 1.6).
+- Script: `node scripts/test-custas.mjs` (99 casos técnicos na versão 1.7).
 - Verificação global da página: `node scripts/validate-site.mjs`.
 - Integração contínua: `.github/workflows/custas-tests.yml`.
 
