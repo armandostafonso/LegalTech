@@ -15,14 +15,15 @@ function canonical(value){
  if(value&&typeof value==="object")return Object.fromEntries(Object.keys(value).sort().map(k=>[k,canonical(value[k])]));
  return value;
 }
-const sha256=value=>createHash("sha256").update(JSON.stringify(canonical(value))).digest("hex");
+const gitBlobSha=buf=>createHash("sha1").update("blob "+buf.length+"\0").update(buf).digest("hex");
 const manifest=JSON.parse(fs.readFileSync("rules/parity-manifest.json","utf8"));
 if(manifest.version!==1||Object.keys(manifest.hashes).length!==files.length)throw Error("Manifesto de paridade inválido");
 const local={};
 for(const path of files){
- const obj=JSON.parse(fs.readFileSync(path,"utf8"));
+ const bytes=fs.readFileSync(path);
+ const obj=JSON.parse(bytes.toString("utf8"));
  if(!obj||typeof obj!=="object")throw Error("Contrato local inválido: "+path);
- const hash=sha256(obj);
+ const hash=gitBlobSha(bytes);
  if(hash!==manifest.hashes[path])failures.push("Contrato local diverge do manifesto Web/Desktop: "+path);
  local[path]=obj;
 }
@@ -53,8 +54,9 @@ for(const path of files){
   if(!result.ok)throw Error("HTTP "+result.status);
   const payload=await result.json();
   if(typeof payload.content!=="string"||payload.encoding!=="base64")throw Error("Representação inesperada");
-  const parsed=JSON.parse(Buffer.from(payload.content.replace(/\s/g,""),"base64").toString("utf8"));
-  const remoteHash=sha256(parsed);
+  const bytes=Buffer.from(payload.content.replace(/\s/g,""),"base64");
+  const parsed=JSON.parse(bytes.toString("utf8"));
+  const remoteHash=gitBlobSha(bytes);
   if(remoteHash!==manifest.hashes[path])failures.push("Contrato privado diferente: "+path);
   else console.log("Paridade confirmada via GitHub autenticado: "+path);
  }catch(e){failures.push(path+": impossível confirmar o repositório Desktop ("+e.message+")")}
