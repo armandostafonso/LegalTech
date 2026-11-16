@@ -45,6 +45,13 @@ $("limpar").addEventListener("click",()=>{for(const id of ids)if(id!=="tipo")$(i
 $("copiar").addEventListener("click",async()=>{const b=generate();try{await copyText(b);$("copiar").textContent="Copiado";setTimeout(()=>$("copiar").textContent="Copiar texto",1800)}catch(e){alert("Não foi possível copiar automaticamente.")}});
 $("descarregar").addEventListener("click",()=>{const blob=new Blob([generate()],{type:"text/plain;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="minuta-legaltech.txt";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
 $("imprimir").addEventListener("click",()=>{generate();window.print()});
+// Só são aceites parâmetros genéricos: tipo e assunto. Não transportar dados do processo.
+const params=new URLSearchParams(location.search);
+const allowedTypes=new Set(["cota","oficio","certidao","notificacao","remessa"]);
+const importedType=params.get("tipo");
+const importedSubject=params.get("assunto");
+if(importedType&&allowedTypes.has(importedType))$("tipo").value=importedType;
+if(importedSubject&&importedSubject.length<=180)$("assunto").value=importedSubject;
 $("data").value=new Date().toLocaleDateString("sv-SE");
 generate();
 </script><script src="assets/theme.js"></script>
