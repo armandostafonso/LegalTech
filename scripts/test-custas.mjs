@@ -560,7 +560,7 @@ check("Multissujeito: mapa não altera obrigações nem pagamentos A/B",()=>{
 check("Multissujeito: a proposta A/B avisa que não inclui o mapa independente",()=>{
  click("proposalPreview");
  assert.match(read("proposalText"),/MULTISSUJEITO NÃO INCLUÍDO NA CONTA A\/B/);
- assert.match(read("proposalNote"),/mapa multissujeito autónomo/);
+ assert.match(read("proposalNote"),/contabilidade multissujeito autónoma/);
 });
 check("Multissujeito: CSV autónomo discrimina valores por sujeito",()=>{
  click("multiExport");
