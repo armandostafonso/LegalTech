@@ -1,0 +1,75 @@
+/* LegalTech | Identidade visual institucional v1.0
+   Camada de apresentação. Não altera cálculos nem dados. */
+:root{
+ color-scheme:light;
+ --bg:#f4f6f9;--desk:#f4f6f9;--paper:#ffffff;--sheet:#ffffff;
+ --ink:#102039;--muted:#536279;--line:#dce3ed;--soft:#edf2f8;
+ --accent:#87611b;--stamp:#123256;--stamp-ink:#ffffff;--stamp-hover:#21476d;
+ --lt-navy:#071a33;--lt-gold:#c49a48;--lt-gold-light:#e1be76;
+ --shadow:0 12px 35px rgba(7,26,51,.07);
+ --serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+ --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+:root[data-theme="dark"]{
+ color-scheme:dark;
+ --bg:#091629;--desk:#091629;--paper:#10223a;--sheet:#10223a;
+ --ink:#f2f5fa;--muted:#bdc9d9;--line:#2b4059;--soft:#172d47;
+ --accent:#e1be76;--stamp:#c49a48;--stamp-ink:#091629;--stamp-hover:#e1be76;
+ --shadow:0 14px 40px rgba(0,0,0,.14);
+}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink)}
+h1,h2,h3{font-family:var(--sans);letter-spacing:-.025em}
+a{transition:color .15s ease}
+a:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--lt-gold)!important;outline-offset:3px}
+button,input,select,textarea{font-family:var(--sans)}
+input:not([type="checkbox"]):not([type="radio"]),select,textarea{
+ border-radius:10px;border-color:var(--line);
+ background:var(--paper);color:var(--ink)
+}
+input[type="checkbox"],input[type="radio"]{accent-color:var(--stamp)}
+button,.btn,.btn-primary,.btn-secondary,.theme,.theme-btn{border-radius:10px}
+button.btn-primary,.btn:not(.secondary){background:var(--stamp);color:var(--stamp-ink)}
+button.btn-primary:hover,.btn:not(.secondary):hover{background:var(--stamp-hover)}
+.panel,.tool,.notice,.partybox,fieldset{border-color:var(--line);border-radius:17px}
+.tool,.panel{box-shadow:var(--shadow)}
+.tag,.eyebrow{color:var(--accent)}
+.brand{font-family:var(--sans)!important;font-weight:750!important;letter-spacing:-.045em!important;display:inline-flex;align-items:center;gap:10px;color:var(--ink)}
+/* Símbolo comum a todas as ferramentas */
+.brand::before{
+ content:"";display:inline-block;flex:none;width:32px;height:32px;
+ background:url("legaltech-mark.svg") center/contain no-repeat;
+}
+.brand .logo{display:none}
+header .brand{white-space:nowrap}
+.top-nav{max-width:1120px}
+.top-nav .nav-links a.nav-active{border-bottom-color:var(--lt-gold)}
+.top-nav .nav-links a:hover{color:var(--accent)}
+/* O Cita-Check mantém a sua disposição funcional, mas deixa a estética papel/carimbo. */
+.top-nav+main{border-radius:20px;box-shadow:var(--shadow)}
+.top-nav+main header h1,.top-nav+main h2,
+.top-nav+main .headline-date{font-family:var(--sans)}
+.top-nav+main .panel.out{background:var(--soft)}
+.top-nav+main .chip,.top-nav+main .btn-secondary,
+.top-nav+main .cota-box{border-radius:10px}
+.top-nav+main .headline{border-left-color:var(--lt-gold)}
+/* Página inicial: destaque tecnológico discreto, sem grafismos decorativos excessivos */
+.hero .eyebrow{color:var(--accent)}
+.hero h1{letter-spacing:-.045em}
+.tool .glyph{background:var(--soft);color:var(--stamp)}
+.tool:hover{border-color:var(--lt-gold)}
+.tool small{color:var(--accent)}
+/* Rodapé e formulários */
+footer{border-color:var(--line)}
+@media(max-width:740px){
+ .brand::before{width:28px;height:28px}
+ .top-nav+main{border-radius:15px}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+@media print{
+ body{background:#fff!important;color:#000!important}
+ .panel,.tool{box-shadow:none!important}
+ .brand::before{print-color-adjust:exact}
+}
