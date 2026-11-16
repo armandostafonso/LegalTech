@@ -578,4 +578,31 @@ check("Multissujeito: reposição integral limpa os intervenientes",()=>{
  put("multiName","PESSOA-X");click("multiAdd");click("reset");
  assert.equal(read("multiPeopleCount"),"0");assert.equal(read("multiChargeCount"),"0");
 });
+
+check("Multissujeito: CSV neutraliza campos iniciados por fórmulas",()=>{
+ put("multiName","=HYPERLINK(1)");put("multiRole","autor");click("multiAdd");
+ click("multiExport");
+ const csv=downloads.at(-1);
+ assert.match(csv,/'=HYPERLINK\(1\)/);
+ assert.doesNotMatch(csv,/"=HYPERLINK\(1\)"/);
+});
+check("Multissujeito: identificadores HTML são escapados contra injecção",()=>{
+ put("multiName","<img src=x onerror=alert(1)>");click("multiAdd");
+ const html=els.get("multiPeopleRows").innerHTML;
+ assert.doesNotMatch(html,/<img src=x/);
+ assert.match(html,/&lt;img/);
+});
+check("Multissujeito: quotas não aceitam mais de duas casas decimais",()=>{
+ els.get("multiPeopleRows").listeners.change({target:{dataset:{multiShare:"1"},value:"50.001"}});
+ assert.match(read("multiMessage"),/Quota inválida/);
+});
+check("Multissujeito: valores financeiros excessivos são bloqueados",()=>{
+ put("multiRef","ERR-VALOR");put("multiDecision","DEC-ERR");
+ put("multiDate","2026-11-16");put("multiAmount","100000000.01");
+ put("multiSolidarity","no");put("multiSettlement","no");els.get("multiVerified").checked=true;
+ click("multiPreview");assert.match(read("multiResult"),/Montante inválido/);
+});
+check("Multissujeito: reposição final após verificações de segurança",()=>{
+ click("reset");assert.equal(read("multiPeopleCount"),"0");
+});
 console.log(tests+" testes do módulo A01 concluídos.");
