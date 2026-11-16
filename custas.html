@@ -105,7 +105,7 @@
 </section>
 <section class="panel" id="obrigacoes">
 <h2>6. Obrigações por impulso processual</h2>
-<p class="muted">Regista os montantes <strong>já determinados juridicamente</strong> para cada impulso. Não existe cálculo legal automático nesta secção. A transferência substitui os totais devidos, sem os somar aos valores anteriores.</p>
+<p class="muted">Regista os montantes <strong>já determinados juridicamente</strong> para cada impulso. As taxas-base têm cálculo condicionado e os encargos finais podem ser gerados a partir do mapa acima. Não existe cálculo completo automático nesta secção. A transferência substitui os totais devidos, sem os somar aos valores anteriores.</p>
 <div class="grid">
 <div class="field"><label for="obParty">Responsável / rubrica</label><select id="obParty"><option value="a">Parte A</option><option value="b">Parte B</option><option value="extra">Outras quantias</option></select></div>
 <div class="field"><label for="obType">Impulso processual</label><select id="obType"><option value="peticao">Petição inicial</option><option value="contestacao">Contestação / oposição</option><option value="segunda">Segunda prestação</option><option value="recurso">Recurso</option><option value="incidente">Incidente</option><option value="remanescente">Remanescente</option><option value="encargo">Encargo ou multa</option><option value="outro">Outro</option></select></div>
@@ -319,6 +319,7 @@ el("obApply").addEventListener("click",()=>{
  obSynced=true;obSummary();el("obMessage").textContent="Valores transferidos por substituição, sem adição aos totais anteriores. Confere a responsabilidade final antes de emitir a conta.";
 });
 el("obClear").addEventListener("click",()=>{
+ if(respEntries.some(x=>x.posted)){el("obMessage").textContent="Existem encargos lançados através do mapa de responsabilidade: retira primeiro esses lançamentos.";return}
  if(ledgerEntries.some(m=>m.obId)){el("obMessage").textContent="Há movimentos associados: retira-os antes de limpar as obrigações.";return}
  if(obSynced){for(const id of ["a","b","extra"])el(id).value="";}
  obligations.length=0;obNextId=1;obInvalidate();obSummary();el("obMessage").textContent="Obrigações limpas; valores previamente transferidos foram invalidados.";
