@@ -10,7 +10,8 @@ class PaPdfError extends Error{constructor(message,code){super(message);this.nam
 function collectLines(items){
  const text=items.filter(item=>typeof item.str==="string"&&item.str.trim()).map((item,index)=>{
    const tr=Array.isArray(item.transform)?item.transform:[0,0,0,0,index*10,0];
-   return {str:item.str.trim(),x:Number(tr[4])||0,y:Number(tr[5])||0,index}
+   return {str:item.str,x:Number(tr[4])||0,y:Number(tr[5])||0,
+     width:Math.max(0,Number(item.width)||0),fontSize:Math.max(8,Math.abs(Number(tr[0])||0)),index}
  });
  const rows=[];
  for(const token of text){
@@ -22,7 +23,17 @@ function collectLines(items){
  const lines=[];
  for(const row of rows){
    row.items.sort((a,b)=>a.x-b.x||a.index-b.index);
-   const line=row.items.map(t=>t.str).join(" ").replace(/\s+/g," ").trim();
+   let line="",previous=null;
+   for(const token of row.items){
+     if(previous){
+       const gap=token.x-(previous.x+previous.width);
+       const threshold=Math.max(1.4,previous.fontSize*0.17);
+       if((!previous.width||gap>threshold)&&!line.endsWith(" ")&&!/^\s/.test(token.str))line+=" ";
+     }
+     line+=token.str;
+     previous=token;
+   }
+   line=line.replace(/\s+/g," ").trim();
    if(line)lines.push(line);
  }
  return lines;
