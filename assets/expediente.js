@@ -1,0 +1,217 @@
+/* Catálogo genérico sincronizado com rules/expediente.json */
+window.LegalTechExpediente = Object.freeze({
+  "version": "2026-11-16",
+  "description": "Checklist genérica de qualidade formal do expediente, sem decisão processual.",
+  "types": [
+    {
+      "id": "citacao",
+      "name": "Citação",
+      "warning": "A modalidade, os destinatários e os efeitos da citação dependem do regime aplicável. A checklist não determina a perfeição do ato.",
+      "checks": [
+        [
+          "fundamento",
+          "Conferi a norma e eventual despacho que determinam a citação."
+        ],
+        [
+          "destinatarios",
+          "Conferi todos os citandos e contrainteressados legalmente relevantes."
+        ],
+        [
+          "identificacao",
+          "Conferi o tipo de citando (pessoa singular, coletiva ou entidade pública)."
+        ],
+        [
+          "meio",
+          "Verifiquei o meio de citação permitido e a sua utilização no sistema."
+        ],
+        [
+          "anexos",
+          "Conferi cópias, documentos e elementos exigidos para acompanhar a citação."
+        ],
+        [
+          "prazo",
+          "Confirmei prazo de resposta, dilação e advertências aplicáveis."
+        ],
+        [
+          "registo",
+          "Verifiquei a certificação e os comprovativos para futura determinação da data relevante."
+        ]
+      ]
+    },
+    {
+      "id": "notificacao",
+      "name": "Notificação",
+      "warning": "Não presumir que o prazo de contraditório é sempre dez dias nem que uma notificação equivale a citação.",
+      "checks": [
+        [
+          "destinatarios",
+          "Conferi a quem é devida a notificação e se existem mandatários associados."
+        ],
+        [
+          "objeto",
+          "Conferi a peça, despacho ou decisão efetivamente a comunicar."
+        ],
+        [
+          "meio",
+          "Confirmei o meio de notificação legal e operacionalmente aplicável."
+        ],
+        [
+          "anexos",
+          "Conferi as peças e anexos que devem acompanhar a notificação."
+        ],
+        [
+          "prazo",
+          "Verifiquei o prazo e o seu fundamento; não atribuí prazo supletivo automaticamente."
+        ],
+        [
+          "advertencias",
+          "Incluí as advertências exigidas pelo despacho ou pela lei, quando aplicáveis."
+        ],
+        [
+          "registo",
+          "Confirmei a referência processual, o envio e o comprovativo disponível."
+        ]
+      ]
+    },
+    {
+      "id": "oficio",
+      "name": "Ofício",
+      "warning": "O ofício deve cumprir a finalidade concreta do despacho, sem substituir decisões judiciais por formulações da secretaria.",
+      "checks": [
+        [
+          "destinatario",
+          "Conferi a identificação completa e o endereço/canal do destinatário."
+        ],
+        [
+          "referencia",
+          "Conferi o tribunal, unidade, referência e assunto."
+        ],
+        [
+          "objeto",
+          "O texto reproduz corretamente o pedido ou comunicação determinada."
+        ],
+        [
+          "prazo",
+          "Verifiquei se foi fixado prazo de resposta e o seu fundamento."
+        ],
+        [
+          "documentos",
+          "Conferi os anexos e documentos autorizados a remeter."
+        ],
+        [
+          "segredo",
+          "Verifiquei eventuais restrições de acesso, sigilo e dados pessoais."
+        ],
+        [
+          "expedicao",
+          "Conferi assinatura, expedição e registo do movimento."
+        ]
+      ]
+    },
+    {
+      "id": "conclusao",
+      "name": "Conclusão",
+      "warning": "A abertura de conclusão deve refletir o estado real dos autos. A ferramenta não decide se existe obrigação de concluir.",
+      "checks": [
+        [
+          "motivo",
+          "Identifiquei o evento ou requerimento que justifica a conclusão."
+        ],
+        [
+          "contraditorio",
+          "Verifiquei se existem diligências de contraditório previamente ordenadas ou legalmente necessárias."
+        ],
+        [
+          "prazos",
+          "Conferi prazos em curso e os comprovativos dos respetivos eventos."
+        ],
+        [
+          "pecas",
+          "Confirmei que as peças e anexos relevantes se encontram juntos e acessíveis."
+        ],
+        [
+          "pendencias",
+          "Identifiquei requerimentos, comunicações ou diligências pendentes."
+        ],
+        [
+          "urgencia",
+          "Assinalei a urgência apenas quando tem base processual ou determinação."
+        ],
+        [
+          "registo",
+          "Registei corretamente a referência e a conclusão no sistema."
+        ]
+      ]
+    },
+    {
+      "id": "remessa",
+      "name": "Remessa de autos",
+      "warning": "Não efetuar remessa sem conferir a decisão ou pressupostos legais que a determinam.",
+      "checks": [
+        [
+          "fundamento",
+          "Conferi despacho ou fundamento legal da remessa."
+        ],
+        [
+          "destino",
+          "Conferi tribunal, unidade ou entidade de destino."
+        ],
+        [
+          "pecas",
+          "Conferi peças, anexos, apensos e processos administrativos relevantes."
+        ],
+        [
+          "incidentes",
+          "Identifiquei recursos, incidentes ou diligências pendentes."
+        ],
+        [
+          "notificacao",
+          "Confirmei se as notificações anteriores à remessa estão cumpridas."
+        ],
+        [
+          "certificacao",
+          "Conferi certificações, identificação dos autos e registos."
+        ],
+        [
+          "comunicacao",
+          "Registei e confirmei a transmissão pelo canal aplicável."
+        ]
+      ]
+    },
+    {
+      "id": "certidao",
+      "name": "Certidão",
+      "warning": "A certidão deve limitar-se a factos ou peças verificáveis e ao âmbito solicitado ou ordenado.",
+      "checks": [
+        [
+          "requerimento",
+          "Conferi o âmbito do requerimento ou despacho."
+        ],
+        [
+          "legitimidade",
+          "Verifiquei as condições de acesso, legitimidade e eventuais restrições."
+        ],
+        [
+          "fonte",
+          "Conferi os autos, documentos e registos que suportam a certificação."
+        ],
+        [
+          "integridade",
+          "Confirmei que a transcrição ou cópia está completa e fiel."
+        ],
+        [
+          "sigilo",
+          "Verifiquei segredo de justiça, proteção de dados e restrições aplicáveis."
+        ],
+        [
+          "custos",
+          "Confirmei se há taxas ou encargos aplicáveis, sem os calcular aqui."
+        ],
+        [
+          "emissao",
+          "Conferi assinatura, data, registo e forma de entrega."
+        ]
+      ]
+    }
+  ]
+});
