@@ -1,6 +1,6 @@
 # Motor de Custas A01 — Caderno jurídico e técnico
 
-**Versão da interface:** 1.7 (experimental, novembro de 2026)  
+**Versão da interface:** 1.8 (experimental, novembro de 2026)  
 **Espécie:** acção administrativa (CPTA)  
 **Página:** `custas.html`
 
@@ -170,6 +170,28 @@ A prévia pode ser consultada mesmo quando incompleta, **sempre acompanhada da l
 
 **Limitação:** esta proposta não inclui custas de parte, não executa pagamentos, não apura encargos omissos nem substitui o processamento da conta da secretaria nos meios oficiais. Não existe integração com os sistemas CITIUS/SITAF ou serviços de pagamento.
 
+## Reconciliação financeira por impulso (v1.8)
+
+A versão 1.8 acrescenta um mapa de reconciliação que cruza os dados das **obrigações processuais** com **pagamentos e restituições confirmados documentalmente pelo utilizador**, individualmente atribuídos à mesma obrigação.
+
+### Funcionamento
+
+1. Identifica as obrigações criadas para cada sujeito processual e a sua referência.
+2. Soma os pagamentos confirmados atribuídos a cada obrigação e subtrai as restituições confirmadas atribuídas à mesma obrigação.
+3. Indica, para cada impulso, o valor da obrigação, o pagamento líquido imputado, a diferença aritmética positiva e o excesso potencial.
+4. Exibe separadamente o saldo líquido de pagamentos confirmados **sem imputação** e a quantidade de movimentos financeiros **pendentes**.
+5. Detecta situações de pagamento líquido negativo, excesso aritmético sobre determinada obrigação, pagamento prévio dispensado e falta de revalidação do benefício.
+6. Incorpora o mapa por impulso e as respectivas advertências na proposta de conferência e no resumo CSV. **Não redistribui valores automaticamente** entre partes ou impulsos.
+7. A cópia do mapa exige que os movimentos e as obrigações ainda coincidam com os dados da última reconciliação.
+
+### Limites e segurança
+
+- Um pagamento confirmado pela ferramenta é uma **declaração do utilizador**; não constitui consulta ou autenticação de DUC, CITIUS, SITAF ou entidades bancárias.
+- Um saldo de pagamento superior a uma obrigação é um **excesso aritmético potencial**, não uma ordem de restituição.
+- Um valor inferior ao exigível é uma diferença matemática, **não necessariamente uma dívida vencida**, sobretudo perante isenção, apoio judiciário, dispensa de pagamento prévio ou decisão específica.
+- Movimentos pendentes não integram o saldo pago; movimentos sem afectação não são presumidos como pagamento de um impulso específico.
+- A reconciliação ocorre localmente e os dados são temporários. Não existem transferências financeiras, acesso a bases judiciais ou arquivo persistente de comprovativos.
+
 ## Limitações que bloqueiam o uso como conta oficial
 
 - A taxa-base simulada não contempla isenções, reduções, prestações, regimes especiais, custas de recursos e incidentes. As obrigações de recurso ou incidente são valores **manuais**, não calculados automaticamente.
@@ -185,7 +207,7 @@ A prévia pode ser consultada mesmo quando incompleta, **sempre acompanhada da l
 
 ## Testes
 
-- Script: `node scripts/test-custas.mjs` (101 casos técnicos na versão 1.7).
+- Script: `node scripts/test-custas.mjs` (111 casos técnicos na versão 1.8).
 - Verificação global da página: `node scripts/validate-site.mjs`.
 - Integração contínua: `.github/workflows/custas-tests.yml`.
 
