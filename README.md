@@ -14,6 +14,7 @@ Suite integrada de ferramentas jurídicas práticas em português de Portugal. P
 | Minutas | `minutas.html` | Rascunhos de cotas, certidões, notificações e ofícios |
 | Roteiros | `roteiros.html` | Checklists operacionais de secretaria |
 | LegalTech Check | `expediente.html` | Conferência formal de seis tipos de expediente, sem dados processuais |
+| Fontes normativas | `fontes.html` | Inventário da base jurídica dos nove roteiros TAF, com conferência manual sem persistência |
 | Tramitação TAF | `tramitação-taf.html` | Nove roteiros: intimações, ações, impugnações, cautelares, recursos, pré-contratual e reclamações OEF |
 | Prazos CPA e CPPT | `regimes.html` | Contagem auxiliar em dias com regras dos artigos 87.º CPA e 20.º/1 CPPT |
 | Conferência de custas (A01) | `custas.html` | Conferência manual de taxas e pagamentos, sem cálculo jurídico automático |
