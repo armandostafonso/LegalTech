@@ -19,7 +19,7 @@ await check("Página inicial e pesquisa",async()=>{
  await page.locator("#search").fill("minuta");
  if(await page.locator(".tool:visible").count()!==1)throw Error("Pesquisa não filtra para uma ferramenta");
  await page.locator("#search").fill("");
- if(await page.locator(".tool:visible").count()!==4)throw Error("Ferramentas não recuperadas");
+ if(await page.locator(".tool:visible").count()!==6)throw Error("Ferramentas não recuperadas");
 });
 await check("Minutas: gerar texto e manter nomes introduzidos",async()=>{
  await open("minutas.html");
@@ -49,6 +49,27 @@ await check("Anonimizador: proteção de camada de texto ligada por predefiniç�
  if(!(await page.locator("#raster").isChecked()))throw Error("Modo de rasterização não está ativo por predefinição");
  const note=await page.locator("#rasterNote").innerText();
  if(!note.includes("conserva texto")&&!note.includes("camada de texto"))throw Error("Aviso de segurança ausente");
+});
+await check("Regimes CPA e CPPT: cálculos e cronologia",async()=>{
+ await open("regimes.html");
+ await page.locator("#start").fill("2026-11-16");
+ await page.locator("#days").fill("10");
+ await page.locator("#regime").selectOption("cpa87");
+ await page.locator("#calculate").click();
+ if(!(await page.locator("#endDate").innerText()).includes("30/11/2026"))throw Error("CPA: prazo errado");
+ if(await page.locator("#timeline tr").count()!==14)throw Error("CPA: cronologia incompleta");
+ await page.locator("#regime").selectOption("cppt20_1");
+ await page.locator("#calculate").click();
+ if(!(await page.locator("#endDate").innerText()).includes("26/11/2026"))throw Error("CPPT: prazo errado");
+ await page.locator("#start").fill("2026-07-15");
+ await page.locator("#days").fill("2");
+ await page.locator("#calculate").click();
+ if(!(await page.locator("#endDate").innerText()).includes("17/07/2026"))throw Error("Férias judiciais suspenderam indevidamente prazo CPPT");
+ await page.locator("#start").fill("2026-06-23");
+ await page.locator("#days").fill("1");
+ await page.locator("#municipality").selectOption("porto");
+ await page.locator("#calculate").click();
+ if(!(await page.locator("#endDate").innerText()).includes("25/06/2026"))throw Error("Feriado municipal ignorado");
 });
 await check("Anonimizador: página própria",async()=>{
  await open("anonimizador.html");
