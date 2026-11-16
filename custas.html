@@ -920,7 +920,7 @@ el("proposalExport").addEventListener("click",()=>{
 });
 
 const euro=n=>new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR"}).format(n/100);
-function cents(id){const s=el(id).value;if(s===""||!Number.isFinite(Number(s))||Number(s)<0)return null;return Math.round(Number(s)*100)}
+function cents(id){const s=el(id).value,v=Number(s);if(s===""||!Number.isFinite(v)||v<0||Math.abs(v*100-Math.round(v*100))>1e-6||!Number.isSafeInteger(Math.round(v*100)))return null;return Math.round(v*100)}
 let report="";
 el("calc").addEventListener("click",()=>{const fields=["a","ap","b","bp","extra","extrap"],nums=fields.map(cents);
 if(nums.some(v=>v===null)){el("status").textContent="Dados incompletos ou inválidos.";return}
