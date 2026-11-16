@@ -834,6 +834,7 @@ function proposalSnapshot(){
    checks:["law","table","exempt","remainder","charges"].map(id=>el(id).checked),
    payments:proposalParts.map(x=>el(x[2]).value),
    due:proposalParts.map(x=>el(x[0]).value),
+   meta:["process","date","value","subject"].map(id=>el(id).value),
    transit:el("proposalTransit").value,
    verified:el("proposalVerified").checked
  });
@@ -855,6 +856,8 @@ function proposalBuild(){
  if(hasLedger&&ledgerEntries.some(m=>["payment","refund"].includes(m.kind)&&m.status==="confirmed"&&!m.obId))blockers.push("Existem pagamentos confirmados sem afectação individual a uma obrigação");
  const rows=proposalParts.map(([key,label,paymentId])=>{
   const paid=hasLedger?confirmed.balances[key]:cents(paymentId);
+  if(cents(key)!==totals[key])blockers.push("Valor devido no quadro de conferência diverge das obrigações de "+label);
+  if(hasLedger&&cents(paymentId)!==paid)blockers.push("Pagamento no quadro de conferência diverge do livro de movimentos de "+label);
   if(paid===null||!Number.isSafeInteger(paid)||paid<0){blockers.push("Pagamento inválido ou ausente em "+label);return {label,due:totals[key],paid:0,positive:0,excess:0}}
   return {label,due:totals[key],paid,positive:Math.max(0,totals[key]-paid),excess:Math.max(0,paid-totals[key])};
  });
@@ -900,10 +903,14 @@ el("proposalCopy").addEventListener("click",async()=>{
 });
 el("proposalExport").addEventListener("click",()=>{
  const p=proposalCurrent();if(!p)return;
- const csv=["Sujeito;Obrigações (€);Pagamentos confirmados (€);Diferença positiva (€);Excesso potencial (€)",
-  ...p.rows.map(x=>[x.label,x.due,x.paid,x.positive,x.excess].map((v,i)=>i?String((v/100).toFixed(2)).replace(".",","):v).join(";")),
-  "AVISO;Documento não oficial. Não é conta de custas nem inclui custas de parte."
- ].join("\r\n");
+ const quote=v=>'"'+String(v).replace(/"/g,'""')+'"';
+ const csv=[
+  "Estado;"+quote(p.blockers.length?"INCOMPLETA, "+p.blockers.length+" advertências":"Prévia sem bloqueios técnicos"),
+  ...p.blockers.map((v,i)=>"PENDENTE "+(i+1)+";"+quote(v)),
+  "Sujeito;Obrigações (€);Pagamentos confirmados (€);Diferença positiva (€);Excesso potencial (€)",
+  ...p.rows.map(x=>[x.label,x.due,x.paid,x.positive,x.excess].map((v,i)=>i?String((v/100).toFixed(2)).replace(".",","):quote(v)).join(";")),
+  "AVISO;"+quote("Documento não oficial. Diferenças não são necessariamente dívida. Custas de parte excluídas.")
+ ].join("\\r\\n");
  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
  const href=URL.createObjectURL(blob),a=document.createElement("a");
  a.href=href;a.download="legaltech-a01-conferencia-experimental.csv";
