@@ -45,7 +45,7 @@ Foram acrescentados doze módulos de apoio à produtividade, com [matriz de func
 
 ## Testes de qualidade
 
-O módulo A01 dispõe de **152 testes técnicos de regressão** em `scripts/test-custas.mjs`, incluindo prestações, remanescente, reduções, apoio judiciário e dispensa de pagamento prévio. Estes testes não certificam a interpretação jurídica nem os resultados em processos reais.
+O módulo A01 dispõe de **157 testes técnicos de regressão** em `scripts/test-custas.mjs`, incluindo prestações, remanescente, reduções, apoio judiciário e dispensa de pagamento prévio. Estes testes não certificam a interpretação jurídica nem os resultados em processos reais.
 
 
 O GitHub Actions executa também a bateria `scripts/next-smoke.mjs` para os doze módulos especializados, além das verificações de estrutura, de contrato do calendário e da Tramitação TAF, de navegação, de modo Claro-Escuro e acessibilidade WCAG A/AA nas ferramentas principais, de privacidade e de regressão do Cita-Check. A auditoria isolada do anonimizador usa PDFs fictícios com duas páginas e documentos mistos sem texto.
