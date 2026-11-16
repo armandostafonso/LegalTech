@@ -215,7 +215,7 @@
 </div>
 <div class="table-scroll"><table aria-label="Responsabilidade final individualizada por sujeito"><thead><tr><th>Interveniente</th><th>Posição</th><th>Total atribuído no mapa</th></tr></thead><tbody id="multiTotalsRows"><tr><td colspan="3">Sem resultados.</td></tr></tbody></table></div>
 <div class="table-scroll"><table aria-label="Encargos repartidos no mapa multissujeito"><thead><tr><th>Encargo / decisão</th><th>Âmbito</th><th>Montante</th><th>Repartição</th><th>Acção</th></tr></thead><tbody id="multiChargesRows"><tr><td colspan="5">Sem repartições registadas.</td></tr></tbody></table></div>
-<p class="muted"><small>Base legal: <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2013-34580575-53451975" target="_blank" rel="noopener">CPC, artigos 527.º e 528.º</a>; <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975-45001875" target="_blank" rel="noopener">RCP, artigo 30.º</a>. A solidariedade, a transacção com redução, o decaimento parcial e situações especiais não são resolvidos automaticamente.</small></p>
+<p class="muted"><small>Base legal: <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2013-34580575-53451975" target="_blank" rel="noopener">CPC, artigos 527.º e 528.º</a>; <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975-45001875" target="_blank" rel="noopener">RCP, artigo 30.º</a>. No litisconsórcio, a taxa pelo impulso é paga pelo litisconsorte indicado em primeiro lugar (CPC 530.º/4); na coligação há taxas próprias (CPC 530.º/5). Este mapa não altera tais obrigações. A solidariedade, a transacção com redução, o decaimento parcial e situações especiais não são resolvidos automaticamente.</small></p>
 </section>
 <section class="panel" id="conciliacao-impulsos">
 <h2>Reconciliação financeira por impulso</h2>
@@ -999,7 +999,7 @@ el("multiCopy").addEventListener("click",async()=>{
  catch(e){el("multiResult").textContent="Não foi possível copiar automaticamente; verifica as permissões do navegador."}
 });
 el("multiExport").addEventListener("click",()=>{
- const quote=value=>'"'+String(value).replace(/"/g,'""')+'"';
+ const quote=value=>{let v=String(value);if(/^[\\u0000-\\u0020]*[=+\\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'};
  const csv=["Interveniente;Posição;Total atribuído (€)",...multiTotals().map(p=>[quote(p.name),quote(multiRoles[p.role]),String((p.cents/100).toFixed(2)).replace(".",",")].join(";")),
   "ALERTA;"+quote("Mapa autónomo. Não inclui a conta A/B nem pagamentos confirmados. Não é conta oficial.")].join("\r\n");
  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
@@ -1159,7 +1159,7 @@ el("proposalCopy").addEventListener("click",async()=>{
 });
 el("proposalExport").addEventListener("click",()=>{
  const p=proposalCurrent();if(!p)return;
- const quote=v=>'"'+String(v).replace(/"/g,'""')+'"';
+ const quote=v=>{let v=String(v);if(/^[\\u0000-\\u0020]*[=+\\-@]/.test(v))v="'"+v;return '"'+v.replace(/"/g,'""')+'"'};
  const csv=[
   "Estado;"+quote(p.blockers.length?"INCOMPLETA, "+p.blockers.length+" advertências":"Prévia sem bloqueios técnicos"),
   ...p.blockers.map((v,i)=>"PENDENTE "+(i+1)+";"+quote(v)),
