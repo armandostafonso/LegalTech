@@ -51,10 +51,15 @@ await check("Fichas TAF: 25 fases, direito transitório e minutas seguras",async
  await open("tramitação-taf.html");
  await page.locator("#workflow").selectOption("acao-administrativa");
  await page.locator("#phase").selectOption("citacao");
+ await page.locator("#steps input").first().check();
+ await page.locator("#phase").selectOption("saneamento");
+ await page.locator("#phase").selectOption("citacao");
+ if(!(await page.locator("#steps input").first().isChecked()))throw Error("Verificações não mantidas entre fases");
  await page.locator("#detailGuide").evaluate(node=>node.open=true);
  if(!(await page.locator("#guide").innerText()).includes("Antes de prosseguir"))throw Error("Ficha de conferência ausente");
  const url=await page.locator("#draftLink").getAttribute("href");
  if(!url.startsWith("minutas.html?tipo=")||url.includes("processo="))throw Error("Passagem para minutas insegura");
+ if(!url.includes("tipo=cota"))throw Error("Citação indevidamente convertida em notificação");
  await page.locator("#actionFiled").fill("2026-11-30");
  if(!(await page.locator("#lawStatus").innerText()).includes("não se aplicam"))throw Error("Direito transitório antigo");
  await page.locator("#actionFiled").fill("2026-12-02");
