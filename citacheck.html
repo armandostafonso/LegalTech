@@ -425,6 +425,7 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
 </main>
 
 <script src="assets/calendario.js"></script>
+<script src="assets/prazo-core.js"></script>
 
 <script>
   /* ===================== GESTÃO DO TEMA (DARK/LIGHT MODE) ===================== */
@@ -606,53 +607,39 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
     return dt;
   }
 
-  function adicionarDiasContinuosComSuspensao(startDate, dias, urgente, municipal, logEventos) {
-    let dt = new Date(startDate);
-    let restantes = dias;
-    while (restantes > 0) {
-      dt.setDate(dt.getDate() + 1);
-      if (urgente || !isFeriasJudiciais(dt)) {
-        restantes--;
-      } else {
-        logEventos.add('Suspensão em férias judiciais');
-      }
-    }
-    while (!isDiaUtilTribunal(dt, urgente, municipal)) {
-      const fer = getNomeFeriado(dt, municipal);
+  // O motor puro é comum às calculadoras Cita-Check e Regimes.
+  // A opção concreta de citação, as dilações legais e os eventos certificados
+  // continuam a ser apreciados aqui, fora do motor de dias.
+  function registrarEventosMotor(resultado, urgente, municipal, logEventos) {
+    if (resultado.suspended) logEventos.add('Suspensão em férias judiciais');
+    let dia = new Date(resultado.raw);
+    for (const _ of resultado.transfer || []) {
+      const fer = getNomeFeriado(dia, municipal);
       if (fer) logEventos.add(`Termo transferido por feriado/encerramento (${fer})`);
-      else if (isWeekend(dt)) logEventos.add('Termo transferido por fim de semana');
-      else if (!urgente && isFeriasJudiciais(dt)) logEventos.add('Termo transferido por férias judiciais');
-      dt.setDate(dt.getDate() + 1);
+      else if (isWeekend(dia)) logEventos.add('Termo transferido por fim de semana');
+      else if (!urgente && isFeriasJudiciais(dia)) logEventos.add('Termo transferido por férias judiciais');
+      dia = addDays(dia, 1);
     }
-    return dt;
   }
 
-  // Art. 279.º, al. c), do Código Civil: dia correspondente ou último do mês.
-  function adicionarMesesCalendario(data, meses) {
-    const ano = data.getFullYear();
-    const mes = data.getMonth() + meses;
-    const ultimo = new Date(ano, mes + 1, 0).getDate();
-    return new Date(ano, mes, Math.min(data.getDate(), ultimo));
+  function prazoPorMotor(inicio, valor, unidade, dilacao, urgente, municipal, logEventos) {
+    const resultado = LegalTechPrazoCore.calculate({
+      start:inicio, amount:valor, unit:unidade, delay:dilacao,
+      regime:'cpc',urgent:urgente,
+      openDay:(dia, modoUrgente)=>isDiaUtilTribunal(dia, modoUrgente, municipal),
+      inVacation:isFeriasJudiciais,trace:true
+    });
+    registrarEventosMotor(resultado, urgente, municipal, logEventos);
+    return resultado.end;
   }
 
+  function adicionarDiasContinuosComSuspensao(startDate, dias, urgente, municipal, logEventos) {
+    return prazoPorMotor(startDate, dias, 'dias', 0, urgente, municipal, logEventos);
+  }
+
+  // Art. 279.º, al. c), CC: prazo mensal nominal limitado ao último dia do mês.
   function contarPrazoCalendario(inicio, valor, unidade, dilacao, urgente, municipal, logEventos) {
-    const meses = unidade === 'anos' ? valor * 12 : valor;
-    const fimNominal = adicionarMesesCalendario(inicio, meses);
-    const duracaoDias = Math.round((Date.UTC(fimNominal.getFullYear(), fimNominal.getMonth(), fimNominal.getDate()) -
-      Date.UTC(inicio.getFullYear(), inicio.getMonth(), inicio.getDate())) / 86400000);
-    // Prazos processuais de duração igual ou superior a 6 meses não suspendem em férias judiciais (art. 138.º, n.º 1, CPC).
-    const semSuspensao = urgente || meses >= 6;
-    let termo = adicionarDiasContinuosComSuspensao(inicio, duracaoDias + dilacao, semSuspensao, municipal, logEventos);
-    // Um prazo comum de duração >= 6 meses não se suspende em férias judiciais,
-    // mas o termo que recaia em férias transfere-se (art. 138.º, n.º 2, CPC;
-    // art. 279.º, al. e), CC). Não confundir esta regra com processo urgente.
-    if (!urgente && meses >= 6) {
-      while (!isDiaUtilTribunal(termo, false, municipal)) {
-        logEventos.add('Termo transferido por férias judiciais ou encerramento');
-        termo = addDays(termo, 1);
-      }
-    }
-    return termo;
+    return prazoPorMotor(inicio, valor, unidade, dilacao, urgente, municipal, logEventos);
   }
 
   function proximoDiaUtilMulta(date, urgente, municipal) {
