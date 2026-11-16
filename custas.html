@@ -10,7 +10,7 @@
 </style><script>try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||"light"}catch(e){}</script><link rel="stylesheet" href="assets/brand.css">
 </head>
 <body><main><header><a class="brand" href="index.html">LegalTech</a><button class="secondary" id="theme" type="button">◐ Tema</button></header>
-<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.2</p>
+<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.3</p>
 <div class="notice"><strong>Âmbito:</strong> cálculo limitado da taxa-base por impulso com Tabela I-A/I-B e conferência de valores. Não determina automaticamente o total legalmente exigível, não lê PDF e não emite conta oficial. Não introduzas dados pessoais ou processuais confidenciais. Os dados não são enviados nem guardados por esta página.</div>
 <section class="panel"><h2>1. Identificação e regime</h2><div class="grid">
 <div class="field"><label for="process">Referência fictícia / interna</label><input id="process" placeholder="Ex.: TESTE-A01"></div>
@@ -53,7 +53,7 @@
 <p class="muted"><small>Fundamentos: <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975" target="_blank" rel="noopener">RCP, arts. 4.º e 15.º</a>; <a href="https://diariodarepublica.pt/dr/detalhe/decreto-lei/164-2026-1154555254" target="_blank" rel="noopener">DL n.º 164/2026, arts. 8.º e 9.º</a>; Lei n.º 34/2004. As isenções podem ter efeitos específicos sobre encargos. A aplicação das novas regras depende também da data do acto.</small></p></section>
 
 <section class="panel" id="automatico-a01"><h2>Calculadora normativa de taxa-base · A01</h2>
-<p class="muted">Apura a taxa-base de um impulso segundo os 13 escalões da Tabela I do RCP, na versão aplicável a acções iniciadas a partir de 29 de março de 2012. O resultado <strong>não inclui</strong> remanescente, segunda prestação, reduções, isenções, apoio judiciário ou despesas. Para valores superiores a 275.000 €, calcula apenas a parcela até esse limite.</p>
+<p class="muted">Apura a taxa-base de um impulso segundo os 13 escalões da Tabela I do RCP, na versão aplicável a acções iniciadas a partir de 29 de março de 2012. O resultado distingue a taxa total da <strong>primeira prestação (metade da taxa I-A)</strong>; a segunda prestação é tratada em separado. Não inclui remanescente, reduções, isenções, apoio judiciário ou despesas. Para valores superiores a 275.000 €, calcula apenas a parcela até esse limite.</p>
 <div class="grid">
 <div class="field"><label for="autoParty">Parte responsável</label><select id="autoParty"><option value="a">Parte A</option><option value="b">Parte B</option></select></div>
 <div class="field"><label for="autoType">Impulso</label><select id="autoType"><option value="peticao">Petição inicial (I-A)</option><option value="contestacao">Contestação (I-A)</option><option value="recurso">Recurso (I-B)</option></select></div>
@@ -64,7 +64,7 @@
 </div>
 <label class="checkrow"><input id="autoVerified" type="checkbox"> Confirmei a versão do RCP, a UC, a existência do impulso e que <strong>não há isenção, redução ou regime especial</strong> que altere esta taxa-base.</label>
 <div class="actions"><button type="button" class="secondary" id="autoPreview">Calcular taxa-base</button><button type="button" id="autoInsert">Criar obrigação calculada</button></div>
-<p id="autoResult" class="notice" role="status" aria-live="polite">Indica os dados do impulso. A taxa calculada é apenas uma componente do total de custas, sem cálculo da segunda prestação.</p>
+<p id="autoResult" class="notice" role="status" aria-live="polite">Indica os dados do impulso. Na Tabela I-A são calculados a taxa total e os valores teóricos da primeira e segunda prestações, mas só a primeira pode ser registada nesta área.</p>
 <p class="muted"><small>Base legal: RCP, artigos <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975-1127127275" target="_blank" rel="noopener">6.º</a>, 11.º e <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975-1123572475" target="_blank" rel="noopener">Tabela I</a> (Lei n.º 7/2012). A data do impulso e a redacção da lei devem ser conferidas; o sistema não aplica automaticamente benefícios.</small></p>
 </section>
 <section class="panel" id="obrigacoes">
@@ -279,13 +279,16 @@ function autoData(){
  const row=autoRows.find(x=>capped<=x[0]);
  if(!row)return {error:"Escalão não identificado."};
  const col=type==="recurso"?"B":"A",unitsHundredths=col==="B"?row[1]/2:row[1];
- const resultCents=Math.round(unitsHundredths*ucCents/100);
+ const totalCents=Math.round(unitsHundredths*ucCents/100);
+ const firstCents=col==="A"?Math.round(totalCents/2):totalCents;
+ const secondCents=col==="A"?totalCents-firstCents:0;
+ const resultCents=firstCents;
  const warn=cents>27500000?" Valor superior a 275.000 €: remanescente não incluído, apurar separadamente.":"";
  const cutoff=entry<"2026-12-01"?" Aplica-se ao artigo 6.º o regime anterior ao DL 164/2026, mesmo em actos posteriores.":" Confirmar a redacção de 2026 do artigo 6.º para os actos relevantes.";
- return {party,type,ref,entry,col,euros:cents,ucCents,resultCents,unitsHundredths,warning:warn+cutoff};
+ return {party,type,ref,entry,col,euros:cents,ucCents,resultCents,totalCents,firstCents,secondCents,unitsHundredths,warning:warn+cutoff};
 }
 function autoExplain(d){
- return "Tabela I-"+d.col+"; "+(d.unitsHundredths/100).toLocaleString("pt-PT")+" UC × "+(d.ucCents/100).toLocaleString("pt-PT")+" € = "+ledgerFmt(d.resultCents)+". "+d.warning+" A taxa-base não corresponde necessariamente ao montante actualmente exigível.";
+ return "Tabela I-"+d.col+"; taxa total "+(d.unitsHundredths/100).toLocaleString("pt-PT")+" UC × "+(d.ucCents/100).toLocaleString("pt-PT")+" € = "+ledgerFmt(d.totalCents)+". "+(d.col==="A"?"1.ª prestação: "+ledgerFmt(d.firstCents)+"; 2.ª prestação potencial: "+ledgerFmt(d.secondCents)+" (RCP 13.º/2 e 14.º-A).":"Prestação única do recurso: "+ledgerFmt(d.firstCents)+".")+d.warning+" Exigibilidade sujeita a verificação.";
 }
 function autoInvalidate(){
  autoPreviewState=null;el("autoResult").textContent="Dados alterados. Volta a calcular para validar a taxa-base.";
@@ -315,8 +318,8 @@ el("autoInsert").addEventListener("click",()=>{
  if(!autoPreviewState||JSON.stringify(d)!==JSON.stringify(autoPreviewState)){el("autoResult").textContent="Calcula novamente antes de criar a obrigação.";return}
  if(!d.ref||d.ref.length>70){el("autoResult").textContent="Identifica o impulso com uma referência de até 70 caracteres.";return}
  if(obligations.some(x=>x.party===d.party&&x.ref.toLocaleLowerCase("pt-PT")===d.ref.toLocaleLowerCase("pt-PT"))){el("autoResult").textContent="Obrigação já registada para esta parte e referência. Não foi adicionada novamente.";return}
- const basis="RCP art. 6.º/"+(d.col==="A"?"1":"2")+"; Tabela I-"+d.col+"; "+d.unitsHundredths/100+" UC; base limitada a 275.000 €; versão legal a conferir";
- obligations.push({id:obNextId++,party:d.party,type:d.type,ref:d.ref,basis,cents:d.resultCents,checked:true,origin:"tabela-i-base"});
+ const basis="RCP art. 6.º/"+(d.col==="A"?"1":"2")+" e art. 13.º/2; Tabela I-"+d.col+"; taxa-base total "+ledgerFmt(d.totalCents)+"; "+(d.col==="A"?"primeira prestação ":"prestação única ")+ledgerFmt(d.resultCents)+"; versão temporal conferida pelo utilizador";
+ obligations.push({id:obNextId++,party:d.party,type:d.type,ref:d.ref,basis,cents:d.resultCents,checked:true,origin:"tabela-i-base",totalCents:d.totalCents,secondCents:d.secondCents,entry:d.entry,col:d.col,baseValueCents:d.euros,ucCents:d.ucCents});
  obInvalidate();obSummary();autoPreviewState=null;el("autoVerified").checked=false;
  el("autoResult").textContent="Obrigação de taxa-base criada por "+ledgerFmt(d.resultCents)+". "+d.warning+" Total devido só passa à conferência depois de premir «Transferir os totais devidos».";
 });
