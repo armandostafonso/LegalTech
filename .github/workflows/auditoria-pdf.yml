@@ -10,6 +10,7 @@ on:
       - 'pa.html'
       - 'assets/pa-pdf.js'
       - 'scripts/pa-pdf-smoke.mjs'
+      - 'scripts/cdn-pdf-hashes.mjs'
 permissions:
   contents: read
 jobs:
@@ -24,6 +25,8 @@ jobs:
         run: |
           npm install --no-save playwright@1.56.1
           npx playwright install --with-deps chromium
+      - name: Conferir hashes atuais das bibliotecas PDF (preparação SRI)
+        run: node scripts/cdn-pdf-hashes.mjs
       - name: Gerar PDF fictício e verificar resultado anonimizado
         run: node scripts/pdf-integration.mjs
       - name: Verificar extração de PDF textual e bloqueio de documento misto no PA
