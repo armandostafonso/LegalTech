@@ -1,0 +1,28 @@
+name: Paridade Cita-Check Web e Windows
+on:
+  schedule:
+    - cron: '43 8 * * 1'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/citacheck-parity.mjs'
+      - 'rules/calendario.json'
+      - 'rules/municipais.json'
+      - 'tests/shared-cases.json'
+      - '.github/workflows/paridade-citacheck.yml'
+permissions:
+  contents: read
+jobs:
+  comparar:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validar estrutura local
+        run: node scripts/citacheck-parity.mjs --offline
+      - name: Comparar dados com Cita-Check Desktop
+        run: node scripts/citacheck-parity.mjs
