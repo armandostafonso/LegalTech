@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 
-const pages=["index.html","anonimizador.html","citacheck.html","minutas.html","roteiros.html","tramitação-taf.html","regimes.html","agenda.html","expediente.html","fontes.html","instalar.html","privacidade.html","custas.html"];
+const pages=["index.html","anonimizador.html","citacheck.html","minutas.html","roteiros.html","tramitação-taf.html","regimes.html","agenda.html","expediente.html","fontes.html","assistant.html","notify.html","hearing.html","compare.html","remessas.html","appeals.html","pa.html","termos.html","lex-monitor.html","privacy-check.html","audit-despacho.html","mapa-taf.html","instalar.html","privacidade.html","custas.html"];
 const errors=[];
 let scriptsChecked=0,linksChecked=0,idsChecked=0;
 for(const file of pages){
@@ -38,12 +38,13 @@ for(const file of pages){
  }
  if(!html.includes("</html>"))errors.push(file+": HTML incompleto");
 }
-for(const asset of ["assets/brand.css","assets/ux.css","assets/theme.js","assets/legaltech-mark.svg","favicon.svg","site.webmanifest"]){
+for(const asset of ["assets/brand.css","assets/ux.css","assets/next.css","assets/next.js","assets/theme.js","assets/legaltech-mark.svg","favicon.svg","site.webmanifest"]){
  if(!fs.existsSync(asset))errors.push("Recurso de identidade em falta: "+asset);
 }
 const manifest=JSON.parse(fs.readFileSync("site.webmanifest","utf8"));
 if(manifest.start_url!=="./index.html"||manifest.scope!=="./")errors.push("Manifesto fora do âmbito LegalTech");
 if(!manifest.icons?.length||!manifest.icons.every(icon=>fs.existsSync(icon.src.replace(/^\.\//,""))))errors.push("Ícone do manifesto inválido");
+try{new vm.Script(fs.readFileSync("assets/next.js","utf8"),{filename:"assets/next.js"});scriptsChecked++}catch(e){errors.push("assets/next.js: "+e.message)}
 const themeCode=fs.readFileSync("assets/theme.js","utf8");
 try { new vm.Script(themeCode,{filename:"assets/theme.js"}); scriptsChecked++ }
 catch(e) { errors.push("assets/theme.js: "+e.message) }
