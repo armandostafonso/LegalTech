@@ -45,3 +45,13 @@ Os ensaios atuais comprovam que **um documento sintético de duas páginas**, ap
 ## Critérios para utilização institucional
 
 Não afirmar que a ferramenta garante anonimização irreversível sem auditoria técnica independente, análise de proteção de dados e validação das políticas do organismo. Utilizar primeiro material de teste, nunca autos reais não autorizados.
+
+## Ensaio LegalTech PA (PDF)
+
+- [x] Módulo de extração de PDF textual limitado a 12 MB, 120 páginas e 60 000 caracteres de texto.
+- [x] Bloqueio da exportação quando alguma página não tem camada de texto selecionável, evitando índice parcial.
+- [x] Carregamento do PDF.js apenas após ação explícita do utilizador.
+- [ ] Validar com o teste automatizado `scripts/pa-pdf-smoke.mjs` após cada alteração de parser.
+- [ ] Testar posteriormente formatos difíceis, PDFs assinados, rotacionados, encriptados e documentos de duas colunas; sem usar processos reais.
+
+O PDF.js é carregado de CDN externo; não introduzir documentos confidenciais antes de avaliação de segurança das dependências.
