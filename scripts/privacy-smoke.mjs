@@ -2,13 +2,19 @@ import { chromium } from "playwright";
 import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 const browser=await chromium.launch({headless:true});
-const paths=["minutas.html","tramitação-taf.html","agenda.html","expediente.html"];
+const paths=["minutas.html","tramitação-taf.html","agenda.html","expediente.html","assistant.html","notify.html","hearing.html","compare.html","remessas.html","appeals.html","pa.html","termos.html","lex-monitor.html","privacy-check.html","audit-despacho.html","mapa-taf.html"];
 const violations=[];
 for(const filename of paths){
  const page=await browser.newPage({acceptDownloads:true});
  const network=[];
  page.on("request",request=>{if(/^https?:\/\//.test(request.url()))network.push(request.url())});
  await page.goto(pathToFileURL(resolve(filename)).href,{waitUntil:"domcontentloaded"});
+ if(["assistant.html","privacy-check.html","compare.html","audit-despacho.html"].includes(filename)){
+  const field=filename==="assistant.html"?"#source":filename==="privacy-check.html"?"#source":filename==="compare.html"?"#before":"#instruction";
+  await page.locator(field).fill("DADO-FICTICIO-NAO-IDENTIFICATIVO");
+  await page.reload();
+  if(await page.locator(field).inputValue())violations.push(filename+": texto persistiu após recarga");
+ }
  if(filename==="minutas.html"){
    await page.locator("#processo").fill("FICTICIO/2026");
    await page.locator("#factos").fill("Evento meramente fictício");
