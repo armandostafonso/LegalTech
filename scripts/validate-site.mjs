@@ -8,6 +8,13 @@ let scriptsChecked=0,linksChecked=0,idsChecked=0;
 for(const file of pages){
  const html=fs.readFileSync(file,"utf8");
  if(!/<html[^>]*lang="pt-PT"/.test(html)) errors.push(file+": lang pt-PT em falta");
+ // Contrato de identidade: todas as páginas têm a mesma folha, boot e controlador.
+ if(!html.includes('href="assets/brand.css"')) errors.push(file+": identidade visual comum em falta");
+ if(!html.includes('src="assets/theme.js"')) errors.push(file+": controlador de tema em falta");
+ if(!html.includes('id="lt-theme-bootstrap"')) errors.push(file+": arranque do tema em falta");
+ if(!html.includes('href="index.html"')) errors.push(file+": navegação para início em falta");
+ const themeScriptPos=html.indexOf('src="assets/theme.js"');
+ if(themeScriptPos!==-1 && themeScriptPos>html.indexOf("</body>")) errors.push(file+": script de tema após o body");
  const ids=new Set();
  for(const match of html.matchAll(/\bid="([^"]+)"/g)){
    idsChecked++;
@@ -30,6 +37,19 @@ for(const file of pages){
    catch(e){errors.push(file+": "+e.message)}
  }
  if(!html.includes("</html>"))errors.push(file+": HTML incompleto");
+}
+for(const asset of ["assets/brand.css","assets/theme.js","assets/legaltech-mark.svg","favicon.svg"]){
+ if(!fs.existsSync(asset))errors.push("Recurso de identidade em falta: "+asset);
+}
+const themeCode=fs.readFileSync("assets/theme.js","utf8");
+try { new vm.Script(themeCode,{filename:"assets/theme.js"}); scriptsChecked++ }
+catch(e) { errors.push("assets/theme.js: "+e.message) }
+for(const key of ["legaltech_theme","data-theme","aria-label","MutationObserver"]){
+ if(!themeCode.includes(key))errors.push("Controlador de tema sem "+key);
+}
+const css=fs.readFileSync("assets/brand.css","utf8");
+for(const key of [':root[data-theme="dark"]',"--lt-navy","--lt-gold",".lt-theme-control"]){
+ if(!css.includes(key))errors.push("Identidade visual sem "+key);
 }
 if(errors.length){console.error("Problemas encontrados:\n"+errors.join("\n"));process.exit(1)}
 console.log("Validação aprovada:",pages.length,"páginas,",scriptsChecked,"scripts,",linksChecked,"recursos locais e",idsChecked,"IDs.");
