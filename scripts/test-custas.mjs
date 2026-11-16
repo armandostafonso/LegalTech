@@ -709,4 +709,34 @@ check("Multissujeito financeiro: reset limpa o livro sem tocar no resto da suite
  assert.match(els.get("multiObRows").innerHTML,/Sem obrigações/);
  assert.match(els.get("multiMoveRows").innerHTML,/Sem movimentos/);
 });
+
+check("Multissujeito: identificar duas obrigações do mesmo sujeito",()=>{
+ put("multiName","SUJ-TESTE");put("multiRole","autor");click("multiAdd");
+ for(const [ref,amount] of [["OB-1","100"],["OB-2","40"]]){
+  put("multiObPerson","1");put("multiObKind","taxa");put("multiObRef",ref);put("multiObAmount",amount);
+  put("multiObBasis","Fundamento fictício validado no teste");els.get("multiObVerified").checked=true;click("multiObAdd");
+ }
+ assert.match(els.get("multiObRows").innerHTML,/OB-1/);assert.match(els.get("multiObRows").innerHTML,/OB-2/);
+});
+check("Multissujeito: guia emitida bloqueia referência duplicada",()=>{
+ put("multiMovePerson","1");put("multiMoveOb","1");put("multiMoveKind","guide");
+ put("multiMoveRef","DUC-COMUM");put("multiMoveDate","2026-11-16");put("multiMoveAmount","100");click("multiMoveAdd");
+ put("multiMoveRef","DUC-COMUM");put("multiMoveAmount","100");click("multiMoveAdd");
+ assert.match(read("multiAccountMessage"),/Já existe uma guia/);
+});
+check("Multissujeito: mesma referência não é imputada a outra obrigação",()=>{
+ put("multiMoveOb","2");put("multiMoveKind","payment");put("multiMoveStatus","confirmed");
+ put("multiMoveRef","DUC-COMUM");put("multiMoveAmount","40");click("multiMoveAdd");
+ assert.match(read("multiAccountMessage"),/obrigações diferentes/);
+});
+check("Multissujeito: exportação CSV neutraliza nome iniciado por fórmula",()=>{
+ put("multiName","=SOMA(1;2)");click("multiAdd");
+ click("multiAccountReconcile");click("multiAccountExport");
+ const csv=downloads.at(-1);
+ assert.match(csv,/'=SOMA\(1;2\)/);
+ assert.doesNotMatch(csv,/"=SOMA\(1;2\)"/);
+});
+check("Multissujeito: limpeza integral dos testes de segurança",()=>{
+ click("reset");assert.equal(read("multiPeopleCount"),"0");assert.match(els.get("multiMoveRows").innerHTML,/Sem movimentos/);
+});
 console.log(tests+" testes do módulo A01 concluídos.");
