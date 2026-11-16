@@ -11,9 +11,12 @@ Ferramentas jurídicas práticas em português de Portugal. Projeto estático pu
 | Cita-Check | `citacheck.html` | Simulação de citações, notificações e prazos, com cota proposta |
 | Minutas | `minutas.html` | Rascunhos de cotas, certidões, notificações e ofícios |
 | Roteiros | `roteiros.html` | Checklists operacionais de secretaria |
+| Conferência de custas (A01) | `custas.html` | Conferência manual de taxas e pagamentos, sem cálculo jurídico automático |
 | Privacidade | `privacidade.html` | Informação sobre limites, dependências e tratamento local |
 
 **Atenção:** não são instrumentos oficiais e não substituem despacho, verificação dos autos ou enquadramento legal. Não se deve utilizar um cálculo sem confirmar as normas concretamente aplicáveis.
+
+O módulo A01 é experimental e não recebe PDFs nem calcula taxas legais. Exige que o utilizador determine os valores e confirme a versão do RCP, isenções, reduções, remanescente e pagamentos. Não introduzir dados confidenciais.
 
 ## Segurança e privacidade
 
