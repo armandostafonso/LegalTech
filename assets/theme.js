@@ -1,57 +1,73 @@
-/* LegalTech: tema partilhado em todas as ferramentas.
-   Sem dependências, sem transmissão de dados. */
-(function(){
- "use strict";
- const KEY="legaltech_theme", LEGACY="theme";
- const root=document.documentElement;
- function valid(v){return v==="light"||v==="dark";}
- function stored(){
-  try{
-   const a=localStorage.getItem(KEY),b=localStorage.getItem(LEGACY);
-   return valid(a)?a:valid(b)?b:null;
-  }catch(_){return null;}
- }
- function system(){try{return matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}catch(_){return "light";}}
- function sync(theme){
-  if(!valid(theme))return;
-  try{localStorage.setItem(KEY,theme);localStorage.setItem(LEGACY,theme);}catch(_){}
-  const meta=document.querySelector('meta[name="theme-color"]');
-  if(meta)meta.setAttribute("content",theme==="dark"?"#091629":"#f4f6f9");
-  document.querySelectorAll(".lt-theme-control").forEach(btn=>{
-    btn.setAttribute("aria-label",theme==="dark"?"Ativar modo claro":"Ativar modo escuro");
-    btn.setAttribute("title",theme==="dark"?"Mudar para modo claro":"Mudar para modo escuro");
-    const icon=btn.querySelector(".lt-theme-symbol");
-    if(icon)icon.textContent=theme==="dark"?"☀":"☾";
-  });
- }
- function apply(theme){root.dataset.theme=theme;sync(theme);}
- function init(){
-  apply(stored()||root.dataset.theme||system());
-  const existing=document.querySelector("#themeToggle, #theme");
-  if(existing){
-   existing.classList.add("lt-theme-control");
-   /* Os controlos antigos mantêm o listener original.
-      O observador sincroniza o estado e as duas preferências. */
-  }else{
-   const header=document.querySelector(".top-nav, body > header nav, body > header .top");
-   if(header){
-    const button=document.createElement("button");
-    button.type="button";
-    button.className="lt-theme-control lt-theme-added";
-    button.innerHTML='<span class="lt-theme-symbol" aria-hidden="true">☾</span><span class="lt-theme-label">Tema</span>';
-    button.addEventListener("click",()=>apply(root.dataset.theme==="dark"?"light":"dark"));
-    header.appendChild(button);
-   }
+/* LegalTech | Controlador de aparência v1.1
+   Uma única preferência, com migração das páginas antigas e sem dependências. */
+(function () {
+  "use strict";
+  const KEY = "legaltech_theme", LEGACY = "theme";
+  const root = document.documentElement;
+  const valid = value => value === "light" || value === "dark";
+  const preferred = () => {
+    try {
+      const current = localStorage.getItem(KEY);
+      if (valid(current)) return current;
+      const previous = localStorage.getItem(LEGACY);
+      if (valid(previous)) return previous;
+    } catch (_) {}
+    try { return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; }
+    catch (_) { return "light"; }
+  };
+  function update(theme) {
+    if (!valid(theme)) return;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.content = theme === "dark" ? "#091629" : "#f4f6f9";
+    try {
+      if (localStorage.getItem(KEY) !== theme) localStorage.setItem(KEY, theme);
+      if (localStorage.getItem(LEGACY) !== theme) localStorage.setItem(LEGACY, theme);
+    } catch (_) {}
+    document.querySelectorAll(".lt-theme-control").forEach(button => {
+      const opposite = theme === "dark" ? "claro" : "escuro";
+      button.setAttribute("aria-label", "Ativar modo " + opposite);
+      button.setAttribute("title", "Ativar modo " + opposite);
+      button.setAttribute("aria-pressed", String(theme === "dark"));
+      const icon = button.querySelector(".lt-theme-symbol");
+      if (icon) icon.textContent = theme === "dark" ? "☀" : "☾";
+    });
   }
-  sync(root.dataset.theme);
-  const observer=new MutationObserver(records=>{
-   if(records.some(r=>r.attributeName==="data-theme"))sync(root.dataset.theme);
-  });
-  observer.observe(root,{attributes:true,attributeFilter:["data-theme"]});
-  window.addEventListener("storage",e=>{
-   if((e.key===KEY||e.key===LEGACY)&&valid(e.newValue)&&e.newValue!==root.dataset.theme)apply(e.newValue);
-  });
- }
- if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});
- else init();
+  function apply(theme) {
+    if (!valid(theme)) return;
+    root.setAttribute("data-theme", theme);
+    update(theme);
+  }
+  function setupButton() {
+    let button = document.querySelector("#themeToggle, #theme");
+    if (!button) {
+      const header = document.querySelector(".top-nav, body > header nav, body > header .top");
+      if (!header) return;
+      button = document.createElement("button");
+      button.type = "button";
+      button.className = "lt-theme-added";
+      header.appendChild(button);
+      button.addEventListener("click", () => apply(root.dataset.theme === "dark" ? "light" : "dark"));
+    }
+    button.classList.add("lt-theme-control");
+    /* Substituir apenas o conteúdo visual preserva os listeners anteriores. */
+    const symbol = document.createElement("span");
+    symbol.className = "lt-theme-symbol";
+    symbol.setAttribute("aria-hidden", "true");
+    const label = document.createElement("span");
+    label.className = "lt-theme-label";
+    label.textContent = "Tema";
+    button.replaceChildren(symbol, label);
+  }
+  function init() {
+    setupButton();
+    apply(preferred());
+    new MutationObserver(records => {
+      if (records.some(r => r.attributeName === "data-theme")) update(root.dataset.theme);
+    }).observe(root, {attributes:true, attributeFilter:["data-theme"]});
+    window.addEventListener("storage", e => {
+      if ((e.key === KEY || e.key === LEGACY) && valid(e.newValue) && e.newValue !== root.dataset.theme) apply(e.newValue);
+    });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, {once:true});
+  else init();
 })();
