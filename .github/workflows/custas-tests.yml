@@ -5,12 +5,18 @@ on:
     paths:
       - 'custas.html'
       - 'scripts/test-custas.mjs'
+      - 'scripts/test-custas-cenarios.mjs'
+      - 'scripts/test-custas-browser.mjs'
+      - 'scripts/fixtures/**'
       - 'scripts/validate-site.mjs'
       - '.github/workflows/custas-tests.yml'
   pull_request:
     paths:
       - 'custas.html'
       - 'scripts/test-custas.mjs'
+      - 'scripts/test-custas-cenarios.mjs'
+      - 'scripts/test-custas-browser.mjs'
+      - 'scripts/fixtures/**'
       - 'scripts/validate-site.mjs'
       - '.github/workflows/custas-tests.yml'
   workflow_dispatch:
@@ -21,10 +27,17 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Verificar sintaxe e ligações do site
         run: node scripts/validate-site.mjs
       - name: Testes de regressão do módulo A01
         run: node scripts/test-custas.mjs
+      - name: Cenários sintéticos multi-interveniente
+        run: node scripts/test-custas-cenarios.mjs
+      - name: Teste de interface em Chromium
+        run: node scripts/test-custas-browser.mjs
