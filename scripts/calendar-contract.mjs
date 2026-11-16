@@ -15,6 +15,15 @@ for(const field of ["version","vacations","fixed_holidays","mobile_holidays"]){
   throw Error("Regra diferente entre JSON normativo e JavaScript: "+field);
  }
 }
+const municipalConfig=JSON.parse(fs.readFileSync("rules/municipais.json","utf8"));
+if(normalized(municipalConfig.municipalities)!==normalized(api.municipalities)){
+ throw Error("Feriados municipais Web diferentes da matriz JSON");
+}
+for(const item of municipalConfig.municipalities){
+ const [month,day]=item.day.split("-").map(Number);
+ const value=api.municipalHoliday(new Date(2026,month-1,day),item.id);
+ if(!value||!value.includes(item.label))throw Error("Feriado municipal ignorado: "+item.id);
+}
 const dates=[
  ["2026-07-15",false],["2026-07-16",true],["2026-08-31",true],["2026-09-01",false],
  ["2026-12-22",true],["2027-01-03",true],["2027-01-04",false],
