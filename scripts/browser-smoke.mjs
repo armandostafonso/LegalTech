@@ -19,7 +19,24 @@ await check("Página inicial e pesquisa",async()=>{
  await page.locator("#search").fill("minuta");
  if(await page.locator(".tool:visible").count()!==1)throw Error("Pesquisa não filtra para uma ferramenta");
  await page.locator("#search").fill("");
- if(await page.locator(".tool:visible").count()!==8)throw Error("Ferramentas não recuperadas");
+ if(await page.locator(".tool:visible").count()!==9)throw Error("Ferramentas não recuperadas");
+});
+await check("Fontes normativas: inventário, filtro e marcas temporárias",async()=>{
+ await open("fontes.html");
+ if(await page.locator(".audit").count()!==9)throw Error("Inventário normativo incompleto");
+ await page.locator("#search").fill("110.º");
+ if(await page.locator(".audit").count()<1)throw Error("Pesquisa de artigos falhou");
+ await page.locator("#search").fill("");
+ await page.locator("#area").selectOption("Tributária");
+ if(await page.locator(".audit").count()<1)throw Error("Filtro de jurisdição falhou");
+ await page.locator("#area").selectOption("");
+ await page.locator(".audit input").first().check();
+ if(!(await page.locator("#count").innerText()).includes("1 consultas assinaladas"))throw Error("Marca de consulta não contabilizada");
+ await page.locator("#reset").click();
+ if(!(await page.locator("#count").innerText()).includes("0 consultas assinaladas"))throw Error("Marcas não repostas");
+ await page.locator(".audit input").first().check();
+ await page.reload();
+ if(!(await page.locator("#count").innerText()).includes("0 consultas assinaladas"))throw Error("Marcas ficaram guardadas após recarga");
 });
 await check("Conferência de expediente: seis atos e exportação segura",async()=>{
  await open("expediente.html");
