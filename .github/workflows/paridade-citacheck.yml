@@ -10,6 +10,8 @@ on:
       - 'rules/calendario.json'
       - 'rules/municipais.json'
       - 'tests/shared-cases.json'
+      - 'tests/parity-extended.json'
+      - 'rules/parity-manifest.json'
       - '.github/workflows/paridade-citacheck.yml'
 permissions:
   contents: read
