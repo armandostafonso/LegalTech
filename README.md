@@ -17,11 +17,17 @@ Ferramentas jurídicas práticas em português de Portugal. Projeto estático pu
 | Privacidade | `privacidade.html` | Informação sobre limites, dependências e tratamento local |
 | Agenda local | `agenda.html` | Datas previamente conferidas, exportação ICS e CSV, sem armazenamento persistente |
 
-A Tramitação TAF reúne [33 fichas por fase](docs/fichas-taf.md), com cautelas, atos dependentes de despacho e ligação às minutas. As verificações são temporárias. O acesso em iPad/iPhone pode ser acrescentado ao ecrã principal, mas as regras legais e bibliotecas externas requerem acesso atualizado à Internet.
+A Tramitação TAF reúne [33 fichas por fase](docs/fichas-taf.md), com cautelas, atos dependentes de despacho e ligação às minutas. As verificações são temporárias. A [Agenda local](agenda.html) permite exportar eventos genéricos em ICS e CSV, mas não calcula prazos nem guarda dados após recarga. As [minutas](minutas.html) podem ser editadas diretamente e exportadas em TXT ou RTF para Word/Pages. O [acesso em iPad/iPhone](instalar.html) pode ser acrescentado ao ecrã principal, mas o acesso à Internet continua necessário para obter conteúdo e dependências atualizados.
 
 **Atenção:** não são instrumentos oficiais e não substituem despacho, verificação dos autos ou enquadramento legal. Não se deve utilizar um cálculo sem confirmar as normas concretamente aplicáveis.
 
 O módulo A01 é experimental: contém apenas simulações orientadoras da Tabela I e conferência aritmética dos montantes indicados, além de fichas de intervenientes (isenções, apoio judiciário e dispensa de pagamento prévio). Não recebe PDFs nem emite conta oficial. Exige verificação da versão do RCP, do regime de cada parte, das reduções, remanescente e pagamentos. Não introduzir dados confidenciais. Especificação: [Caderno jurídico e técnico A01](docs/motor-custas-A01.md).
+
+## Testes de qualidade
+
+O GitHub Actions executa verificações de estrutura, de contrato do calendário e da Tramitação TAF, de navegação, de modo Claro-Escuro e acessibilidade WCAG A/AA nas ferramentas principais, de privacidade e de regressão do Cita-Check. A auditoria isolada do anonimizador usa PDFs fictícios com duas páginas e documentos mistos sem texto.
+
+**A aprovação destes testes não constitui certificação jurídica, auditoria de privacidade independente ou garantia de utilização offline.**
 
 ## Segurança e privacidade
 
