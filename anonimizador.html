@@ -259,9 +259,9 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
         <span><b>Tarja preta</b><small>Cobre o dado com um retângulo preto.</small></span></label>
     </fieldset>
 
-    <label class="check"><input type="checkbox" id="raster">
+    <label class="check"><input type="checkbox" id="raster" checked>
       <span><b>Eliminar o texto original (converter as páginas em imagem)</b></span></label>
-    <p class="note warn" id="rasterNote">Sem esta opção, o texto original continua dentro do PDF, apenas coberto, e pode ser selecionado, copiado ou extraído. Com a opção ativa, o aspeto mantém-se, mas o PDF deixa de ter texto pesquisável e o ficheiro fica maior.</p>
+    <p class="note warn" id="rasterNote"><strong>Proteção recomendada (ativada por predefinição):</strong> converte todas as páginas em imagem, para não manter a camada de texto original. Se desativar esta opção, o PDF conserva texto oculto apenas visualmente, que poderá ser recuperado. Em qualquer modo, reveja todas as páginas e confirme os elementos não detetados.</p>
 
     <details>
       <summary>Opções avançadas</summary>
@@ -893,6 +893,10 @@ async function run(){
     }
     const mode = document.querySelector('input[name=modo]:checked').value;
     let raster = $('raster').checked;
+    if (!raster && !confirm("ATENÇÃO: O modo sem conversão em imagem mantém no PDF os dados originais, mesmo sob as tarjas. NÃO é anonimização segura. Pretende produzir apenas uma cópia visualmente ocultada?")) {
+      throw new Cancelled();
+    }
+    if (!raster) warnings.push("ALERTA DE SEGURANÇA: o PDF conserva texto original sob as tarjas. Não partilhar como documento anonimizado.");
     const hide = parseHide($('hideTerms').value.split('\n'));
     const keep = $('keepTerms').value.split('\n').map(s => s.trim()).filter(Boolean);
 
@@ -949,7 +953,9 @@ async function run(){
     if (noText.length === n) {
       throw new UserError('O PDF não tem camada de texto (parece digitalizado). Esta ferramenta não faz OCR, por isso não há nada a analisar.');
     }
-    if (noText.length) warnings.push('Páginas sem camada de texto, não analisadas: ' + noText.join(', ') + '.');
+    if (noText.length) {
+      throw new UserError('O PDF contém páginas sem camada de texto: ' + noText.join(', ') + '. O expurgo automático dessas páginas não é possível sem OCR. Para impedir uma falsa sensação de segurança, o processamento foi interrompido. Reveja o documento e utilize um processo de anonimização adequado a documentos digitalizados.');
+    }
 
     /* os nomes de magistrados encontrados juntam-se aos termos a preservar, para ficarem protegidos em todo o documento, incluindo a assinatura */
     const protectors = buildProtectors(keep.concat(Array.from(judgeNames.values())));
