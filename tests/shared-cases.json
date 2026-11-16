@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "description": "Casos fictícios CPC de contagem geral, sem dilação, para paridade Web/Desktop. Requerem conferência jurídica.",
+  "cases": [
+    {
+      "id": "dias-urgente",
+      "start": "2026-11-16",
+      "quantity": 10,
+      "unit": "dias",
+      "urgent": true,
+      "expected": "2026-11-26"
+    },
+    {
+      "id": "verao-comum",
+      "start": "2026-07-15",
+      "quantity": 2,
+      "unit": "dias",
+      "urgent": false,
+      "expected": "2026-09-02"
+    },
+    {
+      "id": "verao-urgente",
+      "start": "2026-07-15",
+      "quantity": 2,
+      "unit": "dias",
+      "urgent": true,
+      "expected": "2026-07-17"
+    },
+    {
+      "id": "mes-calendario",
+      "start": "2027-01-31",
+      "quantity": 1,
+      "unit": "meses",
+      "urgent": true,
+      "expected": "2027-03-01"
+    },
+    {
+      "id": "seis-meses-comum",
+      "start": "2026-02-01",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": false,
+      "expected": "2026-09-01"
+    },
+    {
+      "id": "seis-meses-urgente",
+      "start": "2026-02-01",
+      "quantity": 6,
+      "unit": "meses",
+      "urgent": true,
+      "expected": "2026-08-03"
+    },
+    {
+      "id": "ano-calendario",
+      "start": "2026-11-16",
+      "quantity": 1,
+      "unit": "anos",
+      "urgent": false,
+      "expected": "2027-11-16"
+    }
+  ]
+}
