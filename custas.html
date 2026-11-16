@@ -10,7 +10,7 @@
 </style><script>try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||"light"}catch(e){}</script><link rel="stylesheet" href="assets/brand.css">
 </head>
 <body><main><header><a class="brand" href="index.html">LegalTech <span class="lt-suite">Suite</span></a><button class="secondary" id="theme" type="button">◐ Tema</button></header>
-<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.6</p>
+<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.7</p>
 <div class="notice"><strong>Âmbito:</strong> cálculo limitado da taxa-base por impulso com Tabela I-A/I-B e conferência de valores. Não determina automaticamente o total legalmente exigível, não lê PDF e não emite conta oficial. Não introduzas dados pessoais ou processuais confidenciais. Os dados não são enviados nem guardados por esta página.</div>
 <section class="panel"><h2>1. Identificação e regime</h2><div class="grid">
 <div class="field"><label for="process">Referência fictícia / interna</label><input id="process" placeholder="Ex.: TESTE-A01"></div>
@@ -183,6 +183,21 @@
 </div><p class="muted">Introduz os valores já determinados segundo o regime jurídico aplicável. Custas de parte não entram nesta conferência.</p>
 <div class="actions"><button type="button" id="calc">Conferir valores</button><button class="secondary" type="button" id="reset">Limpar</button></div></section>
 <section class="panel" aria-live="polite"><h2>9. Resultado</h2><p id="status" class="status">Aguardam-se dados.</p><table><tbody><tr><th>Total exigível</th><td id="due">—</td></tr><tr><th>Total confirmado</th><td id="paid">—</td></tr><tr><th>Diferença aritmética positiva</th><td id="debt">—</td></tr><tr><th>Potencial excesso</th><td id="over">—</td></tr></tbody></table><p id="notes" class="muted">A ausência de diferenças aritméticas não basta para dispensar a elaboração da conta: confirmar os pressupostos do artigo 29.º do RCP.</p><div class="actions"><button type="button" class="secondary" id="copy">Copiar relatório</button><button type="button" class="secondary" onclick="window.print()">Imprimir</button></div><pre id="report" hidden></pre></section>
+
+<section class="panel" id="proposta-conferencia">
+  <h2>Proposta de conferência por sujeito processual</h2>
+  <p class="muted">Prévia de trabalho da secretaria, <strong>não é uma conta judicial oficial</strong>. Consolida as obrigações introduzidas, pagamentos confirmados e encargos distribuídos, com indicação de divergências e pressupostos em falta. Não calcula custas de parte nem presume que toda a diferença aritmética seja legalmente exigível.</p>
+  <div class="grid">
+    <div class="field"><label for="proposalTransit">Data do trânsito em julgado (se confirmado)</label><input id="proposalTransit" type="date"/></div>
+    <div class="field"><label for="proposalStatus">Estado da conferência</label><input id="proposalStatus" readonly value="Ainda não calculado"/></div>
+  </div>
+  <label class="checkrow"><input id="proposalVerified" type="checkbox"/> Confirmei o julgado em última instância, as partes responsáveis, os benefícios, a documentação de pagamentos e os restantes pressupostos da conta.</label>
+  <div class="actions"><button type="button" id="proposalPreview" class="secondary">Preparar proposta</button><button type="button" id="proposalCopy" class="secondary">Copiar proposta</button><button type="button" id="proposalExport" class="secondary">Exportar resumo CSV</button></div>
+  <p id="proposalNote" class="notice" aria-live="polite">A proposta pode ficar marcada como incompleta. Os bloqueios são apresentados antes de qualquer utilização.</p>
+  <div class="table-scroll"><table aria-label="Proposta de conferência por sujeito"><thead><tr><th>Sujeito</th><th>Obrigações registadas</th><th>Pagamentos confirmados</th><th>Diferença positiva</th><th>Excesso potencial</th></tr></thead><tbody id="proposalRows"><tr><td colspan="5">Aguardam-se os dados.</td></tr></tbody></table></div>
+  <pre id="proposalText" hidden></pre>
+  <p class="muted"><small>Referências: artigos 29.º e 30.º do RCP, artigos 527.º, 529.º e 532.º do CPC. O texto é apenas uma proposta de conferência, não substitui os mecanismos oficiais de processamento da conta.</small></p>
+</section>
 </main><script>
 const el=id=>document.getElementById(id);
 let profilesReady=false,profilesText="";
@@ -805,6 +820,98 @@ for(const id of ["ap","bp","extrap"])el(id).addEventListener("input",()=>{
 });
 
 const ids=["process","date","value","subject","a","ap","b","bp","extra","extrap","law","table","exempt","remainder","charges","hearing","endbefore","opp","priority","authorcontinue","remvalue","remdisp","remcost","instruction","actdate","entrydate","calcvalue"];
+
+/* Prévia de conferência por sujeito responsável. Os valores são aritméticos,
+   nunca assumidos automaticamente como dívida, restituição ou conta definitiva. */
+let proposalCache=null;
+const proposalParts=[["a","Parte A","ap"],["b","Parte B","bp"],["extra","Outras quantias","extrap"]];
+function proposalSnapshot(){
+ return JSON.stringify({
+   obligations:obligations.map(o=>[o.id,o.party,o.cents,o.checked,o.benefitAuditCurrent,o.paymentTiming,o.ref]),
+   ledger:ledgerEntries.map(m=>[m.id,m.party,m.kind,m.cents,m.status,m.obId]),
+   ledgerSynced,obSynced,profilesReady,
+   responsibility:respEntries.map(x=>[x.id,x.a,x.b,x.posted]),
+   checks:["law","table","exempt","remainder","charges"].map(id=>el(id).checked),
+   payments:proposalParts.map(x=>el(x[2]).value),
+   due:proposalParts.map(x=>el(x[0]).value),
+   transit:el("proposalTransit").value,
+   verified:el("proposalVerified").checked
+ });
+}
+function proposalBuild(){
+ const blockers=[];
+ const totals=obAmounts(),confirmed=ledgerBalances(),hasLedger=ledgerEntries.length>0;
+ if(!obligations.length)blockers.push("Não existem obrigações processuais registadas");
+ if(!obSynced)blockers.push("Totais devidos ainda não transferidos ou desactualizados");
+ if(obligations.some(o=>!o.checked||o.benefitAuditCurrent===false))blockers.push("Existem obrigações sem revisão jurídica actualizada");
+ if(obligations.some(o=>o.paymentTiming==="deferred"))blockers.push("Dispensa de pagamento prévio: confirmar exigibilidade após decisão sobre custas");
+ if(respEntries.some(x=>!x.posted))blockers.push("Existem encargos no mapa que ainda não foram lançados nas obrigações");
+ if(!profilesReady)blockers.push("Fichas dos intervenientes não estão totalmente verificadas");
+ if(["law","table","exempt","remainder","charges"].some(id=>!el(id).checked))blockers.push("Faltam confirmações jurídicas gerais");
+ if(!el("proposalTransit").value)blockers.push("Trânsito em julgado não confirmado");
+ if(!el("proposalVerified").checked)blockers.push("A decisão final e os documentos não foram confirmados para a proposta");
+ if(hasLedger&&!ledgerSynced)blockers.push("Livro de pagamentos ainda não conciliado com a conferência");
+ if(hasLedger&&confirmed.pending)blockers.push("Existem pagamentos ou restituições pendentes");
+ if(hasLedger&&ledgerEntries.some(m=>["payment","refund"].includes(m.kind)&&m.status==="confirmed"&&!m.obId))blockers.push("Existem pagamentos confirmados sem afectação individual a uma obrigação");
+ const rows=proposalParts.map(([key,label,paymentId])=>{
+  const paid=hasLedger?confirmed.balances[key]:cents(paymentId);
+  if(paid===null||!Number.isSafeInteger(paid)||paid<0){blockers.push("Pagamento inválido ou ausente em "+label);return {label,due:totals[key],paid:0,positive:0,excess:0}}
+  return {label,due:totals[key],paid,positive:Math.max(0,totals[key]-paid),excess:Math.max(0,paid-totals[key])};
+ });
+ if(hasLedger&&rows.some(x=>x.paid<0))blockers.push("Saldo de pagamentos negativo");
+ const lines=[
+  "LEGALTECH SUITE | PROPOSTA EXPERIMENTAL DE CONFERÊNCIA A01",
+  "NÃO É CONTA OFICIAL | sujeita a verificação da secretaria",
+  "Referência fictícia: "+(el("process").value||"não indicada"),
+  "Trânsito em julgado: "+(el("proposalTransit").value||"não confirmado"),
+  "Fonte dos pagamentos: "+(hasLedger?"livro de movimentos confirmados":"valores declarados manualmente"),
+  "ESTADO: "+(blockers.length?"INCOMPLETA":"SEM BLOQUEIOS TÉCNICOS DETECTADOS; NÃO É CERTIFICAÇÃO JURÍDICA"),
+  ...blockers.map((x,i)=>"PENDENTE "+(i+1)+": "+x),
+  "",
+  ...rows.map(x=>x.label+" | obrigações "+ledgerFmt(x.due)+" | pago "+ledgerFmt(x.paid)+" | diferença positiva "+ledgerFmt(x.positive)+" | excesso potencial "+ledgerFmt(x.excess)),
+  "",
+  ...obligations.map(o=>"Impulso "+o.id+": "+ledgerParties[o.party]+"; "+obTypes[o.type]+"; "+o.ref+"; valor "+ledgerFmt(o.cents)+"; fundamento "+o.basis),
+  ...respEntries.map(x=>"Encargo "+x.ref+"; A "+ledgerFmt(x.a)+"; B "+ledgerFmt(x.b)+"; "+(x.posted?"lançado":"não lançado")),
+  "",
+  "Diferenças aritméticas não equivalem necessariamente a dívidas.",
+  "Custas de parte excluídas. Verificar RCP 29.º/30.º e CPC 527.º, 529.º e 532.º.",
+  "Documento não oficial; não inserir dados pessoais ou processuais confidenciais."
+ ];
+ return {rows,blockers,text:lines.join("\n"),snapshot:proposalSnapshot()};
+}
+el("proposalPreview").addEventListener("click",()=>{
+ const p=proposalBuild();proposalCache=p;
+ el("proposalStatus").value=p.blockers.length?"INCOMPLETA ("+p.blockers.length+" advertências)":"Prévia sem bloqueios técnicos";
+ el("proposalNote").textContent=p.blockers.length?"A proposta está incompleta: "+p.blockers.join("; ")+". Não utilizar como conta.":"Prévia aritmética preparada sem bloqueios técnicos. Ainda depende da verificação humana e não é conta oficial.";
+ el("proposalRows").innerHTML=p.rows.map(x=>"<tr><td>"+x.label+"</td><td>"+ledgerFmt(x.due)+"</td><td>"+ledgerFmt(x.paid)+"</td><td>"+ledgerFmt(x.positive)+"</td><td>"+ledgerFmt(x.excess)+"</td></tr>").join("");
+ el("proposalText").textContent=p.text;el("proposalText").hidden=false;
+});
+function proposalCurrent(){
+ if(!proposalCache||proposalCache.snapshot!==proposalSnapshot()){
+  el("proposalNote").textContent="A proposta está desactualizada. Volta a premir «Preparar proposta» após qualquer alteração.";
+  return null;
+ }
+ return proposalCache;
+}
+el("proposalCopy").addEventListener("click",async()=>{
+ const p=proposalCurrent();if(!p)return;
+ try{await navigator.clipboard.writeText(p.text);el("proposalNote").textContent="Proposta copiada. Não é documento oficial.";}
+ catch(e){el("proposalNote").textContent="Não foi possível copiar automaticamente. Selecciona o texto apresentado na prévia."}
+});
+el("proposalExport").addEventListener("click",()=>{
+ const p=proposalCurrent();if(!p)return;
+ const csv=["Sujeito;Obrigações (€);Pagamentos confirmados (€);Diferença positiva (€);Excesso potencial (€)",
+  ...p.rows.map(x=>[x.label,x.due,x.paid,x.positive,x.excess].map((v,i)=>i?String((v/100).toFixed(2)).replace(".",","):v).join(";")),
+  "AVISO;Documento não oficial. Não é conta de custas nem inclui custas de parte."
+ ].join("\r\n");
+ const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+ const href=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=href;a.download="legaltech-a01-conferencia-experimental.csv";
+ document.body.append(a);a.click();a.remove();
+ URL.revokeObjectURL(href);
+ el("proposalNote").textContent="Resumo CSV preparado localmente. Contém apenas valores da prévia e não constitui conta oficial.";
+});
+
 const euro=n=>new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR"}).format(n/100);
 function cents(id){const s=el(id).value;if(s===""||!Number.isFinite(Number(s))||Number(s)<0)return null;return Math.round(Number(s)*100)}
 let report="";
