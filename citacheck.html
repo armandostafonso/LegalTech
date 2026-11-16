@@ -1027,7 +1027,7 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
     const pontoPartida = def.tardia ? consulta : inicio;
     const dilacaoAplicavel = def.tardia ? 0 : dilTotal;
     const dataTermo = unidade === 'dias'
-      ? adicionarDiasContinuosComSuspensao(pontoPartida, prazo + dilacaoAplicavel, urgente || prazo >= 183, municipal, logEventos)
+      ? adicionarDiasContinuosComSuspensao(pontoPartida, prazo + dilacaoAplicavel, urgente, municipal, logEventos)
       : contarPrazoCalendario(pontoPartida, prazo, unidade, dilacaoAplicavel, urgente, municipal, logEventos);
     const multa1 = proximoDiaUtilMulta(dataTermo, urgente || (unidade !== 'dias' && (unidade === 'anos' || prazo >= 6)), municipal);
     const multa2 = proximoDiaUtilMulta(multa1, urgente || (unidade !== 'dias' && (unidade === 'anos' || prazo >= 6)), municipal);
