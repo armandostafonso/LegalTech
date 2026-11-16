@@ -514,7 +514,7 @@ check("Multissujeito: litisconsórcio totalmente vencido em partes iguais",()=>{
  assert.match(els.get("multiTotalsRows").innerHTML,/33,34/);
 });
 check("Multissujeito: não duplica a referência já repartida",()=>{
- put("multiRef","ENC-MULTI-001");els.get("multiVerified").checked=true;
+ put("multiRef","ENC-MULTI-001");put("multiAmount","100.01");els.get("multiVerified").checked=true;
  click("multiPreview");assert.match(read("multiResult"),/já registado/);
 });
 check("Multissujeito: bloqueia retirada de participante com encargo",()=>{
