@@ -5,6 +5,23 @@ const context={window:{}};
 vm.runInNewContext(fs.readFileSync("assets/roteiros-taf.js","utf8"),context,{timeout:2000});
 const published=context.window.LegalTechRoteirosTAF;
 if(JSON.stringify(canonical)!==JSON.stringify(published))throw Error("Catálogo TAF diverge do ficheiro normativo");
+const fichaSource=JSON.parse(fs.readFileSync("rules/fichas-taf.json","utf8"));
+const fichaContext={window:{}};
+vm.runInNewContext(fs.readFileSync("assets/fichas-taf.js","utf8"),fichaContext,{timeout:2000});
+if(JSON.stringify(fichaSource)!==JSON.stringify(fichaContext.window.LegalTechFichasTAF))throw Error("Fichas e código de navegação divergentes");
+if(fichaSource.fichas.length!==canonical.workflows.length)throw Error("Cobertura de fichas incompleta");
+const validDrafts=new Set(["cota","oficio","certidao","notificacao","remessa"]);
+for(const wf of canonical.workflows){
+ const ficha=fichaSource.fichas.find(x=>x.id===wf.id);
+ if(!ficha||ficha.stages.length!==wf.stages.length)throw Error("Ficha incompleta: "+wf.id);
+ for(const step of wf.stages){
+  const fspec=ficha.stages.find(x=>x.id===step.id);
+  if(!fspec||fspec.check_before.length<3||fspec.do_not_assume.length<2||!validDrafts.has(fspec.draft_kind))throw Error("Ficha ou minuta inválida: "+wf.id+"/"+step.id);
+  const offices=step.steps.filter(x=>x.startsWith("Secretaria | ")).length;
+  const judicial=step.steps.filter(x=>x.startsWith("Juiz / despacho | ")).length;
+  if(fspec.secretaria!==offices||fspec.judicial!==judicial)throw Error("Números divergentes: "+wf.id+"/"+step.id);
+ }
+}
 const ids=new Set();
 for(const w of canonical.workflows){
  if(ids.has(w.id))throw Error("Espécie repetida: "+w.id);ids.add(w.id);
@@ -29,4 +46,4 @@ for(const w of [action,imp,caution,appeal]){
  if(!w.stages.some(stage=>stage.steps.some(text=>text.startsWith("Juiz / despacho | "))))throw Error("Roteiro sem decisões dependentes de despacho: "+w.id);
  if(!w.stages.some(stage=>stage.steps.some(text=>text.startsWith("Secretaria | "))))throw Error("Roteiro sem atos de secretaria: "+w.id);
 }
-console.log("Contrato TAF aprovado: sete roteiros, normas, fases e limites de atuação.");
+console.log("Contrato TAF e fichas complementares: sete roteiros, 25 fases e minutas coerentes.");
