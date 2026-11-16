@@ -16,8 +16,9 @@ for(const filename of paths){
    await page.reload();
    if(await page.locator("#processo").inputValue())violations.push("Minutas: dados persistiram após recarga");
    await page.goto(pathToFileURL(resolve("minutas.html")).href+"?tipo=cota&assunto="+encodeURIComponent("<img src=x onerror=alert(1)>"));
-   const html=await page.locator("#saida").innerHTML();
-   if(html.includes("<img"))violations.push("Minutas: HTML injetado por parâmetros");
+   const value=await page.locator("#saida").inputValue();
+   if(!value.includes("<img src=x onerror=alert(1)>"))violations.push("Minutas: parâmetro textual perdido");
+   if(await page.locator("#saida img").count())violations.push("Minutas: HTML injetado por parâmetros");
  }
  if(filename==="agenda.html"){
    await page.locator("#date").fill("2026-11-20");
