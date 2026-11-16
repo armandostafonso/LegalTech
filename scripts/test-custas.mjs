@@ -120,4 +120,38 @@ check("Obrigações: não retirar obrigação com movimentos imputados",()=>{
 check("Obrigações: reset final limpa os novos registos",()=>{
  click("reset");assert.match(read("obA"),/0,00/);assert.match(read("ledgerA"),/0,00/);
 });
+
+check("Taxa-base: I-A para valor 30.000 € = 5 UC",()=>{
+ put("autoParty","a");put("autoType","peticao");put("autoDate","2026-11-16");put("autoValue","30000");put("autoUC","102");put("autoRef","AUTO-PI-001");
+ click("autoPreview");assert.match(read("autoResult"),/510,00/);
+});
+check("Taxa-base: recurso I-B para valor 30.000 € = 2,5 UC",()=>{
+ put("autoType","recurso");click("autoPreview");assert.match(read("autoResult"),/255,00/);
+});
+check("Taxa-base: valor superior a 275.000 € pára no escalão 16 UC",()=>{
+ put("autoType","peticao");put("autoValue","400000");click("autoPreview");
+ assert.match(read("autoResult"),/1\\.?632,00|1632,00/);assert.match(read("autoResult"),/remanescente não incluído/);
+});
+check("Taxa-base: data anterior a 29 de março de 2012 é bloqueada",()=>{
+ put("autoDate","2011-01-01");click("autoPreview");assert.match(read("autoResult"),/bloqueado/);
+});
+check("Taxa-base: não cria obrigação sem confirmação das premissas",()=>{
+ put("autoDate","2026-11-16");put("autoValue","30000");put("autoRef","AUTO-PI-001");
+ click("autoPreview");click("autoInsert");assert.match(read("autoResult"),/não criada/);
+});
+check("Taxa-base: cria obrigação controlada e impede repetição",()=>{
+ els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");assert.match(read("autoResult"),/criada/);
+ assert.match(read("obA"),/510,00/);
+ els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");
+ assert.match(read("autoResult"),/já registada/);assert.match(read("obA"),/510,00/);
+});
+check("Taxa-base: alteração do impulso exige novo cálculo",()=>{
+ put("autoRef","AUTO-REC-001");put("autoType","recurso");
+ click("autoInsert");assert.match(read("autoResult"),/Calcula novamente/);
+});
+check("Taxa-base: transferência é substitutiva",()=>{
+ els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");
+ assert.match(read("obA"),/765,00/);
+ click("obApply");assert.equal(els.get("a").value,"765.00");click("obApply");assert.equal(els.get("a").value,"765.00");
+});
 console.log(tests+" testes do módulo A01 concluídos.");
