@@ -1,6 +1,6 @@
 # Motor de Custas A01 — Caderno jurídico e técnico
 
-**Versão da interface:** 1.4 (experimental, novembro de 2026)  
+**Versão da interface:** 1.5 (experimental, novembro de 2026)  
 **Espécie:** acção administrativa (CPTA)  
 **Página:** `custas.html`
 
@@ -74,6 +74,43 @@ A data de propositura da acção não resolve isoladamente todas as regras trans
 
 **Limitações:** processos históricos e situações transitórias excepcionais podem implicar valores diferentes entre a primeira e a segunda prestações. Só são vinculadas automaticamente prestações geradas e validadas na calculadora. Não se impõem taxas devidas por impulsos para os quais o programa não tenha regime legal validado; nesses casos continuam disponíveis os registos manuais.
 
+## Benefícios e exigibilidade da taxa de justiça (v1.5)
+
+A versão 1.5 acrescenta um **assistente por obrigação**, com separação deliberada entre o benefício aplicável e o momento do pagamento.
+
+### Artigo 4.º do RCP, isenções
+
+A ficha da parte indica se existe isenção invocada e respectivo fundamento. O assistente apresenta um aviso para confirmar o âmbito, os requisitos materiais, eventuais excepções e a documentação. **Não transforma automaticamente o montante em zero**, mesmo quando o utilizador selecciona Ministério Público, acção popular ou entidade sem fins lucrativos. A fixação efectiva do benefício requer análise jurídica humana.
+
+### Artigo 6.º, n.º 3, redução da taxa a 90%
+
+Para **acções propostas a partir de 1 de dezembro de 2026**, a calculadora permite aplicar a redução prevista na redacção do artigo 6.º, n.º 3, introduzida pelo Decreto-Lei n.º 164/2026, com os seguintes pressupostos cumulativos:
+- Parte pessoa singular, declarada como **não representada por mandatário**, e entrega electrónica **facultativa**.
+- Todas as peças processuais entregues electronicamente, com confirmação documental.
+- Nenhuma isenção ou apoio judiciário impeditivos assinalados.
+- Primeira prestação **I-A** criada pela própria calculadora (não se aplicam automaticamente montantes de recursos, incidentes ou obrigações manuais).
+- Sem movimentos financeiros já imputados às prestações do impulso, para evitar diferenças retroactivas não reconciliadas.
+
+O cálculo é **90% da taxa original**, o que representa **10% de redução**, não 90% de redução. Quando existe segunda prestação vinculada, ambas são recalculadas em conjunto, para que a soma mantenha o total reduzido e não se duplique a taxa. O valor original é preservado para eventual reposição. Acções anteriores a 1 de dezembro de 2026 ficam bloqueadas **nesta rotina**, exigindo conferência da redacção historicamente aplicável e das regras transitórias.
+
+Exemplo ilustrativo: taxa total de 510 € (5 UC de 102 €). Valor a 90% = **459 €**. Duas prestações de **229,50 €**.
+
+### Artigo 15.º, n.º 1, alínea a), dispensa de pagamento prévio
+
+A verificação de dispensa prévia exige declaração do tipo de entidade pública abrangida, não incidência das matérias excluídas (administrativas contratuais, pré-contratuais ou relações laborais especificadas), data do acto e confirmação do enquadramento. O programa regista uma **anotação sobre a exigibilidade temporal** da obrigação e **não altera a taxa calculada**. A eventual imputação final à parte condenada depende da decisão judicial e do regime temporalmente aplicável, nomeadamente os n.ºs 2 e 3 do artigo 15.º na redacção de 2026.
+
+Um impulso com dispensa prévia impede que a conferência seja apresentada como juridicamente completa, mesmo quando se identifica uma diferença aritmética entre valores declarados e pagos.
+
+### Revalidação e integridade
+
+- Toda a alteração ao perfil da parte que afecte uma obrigação com benefício aplicado obriga a nova verificação documental antes de transferir totais.
+- A alteração às condições da entrega electrónica invalida a confirmação anterior da redução.
+- A reaplicação de uma redução já validada não produz um segundo desconto.
+- O benefício pode ser reposto se não existirem pagamentos/restituições imputados, restaurando o montante original.
+- As referências e os valores do relatório mantêm o histórico do fundamento jurídico de cada impulso.
+
+**Atenção:** as verificações são restritivas e não abrangem todos os benefícios legais, hipóteses de isenção, incidentes ou regimes históricos; não substituem a conferência dos autos e a decisão judicial.
+
 ## Limitações que bloqueiam o uso como conta oficial
 
 - A taxa-base simulada não contempla isenções, reduções, prestações, regimes especiais, custas de recursos e incidentes. As obrigações de recurso ou incidente são valores **manuais**, não calculados automaticamente.
@@ -89,7 +126,7 @@ A data de propositura da acção não resolve isoladamente todas as regras trans
 
 ## Testes
 
-- Script: `node scripts/test-custas.mjs` (59 casos técnicos na versão 1.4).
+- Script: `node scripts/test-custas.mjs` (77 casos técnicos na versão 1.5).
 - Verificação global da página: `node scripts/validate-site.mjs`.
 - Integração contínua: `.github/workflows/custas-tests.yml`.
 
@@ -100,7 +137,7 @@ A data de propositura da acção não resolve isoladamente todas as regras trans
 1. Catálogo de versões legais e UC histórica.
 2. Motor de prestações com estrutura de **obrigações por impulso**, para impedir duplicações.
 3. Evoluir a ligação entre movimentos e impulsos para várias partes, classificação do pagamento e conciliação documental segura.
-4. Regimes de isenção, apoio judiciário, dispensa prévia e reduções, com fundamentação e controlo de efeitos temporais.
+4. Expandir a triagem de isenção, apoio judiciário, dispensa prévia e reduções para regimes especiais, com fundamentação, efeitos temporais e validação da decisão de benefícios.
 5. Repartição de encargos e remanescente conforme condenação e decisões judiciais.
 6. Exportação da proposta de conferência, com indicação do grau de certeza e referências legais.
 7. Ensaios de regressão funcional e revisão jurídica especializada antes de qualquer utilização em processos reais.
