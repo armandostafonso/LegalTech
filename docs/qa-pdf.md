@@ -20,7 +20,7 @@
 
 ## Plano de testes funcionais pendentes (ficheiros exclusivamente fictícios)
 
-- [ ] PDF com texto selecionável, nome e NIF fictícios, em todas as páginas, e confirmação de que o PDF produzido não tem texto extraível.
+- [x] Ensaio automatizado de PDF fictício com termo identificativo inventado, exportação em imagem e confirmação de uma página sem texto extraível. Execução GitHub Actions aprovada em 16-11-2026. A cobertura de múltiplas páginas, NIF e variações permanece pendente.
 - [ ] PDF de duas páginas com uma página digitalizada sem camada de texto; deve ser bloqueado.
 - [ ] PDF com dados sensíveis em cabeçalho, rodapé, tabelas e orientação horizontal.
 - [ ] PDF com texto rotacionado, fontes incorporadas e letras sobrepostas.
@@ -30,6 +30,14 @@
 - [ ] Modo sem rasterização: exigir confirmação explícita e exibir aviso inequívoco.
 - [ ] PDF encriptado e ficheiro corrompido: erro controlado, sem descarga.
 - [ ] Ensaios em Edge no Windows e Safari em iOS/iPadOS.
+
+## Testes executáveis
+
+- Testes gerais: `node scripts/browser-smoke.mjs`.
+- Ensaio real do PDF fictício: `node scripts/pdf-integration.mjs` (necessita de Playwright/Chromium e bibliotecas remotas).
+- Automação GitHub: [Auditoria de PDF fictício](../.github/workflows/auditoria-pdf.yml).
+
+O ensaio atual comprova apenas que **um documento sintético de uma página**, após rasterização, não manteve camada de texto extraível. Não constitui validação de anonimização de qualquer documento real.
 
 ## Critérios para utilização institucional
 
