@@ -524,6 +524,170 @@
           "draft_subject": "Recursos jurisdicionais TAF | Decisão do tribunal superior"
         }
       ]
+    },
+    {
+      "id": "pre-contratual",
+      "area": "Administrativa",
+      "title": "Contencioso pré-contratual",
+      "scope": "Contencioso pré-contratual urgente, com despacho liminar e eventual incidente de levantamento do efeito suspensivo.",
+      "attention": "Não presumir efeito suspensivo automático sem os pressupostos do artigo 103.º-A CPTA nem efetuar citação antes do despacho liminar.",
+      "trigger": "Artigo 102.º/2 CPTA: conclusão ao juiz após distribuição para despacho liminar, em prazo máximo de 48 horas.",
+      "source": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2002-34464475-907910337",
+      "required_fields": [
+        "Procedimento de contratação e ato visado",
+        "Data de distribuição e despacho liminar",
+        "Identificação de entidades demandadas e contrainteressados",
+        "Eventos certificados de citação e resposta",
+        "Eventual incidente do artigo 103.º-A e despachos"
+      ],
+      "stages": [
+        {
+          "id": "entrada",
+          "check_before": [
+            "Confirmar que a fase «Distribuição e despacho liminar» corresponde ao estado real dos autos.",
+            "Procedimento de contratação e ato visado",
+            "Conferir a norma aplicável e os despachos anteriores antes de qualquer expediente."
+          ],
+          "do_not_assume": [
+            "Não certificar como praticada uma diligência sem comprovativo no processo.",
+            "Não substituir o despacho liminar ou a decisão sobre regime processual por uma seleção na ferramenta."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "remessa",
+          "draft_subject": "Contencioso pré-contratual | Distribuição e despacho liminar"
+        },
+        {
+          "id": "citacao",
+          "check_before": [
+            "Confirmar que a fase «Citação e contraditório» corresponde ao estado real dos autos.",
+            "Data de distribuição e despacho liminar",
+            "Conferir a norma aplicável e os despachos anteriores antes de qualquer expediente."
+          ],
+          "do_not_assume": [
+            "Não certificar como praticada uma diligência sem comprovativo no processo.",
+            "Não substituir o despacho liminar ou a decisão sobre regime processual por uma seleção na ferramenta."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "cota",
+          "draft_subject": "Contencioso pré-contratual | Citação e contraditório"
+        },
+        {
+          "id": "suspensao",
+          "check_before": [
+            "Confirmar que a fase «Incidente de efeito suspensivo» corresponde ao estado real dos autos.",
+            "Identificação de entidades demandadas e contrainteressados",
+            "Conferir a norma aplicável e os despachos anteriores antes de qualquer expediente."
+          ],
+          "do_not_assume": [
+            "Não certificar como praticada uma diligência sem comprovativo no processo.",
+            "Não substituir o despacho liminar ou a decisão sobre regime processual por uma seleção na ferramenta."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "oficio",
+          "draft_subject": "Contencioso pré-contratual | Incidente de efeito suspensivo"
+        },
+        {
+          "id": "decisao",
+          "check_before": [
+            "Confirmar que a fase «Decisão e tramitação posterior» corresponde ao estado real dos autos.",
+            "Eventos certificados de citação e resposta",
+            "Conferir a norma aplicável e os despachos anteriores antes de qualquer expediente."
+          ],
+          "do_not_assume": [
+            "Não certificar como praticada uma diligência sem comprovativo no processo.",
+            "Não substituir o despacho liminar ou a decisão sobre regime processual por uma seleção na ferramenta."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "oficio",
+          "draft_subject": "Contencioso pré-contratual | Decisão e tramitação posterior"
+        }
+      ]
+    },
+    {
+      "id": "reclamacao-oef",
+      "area": "Tributária",
+      "title": "Reclamação de atos do órgão de execução fiscal",
+      "scope": "Reclamação de ato do órgão de execução fiscal, com tramitação dependente de subida imediata ou diferida.",
+      "attention": "Não presumir urgência nem subida imediata em todas as reclamações. Conferir os pressupostos taxativos do artigo 278.º/3 e as suas consequências.",
+      "trigger": "Artigo 278.º CPPT: regra do conhecimento diferido, com exceções e regime urgente para os casos do n.º 3.",
+      "source": "https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/1999-34577575-158474486",
+      "required_fields": [
+        "Ato reclamado e notificação",
+        "Processo de execução fiscal remetido",
+        "Fundamentos invocados e pressupostos de subida",
+        "Respostas do RFP e parecer do MP",
+        "Despacho/decisão e comunicações à execução"
+      ],
+      "stages": [
+        {
+          "id": "entrada",
+          "check_before": [
+            "Confirmar que a fase «Receção e identificação da reclamação» corresponde ao estado real dos autos.",
+            "Ato reclamado e notificação",
+            "Conferir a norma aplicável e os despachos anteriores antes de qualquer expediente."
+          ],
+          "do_not_assume": [
+            "Não certificar como praticada uma diligência sem comprovativo no processo.",
+            "Não substituir o despacho liminar ou a decisão sobre regime processual por uma seleção na ferramenta."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "remessa",
+          "draft_subject": "Reclamação de atos do órgão de execução fiscal | Receção e identificação da reclamação"
+        },
+        {
+          "id": "subida",
+          "check_before": [
+            "Confirmar que a fase «Subida diferida ou imediata» corresponde ao estado real dos autos.",
+            "Processo de execução fiscal remetido",
+            "Conferir a norma aplicável e os despachos anteriores antes de qualquer expediente."
+          ],
+          "do_not_assume": [
+            "Não certificar como praticada uma diligência sem comprovativo no processo.",
+            "Não substituir o despacho liminar ou a decisão sobre regime processual por uma seleção na ferramenta."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "cota",
+          "draft_subject": "Reclamação de atos do órgão de execução fiscal | Subida diferida ou imediata"
+        },
+        {
+          "id": "contraditorio",
+          "check_before": [
+            "Confirmar que a fase «Resposta do RFP e parecer do MP» corresponde ao estado real dos autos.",
+            "Fundamentos invocados e pressupostos de subida",
+            "Conferir a norma aplicável e os despachos anteriores antes de qualquer expediente."
+          ],
+          "do_not_assume": [
+            "Não certificar como praticada uma diligência sem comprovativo no processo.",
+            "Não substituir o despacho liminar ou a decisão sobre regime processual por uma seleção na ferramenta."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "cota",
+          "draft_subject": "Reclamação de atos do órgão de execução fiscal | Resposta do RFP e parecer do MP"
+        },
+        {
+          "id": "decisao",
+          "check_before": [
+            "Confirmar que a fase «Decisão e efeitos na execução» corresponde ao estado real dos autos.",
+            "Respostas do RFP e parecer do MP",
+            "Conferir a norma aplicável e os despachos anteriores antes de qualquer expediente."
+          ],
+          "do_not_assume": [
+            "Não certificar como praticada uma diligência sem comprovativo no processo.",
+            "Não substituir o despacho liminar ou a decisão sobre regime processual por uma seleção na ferramenta."
+          ],
+          "secretaria": 3,
+          "judicial": 1,
+          "draft_kind": "oficio",
+          "draft_subject": "Reclamação de atos do órgão de execução fiscal | Decisão e efeitos na execução"
+        }
+      ]
     }
   ]
 }
