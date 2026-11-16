@@ -73,3 +73,35 @@ footer{border-color:var(--line)}
  .panel,.tool{box-shadow:none!important}
  .brand::before{print-color-adjust:exact}
 }
+
+/* Componentes e comandos de tema consistentes */
+.lt-theme-control{
+ display:inline-flex;align-items:center;justify-content:center;gap:7px;
+ min-width:42px;min-height:40px;padding:8px 12px;
+ border:1px solid var(--line);border-radius:11px;
+ background:var(--paper);color:var(--ink);cursor:pointer;
+ font:600 13px/1 var(--sans);flex-shrink:0;
+ transition:background .15s,border-color .15s;
+}
+.lt-theme-control:hover{background:var(--soft);border-color:var(--lt-gold)}
+.lt-theme-symbol{font-size:18px;line-height:1}
+.lt-theme-added{margin-left:auto}
+.top-nav .lt-theme-added{order:2}
+@media(min-width:760px){.top-nav .lt-theme-added{order:3}}
+body>header nav .lt-theme-added{margin-left:8px}
+:root[data-theme="light"] header{border-color:var(--line)}
+:root[data-theme="dark"] header{border-color:var(--line)}
+:root[data-theme="dark"] .btn.secondary,
+:root[data-theme="dark"] button.secondary{color:var(--ink);background:var(--soft)}
+/* Regiões semânticas do Cita-Check e anonimizador */
+.top-nav+main .panel,.top-nav+main header{border-color:var(--line)}
+.top-nav+main button.btn-primary{color:var(--stamp-ink)}
+.top-nav+main .headline-date{color:var(--accent)}
+.top-nav+main select,.top-nav+main input[type="date"],.top-nav+main input[type="number"]{border-radius:10px}
+/* Cores de estado autónomas da paleta da marca, com contraste nos dois temas. */
+:root{--err:#a92525;--err-bg:#fff0ef;--ok:#176b49;--warn-bg:#fff5dc;--warn-ink:#604500;--warn-edge:#b98219}
+:root[data-theme="dark"]{--err:#ffaaa3;--err-bg:#442321;--ok:#8be1b8;--warn-bg:#473718;--warn-ink:#f8dda0;--warn-edge:#e1be76}
+@media(max-width:740px){
+ .lt-theme-control{min-width:40px;min-height:40px;padding:7px 10px}
+ body>header nav .lt-theme-added{margin-left:0}
+}
