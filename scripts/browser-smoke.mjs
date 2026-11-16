@@ -19,7 +19,31 @@ await check("Página inicial e pesquisa",async()=>{
  await page.locator("#search").fill("minuta");
  if(await page.locator(".tool:visible").count()!==1)throw Error("Pesquisa não filtra para uma ferramenta");
  await page.locator("#search").fill("");
- if(await page.locator(".tool:visible").count()!==6)throw Error("Ferramentas não recuperadas");
+ if(await page.locator(".tool:visible").count()!==7)throw Error("Ferramentas não recuperadas");
+});
+await check("Agenda local: eventos, exportação ICS e limpeza",async()=>{
+ await open("agenda.html");
+ if(await page.locator("#ics").isEnabled())throw Error("Exportação permitida com lista vazia");
+ await page.locator("#date").fill("2026-11-20");
+ await page.locator("#eventTitle").selectOption("Diligência judicial");
+ await page.locator("#source").selectOption("Indicada por despacho");
+ await page.locator("#add").click();
+ if(!(await page.locator("#count").innerText()).includes("1 evento"))throw Error("Evento não inserido");
+ const ics=page.waitForEvent("download");
+ await page.locator("#ics").click();
+ const dl=await ics;
+ if(!dl.suggestedFilename().endsWith(".ics"))throw Error("Extensão ICS incorreta");
+ const fs=await import("node:fs");
+ const content=fs.readFileSync(await dl.path(),"utf8");
+ if(!content.includes("DTSTART;VALUE=DATE:20261120")||!content.includes("DTEND;VALUE=DATE:20261121"))throw Error("Data ou exclusividade do termo ICS incorreta");
+ if(!content.includes("Diligência judicial"))throw Error("Assunto genérico ICS ausente");
+ const csv=page.waitForEvent("download");
+ await page.locator("#csv").click();
+ if(!(await csv).suggestedFilename().endsWith(".csv"))throw Error("Extensão CSV incorreta");
+ await page.locator(".event button").first().click();
+ if(await page.locator(".event").count()!==0)throw Error("Remoção de evento falhou");
+ await page.reload();
+ if(await page.locator(".event").count()!==0)throw Error("Eventos persistiram na sessão após recarga");
 });
 await check("Tramitação TAF: fases, urgência, progressão e remissão CPPT",async()=>{
  await open("tramitação-taf.html");
