@@ -1,6 +1,8 @@
-# LegalTech
+# LegalTech Suite
 
-Ferramentas jurídicas práticas em português de Portugal. Projeto estático publicado em GitHub Pages.
+Suite integrada de ferramentas jurídicas práticas em português de Portugal. Projeto estático publicado em GitHub Pages.
+
+**Identidade:** LegalTech Suite é a marca da plataforma. Os módulos preservam os seus nomes funcionais, endereços e algoritmos. A identidade visual usa `assets/brand.css`, `assets/legaltech-mark.svg` e `assets/theme.js`, com modos claro e escuro. O nome comercial ainda carece de pesquisa de anterioridade de marca no INPI/EUIPO.
 
 ## Ferramentas
 
