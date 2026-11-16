@@ -11,6 +11,7 @@ Ferramentas jurídicas práticas em português de Portugal. Projeto estático pu
 | Cita-Check | `citacheck.html` | Simulação de citações, notificações e prazos, com cota proposta |
 | Minutas | `minutas.html` | Rascunhos de cotas, certidões, notificações e ofícios |
 | Roteiros | `roteiros.html` | Checklists operacionais de secretaria |
+| Tramitação TAF | `tramitação-taf.html` | Intimações administrativas e tributárias por fase e artigos aplicáveis |
 | Prazos CPA e CPPT | `regimes.html` | Contagem auxiliar em dias com regras dos artigos 87.º CPA e 20.º/1 CPPT |
 | Conferência de custas (A01) | `custas.html` | Conferência manual de taxas e pagamentos, sem cálculo jurídico automático |
 | Privacidade | `privacidade.html` | Informação sobre limites, dependências e tratamento local |
