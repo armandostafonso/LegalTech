@@ -39,13 +39,14 @@ for(const file of pages){
  }
  if(!html.includes("</html>"))errors.push(file+": HTML incompleto");
 }
-for(const asset of ["assets/brand.css","assets/ux.css","assets/next.css","assets/next.js","assets/theme.js","assets/legaltech-mark.svg","favicon.svg","site.webmanifest"]){
+for(const asset of ["assets/brand.css","assets/ux.css","assets/next.css","assets/next.js","assets/pa-pdf.js","assets/theme.js","assets/legaltech-mark.svg","favicon.svg","site.webmanifest"]){
  if(!fs.existsSync(asset))errors.push("Recurso de identidade em falta: "+asset);
 }
 const manifest=JSON.parse(fs.readFileSync("site.webmanifest","utf8"));
 if(manifest.start_url!=="./index.html"||manifest.scope!=="./")errors.push("Manifesto fora do âmbito LegalTech");
 if(!manifest.icons?.length||!manifest.icons.every(icon=>fs.existsSync(icon.src.replace(/^\.\//,""))))errors.push("Ícone do manifesto inválido");
 try{new vm.Script(fs.readFileSync("assets/next.js","utf8"),{filename:"assets/next.js"});scriptsChecked++}catch(e){errors.push("assets/next.js: "+e.message)}
+try{new vm.Script(fs.readFileSync("assets/pa-pdf.js","utf8"),{filename:"assets/pa-pdf.js"});scriptsChecked++}catch(e){errors.push("assets/pa-pdf.js: "+e.message)}
 const themeCode=fs.readFileSync("assets/theme.js","utf8");
 try { new vm.Script(themeCode,{filename:"assets/theme.js"}); scriptsChecked++ }
 catch(e) { errors.push("assets/theme.js: "+e.message) }
