@@ -10,7 +10,7 @@
 </style><script>try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||"light"}catch(e){}</script><link rel="stylesheet" href="assets/brand.css">
 </head>
 <body><main><header><a class="brand" href="index.html">LegalTech <span class="lt-suite">Suite</span></a><button class="secondary" id="theme" type="button">◐ Tema</button></header>
-<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.4</p>
+<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.5</p>
 <div class="notice"><strong>Âmbito:</strong> cálculo limitado da taxa-base por impulso com Tabela I-A/I-B e conferência de valores. Não determina automaticamente o total legalmente exigível, não lê PDF e não emite conta oficial. Não introduzas dados pessoais ou processuais confidenciais. Os dados não são enviados nem guardados por esta página.</div>
 <section class="panel"><h2>1. Identificação e regime</h2><div class="grid">
 <div class="field"><label for="process">Referência fictícia / interna</label><input id="process" placeholder="Ex.: TESTE-A01"></div>
@@ -88,6 +88,20 @@
 <label class="checkrow"><input id="remVerified" type="checkbox"> Confirmei a decisão, a responsabilidade final, o regime temporal, a UC, a inexistência de dupla cobrança e a percentagem exigível.</label>
 <div class="actions"><button type="button" class="secondary" id="remObPreview">Verificar lançamento</button><button type="button" id="remObCreate">Criar obrigação de remanescente</button></div>
 <p class="notice" id="remObResult" aria-live="polite">Aguarda verificação documental. Não corresponde automaticamente a dívida exigível.</p>
+</section>
+<section class="panel" id="beneficios-a01"><h2>Benefícios, reduções e dispensa de pagamento prévio · A01</h2>
+<p class="muted">Assistente jurídico por impulso. Distingue isenção (artigo 4.º), redução para 90% da taxa (artigo 6.º/3) e dispensa de pagamento prévio (artigo 15.º). <strong>A isenção e o apoio judiciário não são transformados automaticamente em dívida zero.</strong></p>
+<div class="grid">
+<div class="field"><label for="benefitSource">Obrigação a analisar</label><select id="benefitSource"><option value="">Seleccionar impulso registado</option></select></div>
+<div class="field"><label for="benefitRule">Regime a verificar</label><select id="benefitRule"><option value="review">Rever isenção e apoio judiciário</option><option value="electronic90">RCP 6.º/3: 90% da taxa (redução de 10%)</option><option value="prepay">RCP 15.º/1/a): dispensa de pagamento prévio</option><option value="restore">Repor taxa original / retirar registo de dispensa prévia</option></select></div>
+<div class="field"><label for="benefitNoCounsel">Parte não representada por mandatário?</label><select id="benefitNoCounsel"><option value="unknown">Por confirmar</option><option value="yes">Sim, confirmado</option><option value="no">Não</option></select></div>
+<div class="field"><label for="benefitOptional">A entrega electrónica é facultativa para a parte?</label><select id="benefitOptional"><option value="unknown">Por confirmar</option><option value="yes">Sim, confirmado</option><option value="no">Não, obrigatória</option></select></div>
+<div class="field"><label for="benefitAllElectronic">Todas as peças foram entregues electronicamente?</label><select id="benefitAllElectronic"><option value="unknown">Por confirmar</option><option value="yes">Sim, confirmado</option><option value="no">Não</option></select></div>
+</div>
+<label class="checkrow"><input id="benefitVerified" type="checkbox"> Confirmei nos autos a situação jurídica da parte, os documentos, a versão temporal da lei e a inexistência de outros regimes aplicáveis.</label>
+<div class="actions"><button type="button" class="secondary" id="benefitPreview">Avaliar regime</button><button type="button" id="benefitApply">Registar resultado na obrigação</button></div>
+<p id="benefitResult" class="notice" role="status" aria-live="polite">Selecciona uma obrigação. Não são aplicados benefícios por defeito.</p>
+<p class="muted"><small>Redução do artigo 6.º/3: o valor passa para 90%, não é reduzido em 90%. A redacção de 2026 aplica-se apenas a acções propostas a partir de 01-12-2026, por força do artigo 8.º/3 do <a href="https://diariodarepublica.pt/dr/detalhe/decreto-lei/164-2026-1154555254" target="_blank" rel="noopener">DL 164/2026</a>. Isenções do <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975-45001375" target="_blank" rel="noopener">artigo 4.º do RCP</a> carecem de verificação individual.</small></p>
 </section>
 <section class="panel" id="obrigacoes">
 <h2>6. Obrigações por impulso processual</h2>
@@ -239,14 +253,14 @@ function obOptions(){
 }
 function obAllocated(ob){return ledgerEntries.filter(m=>m.obId===ob.id&&m.status==="confirmed").reduce((sum,m)=>sum+(m.kind==="payment"?m.cents:m.kind==="refund"?-m.cents:0),0)}
 function obSummary(){
- secondOptions();
+ secondOptions();benefitOptions();
  const totals=obAmounts(),unassigned=ledgerEntries.filter(m=>["payment","refund"].includes(m.kind)&&m.status==="confirmed"&&!m.obId).length;
  for(const p of ["a","b","extra"])el("ob"+({a:"A",b:"B",extra:"Extra"}[p])).textContent=ledgerFmt(totals[p]);
  el("obUnassigned").textContent=String(unassigned);
  el("obRows").innerHTML=obligations.length?obligations.map(ob=>{
    const applied=obAllocated(ob);
    const diff=ob.cents-applied;
-   return "<tr><td>"+ledgerParties[ob.party]+"</td><td>"+obTypes[ob.type]+"</td><td>"+ledgerEscape(ob.ref)+"</td><td>"+ledgerEscape(ob.basis)+(ob.checked?" ✓":" (por verificar)")+"</td><td>"+ledgerFmt(ob.cents)+"</td><td>"+ledgerFmt(applied)+"</td><td>"+(diff>=0?ledgerFmt(diff):"Excesso "+ledgerFmt(-diff))+'</td><td><button type="button" data-remove-ob="'+ob.id+'">Retirar</button></td></tr>';
+   return "<tr><td>"+ledgerParties[ob.party]+"</td><td>"+obTypes[ob.type]+"</td><td>"+ledgerEscape(ob.ref)+"</td><td>"+ledgerEscape(ob.basis)+(ob.benefit==="electronic90"?" | taxa a 90%":ob.paymentTiming==="deferred"?" | dispensa pagamento prévio":"")+(ob.checked?" ✓":" (por verificar)")+"</td><td>"+ledgerFmt(ob.cents)+"</td><td>"+ledgerFmt(applied)+"</td><td>"+(diff>=0?ledgerFmt(diff):"Excesso "+ledgerFmt(-diff))+'</td><td><button type="button" data-remove-ob="'+ob.id+'">Retirar</button></td></tr>';
  }).join(""):'<tr><td colspan="8">Ainda não existem obrigações.</td></tr>';
  el("obSync").textContent=obSynced?"Totais devidos transferidos por substituição. Não alterar valores manualmente sem reconferir.":"Totais não transferidos ou desactualizados. Valores do quadro de conferência podem divergir.";
  obOptions();
@@ -427,6 +441,113 @@ el("remObCreate").addEventListener("click",()=>{
  el("remObResult").textContent="Remanescente registado: "+ledgerFmt(d.payableCents)+". Continua a exigir conferência documental antes da conta.";
 });
 
+
+/* Matriz de regimes: nunca tratar isenção/apoio judiciário como redução automática a zero.
+   O artigo 6.º/3, redacção de 2026, só se aplica a acções propostas desde 2026-12-01. */
+let benefitPreviewState=null;
+function benefitOptions(){
+ const current=el("benefitSource").value;
+ el("benefitSource").innerHTML='<option value="">Seleccionar impulso registado</option>'+obligations.map(o=>'<option value="'+o.id+'">'+ledgerEscape(ledgerParties[o.party]+" · "+o.ref+" · "+ledgerFmt(o.cents))+"</option>").join("");
+ el("benefitSource").value=obligations.some(o=>String(o.id)===current)?current:"";
+}
+function benefitInvalidate(){
+ benefitPreviewState=null;el("benefitResult").textContent="Dados alterados. Avalia novamente o regime antes de alterar a obrigação.";
+}
+function benefitData(){
+ const source=obligations.find(o=>String(o.id)===el("benefitSource").value);
+ if(!source)return {error:"Selecciona uma obrigação para analisar."};
+ const p=source.party==="a"?"pa":source.party==="b"?"pb":null;
+ if(!p)return {error:"A rubrica agregada «Outras quantias» exige análise manual por sujeito."};
+ const entity=el(p+"_entity").value,exemption=el(p+"_exemption").value,aid=el(p+"_aid").value,excluded=el(p+"_excluded").value;
+ const rule=el("benefitRule").value;
+ const data={id:source.id,rule,party:source.party,entity,exemption,aid,excluded,verified:el("benefitVerified").checked,entry:source.entry||"",actDate:el("actdate").value};
+ if(rule==="review"){
+  let observations=[];
+  if(exemption==="unknown")observations.push("isenção ainda por confirmar");
+  else if(exemption!=="none")observations.push("isenção invocada ao abrigo do artigo 4.º, a rever quanto ao âmbito, limites e condições");
+  else observations.push("não foi identificada isenção no formulário");
+  if(aid==="unknown"||aid==="pending"||aid==="other")observations.push("apoio judiciário sem decisão/âmbito confirmado");
+  else if(aid==="exempt")observations.push("apoio judiciário com dispensa de taxa e encargos declarada, sem alteração automática do valor");
+  else if(aid==="instalment")observations.push("apoio judiciário em pagamento faseado, sem isenção integral");
+  else observations.push("sem apoio judiciário declarado");
+  if(["state","region","municipal"].includes(entity)&&excluded==="no")observations.push("possível dispensa prévia do artigo 15.º/1/a), não é isenção");
+  return {...data,message:"Triagem: "+observations.join("; ")+". A ferramenta não decide automaticamente o direito a isenção nem altera os montantes.",readonly:true};
+ }
+ if(!data.verified)return {error:"Confirma primeiro a documentação, a versão do RCP e a exigibilidade do regime."};
+ if(rule==="electronic90"){
+  if(source.origin!=="tabela-i-base"||source.col!=="A")return {error:"Redução automática limitada à primeira prestação I-A criada pela calculadora."};
+  if(!data.entry||data.entry<"2026-12-01")return {error:"Bloqueado: nova redacção do artigo 6.º/3 apenas para acções propostas a partir de 01-12-2026. Regimes anteriores exigem conferência própria."};
+  if(entity!=="person")return {error:"A aplicação automática está limitada a pessoas singulares. Outros sujeitos exigem revisão manual."};
+  if(exemption!=="none"||aid!=="none")return {error:"Isenção ou apoio judiciário não excluídos. Não se pode aplicar automaticamente esta redução."};
+  if(el("benefitNoCounsel").value!=="yes"||el("benefitOptional").value!=="yes"||el("benefitAllElectronic").value!=="yes")
+   return {error:"A redução exige parte não representada, entrega electrónica facultativa e todas as peças por via electrónica."};
+  if(source.paymentTiming==="deferred")return {error:"O impulso está marcado como pagamento prévio dispensado. Rever esse estatuto antes da redução."};
+  const linked=obligations.find(o=>o.sourceId===source.id&&o.type==="segunda");
+  if(ledgerEntries.some(m=>m.obId===source.id||(linked&&m.obId===linked.id)))return {error:"Existem movimentos associados a uma prestação. Não alterar valores após imputação financeira."};
+  if(source.benefit==="electronic90")return {error:"A redução de 10% já foi aplicada a este impulso."};
+  const base=source.totalCents;
+  if(!Number.isSafeInteger(base)||base<0)return {error:"A taxa original do impulso não está disponível para recalcular."};
+  const reduced=Math.round(base*90/100),first=Math.round(reduced/2),second=reduced-first;
+  return {...data,gross:base,reduced,first,second,linkedId:linked?.id??null,message:"Taxa I-A original "+ledgerFmt(base)+"; a 90% "+ledgerFmt(reduced)+"; 1.ª prestação "+ledgerFmt(first)+"; 2.ª prestação "+ledgerFmt(second)+". Redução de 10%, não de 90%."};
+ }
+ if(rule==="prepay"){
+  if(!["state","region","municipal"].includes(entity)||excluded!=="no")return {error:"Artigo 15.º/1/a) não confirmado: exige entidade pública abrangida e matéria não excluída."};
+  if(exemption!=="none"||aid!=="none")return {error:"Existência de isenção ou apoio judiciário a verificar antes de registar a dispensa prévia."};
+  if(!data.actDate||!/^\d{4}-\d{2}-\d{2}$/.test(data.actDate))return {error:"Indica a data do acto de custas para apreciar a norma temporal do artigo 15.º."};
+  if(source.paymentTiming==="deferred")return {error:"A dispensa de pagamento prévio já foi assinalada neste impulso."};
+  return {...data,message:"Possível dispensa de pagamento prévio do artigo 15.º/1/a), sujeita à data do acto e condenação final. Montante da obrigação mantém-se "+ledgerFmt(source.cents)+"; não corresponde a taxa zero."};
+ }
+ if(rule==="restore"){
+  if(source.benefit!=="electronic90"&&source.paymentTiming!=="deferred")return {error:"Esta obrigação não tem uma redução/dispensa prévia a repor."};
+  if(ledgerEntries.some(m=>m.obId===source.id||obligations.some(o=>o.sourceId===source.id&&o.id===m.obId)))return {error:"Movimentos financeiros imputados impedem repor o valor sem revisão prévia."};
+  return {...data,message:"Repor os montantes originais e remover a anotação de dispensa prévia, mantendo o histórico do fundamento no relatório."};
+ }
+ return {error:"Regime desconhecido."};
+}
+for(const id of ["benefitSource","benefitRule","benefitNoCounsel","benefitOptional","benefitAllElectronic","benefitVerified"]){
+ el(id).addEventListener("change",benefitInvalidate);
+}
+el("benefitPreview").addEventListener("click",()=>{
+ const d=benefitData();
+ if(d.error){benefitPreviewState=null;el("benefitResult").textContent=d.error;return}
+ benefitPreviewState=d;
+ el("benefitResult").textContent=d.message+(d.readonly?" Não há aplicação automática para este enquadramento.":" A alteração só ocorre após premir «Registar resultado na obrigação».");
+});
+el("benefitApply").addEventListener("click",()=>{
+ const d=benefitData();
+ if(d.error){el("benefitResult").textContent=d.error;return}
+ if(d.readonly){el("benefitResult").textContent="Revisão sem efeito financeiro: "+d.message;return}
+ if(!benefitPreviewState||JSON.stringify(d)!==JSON.stringify(benefitPreviewState)){
+  el("benefitResult").textContent="Executa novamente «Avaliar regime» antes de alterar a obrigação.";return
+ }
+ const source=obligations.find(o=>o.id===d.id);
+ if(!source){el("benefitResult").textContent="Obrigação já não existe.";return}
+ if(source.basisInitial===undefined)source.basisInitial=source.basis;
+ if(d.rule==="electronic90"){
+  source.benefit="electronic90";source.cents=d.first;source.secondCents=d.second;
+  source.checked=true;source.basis=source.basisInitial+"; art. 6.º/3, redacção de 2026: taxa reduzida a 90% ("+ledgerFmt(d.reduced)+")";
+  const linked=obligations.find(o=>o.sourceId===source.id&&o.type==="segunda");
+  if(linked){
+   if(linked.basisInitial===undefined)linked.basisInitial=linked.basis;
+   linked.cents=d.second;linked.benefit="electronic90";linked.checked=true;linked.basis=linked.basisInitial+"; art. 6.º/3, taxa a 90%";
+  }
+ }
+ if(d.rule==="prepay"){
+  source.paymentTiming="deferred";source.basis=source.basisInitial+"; art. 15.º/1/a), dispensa de pagamento prévio verificada manualmente";
+  source.checked=true;
+ }
+ if(d.rule==="restore"){
+  if(source.benefit==="electronic90"){
+   source.cents=Math.round(source.totalCents/2);source.secondCents=source.totalCents-source.cents;
+   const linked=obligations.find(o=>o.sourceId===source.id&&o.type==="segunda");
+   if(linked){linked.cents=source.secondCents;linked.benefit=null;linked.basis=linked.basisInitial||linked.basis;}
+  }
+  source.benefit=null;source.paymentTiming=null;source.basis=source.basisInitial;
+ }
+ obInvalidate();obSummary();benefitPreviewState=null;el("benefitVerified").checked=false;
+ el("benefitResult").textContent="Regime registado no impulso "+source.ref+". "+d.message+" Totais devidos devem ser novamente transferidos.";
+});
+
 /* Livro de movimentos: centimos inteiros, sem armazenamento, sem rede e sem compensação entre partes. */
 const ledgerEntries=[];
 let ledgerNextId=1, ledgerSynced=false;
@@ -537,13 +658,13 @@ let report="";
 el("calc").addEventListener("click",()=>{const fields=["a","ap","b","bp","extra","extrap"],nums=fields.map(cents);
 if(nums.some(v=>v===null)){el("status").textContent="Dados incompletos ou inválidos.";return}
 const [a,ap,b,bp,extra,extrap]=nums;const due=a+b+extra,paid=ap+bp+extrap;const debt=Math.max(0,a-ap)+Math.max(0,b-bp)+Math.max(0,extra-extrap);const over=Math.max(0,ap-a)+Math.max(0,bp-b)+Math.max(0,extrap-extra);
-const checks=["law","table","exempt","remainder","charges"];const validated=checks.every(id=>el(id).checked)&&profilesReady&&(!obligations.length||obSynced)&&(!obligations.length||!ledgerEntries.some(m=>["payment","refund"].includes(m.kind)&&m.status==="confirmed"&&!m.obId))&&(!ledgerEntries.length||(ledgerSynced&&ledgerBalances().pending===0));
+const checks=["law","table","exempt","remainder","charges"];const validated=checks.every(id=>el(id).checked)&&profilesReady&&!obligations.some(o=>o.paymentTiming==="deferred")&&(!obligations.length||obSynced)&&(!obligations.length||!ledgerEntries.some(m=>["payment","refund"].includes(m.kind)&&m.status==="confirmed"&&!m.obId))&&(!ledgerEntries.length||(ledgerSynced&&ledgerBalances().pending===0));
 el("due").textContent=euro(due);el("paid").textContent=euro(paid);el("debt").textContent=euro(debt);el("over").textContent=euro(over);
 el("status").textContent=!validated?"Conferência jurídica incompleta":debt?"Diferenças a analisar":over?"Potencial excesso a verificar":"Sem diferenças nos valores introduzidos";
-el("notes").textContent=(!validated?"Existem pressupostos jurídicos por confirmar. ":"")+(debt?"Há diferenças positivas por parte/rubrica. ":"")+(over?"O excesso não implica restituição automática. ":"")+(debt===0?"Conferir, apenas após validação completa dos autos, a eventual dispensa de conta prevista no artigo 29.º, n.º 1, alínea a), do RCP. ":"")+"Não inclui custas de parte nem valida comprovativos automaticamente.";
-report=["CONFERÊNCIA EXPERIMENTAL DE CUSTAS · A01", "Referência: "+(el("process").value||"não indicada"),"Entrada: "+(el("date").value||"não indicada"),"Valor da causa: "+(el("value").value||"não indicado"),"Objecto: "+(el("subject").value||"não indicado"),"Parte A: devido "+euro(a)+"; pago "+euro(ap),"Parte B: devido "+euro(b)+"; pago "+euro(bp),"Outras quantias: devido "+euro(extra)+"; pago "+euro(extrap),"Total exigível: "+euro(due),"Total confirmado: "+euro(paid),"Diferença aritmética positiva (não é dívida confirmada): "+euro(debt),"Potencial excesso: "+euro(over),"Validação jurídica: "+(validated?"assinalada pelo utilizador":"incompleta"),"Obrigações por impulso: "+(obligations.length?obligations.length+"; "+(obSynced?"totais transferidos":"totais por transferir"):"sem obrigações; totais introduzidos manualmente"),...obligations.map(ob=>"Obrigação "+ob.id+": "+ledgerParties[ob.party]+"; "+obTypes[ob.type]+"; "+ob.ref+"; devido "+ledgerFmt(ob.cents)+"; pagamentos imputados "+ledgerFmt(obAllocated(ob))+"; diferença aritmética "+ledgerFmt(ob.cents-obAllocated(ob))+"; "+ob.basis),"Livro de movimentos: "+(ledgerEntries.length?ledgerEntries.length+" movimento(s), "+ledgerBalances().pending+" pagamento(s)/restituição(ões) pendente(s), "+(ledgerSynced?"saldos transferidos":"saldos não transferidos"):"sem movimentos; pagamentos preenchidos manualmente"),profilesText||"Fichas dos intervenientes: não analisadas",...ledgerEntries.map(m=>"Movimento "+m.id+": "+ledgerParties[m.party]+"; "+ledgerKinds[m.kind]+"; "+m.ref+"; "+m.date+"; "+ledgerFmt(m.cents)+"; "+(m.status==="confirmed"?"confirmado":m.status==="pending"?"pendente":"registado")),"Resultado não oficial. Verificar legislação e documentos."].join("\n");el("report").textContent=report;el("report").hidden=false;});
+el("notes").textContent=(obligations.some(o=>o.paymentTiming==="deferred")?"Existem obrigações com dispensa de pagamento prévio: as diferenças não são dívidas imediatamente exigíveis. Confirmar o artigo 15.º do RCP. ":"")+(!validated?"Existem pressupostos jurídicos por confirmar. ":"")+(debt?"Há diferenças positivas por parte/rubrica. ":"")+(over?"O excesso não implica restituição automática. ":"")+(debt===0?"Conferir, apenas após validação completa dos autos, a eventual dispensa de conta prevista no artigo 29.º, n.º 1, alínea a), do RCP. ":"")+"Não inclui custas de parte nem valida comprovativos automaticamente.";
+report=["CONFERÊNCIA EXPERIMENTAL DE CUSTAS · A01", "Referência: "+(el("process").value||"não indicada"),"Entrada: "+(el("date").value||"não indicada"),"Valor da causa: "+(el("value").value||"não indicado"),"Objecto: "+(el("subject").value||"não indicado"),"Parte A: devido "+euro(a)+"; pago "+euro(ap),"Parte B: devido "+euro(b)+"; pago "+euro(bp),"Outras quantias: devido "+euro(extra)+"; pago "+euro(extrap),"Total exigível: "+euro(due),"Total confirmado: "+euro(paid),"Diferença aritmética positiva (não é dívida confirmada): "+euro(debt),"Potencial excesso: "+euro(over),"Validação jurídica: "+(validated?"assinalada pelo utilizador":"incompleta"),"Obrigações por impulso: "+(obligations.length?obligations.length+"; "+(obSynced?"totais transferidos":"totais por transferir"):"sem obrigações; totais introduzidos manualmente"),...obligations.map(ob=>"Obrigação "+ob.id+": "+ledgerParties[ob.party]+"; "+obTypes[ob.type]+"; "+ob.ref+"; "+(ob.benefit==="electronic90"?"taxa a 90%; ":"")+(ob.paymentTiming==="deferred"?"dispensa pagamento prévio; ":"")+"devido "+ledgerFmt(ob.cents)+"; pagamentos imputados "+ledgerFmt(obAllocated(ob))+"; diferença aritmética "+ledgerFmt(ob.cents-obAllocated(ob))+"; "+ob.basis),"Livro de movimentos: "+(ledgerEntries.length?ledgerEntries.length+" movimento(s), "+ledgerBalances().pending+" pagamento(s)/restituição(ões) pendente(s), "+(ledgerSynced?"saldos transferidos":"saldos não transferidos"):"sem movimentos; pagamentos preenchidos manualmente"),profilesText||"Fichas dos intervenientes: não analisadas",...ledgerEntries.map(m=>"Movimento "+m.id+": "+ledgerParties[m.party]+"; "+ledgerKinds[m.kind]+"; "+m.ref+"; "+m.date+"; "+ledgerFmt(m.cents)+"; "+(m.status==="confirmed"?"confirmado":m.status==="pending"?"pendente":"registado")),"Resultado não oficial. Verificar legislação e documentos."].join("\n");el("report").textContent=report;el("report").hidden=false;});
 el("copy").addEventListener("click",async()=>{if(!report)return;try{await navigator.clipboard.writeText(report)}catch(e){const ta=document.createElement("textarea");ta.value=report;document.body.append(ta);ta.select();document.execCommand("copy");ta.remove()}});
-el("reset").addEventListener("click",()=>{secondPreviewState=null;remObPreviewState=null;for(const id of ["secondOther","remDecision","remTarget"])el(id).selectedIndex=0;for(const id of ["remRef"])el(id).value="";el("remPayPct").value="100";el("secondVerified").checked=false;el("remVerified").checked=false;el("secondCalcResult").textContent="Sem primeira prestação seleccionada.";el("remObResult").textContent="Aguarda verificação documental.";autoPreviewState=null;for(const id of ["autoDate","autoValue","autoUC","autoRef"])el(id).value="";for(const id of ["autoParty","autoType"])el(id).selectedIndex=0;el("autoVerified").checked=false;el("autoResult").textContent="Indica os dados do impulso.";obligations.length=0;obNextId=1;obSynced=false;for(const id of ["obRef","obAmount","obBasis"])el(id).value="";el("obChecked").checked=false;for(const id of ["obParty","obType"])el(id).selectedIndex=0;for(const id of ids){const x=el(id);if(x.type==="checkbox")x.checked=false;else if(x.tagName==="SELECT")x.selectedIndex=0;else x.value=(id==="extra"||id==="extrap")?"0":""}ledgerEntries.length=0;ledgerNextId=1;ledgerSynced=false;ledgerRender("Livro de movimentos limpo.");obSummary();el("obMessage").textContent="Sem obrigações.";for(const id of ["ledgerRef","ledgerDate","ledgerAmount"])el(id).value="";for(const id of ["ledgerParty","ledgerKind","ledgerStatus"])el(id).selectedIndex=0;profilesReady=false;profilesText="";el("partiesstatus").textContent="A análise exige revisão documental e legal individualizada.";for(const p of ["pa","pb"]){for(const field of partyFields){const x=el(p+"_"+field);if(x.type==="checkbox")x.checked=false;else if(x.tagName==="SELECT")x.selectedIndex=0;else x.value=""}el(p+"_result").textContent="Aguardam-se os dados do interveniente.";}el("status").textContent="Aguardam-se dados.";for(const id of ["due","paid","debt","over"])el(id).textContent="—";el("report").hidden=true;report=""});
+el("reset").addEventListener("click",()=>{benefitPreviewState=null;for(const id of ["benefitRule","benefitNoCounsel","benefitOptional","benefitAllElectronic"])el(id).selectedIndex=0;el("benefitVerified").checked=false;el("benefitResult").textContent="Selecciona uma obrigação.";secondPreviewState=null;remObPreviewState=null;for(const id of ["secondOther","remDecision","remTarget"])el(id).selectedIndex=0;for(const id of ["remRef"])el(id).value="";el("remPayPct").value="100";el("secondVerified").checked=false;el("remVerified").checked=false;el("secondCalcResult").textContent="Sem primeira prestação seleccionada.";el("remObResult").textContent="Aguarda verificação documental.";autoPreviewState=null;for(const id of ["autoDate","autoValue","autoUC","autoRef"])el(id).value="";for(const id of ["autoParty","autoType"])el(id).selectedIndex=0;el("autoVerified").checked=false;el("autoResult").textContent="Indica os dados do impulso.";obligations.length=0;obNextId=1;obSynced=false;for(const id of ["obRef","obAmount","obBasis"])el(id).value="";el("obChecked").checked=false;for(const id of ["obParty","obType"])el(id).selectedIndex=0;for(const id of ids){const x=el(id);if(x.type==="checkbox")x.checked=false;else if(x.tagName==="SELECT")x.selectedIndex=0;else x.value=(id==="extra"||id==="extrap")?"0":""}ledgerEntries.length=0;ledgerNextId=1;ledgerSynced=false;ledgerRender("Livro de movimentos limpo.");obSummary();el("obMessage").textContent="Sem obrigações.";for(const id of ["ledgerRef","ledgerDate","ledgerAmount"])el(id).value="";for(const id of ["ledgerParty","ledgerKind","ledgerStatus"])el(id).selectedIndex=0;profilesReady=false;profilesText="";el("partiesstatus").textContent="A análise exige revisão documental e legal individualizada.";for(const p of ["pa","pb"]){for(const field of partyFields){const x=el(p+"_"+field);if(x.type==="checkbox")x.checked=false;else if(x.tagName==="SELECT")x.selectedIndex=0;else x.value=""}el(p+"_result").textContent="Aguardam-se os dados do interveniente.";}el("status").textContent="Aguardam-se dados.";for(const id of ["due","paid","debt","over"])el(id).textContent="—";el("report").hidden=true;report=""});
 el("theme").addEventListener("click",()=>{const v=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=v;try{localStorage.setItem("legaltech_theme",v)}catch(e){}});
 </script><script src="assets/suite-nav.js"></script><script src="assets/theme.js"></script>
 </body></html>
