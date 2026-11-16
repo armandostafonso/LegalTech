@@ -11,7 +11,7 @@
 <h2>Fundamentos para consulta</h2><div id="sources"></div>
 <p class="note">As referências legais são pontos de consulta, não uma validação automática da regularidade dos atos. Confirma a redação vigente e as particularidades da jurisdição, do processo e do despacho.</p>
 <div class="actions"><button id="reset" class="btn secondary" type="button">Repor verificações</button><button id="print" class="btn secondary" type="button">Imprimir</button></div>
-</section><section class="panel"><div class="tagline" id="stageName"></div><h2 id="stageTitle">Verificações</h2><div id="count" aria-live="polite">0 de 0</div><div class="progress" aria-hidden="true"><div id="bar"></div></div>
+</section><section class="panel"><div class="tagline" id="stageName"></div><h2 id="stageTitle">Verificações</h2><div id="count" aria-live="polite">0 de 0</div><p id="sessionProgress" class="tagline" aria-live="polite"></p><div class="progress" aria-hidden="true"><div id="bar"></div></div>
 <div id="steps" class="steplist"></div><details id="detailGuide" style="margin-top:18px;border:1px solid var(--line);padding:15px;border-radius:12px"><summary style="cursor:pointer;font-weight:700">Ficha jurídica complementar e preparação de expediente</summary><div id="guide" class="guidance" style="margin-top:12px"></div></details>
 <div class="actions"><button id="copy" class="btn" type="button">Copiar resumo</button><button id="download" class="btn secondary" type="button">Exportar TXT</button></div>
 <p class="note">As verificações não ficam guardadas. Fechar ou atualizar a página repõe a seleção, salvo as preferências gerais do navegador. Nunca introduzir nomes ou números de processos neste módulo.</p>
@@ -19,7 +19,7 @@
 </main><script src="assets/roteiros-taf.js"></script><script src="assets/fichas-taf.js"></script><script>
 "use strict";
 const $=id=>document.getElementById(id);
-const model=window.LegalTechRoteirosTAF,fmodel=window.LegalTechFichasTAF;let workflow=null,stage=null;
+const model=window.LegalTechRoteirosTAF,fmodel=window.LegalTechFichasTAF;let workflow=null,stage=null;const state=new Map();
 function node(tag,text){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;return el}
 function fillWorkflows(){for(const item of model.workflows){const o=node("option",item.name);o.value=item.id;$("workflow").append(o)}$("workflow").addEventListener("change",chooseWorkflow);$("phase").addEventListener("change",render);chooseWorkflow()}
 function chooseWorkflow(){workflow=model.workflows.find(x=>x.id===$("workflow").value);if(!workflow)return;$("phase").replaceChildren();for(const item of workflow.stages){const opt=node("option",item.name);opt.value=item.id;$("phase").append(opt)}
@@ -34,7 +34,11 @@ function render(){stage=workflow?.stages.find(x=>x.id===$("phase").value);if(!st
 for(const text of stage.steps){
  const label=node("label");label.className="step";
  const cb=node("input");cb.type="checkbox";cb.setAttribute("aria-label",text);
- cb.addEventListener("change",()=>{label.classList.toggle("done",cb.checked);updateProgress()});
+ const key=workflow.id+"/"+stage.id, set=state.get(key);
+ cb.checked=Boolean(set&&set.has(text));label.classList.toggle("done",cb.checked);
+ cb.addEventListener("change",()=>{let selected=state.get(key);if(!selected){selected=new Set();state.set(key,selected)}
+ if(cb.checked)selected.add(text);else selected.delete(text);
+ label.classList.toggle("done",cb.checked);updateProgress()});
  const detail=node("div");detail.className="stepbody";
  const isActor=text.match(/^(Secretaria|Juiz \/ despacho) \| (.*)$/);
  if(isActor){const badge=node("span",isActor[1]==="Secretaria"?"Ato de secretaria":"Depende de despacho");badge.className="actor";detail.append(badge)}
@@ -71,11 +75,18 @@ function renderGuide(){
  target.append(node("p","A ligação não transmite dados de partes, processos, despachos ou documentos."));
 }
 $("actionFiled").addEventListener("change",updateTemporal);
-function updateProgress(){const all=[...$("steps").querySelectorAll("input")];const checked=all.filter(x=>x.checked).length;$("count").textContent=checked+" de "+all.length+" verificações";$("bar").style.width=(all.length?100*checked/all.length:0)+"%"}
+function updateProgress(){
+ const all=[...$("steps").querySelectorAll("input")],checked=all.filter(x=>x.checked).length;
+ $("count").textContent=checked+" de "+all.length+" verificações";
+ $("bar").style.width=(all.length?100*checked/all.length:0)+"%";
+ const total=workflow.stages.reduce((sum,st)=>sum+st.steps.length,0);
+ const done=workflow.stages.reduce((sum,st)=>sum+(state.get(workflow.id+"/"+st.id)?.size||0),0);
+ $("sessionProgress").textContent="Neste roteiro: "+done+" de "+total+" verificações assinaladas nesta página. Não guardadas.";
+}
 function summary(){if(!stage)return"";const boxes=[...$("steps").querySelectorAll("input")];return ["LEGALTECH · ROTEIRO AUXILIAR TAF",workflow.name,stage.name,workflow.urgency,"",
 ...stage.steps.map((v,i)=>(boxes[i]?.checked?"[x] ":"[ ] ")+v),"","Referências:",...workflow.basis.map(x=>x.article+" — "+x.url),"","Aviso: conferir autos, normas em vigor e despachos; o roteiro não certifica qualquer diligência."].join("\n")}
 async function copy(){try{await navigator.clipboard.writeText(summary());$("feedback").textContent="Resumo copiado."}catch(e){$("feedback").textContent="Cópia automática indisponível neste navegador."}}
 function download(){const blob=new Blob([summary()],{type:"text/plain;charset=utf-8"});const u=URL.createObjectURL(blob);const a=node("a");a.href=u;a.download="roteiro-taf.txt";a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
-$("reset").addEventListener("click",render);$("copy").addEventListener("click",copy);$("download").addEventListener("click",download);$("print").addEventListener("click",()=>window.print());fillWorkflows();
+$("reset").addEventListener("click",()=>{if(workflow&&stage)state.delete(workflow.id+"/"+stage.id);render()});$("copy").addEventListener("click",copy);$("download").addEventListener("click",download);$("print").addEventListener("click",()=>window.print());fillWorkflows();
 </script><script src="assets/theme.js"></script>
 </body></html>
