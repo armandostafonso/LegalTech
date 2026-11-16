@@ -18,6 +18,8 @@ jobs:
         run: node scripts/validate-site.mjs
       - name: Validar calendário comum
         run: node scripts/calendar-contract.mjs
+      - name: Validar catálogo de tramitação TAF
+        run: node scripts/taf-contract.mjs
       - name: Instalar navegador de testes
         run: |
           npm install --no-save playwright@1.56.1
