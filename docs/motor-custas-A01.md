@@ -31,7 +31,8 @@
 | Apoio judiciário | Lei n.º 34/2004 | Registo do tipo de benefício; necessita da decisão |
 | Pagamento prévio | RCP 15.º/1/a) | Distingue a dispensa prévia das isenções |
 | Pagamento posterior | RCP 15.º/2 e 15.º/3 | Triagem dependente da aplicação temporal e da condenação em custas |
-| Dispensa de elaboração da conta | RCP 29.º/1/a) | Apenas indicação para verificação humana |
+| Dispensa de elaboração da conta | RCP 29.º/1/a) e Portaria n.º 419-A/2009, 7.º-A | Apenas indicação para verificação humana; pressupostos têm de ficar documentados nos autos |
+| Conta por sujeito processual | RCP 30.º/2 | Conferência separada por sujeito, sem compensação de valores de terceiros |
 
 **Regra temporal essencial:** o Decreto-Lei n.º 164/2026, de 6 de agosto, entra em vigor em **01-12-2026**. O seu artigo 8.º regula a aplicação a processos pendentes e excepciona, entre outras, a nova redacção do artigo 6.º do RCP, aplicável apenas a acções posteriores à entrada em vigor.
 
@@ -71,5 +72,6 @@
 - [RCP (Decreto-Lei n.º 34/2008, texto consolidado)](https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975)
 - [Decreto-Lei n.º 164/2026](https://diariodarepublica.pt/dr/detalhe/decreto-lei/164-2026-1154555254)
 - [Decreto-Lei n.º 86/2018](https://diariodarepublica.pt/dr/detalhe/decreto-lei/86-2018-116809383)
+- [Portaria n.º 419-A/2009 (texto consolidado)](https://diariodarepublica.pt/dr/legislacao-consolidada/portaria/2009-116457551)
 
 > A versão consolidada é auxiliar de consulta. Deve confirmar-se sempre a redacção e a vigência dos actos pertinentes.
