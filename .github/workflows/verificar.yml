@@ -29,7 +29,7 @@ jobs:
       - name: Instalar navegador de testes
         run: |
           npm install --no-save playwright@1.56.1 axe-core@4.10.3
-          npx playwright install --with-deps chromium
+          npx playwright install --with-deps chromium webkit
       - name: Exercitar ferramentas no navegador
         run: node scripts/browser-smoke.mjs
       - name: Testar os doze módulos especializados
@@ -38,5 +38,7 @@ jobs:
         run: node scripts/a11y-smoke.mjs
       - name: Verificar privacidade e entradas hostis em ferramentas locais
         run: node scripts/privacy-smoke.mjs
+      - name: Percursos Safari/WebKit com dimensões de iPad
+        run: node scripts/webkit-smoke.mjs
       - name: Casos de regressão Cita-Check
         run: node scripts/citacheck-regression.mjs
