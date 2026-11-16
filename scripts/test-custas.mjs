@@ -18,8 +18,16 @@ for(const m of markup.matchAll(/<select\b[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/sel
  const first=m[2].match(/<option value="([^"]*)"/);
  if(first)els.get(m[1]).value=first[1];
 }
-const document={documentElement:{dataset:{theme:"light"}},getElementById:id=>{assert.ok(els.has(id),"ID inexistente: "+id);return els.get(id)}};
-const ctx=vm.createContext({document,Intl,Number,Math,console});
+const downloads=[];
+class BlobMock{constructor(parts){this.text=parts.join("")}}
+const URLMock={createObjectURL(blob){downloads.push(blob.text);return "blob:legaltech-test"},revokeObjectURL(){}};
+const document={
+ documentElement:{dataset:{theme:"light"}},
+ getElementById:id=>{assert.ok(els.has(id),"ID inexistente: "+id);return els.get(id)},
+ createElement:()=>({href:"",download:"",click(){},remove(){}}),
+ body:{append(){}}
+};
+const ctx=vm.createContext({document,Intl,Number,Math,console,Blob:BlobMock,URL:URLMock});
 new vm.Script(inline.at(-1),{filename:"custas.html"}).runInContext(ctx);
 const put=(id,value)=>els.get(id).value=String(value),click=id=>{assert.ok(els.get(id).listeners.click,"sem evento click: "+id);return els.get(id).listeners.click()},read=id=>els.get(id).textContent;
 let tests=0;
@@ -407,6 +415,21 @@ check("Proposta: documento sem bloqueios técnicos exige verificação jurídica
 });
 check("Proposta: diferenças registadas não incluem custas de parte",()=>{
  assert.match(read("proposalText"),/Custas de parte excluídas/);
+});
+
+check("Proposta: exportação CSV identifica estado e diferenças sem ser conta oficial",()=>{
+ click("proposalExport");const csv=downloads.at(-1);
+ assert.ok(csv&&csv.includes("Sujeito;Obrigações"),"CSV sem cabeçalho");
+ assert.match(csv,/AVISO/);assert.match(csv,/Custas de parte excluídas/);
+ assert.match(csv,/Prévia sem bloqueios técnicos/);
+});
+check("Proposta: alterar a identificação do processo invalida o CSV anterior",()=>{
+ const before=downloads.length;put("process","EXEMPLO-ALTERADO");click("proposalExport");
+ assert.equal(downloads.length,before);assert.match(read("proposalNote"),/desactualizada/);
+});
+check("Proposta: divergência entre valor devido e obrigações fica assinalada",()=>{
+ put("a","999");click("proposalPreview");
+ assert.match(read("proposalNote"),/diverge das obrigações/);
 });
 check("Proposta: reset invalida documento anterior",()=>{
  click("reset");click("proposalExport");assert.match(read("proposalNote"),/desactualizada/);
