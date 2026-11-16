@@ -1,6 +1,6 @@
 # Motor de Custas A01 — Caderno jurídico e técnico
 
-**Versão da interface:** 1.2 (experimental, novembro de 2026)  
+**Versão da interface:** 1.4 (experimental, novembro de 2026)  
 **Espécie:** acção administrativa (CPTA)  
 **Página:** `custas.html`
 
@@ -43,10 +43,11 @@
 
 ## Cálculo controlado da taxa-base (v1.2)
 
-A partir da versão 1.2, a interface contém uma calculadora autónoma **limitada** à taxa-base dos impulsos «petição inicial», «contestação» (coluna I-A) e «recurso» (coluna I-B). Os treze escalões da Tabela I do RCP foram conferidos no texto legal aplicável desde **29 de março de 2012**. A unidade de conta processual é introduzida e confirmada pelo utilizador, atendendo à regra do artigo 5.º do RCP.
+A interface contém uma calculadora autónoma **limitada** à taxa-base dos impulsos «petição inicial», «contestação» (coluna I-A) e «recurso» (coluna I-B). A partir da versão 1.3, a obrigação criada para I-A corresponde **apenas à primeira de duas prestações iguais**, e não ao total da taxa da Tabela I-A. Os treze escalões da Tabela I do RCP foram conferidos no texto legal aplicável desde **29 de março de 2012**. A unidade de conta processual é introduzida e confirmada pelo utilizador, atendendo à regra do artigo 5.º do RCP.
 
 - Escalões da coluna I-A: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14 e 16 UC.
 - Coluna I-B: metade dos valores da coluna A para os mesmos escalões.
+- **Regra crucial do artigo 13.º, n.º 2:** em I-A, a taxa total é normalmente paga em duas prestações iguais. Exemplificando, 5 UC × 102 € = 510 € no total, ou 255 € por prestação. A calculadora regista primeiro 255 €, nunca 510 € como se fosse uma única prestação inicial.
 - Acima de **275.000 €**, o programa limita o cálculo da taxa-base a 275.000 € e **não inclui o remanescente**.
 - Acções anteriores a **29-03-2012** ficam bloqueadas para exigir enquadramento histórico específico.
 - O cálculo **não determina** automaticamente a segunda prestação, o montante final da conta, as isenções, as reduções ou o regime de pagamento diferido.
@@ -60,6 +61,18 @@ A partir da versão 1.2, a interface contém uma calculadora autónoma **limitad
 - Decreto-Lei n.º 164/2026, artigos 8.º e 9.º: o novo artigo 6.º do RCP aplica-se apenas a acções propostas após 01-12-2026.
 
 A data de propositura da acção não resolve isoladamente todas as regras transitórias, pelo que o cálculo fica sujeito a confirmação jurídica.
+
+## Segunda prestação e remanescente (v1.4)
+
+**Segunda prestação:** o programa procura uma obrigação de primeira prestação I-A gerada pela calculadora e calcula a segunda com base na diferença para o total da taxa. A segunda é criada com identificação própria e referência explícita ao impulso inicial, sem duplicação, após:
+- Verificar as hipóteses do artigo 14.º-A, designadamente as alíneas b), c), d), e) e f).
+- Confirmar que as condições de dispensa não se verificam e que a parte não beneficia de isenção ou apoio judiciário incompatível com o lançamento automático.
+- Confirmar a data, os requisitos de notificação e o regime jurídico temporal.
+- Confirmar expressamente a exigibilidade. O programa não calcula multas do artigo 14.º, n.º 3.
+
+**Remanescente:** acima de 275.000 €, o utilizador pode registar uma obrigação com fundamento no artigo 6.º, n.ºs 7 e 8, e Tabela I, depois de verificar a conclusão da instrução, dispensa judicial total/parcial, repartição final e UC. A ferramenta calcula um remanescente teórico a partir dos blocos de 25.000 € ou fracção, mas **não o atribui automaticamente à parte vencida**, nem interpreta por si o despacho judicial. A percentagem que subsiste após a dispensa deve ser confirmada documentalmente.
+
+**Limitações:** processos históricos e situações transitórias excepcionais podem implicar valores diferentes entre a primeira e a segunda prestações. Só são vinculadas automaticamente prestações geradas e validadas na calculadora. Não se impõem taxas devidas por impulsos para os quais o programa não tenha regime legal validado; nesses casos continuam disponíveis os registos manuais.
 
 ## Limitações que bloqueiam o uso como conta oficial
 
@@ -76,7 +89,7 @@ A data de propositura da acção não resolve isoladamente todas as regras trans
 
 ## Testes
 
-- Script: `node scripts/test-custas.mjs` (46 casos técnicos na versão 1.2).
+- Script: `node scripts/test-custas.mjs` (59 casos técnicos na versão 1.4).
 - Verificação global da página: `node scripts/validate-site.mjs`.
 - Integração contínua: `.github/workflows/custas-tests.yml`.
 
