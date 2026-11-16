@@ -222,4 +222,65 @@ check("Prestações: reposição limpa o cálculo e as decisões",()=>{
  assert.equal(els.get("secondVerified").checked,false);
  assert.equal(els.get("remVerified").checked,false);
 });
+
+check("Benefícios: primeira I-A em acção de dezembro de 2026",()=>{
+ put("autoParty","a");put("autoType","peticao");put("autoDate","2026-12-15");put("autoValue","30000");put("autoUC","102");put("autoRef","BEN-PI-01");
+ put("pa_entity","person");put("pa_exemption","none");put("pa_aid","none");els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");
+ assert.match(read("obA"),/255,00/);
+});
+check("Benefícios: redução a 90% exige todos os pressupostos",()=>{
+ put("benefitSource","1");put("benefitRule","electronic90");els.get("benefitVerified").checked=true;click("benefitPreview");
+ assert.match(read("benefitResult"),/exige parte não representada/);
+});
+check("Benefícios: 90% = 10% de desconto na taxa, não 90%",()=>{
+ put("benefitNoCounsel","yes");put("benefitOptional","yes");put("benefitAllElectronic","yes");click("benefitPreview");
+ assert.match(read("benefitResult"),/459,00/);assert.match(read("benefitResult"),/229,50/);
+ click("benefitApply");assert.match(read("obA"),/229,50/);
+});
+check("Benefícios: não reduzir duas vezes",()=>{
+ els.get("benefitVerified").checked=true;click("benefitPreview");assert.match(read("benefitResult"),/já foi aplicada/);
+});
+check("Benefícios: segunda prestação vinculada à taxa reduzida",()=>{
+ put("secondSource","1");put("secondOther","no");put("hearing","yes");put("endbefore","no");put("opp","no");put("priority","no");els.get("secondVerified").checked=true;
+ click("secondPreview");assert.match(read("secondCalcResult"),/229,50/);click("secondCreate");assert.match(read("obA"),/459,00/);
+});
+check("Benefícios: restaurar a taxa total preservando a soma das prestações",()=>{
+ put("benefitSource","1");put("benefitRule","restore");els.get("benefitVerified").checked=true;click("benefitPreview");
+ assert.match(read("benefitResult"),/Repor os montantes/);click("benefitApply");assert.match(read("obA"),/510,00/);
+});
+check("Benefícios: redução pós-2026 bloqueada para acção de novembro de 2026",()=>{
+ put("autoRef","BEN-OLD-01");put("autoDate","2026-11-15");put("autoValue","30000");els.get("autoVerified").checked=true;click("autoPreview");click("autoInsert");
+ assert.match(read("obA"),/765,00/);
+ put("benefitSource","3");put("benefitRule","electronic90");els.get("benefitVerified").checked=true;click("benefitPreview");
+ assert.match(read("benefitResult"),/apenas para acções propostas/);
+});
+check("Benefícios: isenção e apoio judiciário não geram taxa zero",()=>{
+ put("benefitSource","1");put("benefitRule","review");put("pa_exemption","mp");click("benefitPreview");
+ assert.match(read("benefitResult"),/isenção invocada/);click("benefitApply");assert.match(read("benefitResult"),/sem efeito financeiro/);
+ assert.match(read("obA"),/765,00/);put("pa_exemption","none");
+});
+check("Benefícios: pagamento prévio diferido não altera obrigação",()=>{
+ put("obParty","b");put("obType","peticao");put("obRef","BEN-EST-01");put("obAmount","510.00");put("obBasis","RCP 15.º/1/a), valor manual sujeito a conferência");els.get("obChecked").checked=true;click("obAdd");
+ assert.match(read("obB"),/510,00/);
+ put("pb_entity","state");put("pb_exemption","none");put("pb_aid","none");put("pb_excluded","no");put("actdate","2026-12-20");
+ put("benefitSource","4");put("benefitRule","prepay");els.get("benefitVerified").checked=true;click("benefitPreview");
+ assert.match(read("benefitResult"),/não corresponde a taxa zero/);click("benefitApply");assert.match(read("obB"),/510,00/);
+});
+check("Benefícios: dispensa prévia mantém a conferência jurídica incompleta",()=>{
+ for(const id of ["a","ap","b","bp","extra","extrap"])put(id,"0");
+ put("a","765");put("b","510");click("calc");
+ assert.match(read("notes"),/não são dívidas imediatamente exigíveis/);
+});
+check("Benefícios: remover registo de dispensa prévia",()=>{
+ put("benefitSource","4");put("benefitRule","restore");els.get("benefitVerified").checked=true;click("benefitPreview");click("benefitApply");
+ assert.match(read("obB"),/510,00/);
+});
+check("Benefícios: não alterar taxas depois de movimentos imputados",()=>{
+ put("ledgerParty","a");put("ledgerKind","payment");put("ledgerStatus","confirmed");put("ledgerObligation","1");put("ledgerRef","BEN-PAG-01");put("ledgerDate","2026-12-18");put("ledgerAmount","100.00");click("ledgerAdd");
+ put("benefitSource","1");put("benefitRule","electronic90");els.get("benefitVerified").checked=true;click("benefitPreview");
+ assert.match(read("benefitResult"),/Existem movimentos associados/);
+});
+check("Benefícios: reset limpa os novos campos e movimentos",()=>{
+ click("reset");assert.equal(els.get("benefitVerified").checked,false);assert.match(read("obA"),/0,00/);assert.match(read("ledgerA"),/0,00/);
+});
 console.log(tests+" testes do módulo A01 concluídos.");
