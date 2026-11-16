@@ -2,11 +2,11 @@
 const laws=[
  {id:"CPTA",name:"CPTA",desc:"Código de Processo nos Tribunais Administrativos",url:"https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2002-34464475"},
  {id:"CPPT",name:"CPPT",desc:"Código de Procedimento e de Processo Tributário",url:"https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/Cod_download/Documents/CPPT.pdf"},
- {id:"CPC",name:"CPC",desc:"Código de Processo Civil",url:"https://diariodarepublica.pt/"},
- {id:"CPA",name:"CPA",desc:"Código do Procedimento Administrativo",url:"https://diariodarepublica.pt/"},
- {id:"RCP",name:"RCP",desc:"Regulamento das Custas Processuais (apenas referência; módulo separado)",url:"https://diariodarepublica.pt/"},
- {id:"LOSJ",name:"LOSJ",desc:"Lei da Organização do Sistema Judiciário",url:"https://diariodarepublica.pt/"},
- {id:"LTFP",name:"LTFP",desc:"Lei Geral do Trabalho em Funções Públicas",url:"https://diariodarepublica.pt/"}
+ {id:"CPC",name:"CPC",desc:"Código de Processo Civil",url:"https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2013-34580575"},
+ {id:"CPA",name:"CPA",desc:"Código do Procedimento Administrativo",url:"https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2015-105602322"},
+ {id:"RCP",name:"RCP",desc:"Regulamento das Custas Processuais (apenas referência; módulo separado)",url:"https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975-45001875"},
+ {id:"LOSJ",name:"LOSJ",desc:"Lei da Organização do Sistema Judiciário",url:"https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2013-34581275"},
+ {id:"LTFP",name:"LTFP",desc:"Lei Geral do Trabalho em Funções Públicas",url:"https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-57466875-57517741"}
 ];
 const records=new Map();for(const l of laws){const o=N.node("option",l.name);o.value=l.id;$("law").append(o)}
 function details(){const x=laws.find(l=>l.id===$("law").value);$("info").textContent=x.desc;$("link").href=x.url}
