@@ -28,13 +28,14 @@ function read(){return Object.fromEntries(ids.map(id=>[id,asText($(id).value)]))
 const knownDate=s=>{if(!s)return "[DATA A CONFIRMAR]";const a=s.split("-");return a.length===3?a[2]+"/"+a[1]+"/"+a[0]:s}
 function generate(){
  const x=read();const date=knownDate(x.data),proc=x.processo||"[N.º DO PROCESSO]",trib=x.tribunal||"[TRIBUNAL / UNIDADE ORGÂNICA]",ref=x.referencia||"[REFERÊNCIA A CONFIRMAR]",dest=x.destinatario||"[DESTINATÁRIO A CONFIRMAR]",detail=x.factos||"[DESCREVER O ATO OU OCORRÊNCIA]",subject=x.assunto||"[ASSUNTO A CONFIRMAR]",ass=x.assinatura||"A Secretaria";
+ const subjectLine=x.assunto?"Assunto: "+x.assunto+"\n":"";
  let body="";
  switch(x.tipo){
  case "oficio":body="OFÍCIO\n\n"+trib+"\nProcesso n.º "+proc+"\nData: "+date+"\nDestinatário: "+dest+"\nAssunto: "+subject+"\nReferência: "+ref+"\n\nExmo.(a) Senhor(a),\n\nPara os devidos efeitos, comunica-se o seguinte:\n\n"+detail+"\n\nCom os melhores cumprimentos,\n"+ass;break;
  case "certidao":body="CERTIDÃO\n\n"+trib+"\nProcesso n.º "+proc+"\n\nCertifico que, nos presentes autos, ocorreu o seguinte:\n\n"+detail+"\n\nA presente certidão é passada em "+date+".\n\n"+ass;break;
  case "notificacao":body="NOTIFICAÇÃO\n\n"+trib+"\nProcesso n.º "+proc+"\nDestinatário: "+dest+"\nData: "+date+"\nReferência: "+ref+"\n\nFica V. Ex.ª notificado(a) do seguinte:\n\n"+detail+"\n\n"+ass;break;
- case "remessa":body="COTA\n\n"+trib+"\nProcesso n.º "+proc+"\nData: "+date+"\n\nNa presente data, vão os autos à conclusão, na sequência de:\n\n"+detail+"\n\n"+ass;break;
- default:body="COTA\n\n"+trib+"\nProcesso n.º "+proc+"\nData: "+date+"\n\nConsigna-se que:\n\n"+detail+"\n\nReferência do ato: "+ref+"\n\n"+ass;
+ case "remessa":body="COTA\n\n"+trib+"\nProcesso n.º "+proc+"\nData: "+date+"\n"+subjectLine+"\nNa presente data, vão os autos à conclusão, na sequência de:\n\n"+detail+"\n\n"+ass;break;
+ default:body="COTA\n\n"+trib+"\nProcesso n.º "+proc+"\nData: "+date+"\n"+subjectLine+"\nConsigna-se que:\n\n"+detail+"\n\nReferência do ato: "+ref+"\n\n"+ass;
  }
  $("saida").textContent=body;
  return body;
