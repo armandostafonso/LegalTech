@@ -49,7 +49,9 @@ await check("Hearing: RTF exportado com edição manual",async()=>{
  await page.locator("#rtf").click();
  const file=await promise;
  if(!file.suggestedFilename().endsWith(".rtf"))throw Error("Ficheiro RTF não descarregado");
- if(!fs.readFileSync(await file.path(),"utf8").includes("Ata fictícia"))throw Error("Edição não preservada");
+ const rtf=fs.readFileSync(await file.path(),"utf8");
+ if(!rtf.includes("Ata fict")||!rtf.includes("revista no iPad."))throw Error("Edição não preservada");
+ if(!rtf.includes("\\u237?"))throw Error("Acentuação portuguesa não foi codificada em RTF");
 });
 await check("Agenda: exportação ICS",async()=>{
  await open("agenda.html");
