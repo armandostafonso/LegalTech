@@ -10,7 +10,7 @@
 </style><script>try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||"light"}catch(e){}</script><link rel="stylesheet" href="assets/brand.css">
 </head>
 <body><main><header><a class="brand" href="index.html">LegalTech <span class="lt-suite">Suite</span></a><button class="secondary" id="theme" type="button">◐ Tema</button></header>
-<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.9</p>
+<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 2.0</p>
 <div class="notice"><strong>Âmbito:</strong> cálculo limitado da taxa-base por impulso com Tabela I-A/I-B e conferência de valores. Não determina automaticamente o total legalmente exigível, não lê PDF e não emite conta oficial. Não introduzas dados pessoais ou processuais confidenciais. Os dados não são enviados nem guardados por esta página.</div>
 <section class="panel"><h2>1. Identificação e regime</h2><div class="grid">
 <div class="field"><label for="process">Referência fictícia / interna</label><input id="process" placeholder="Ex.: TESTE-A01"></div>
@@ -216,6 +216,41 @@
 <div class="table-scroll"><table aria-label="Responsabilidade final individualizada por sujeito"><thead><tr><th>Interveniente</th><th>Posição</th><th>Total atribuído no mapa</th></tr></thead><tbody id="multiTotalsRows"><tr><td colspan="3">Sem resultados.</td></tr></tbody></table></div>
 <div class="table-scroll"><table aria-label="Encargos repartidos no mapa multissujeito"><thead><tr><th>Encargo / decisão</th><th>Âmbito</th><th>Montante</th><th>Repartição</th><th>Acção</th></tr></thead><tbody id="multiChargesRows"><tr><td colspan="5">Sem repartições registadas.</td></tr></tbody></table></div>
 <p class="muted"><small>Base legal: <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2013-34580575-53451975" target="_blank" rel="noopener">CPC, artigos 527.º e 528.º</a>; <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975-45001875" target="_blank" rel="noopener">RCP, artigo 30.º</a>. No litisconsórcio, a taxa pelo impulso é paga pelo litisconsorte indicado em primeiro lugar (CPC 530.º/4); na coligação há taxas próprias (CPC 530.º/5). Este mapa não altera tais obrigações. A solidariedade, a transacção com redução, o decaimento parcial e situações especiais não são resolvidos automaticamente.</small></p>
+</section>
+
+<section class="panel" id="contas-multissujeito">
+<h2>Obrigações e pagamentos individualizados · multissujeito</h2>
+<p class="muted">Regista taxas, encargos, penalidades e pagamentos <strong>por interveniente</strong>. Podes importar os encargos já repartidos pelo mapa multissujeito, sem importar valores da conta A/B. O cálculo é aritmético, não determina dívida vencida nem restituição.</p>
+<div class="grid">
+ <div class="field"><label for="multiImportCharge">Encargo repartido para importar</label><select id="multiImportCharge"><option value="">Seleccionar encargo</option></select></div>
+ <div class="field"><label for="multiImportVerified">Conferência da importação</label><label class="checkrow"><input type="checkbox" id="multiImportVerified"> Confirmei que estas obrigações não foram contabilizadas no quadro A/B nem anteriormente neste mapa.</label></div>
+</div>
+<div class="actions"><button type="button" id="multiImport" class="secondary">Criar obrigações a partir da repartição</button></div>
+<div class="grid">
+ <div class="field"><label for="multiObPerson">Interveniente responsável</label><select id="multiObPerson"><option value="">Seleccionar interveniente</option></select></div>
+ <div class="field"><label for="multiObKind">Tipo de obrigação</label><select id="multiObKind"><option value="taxa">Taxa de justiça</option><option value="encargo">Encargo</option><option value="multa">Multa / penalidade</option><option value="outro">Outra obrigação</option></select></div>
+ <div class="field"><label for="multiObRef">Referência fictícia do impulso ou encargo</label><input id="multiObRef" maxlength="70" autocomplete="off" placeholder="Ex.: TAXA-AUTOR-01"></div>
+ <div class="field"><label for="multiObAmount">Montante juridicamente apurado (€)</label><input id="multiObAmount" type="number" step="0.01" min="0.01" placeholder="Ex.: 204.00"></div>
+ <div class="field"><label for="multiObBasis">Fundamento e documento</label><input id="multiObBasis" maxlength="220" autocomplete="off" placeholder="Norma, decisão e data aplicáveis"></div>
+</div>
+<label class="checkrow"><input id="multiObVerified" type="checkbox"> Confirmei o regime temporal, a parte individualmente responsável, o fundamento e que a obrigação não está duplicada no mapa A/B.</label>
+<div class="actions"><button type="button" id="multiObAdd">Registar obrigação</button></div>
+<p id="multiAccountMessage" class="notice" aria-live="polite">Sem obrigações individualizadas. Não é possível importar taxas de justiça apenas a partir da repartição de encargos.</p>
+<div class="grid">
+ <div class="field"><label for="multiMovePerson">Interveniente do movimento</label><select id="multiMovePerson"><option value="">Seleccionar interveniente</option></select></div>
+ <div class="field"><label for="multiMoveOb">Obrigação à qual imputar (facultativo)</label><select id="multiMoveOb"><option value="">Sem imputação individual</option></select></div>
+ <div class="field"><label for="multiMoveKind">Movimento financeiro</label><select id="multiMoveKind"><option value="guide">Guia emitida</option><option value="payment">Pagamento</option><option value="refund">Restituição</option><option value="cancel">Anulação de guia</option></select></div>
+ <div class="field"><label for="multiMoveStatus">Comprovação</label><select id="multiMoveStatus"><option value="pending">Pendente de confirmação</option><option value="confirmed">Confirmado documentalmente</option></select></div>
+ <div class="field"><label for="multiMoveRef">Referência fictícia do DUC / movimento</label><input id="multiMoveRef" maxlength="70" autocomplete="off" placeholder="Ex.: PAG-AUTOR-01"></div>
+ <div class="field"><label for="multiMoveDate">Data do movimento</label><input id="multiMoveDate" type="date"></div>
+ <div class="field"><label for="multiMoveAmount">Montante (€)</label><input id="multiMoveAmount" type="number" min="0.01" step="0.01"></div>
+</div>
+<div class="actions"><button type="button" id="multiMoveAdd">Registar movimento</button><button type="button" id="multiAccountReconcile" class="secondary">Reconciliar por interveniente</button><button type="button" id="multiAccountExport" class="secondary">Exportar reconciliação CSV</button></div>
+<p id="multiAccountNote" class="notice" aria-live="polite">Só pagamentos e restituições confirmados entram no saldo financeiro. Guias emitidas não são pagamentos.</p>
+<div class="table-scroll"><table aria-label="Obrigações individuais multissujeito"><thead><tr><th>Interveniente / obrigação</th><th>Tipo</th><th>Fundamento</th><th>Montante</th><th>Pago imputado</th><th>Acção</th></tr></thead><tbody id="multiObRows"><tr><td colspan="6">Sem obrigações.</td></tr></tbody></table></div>
+<div class="table-scroll"><table aria-label="Movimentos financeiros multissujeito"><thead><tr><th>Interveniente</th><th>Tipo</th><th>Referência</th><th>Montante</th><th>Comprovação</th><th>Acções</th></tr></thead><tbody id="multiMoveRows"><tr><td colspan="6">Sem movimentos.</td></tr></tbody></table></div>
+<div class="table-scroll"><table aria-label="Reconciliação multissujeito"><thead><tr><th>Interveniente</th><th>Total obrigações</th><th>Pagamentos líquidos</th><th>Diferença positiva</th><th>Excesso potencial</th><th>Sem imputação</th></tr></thead><tbody id="multiBalanceRows"><tr><td colspan="6">Aguarda reconciliação.</td></tr></tbody></table></div>
+<p class="muted"><small>Referências: CPC, artigos 527.º, 528.º e 530.º; RCP, artigo 30.º. As diferenças são matemáticas e dependem da decisão final, dos benefícios e dos documentos oficiais. Os registos são locais e temporários; não há comunicação com CITIUS/SITAF.</small></p>
 </section>
 <section class="panel" id="conciliacao-impulsos">
 <h2>Reconciliação financeira por impulso</h2>
@@ -1006,6 +1041,205 @@ el("multiExport").addEventListener("click",()=>{
  const href=URL.createObjectURL(blob),a=document.createElement("a");a.href=href;a.download="legaltech-multissujeito-experimental.csv";
  document.body.append(a);a.click();a.remove();URL.revokeObjectURL(href);
  el("multiResult").textContent="Resumo multissujeito exportado localmente, sem integração automática na conta A/B.";
+});
+
+
+/* Livro multissujeito independente da conta A/B, sem compensações entre pessoas. */
+const multiObligations=[],multiMovements=[];
+let multiNextOb=1,multiNextMove=1,multiAccountCache=null;
+const multiObKinds={taxa:"Taxa de justiça",encargo:"Encargo",multa:"Multa / penalidade",outro:"Outra obrigação"};
+const multiMovementKinds={guide:"Guia emitida",payment:"Pagamento",refund:"Restituição",cancel:"Anulação de guia"};
+const multiGetPerson=id=>multiPeople.find(p=>p.id===id);
+const multiCentsInput=id=>{
+ const t=el(id).value.trim(),n=Number(t);
+ return t!==""&&Number.isFinite(n)&&n>0&&Math.abs(n*100-Math.round(n*100))<1e-6&&Number.isSafeInteger(Math.round(n*100))&&n<=100000000?Math.round(n*100):null;
+};
+function multiAccountInvalidate(){
+ multiAccountCache=null;
+ el("multiAccountNote").textContent="Dados financeiros alterados. Reconcilia novamente antes de exportar.";
+}
+function multiAccountOptions(){
+ const currentImport=el("multiImportCharge").value,available=multiCharges.filter(c=>!multiObligations.some(o=>o.chargeId===c.id));
+ el("multiImportCharge").innerHTML='<option value="">Seleccionar encargo</option>'+available.map(c=>'<option value="'+c.id+'">'+ledgerEscape(c.ref)+" · "+ledgerFmt(c.cents)+'</option>').join("");
+ el("multiImportCharge").value=available.some(c=>String(c.id)===currentImport)?currentImport:"";
+ for(const id of ["multiObPerson","multiMovePerson"]){
+  const current=el(id).value;
+  el(id).innerHTML='<option value="">Seleccionar interveniente</option>'+multiPeople.map(p=>'<option value="'+p.id+'">'+ledgerEscape(p.name)+'</option>').join("");
+  el(id).value=multiPeople.some(p=>String(p.id)===current)?current:"";
+ }
+ const personId=Number(el("multiMovePerson").value),current=el("multiMoveOb").value;
+ const options=multiObligations.filter(o=>o.personId===personId);
+ el("multiMoveOb").innerHTML='<option value="">Sem imputação individual</option>'+options.map(o=>'<option value="'+o.id+'">'+ledgerEscape(o.ref)+" · "+ledgerFmt(o.cents)+'</option>').join("");
+ el("multiMoveOb").value=options.some(o=>String(o.id)===current)?current:"";
+}
+function multiAccountBuild(){
+ const rows=[],warnings=[],personTotals=[],byPerson=new Map(),byOb=new Map();
+ for(const p of multiPeople)byPerson.set(p.id,{person:p,due:0,paid:0,unassigned:0,pending:0,issued:0});
+ for(const o of multiObligations){
+  const totals=byPerson.get(o.personId);
+  if(!totals)continue;
+  totals.due+=o.cents;byOb.set(o.id,{due:o.cents,paid:0});
+ }
+ for(const m of multiMovements){
+  const item=byPerson.get(m.personId);if(!item)continue;
+  if(m.kind==="guide"){item.issued+=m.cents;continue}
+  if(m.kind==="cancel")continue;
+  if(m.status!=="confirmed"){item.pending++;continue}
+  const signed=m.kind==="payment"?m.cents:-m.cents;
+  item.paid+=signed;
+  if(!m.obId)item.unassigned+=signed;
+  else if(byOb.has(m.obId))byOb.get(m.obId).paid+=signed;
+ }
+ for(const x of byPerson.values()){
+  const positive=Math.max(0,x.due-x.paid),excess=Math.max(0,x.paid-x.due);
+  personTotals.push({...x,positive,excess});
+  if(x.pending)warnings.push(x.person.name+": "+x.pending+" movimento(s) pendente(s)");
+  if(x.unassigned)warnings.push(x.person.name+": pagamentos líquidos sem imputação de "+ledgerFmt(x.unassigned));
+  if(x.paid<0)warnings.push(x.person.name+": pagamentos líquidos negativos");
+  if(excess)warnings.push(x.person.name+": excesso potencial "+ledgerFmt(excess));
+ }
+ for(const o of multiObligations){
+  const paid=byOb.get(o.id)?.paid??0;
+  rows.push({...o,paid,positive:Math.max(0,o.cents-paid),excess:Math.max(0,paid-o.cents)});
+  if(paid<0)warnings.push("Restituições líquidas superiores aos pagamentos do impulso "+o.ref);
+  if(paid>o.cents)warnings.push("Excesso aritmético no impulso "+o.ref);
+ }
+ if(multiCharges.some(c=>!multiObligations.some(o=>o.chargeId===c.id)))warnings.push("Encargos repartidos ainda não importados para obrigações individuais");
+ if(!multiObligations.length)warnings.push("Não existem obrigações individuais registadas");
+ return {personTotals,rows,warnings,unallocated:multiMovements.filter(m=>m.status==="confirmed"&&["payment","refund"].includes(m.kind)&&!m.obId).length};
+}
+function multiAccountSnapshot(){
+ return JSON.stringify({
+  people:multiPeople.map(p=>[p.id,p.name,p.role]),
+  charges:multiCharges.map(c=>[c.id,c.ref,c.cents,c.allocations.map(a=>[a.id,a.cents])]),
+  obligations:multiObligations.map(o=>[o.id,o.personId,o.kind,o.ref,o.cents,o.basis,o.chargeId]),
+  movements:multiMovements.map(m=>[m.id,m.personId,m.obId,m.kind,m.ref,m.cents,m.status,m.date])
+ });
+}
+function multiAccountRender(message){
+ multiAccountOptions();
+ const result=multiAccountBuild(),byOb=new Map(result.rows.map(o=>[o.id,o]));
+ el("multiObRows").innerHTML=multiObligations.length?multiObligations.map(o=>{
+  const name=multiGetPerson(o.personId)?.name||"Interveniente não encontrado";
+  return '<tr><td>'+ledgerEscape(name+" · "+o.ref)+'</td><td>'+multiObKinds[o.kind]+'</td><td>'+ledgerEscape(o.basis)+'</td><td>'+ledgerFmt(o.cents)+'</td><td>'+ledgerFmt(byOb.get(o.id)?.paid??0)+'</td><td><button type="button" data-multi-ob-remove="'+o.id+'">Retirar</button></td></tr>';
+ }).join(""):'<tr><td colspan="6">Sem obrigações.</td></tr>';
+ el("multiMoveRows").innerHTML=multiMovements.length?multiMovements.map(m=>{
+  const name=multiGetPerson(m.personId)?.name||"Interveniente não encontrado";
+  const label=["payment","refund"].includes(m.kind)?(m.status==="confirmed"?"Confirmado":"Pendente"):"Registado";
+  const confirm=(["payment","refund"].includes(m.kind)&&m.status==="pending")?'<button type="button" data-multi-move-confirm="'+m.id+'">Confirmar</button>':"";
+  return '<tr><td>'+ledgerEscape(name)+'</td><td>'+multiMovementKinds[m.kind]+'</td><td>'+ledgerEscape(m.ref)+'</td><td>'+ledgerFmt(m.cents)+'</td><td>'+label+'</td><td>'+confirm+'<button type="button" data-multi-move-remove="'+m.id+'">Retirar</button></td></tr>';
+ }).join(""):'<tr><td colspan="6">Sem movimentos.</td></tr>';
+ if(message)el("multiAccountMessage").textContent=message;
+}
+function multiMovementValidate(m,excludeId=null){
+ if(!multiGetPerson(m.personId))return "Interveniente não identificado.";
+ if(m.obId!==null){
+  const o=multiObligations.find(x=>x.id===m.obId);
+  if(!o||o.personId!==m.personId)return "Obrigação associada pertence a outro interveniente.";
+ }
+ const other=multiMovements.filter(x=>x.id!==excludeId);
+ if(!m.ref||m.ref.length>70||!/^\d{4}-\d{2}-\d{2}$/.test(m.date))return "Indica referência e data do movimento.";
+ if(!Number.isSafeInteger(m.cents)||m.cents<=0)return "Montante financeiro inválido.";
+ if(other.some(x=>x.personId===m.personId&&x.kind===m.kind&&x.ref.toLocaleLowerCase("pt-PT")===m.ref.toLocaleLowerCase("pt-PT")&&x.date===m.date&&x.cents===m.cents))
+  return "Movimento aparentemente duplicado.";
+ if(m.kind==="cancel"){
+  const guide=other.find(x=>x.personId===m.personId&&x.kind==="guide"&&x.ref===m.ref);
+  if(!guide||guide.cents!==m.cents)return "Anulação exige guia prévia da mesma referência e montante.";
+  if(other.some(x=>x.personId===m.personId&&x.kind==="cancel"&&x.ref===m.ref))return "Guia já anulada.";
+ }
+ if(m.kind==="refund"&&m.status==="confirmed"){
+  const match=other.filter(x=>x.personId===m.personId&&x.ref===m.ref);
+  if(match.some(x=>x.kind==="payment"&&x.status==="confirmed"&&x.obId!==m.obId))return "Restituição associada a obrigação diferente do pagamento.";
+  const paid=match.filter(x=>x.kind==="payment"&&x.status==="confirmed"&&x.obId===m.obId).reduce((s,x)=>s+x.cents,0);
+  const refunded=match.filter(x=>x.kind==="refund"&&x.status==="confirmed"&&x.obId===m.obId).reduce((s,x)=>s+x.cents,0);
+  if(m.cents>paid-refunded)return "Restituição excede os pagamentos confirmados da mesma referência, parte e obrigação.";
+ }
+ return "";
+}
+el("multiMovePerson").addEventListener("change",()=>{multiAccountOptions();multiAccountInvalidate()});
+el("multiImport").addEventListener("click",()=>{
+ const id=Number(el("multiImportCharge").value),charge=multiCharges.find(c=>c.id===id);
+ if(!charge){el("multiAccountMessage").textContent="Selecciona um encargo repartido válido.";return}
+ if(!el("multiImportVerified").checked){el("multiAccountMessage").textContent="Confirma a ausência de duplicação com a conta A/B.";return}
+ if(multiObligations.some(o=>o.chargeId===id)){el("multiAccountMessage").textContent="O encargo já foi importado.";return}
+ const allocations=charge.allocations.filter(a=>a.cents>0);
+ if(allocations.some(a=>!multiGetPerson(a.id))){el("multiAccountMessage").textContent="Existe interveniente desconhecido no mapa.";return}
+ for(const a of allocations){
+  const ref=charge.ref+"-"+a.id;
+  if(multiObligations.some(o=>o.personId===a.id&&o.ref.toLocaleLowerCase("pt-PT")===ref.toLocaleLowerCase("pt-PT"))){el("multiAccountMessage").textContent="Já existe obrigação com a referência do encargo importado.";return}
+ }
+ for(const a of allocations)multiObligations.push({id:multiNextOb++,personId:a.id,kind:"encargo",ref:charge.ref+"-"+a.id,cents:a.cents,basis:"Repartição "+charge.ref+"; decisão "+charge.decision+"; "+charge.method,chargeId:charge.id});
+ el("multiImportVerified").checked=false;multiAccountInvalidate();
+ multiAccountRender("Encargo importado apenas para as obrigações individuais multissujeito. O quadro A/B não foi alterado.");
+});
+el("multiObAdd").addEventListener("click",()=>{
+ const personId=Number(el("multiObPerson").value),kind=el("multiObKind").value,ref=el("multiObRef").value.trim(),basis=el("multiObBasis").value.trim(),cents=multiCentsInput("multiObAmount");
+ if(!multiGetPerson(personId)||!Object.hasOwn(multiObKinds,kind)){el("multiAccountMessage").textContent="Selecciona sujeito e natureza da obrigação.";return}
+ if(!ref||ref.length>70||basis.length<8||basis.length>220||cents===null){el("multiAccountMessage").textContent="Referência, montante ou fundamento inválidos.";return}
+ if(!el("multiObVerified").checked){el("multiAccountMessage").textContent="Confirma a exigibilidade e ausência de duplicação.";return}
+ if(multiObligations.some(o=>o.personId===personId&&o.ref.toLocaleLowerCase("pt-PT")===ref.toLocaleLowerCase("pt-PT"))){el("multiAccountMessage").textContent="Obrigação duplicada para este interveniente.";return}
+ multiObligations.push({id:multiNextOb++,personId,kind,ref,basis,cents,chargeId:null});
+ for(const id of ["multiObRef","multiObAmount","multiObBasis"])el(id).value="";
+ el("multiObVerified").checked=false;multiAccountInvalidate();multiAccountRender("Obrigação individual registada com valor declarado pelo utilizador.");
+});
+el("multiObRows").addEventListener("click",event=>{
+ const btn=event.target.closest("button[data-multi-ob-remove]");if(!btn)return;
+ const id=Number(btn.dataset.multiObRemove),i=multiObligations.findIndex(x=>x.id===id);
+ if(i<0)return;
+ if(multiMovements.some(m=>m.obId===id)){el("multiAccountMessage").textContent="Retira primeiro os movimentos financeiros associados.";return}
+ multiObligations.splice(i,1);multiAccountInvalidate();multiAccountRender("Obrigação individual retirada.");
+});
+el("multiMoveAdd").addEventListener("click",()=>{
+ const kind=el("multiMoveKind").value,status=["payment","refund"].includes(kind)?el("multiMoveStatus").value:"recorded";
+ const raw=el("multiMoveOb").value;
+ const m={id:multiNextMove,personId:Number(el("multiMovePerson").value),obId:raw?Number(raw):null,kind,status,ref:el("multiMoveRef").value.trim(),date:el("multiMoveDate").value,cents:multiCentsInput("multiMoveAmount")};
+ if(!Object.hasOwn(multiMovementKinds,kind)||m.cents===null){el("multiAccountMessage").textContent="Tipo ou montante de movimento inválidos.";return}
+ const error=multiMovementValidate(m);
+ if(error){el("multiAccountMessage").textContent=error;return}
+ multiMovements.push(m);multiNextMove++;
+ el("multiMoveRef").value="";el("multiMoveAmount").value="";
+ multiAccountInvalidate();multiAccountRender("Movimento registado. Confirmações são declaradas pelo utilizador, sem validação de comprovativos.");
+});
+el("multiMoveRows").addEventListener("click",event=>{
+ const btn=event.target.closest("button[data-multi-move-confirm],button[data-multi-move-remove]");if(!btn)return;
+ const id=Number(btn.dataset.multiMoveConfirm||btn.dataset.multiMoveRemove);
+ const i=multiMovements.findIndex(x=>x.id===id);if(i<0)return;
+ const m=multiMovements[i];
+ if(btn.dataset.multiMoveConfirm){
+  const err=multiMovementValidate({...m,status:"confirmed"},m.id);
+  if(err){el("multiAccountMessage").textContent=err;return}
+  m.status="confirmed";multiAccountInvalidate();multiAccountRender("Movimento confirmado pelo utilizador, não pelo sistema bancário.");return;
+ }
+ if(m.kind==="guide"&&multiMovements.some(x=>x.personId===m.personId&&x.kind==="cancel"&&x.ref===m.ref)){el("multiAccountMessage").textContent="Retira primeiro a anulação associada à guia.";return}
+ if(m.kind==="payment"&&m.status==="confirmed"){
+  const related=multiMovements.filter(x=>x.personId===m.personId&&x.ref===m.ref&&x.obId===m.obId&&x.status==="confirmed");
+  const paid=related.filter(x=>x.kind==="payment").reduce((sum,x)=>sum+x.cents,0);
+  const refunded=related.filter(x=>x.kind==="refund").reduce((sum,x)=>sum+x.cents,0);
+  if(refunded>paid-m.cents){el("multiAccountMessage").textContent="Retira primeiro as restituições que dependem deste pagamento.";return}
+ }
+ multiMovements.splice(i,1);multiAccountInvalidate();multiAccountRender("Movimento financeiro retirado.");
+});
+el("multiAccountReconcile").addEventListener("click",()=>{
+ const r=multiAccountBuild();multiAccountCache={result:r,snapshot:multiAccountSnapshot()};
+ el("multiBalanceRows").innerHTML=r.personTotals.length?r.personTotals.map(x=>'<tr><td>'+ledgerEscape(x.person.name)+'</td><td>'+ledgerFmt(x.due)+'</td><td>'+ledgerFmt(x.paid)+'</td><td>'+ledgerFmt(x.positive)+'</td><td>'+ledgerFmt(x.excess)+'</td><td>'+ledgerFmt(x.unassigned)+'</td></tr>').join(""):'<tr><td colspan="6">Sem intervenientes.</td></tr>';
+ el("multiAccountNote").textContent=r.warnings.length?"Conferência incompleta: "+r.warnings.join("; ")+". Não constitui conta.":"Conferência aritmética sem alertas internos. Não constitui dívida vencida, conta oficial ou decisão sobre restituição.";
+});
+el("multiAccountExport").addEventListener("click",()=>{
+ if(!multiAccountCache||multiAccountCache.snapshot!==multiAccountSnapshot()){el("multiAccountNote").textContent="O resumo está desactualizado. Volta a reconciliar antes de exportar.";return}
+ const r=multiAccountCache.result;
+ const quote=input=>{let cell=String(input);if(/^[\x00-\x20]*[=+\-@]/.test(cell))cell="'"+cell;return '"'+cell.replace(/"/g,'""')+'"'};
+ const euroCsv=c=>String((c/100).toFixed(2)).replace(".",",");
+ const csv=["AVISO;"+quote("Mapa independente, não é conta oficial nem decide restituições"),
+  ...r.warnings.map((w,i)=>"PENDENTE "+(i+1)+";"+quote(w)),
+  "Interveniente;Obrigações (€);Pagamentos líquidos (€);Diferença positiva (€);Excesso potencial (€);Sem imputação (€)",
+  ...r.personTotals.map(x=>[quote(x.person.name),x.due,x.paid,x.positive,x.excess,x.unassigned].map((v,i)=>i?euroCsv(v):v).join(";")),
+  "IMPULSOS;Referência;Tipo;Obrigação (€);Pago imputado (€)",
+  ...r.rows.map(o=>[quote(multiGetPerson(o.personId)?.name||""),quote(o.ref),quote(multiObKinds[o.kind]),euroCsv(o.cents),euroCsv(o.paid)].join(";"))
+ ].join("\r\n");
+ const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+ const href=URL.createObjectURL(blob),a=document.createElement("a");a.href=href;a.download="legaltech-multissujeito-reconciliacao-experimental.csv";
+ document.body.append(a);a.click();a.remove();URL.revokeObjectURL(href);
+ el("multiAccountNote").textContent="Resumo CSV exportado localmente, sem alteração da conta A/B.";
 });
 
 /* Reconciliação por ID de obrigação, sem imputação tácita nem encontro de contas entre partes. */
