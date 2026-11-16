@@ -18,8 +18,21 @@ function analyse(){
  selected=[];checked=[];$("copy").disabled=$("txt").disabled=true;$("warning").hidden=true;
  if(text.length<8){N.status("Introduz uma instrução suficientemente completa.");return}
  const raw=normal(text);
+ // Falha segura: instruções negativas podem inverter completamente o sentido.
+ // Este módulo determinístico não interpreta escopos de negação, condições ou exceções.
+ const negative=/\b(?:nao|nunca|jamais|sem|abstenha|abster|proibido|proibida|nao\s+deve|nao\s+devera)\b/i.test(raw);
+ if(negative){
+  $("warning").hidden=false;
+  $("warning").textContent="Instrução negativa ou restritiva detetada. Por segurança, o sistema não sugere nem exporta atos: a interpretação integral compete ao utilizador.";
+  N.status("Plano bloqueado por possível negação ou proibição. Confere diretamente o despacho.");
+  return;
+ }
+ const conditional=/\b(?:caso|salvo|exceto|excepto|desde\s+que|a\s+menos\s+que|se)\b/i.test(raw);
+ if(conditional){
+  $("warning").hidden=false;
+  $("warning").textContent="Foi detetada uma possível condição ou exceção. Qualquer tarefa sugerida só pode ser considerada após verificação dos seus pressupostos e do despacho completo.";
+ }
  for(const a of actions)if(a.re.test(raw))selected.push(a);
- if(/\bnao\s+(?:notifi|cit|remet|conclu|ofici)/i.test(raw)){ $("warning").hidden=false;$("warning").textContent="Foi detetada uma expressão negativa. A lista pode incluir atos que o despacho proíbe; é obrigatória revisão integral do texto antes de utilizar qualquer sugestão." }
  if(!selected.length){N.status("Não foram reconhecidas instruções do catálogo. Isso não significa que o despacho não exija atos.");return}
  const suggestions=[];
  for(const a of selected){for(const check of a.checks)suggestions.push(a.name+": "+check)}
