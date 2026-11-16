@@ -29,7 +29,7 @@ for(const w of canonical.workflows){
  for(const b of w.basis){if(!b.url.startsWith("https://"))throw Error("Fonte inválida");}
  for(const stage of w.stages){if(!stage.id||!stage.name||stage.steps.length<3)throw Error("Fase incompleta: "+w.id);}
 }
-if(ids.size!==7)throw Error("Esperados sete roteiros processuais");
+if(ids.size!==9)throw Error("Esperados nove roteiros processuais");
 const info=canonical.workflows.find(x=>x.id==="intimacao-informacao");
 if(!info.stages.find(x=>x.id==="citacao").steps.some(s=>s.includes("dez dias")))throw Error("Artigo 107 CPTA ausente");
 const tax=canonical.workflows.find(x=>x.id==="intimacao-tributaria");
@@ -46,4 +46,10 @@ for(const w of [action,imp,caution,appeal]){
  if(!w.stages.some(stage=>stage.steps.some(text=>text.startsWith("Juiz / despacho | "))))throw Error("Roteiro sem decisões dependentes de despacho: "+w.id);
  if(!w.stages.some(stage=>stage.steps.some(text=>text.startsWith("Secretaria | "))))throw Error("Roteiro sem atos de secretaria: "+w.id);
 }
-console.log("Contrato TAF e fichas complementares: sete roteiros, 25 fases e minutas coerentes.");
+const pre=canonical.workflows.find(x=>x.id==="pre-contratual");
+if(!pre||!pre.notes.includes("48 horas")||!pre.basis.some(x=>x.article.includes("103.º-A")))throw Error("Contencioso pré-contratual incompleto");
+const oef=canonical.workflows.find(x=>x.id==="reclamacao-oef");
+if(!oef||!oef.notes.includes("subida imediata")||!oef.basis.some(x=>x.article.includes("276.º")))throw Error("Reclamação OEF incompleta");
+const phaseCount=canonical.workflows.reduce((sum,w)=>sum+w.stages.length,0);
+if(phaseCount!==33)throw Error("Esperadas 33 fases, encontradas "+phaseCount);
+console.log("Contrato TAF aprovado: nove roteiros, 33 fases e fichas de conferência.");
