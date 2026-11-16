@@ -18,6 +18,8 @@ jobs:
         run: node scripts/validate-site.mjs
       - name: Validar calendário comum
         run: node scripts/calendar-contract.mjs
+      - name: Verificar núcleo de prazos e 324 cenários (sem browser)
+        run: node scripts/prazo-core-contract.mjs
       - name: Verificar manifesto dos contratos Web/Desktop
         run: node scripts/citacheck-parity.mjs --offline
       - name: Validar catálogo de tramitação TAF
