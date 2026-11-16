@@ -19,7 +19,7 @@ await check("Página inicial e pesquisa",async()=>{
  await page.locator("#search").fill("minuta");
  if(await page.locator(".tool:visible").count()!==1)throw Error("Pesquisa não filtra para uma ferramenta");
  await page.locator("#search").fill("");
- if(await page.locator(".tool:visible").count()!==7)throw Error("Ferramentas não recuperadas");
+ if(await page.locator(".tool:visible").count()!==6)throw Error("Ferramentas não recuperadas");
 });
 await check("Tramitação TAF: fases, urgência, progressão e remissão CPPT",async()=>{
  await open("tramitação-taf.html");
