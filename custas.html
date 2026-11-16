@@ -10,7 +10,7 @@
 </style><script>try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||"light"}catch(e){}</script><link rel="stylesheet" href="assets/brand.css">
 </head>
 <body><main><header><a class="brand" href="index.html">LegalTech</a><button class="secondary" id="theme" type="button">◐ Tema</button></header>
-<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.3</p>
+<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 1.4</p>
 <div class="notice"><strong>Âmbito:</strong> cálculo limitado da taxa-base por impulso com Tabela I-A/I-B e conferência de valores. Não determina automaticamente o total legalmente exigível, não lê PDF e não emite conta oficial. Não introduzas dados pessoais ou processuais confidenciais. Os dados não são enviados nem guardados por esta página.</div>
 <section class="panel"><h2>1. Identificação e regime</h2><div class="grid">
 <div class="field"><label for="process">Referência fictícia / interna</label><input id="process" placeholder="Ex.: TESTE-A01"></div>
@@ -42,7 +42,7 @@
 <div class="grid">
 <div class="field"><label for="remvalue">Valor tributário do processo (€)</label><input id="remvalue" type="number" min="0" step="0.01" placeholder="Ex.: 400000"></div>
 <div class="field"><label for="remtable">Coluna da Tabela I</label><select id="remtable"><option value="A">I-A (3 UC por fracção)</option><option value="B">I-B (1,5 UC por fracção)</option><option value="C">I-C (4,5 UC por fracção)</option></select></div>
-<div class="field"><label for="remdisp">Dispensa judicial do remanescente</label><select id="remdisp"><option value="unknown">Por verificar</option><option value="yes">Sim, abrangendo este impulso</option><option value="no">Não há dispensa identificada</option></select></div>
+<div class="field"><label for="remdisp">Dispensa judicial do remanescente</label><select id="remdisp"><option value="unknown">Por verificar</option><option value="yes">Sim, dispensa integral</option><option value="partial">Dispensa parcial</option><option value="no">Não há dispensa identificada</option></select></div>
 <div class="field"><label for="instruction">O processo terminou antes da conclusão da instrução?</label><select id="instruction"><option value="unknown">Por confirmar</option><option value="yes">Sim</option><option value="no">Não</option></select></div><div class="field"><label for="remcost">Responsabilidade final pelo remanescente</label><select id="remcost"><option value="unknown">Por apurar</option><option value="loser">Parte condenada em custas</option><option value="winner">Parte não condenada em custas</option><option value="mixed">Decaimento parcial / múltiplas partes</option></select></div>
 </div><div class="actions"><button type="button" class="secondary" id="remcalc">Simular remanescente</button></div>
 <p class="notice" id="remresult" aria-live="polite">Aguarda dados. O valor é sempre sujeito à decisão sobre custas, à eventual dispensa e à versão aplicável do RCP.</p>
@@ -66,6 +66,28 @@
 <div class="actions"><button type="button" class="secondary" id="autoPreview">Calcular taxa-base</button><button type="button" id="autoInsert">Criar obrigação calculada</button></div>
 <p id="autoResult" class="notice" role="status" aria-live="polite">Indica os dados do impulso. Na Tabela I-A são calculados a taxa total e os valores teóricos da primeira e segunda prestações, mas só a primeira pode ser registada nesta área.</p>
 <p class="muted"><small>Base legal: RCP, artigos <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975-1127127275" target="_blank" rel="noopener">6.º</a>, 11.º e <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975-1123572475" target="_blank" rel="noopener">Tabela I</a> (Lei n.º 7/2012). A data do impulso e a redacção da lei devem ser conferidas; o sistema não aplica automaticamente benefícios.</small></p>
+</section>
+<section class="panel" id="prestacoes-automaticas"><h2>2.ª prestação da taxa de justiça · cálculo condicionado</h2>
+<p class="muted">Selecciona uma primeira prestação I-A já calculada. O programa só cria a segunda prestação se não existir causa de dispensa assinalada e se todos os pressupostos tiverem sido confirmados. Não calcula multas por atraso.</p>
+<div class="grid">
+<div class="field"><label for="secondSource">Primeira prestação calculada</label><select id="secondSource"><option value="">Seleccionar obrigação I-A</option></select></div>
+<div class="field"><label for="secondOther">Artigo 14.º-A, alínea b), ou outra dispensa</label><select id="secondOther"><option value="unknown">Ainda não verificado</option><option value="no">Não se verifica outra dispensa</option><option value="yes">Verifica-se uma dispensa</option></select></div>
+</div>
+<label class="checkrow"><input id="secondVerified" type="checkbox"> Confirmei o artigo 14.º-A, a notificação para audiência final quando exigível, o apoio judiciário, a data e o regime transitório da prestação.</label>
+<div class="actions"><button type="button" class="secondary" id="secondPreview">Verificar exigibilidade</button><button type="button" id="secondCreate">Criar segunda prestação</button></div>
+<p class="notice" id="secondCalcResult" aria-live="polite">Sem primeira prestação seleccionada.</p>
+</section>
+<section class="panel" id="remanescente-obrigacao"><h2>Remanescente · lançamento fundamentado</h2>
+<p class="muted">Usa o cálculo indicativo acima como referência. A criação de uma obrigação exige confirmação da fase de instrução, da decisão judicial e do sujeito responsável. Para dispensas parciais, introduz apenas a percentagem <strong>que subsiste para pagamento</strong>.</p>
+<div class="grid">
+<div class="field"><label for="remTarget">Parte responsável a final</label><select id="remTarget"><option value="">Por identificar</option><option value="a">Parte A</option><option value="b">Parte B</option></select></div>
+<div class="field"><label for="remRef">Identificador deste remanescente</label><input id="remRef" maxlength="70" placeholder="Ex.: REM-1INST-001"></div>
+<div class="field"><label for="remPayPct">Percentagem do remanescente a pagar</label><input id="remPayPct" type="number" min="0" max="100" step="0.01" value="100"></div>
+<div class="field"><label for="remDecision">Decisão judicial e repartição</label><select id="remDecision"><option value="unknown">Por confirmar</option><option value="verified">Despacho/decisão e responsabilidade conferidos</option></select></div>
+</div>
+<label class="checkrow"><input id="remVerified" type="checkbox"> Confirmei a decisão, a responsabilidade final, o regime temporal, a UC, a inexistência de dupla cobrança e a percentagem exigível.</label>
+<div class="actions"><button type="button" class="secondary" id="remObPreview">Verificar lançamento</button><button type="button" id="remObCreate">Criar obrigação de remanescente</button></div>
+<p class="notice" id="remObResult" aria-live="polite">Aguarda verificação documental. Não corresponde automaticamente a dívida exigível.</p>
 </section>
 <section class="panel" id="obrigacoes">
 <h2>6. Obrigações por impulso processual</h2>
@@ -217,6 +239,7 @@ function obOptions(){
 }
 function obAllocated(ob){return ledgerEntries.filter(m=>m.obId===ob.id&&m.status==="confirmed").reduce((sum,m)=>sum+(m.kind==="payment"?m.cents:m.kind==="refund"?-m.cents:0),0)}
 function obSummary(){
+ secondOptions();
  const totals=obAmounts(),unassigned=ledgerEntries.filter(m=>["payment","refund"].includes(m.kind)&&m.status==="confirmed"&&!m.obId).length;
  for(const p of ["a","b","extra"])el("ob"+({a:"A",b:"B",extra:"Extra"}[p])).textContent=ledgerFmt(totals[p]);
  el("obUnassigned").textContent=String(unassigned);
@@ -322,6 +345,85 @@ el("autoInsert").addEventListener("click",()=>{
  obligations.push({id:obNextId++,party:d.party,type:d.type,ref:d.ref,basis,cents:d.resultCents,checked:true,origin:"tabela-i-base",totalCents:d.totalCents,secondCents:d.secondCents,entry:d.entry,col:d.col,baseValueCents:d.euros,ucCents:d.ucCents});
  obInvalidate();obSummary();autoPreviewState=null;el("autoVerified").checked=false;
  el("autoResult").textContent="Obrigação de taxa-base criada por "+ledgerFmt(d.resultCents)+". "+d.warning+" Total devido só passa à conferência depois de premir «Transferir os totais devidos».";
+});
+
+
+/* Segunda prestação: taxa I-A em duas prestações; verificação do art. 14.º-A e não duplicação. */
+let secondPreviewState=null,remObPreviewState=null;
+function secondOptions(){
+ const current=el("secondSource").value;
+ const eligible=obligations.filter(o=>o.origin==="tabela-i-base"&&o.col==="A");
+ el("secondSource").innerHTML='<option value="">Seleccionar obrigação I-A</option>'+eligible.map(o=>'<option value="'+o.id+'">'+ledgerEscape(ledgerParties[o.party]+" · "+o.ref+" · "+ledgerFmt(o.cents))+"</option>").join("");
+ el("secondSource").value=eligible.some(o=>String(o.id)===current)?current:"";
+}
+function secondCheck(){
+ const id=Number(el("secondSource").value),source=obligations.find(o=>o.id===id&&o.origin==="tabela-i-base"&&o.col==="A");
+ if(!source)return {error:"Selecciona uma primeira prestação calculada da Tabela I-A."};
+ const ref=source.ref+"-2P";
+ if(obligations.some(o=>o.party===source.party&&(o.ref.toLowerCase()===ref.toLowerCase()||o.sourceId===source.id&&o.type==="segunda")))return {error:"A segunda prestação deste impulso já está registada. Não é possível cobrá-la duas vezes."};
+ const v=id=>el(id).value;
+ if(v("secondOther")==="yes")return {error:"Há dispensa indicada: não criar segunda prestação. Confirma o fundamento do artigo 14.º-A."};
+ if(v("secondOther")!=="no")return {error:"Ainda não foi excluída a dispensa do artigo 14.º-A, alínea b), ou outra aplicável."};
+ if(v("hearing")==="no"||v("endbefore")==="yes"||v("opp")==="yes"||(v("priority")==="yes"&&v("authorcontinue")==="no"))return {error:"Foi indicada uma causa de não pagamento da segunda prestação (artigo 14.º-A)."};
+ if(["hearing","endbefore","opp","priority"].some(k=>v(k)==="unknown")||(v("priority")==="yes"&&v("authorcontinue")==="unknown"))return {error:"Há pressupostos processuais por confirmar no assistente da segunda prestação."};
+ if(v("priority")==="yes")return {error:"Suspensão prioritária: confirmar enquadramento particular antes de criar a obrigação."};
+ const p=source.party==="a"?"pa":"pb";
+ if(el(p+"_exemption").value!=="none"||el(p+"_aid").value!=="none")return {error:"Confirma a ausência de isenção ou apoio judiciário na ficha da parte."};
+ if(!el("secondVerified").checked)return {error:"Confirma documentalmente o regime e a exigibilidade da segunda prestação."};
+ return {sourceId:source.id,party:source.party,ref,amount:source.secondCents,entry:source.entry};
+}
+function secondInvalidate(){secondPreviewState=null;el("secondCalcResult").textContent="Dados alterados; verifica novamente antes de lançar a segunda prestação.";}
+for(const id of ["secondSource","secondOther","secondVerified","hearing","endbefore","opp","priority","authorcontinue"]){
+ el(id).addEventListener("change",secondInvalidate);
+}
+el("secondPreview").addEventListener("click",()=>{
+ const d=secondCheck();if(d.error){secondPreviewState=null;el("secondCalcResult").textContent=d.error;return}
+ secondPreviewState=d;el("secondCalcResult").textContent="Segunda prestação potencialmente devida: "+ledgerFmt(d.amount)+". Fonte: primeira prestação de "+ledgerParties[d.party]+", RCP 13.º/2, 14.º/2 e 14.º-A. A obrigação não foi criada.";
+});
+el("secondCreate").addEventListener("click",()=>{
+ const d=secondCheck();if(d.error){el("secondCalcResult").textContent=d.error;return}
+ if(!secondPreviewState||JSON.stringify(d)!==JSON.stringify(secondPreviewState)){el("secondCalcResult").textContent="Executa novamente a verificação antes de criar a obrigação.";return}
+ obligations.push({id:obNextId++,party:d.party,type:"segunda",ref:d.ref,basis:"RCP art. 13.º/2, 14.º/2 e 14.º-A; prestação vinculada à primeira, exigibilidade confirmada pelo utilizador",cents:d.amount,sourceId:d.sourceId,checked:true,origin:"segunda-vinculada"});
+ obInvalidate();obSummary();secondPreviewState=null;el("secondVerified").checked=false;el("secondCalcResult").textContent="Segunda prestação lançada: "+ledgerFmt(d.amount)+". O total só é transferido para a conferência por acção do utilizador.";
+});
+/* Remanescente: nunca atribuir automaticamente a outra parte ou presumir dívida. */
+function remObCheck(){
+ const raw=el("remvalue").value,ucRaw=el("uc").value,pctRaw=el("remPayPct").value;
+ const val=Number(raw),uc=Number(ucRaw),pct=Number(pctRaw),party=el("remTarget").value,ref=el("remRef").value.trim(),column=el("remtable").value;
+ if(!raw||!ucRaw||!pctRaw||!Number.isFinite(val)||!Number.isFinite(uc)||!Number.isFinite(pct)||val<=275000||uc<=0||pct<0||pct>100||Math.abs(pct*100-Math.round(pct*100))>1e-6)return {error:"Indica valor superior a 275.000 €, UC e percentagem entre 0 e 100."};
+ if(!["A","B","C"].includes(column)||!["a","b"].includes(party)||!ref||ref.length>70)return {error:"Selecciona a coluna, a parte responsável e um identificador válido."};
+ if(el("instruction").value==="yes")return {error:"Termo antes da conclusão da instrução: não há lugar ao remanescente (artigo 6.º/8)."};
+ if(el("instruction").value!=="no")return {error:"A fase de instrução está por verificar."};
+ if(el("remdisp").value==="unknown")return {error:"Confirma a existência e extensão da dispensa judicial."};
+ if(el("remdisp").value==="yes")return {error:"Dispensa integral do remanescente indicada. Não criar obrigação."};
+ if(el("remdisp").value==="no"&&pct!==100)return {error:"Sem dispensa, a percentagem tem de ser 100 %."};
+ if(el("remdisp").value==="partial"&&!(pct>0&&pct<100))return {error:"Para dispensa parcial indica percentagem exigível superior a zero e inferior a 100."};
+ if(el("remDecision").value!=="verified"||!el("remVerified").checked)return {error:"Confirma a decisão judicial e a responsabilidade final pelo remanescente."};
+ if(el("remcost").value==="winner"||el("remcost").value==="mixed"||el("remcost").value==="unknown")return {error:"A imputação à parte vencida e o decaimento parcial exigem análise; assinala o sujeito efectivamente responsável."};
+ if(el("remcost").value!=="loser")return {error:"A responsabilidade final pelo remanescente ainda não foi identificada."};
+ if(obligations.some(o=>o.party===party&&o.ref.toLowerCase()===ref.toLowerCase()))return {error:"Já existe obrigação com esta referência para a parte."};
+ const valueCents=Math.round(val*100),ucCents=Math.round(uc*100),pctHundredths=Math.round(pct*100),rateHundredths={A:300,B:150,C:450}[column];
+ const fractionCount=Math.ceil((valueCents-27500000)/2500000);
+ const grossCents=Math.round(fractionCount*rateHundredths*ucCents/100);
+ const payableCents=Math.round(grossCents*pctHundredths/10000);
+ return {party,ref,column,pctHundredths,fractionCount,grossCents,payableCents,ucCents,valueCents};
+}
+function remObInvalidate(){remObPreviewState=null;el("remObResult").textContent="Dados alterados: confirma novamente os pressupostos para registar o remanescente.";}
+for(const id of ["remvalue","remtable","uc","remdisp","instruction","remcost","remTarget","remRef","remPayPct","remDecision","remVerified"]){
+ el(id).addEventListener("input",remObInvalidate);el(id).addEventListener("change",remObInvalidate);
+}
+el("remObPreview").addEventListener("click",()=>{
+ const d=remObCheck();if(d.error){remObPreviewState=null;el("remObResult").textContent=d.error;return}
+ remObPreviewState=d;
+ el("remObResult").textContent=d.fractionCount+" fracção(ões); remanescente integral "+ledgerFmt(d.grossCents)+"; percentagem exigível "+(d.pctHundredths/100).toLocaleString("pt-PT")+" %; obrigação proposta "+ledgerFmt(d.payableCents)+". Não lançado ainda.";
+});
+el("remObCreate").addEventListener("click",()=>{
+ const d=remObCheck();if(d.error){el("remObResult").textContent=d.error;return}
+ if(!remObPreviewState||JSON.stringify(d)!==JSON.stringify(remObPreviewState)){el("remObResult").textContent="Verifica novamente antes de criar a obrigação.";return}
+ const basis="RCP art. 6.º/7 e 8 e Tabela I-"+d.column+"; "+d.fractionCount+" fracções; percentagem exigível "+d.pctHundredths/100+" %; responsabilidade a final confirmada manualmente";
+ obligations.push({id:obNextId++,party:d.party,type:"remanescente",ref:d.ref,basis,cents:d.payableCents,checked:true,origin:"remanescente-decisao"});
+ obInvalidate();obSummary();remObPreviewState=null;el("remVerified").checked=false;
+ el("remObResult").textContent="Remanescente registado: "+ledgerFmt(d.payableCents)+". Continua a exigir conferência documental antes da conta.";
 });
 
 /* Livro de movimentos: centimos inteiros, sem armazenamento, sem rede e sem compensação entre partes. */
