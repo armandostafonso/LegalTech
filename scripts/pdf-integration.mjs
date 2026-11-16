@@ -36,6 +36,7 @@ try {
     return Array.from(await pdf.save());
   });
   await page.locator("#file").setInputFiles({name:"ficheiro-ficticio.pdf",mimeType:"application/pdf",buffer:Buffer.from(bytes)});
+  await page.locator("#hideTerms").evaluate(el => el.closest("details").open = true);
   await page.locator("#hideTerms").fill("PESSOA: FULANO DEMONSTRATIVO");
   const downloadPromise=page.waitForEvent("download",{timeout:90000});
   await page.locator("#go").click();
