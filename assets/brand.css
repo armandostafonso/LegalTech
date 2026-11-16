@@ -105,3 +105,10 @@ body>header nav .lt-theme-added{margin-left:8px}
  .lt-theme-control{min-width:40px;min-height:40px;padding:7px 10px}
  body>header nav .lt-theme-added{margin-left:0}
 }
+
+/* LegalTech Suite: marca-mãe, alinhamento e hierarquia tipográfica */
+.brand .lt-suite{display:inline-block;margin-left:1px;color:var(--accent);font-size:.78em;font-weight:650;letter-spacing:-.035em}
+.lt-module-subtitle{display:block;font-size:13px;color:var(--muted);line-height:1.3;margin-top:-2px}
+.brand{column-gap:7px}
+.brand::before{margin-right:2px}
+@media(max-width:740px){.brand .lt-suite{font-size:.75em}.brand{column-gap:5px}}
