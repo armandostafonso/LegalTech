@@ -16,6 +16,8 @@ jobs:
           node-version: '22'
       - name: Verificar páginas, scripts e recursos
         run: node scripts/validate-site.mjs
+      - name: Validar calendário comum
+        run: node scripts/calendar-contract.mjs
       - name: Instalar navegador de testes
         run: |
           npm install --no-save playwright@1.56.1
