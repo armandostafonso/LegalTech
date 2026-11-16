@@ -24,6 +24,7 @@ async function loadPdfJs(){
   const script=document.createElement("script");
   script.src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
   script.referrerPolicy="no-referrer";script.crossOrigin="anonymous";
+  script.integrity="sha512-q+4liFwdPC/bNdhUpZx6aXDx/h77yEQtn4I1slHydcbZK34nLaR3cAeYSJshoxIOq3mjEf7xJE8YWIUHMn+oCQ==";
   script.onload=()=>window.pdfjsLib?resolve(window.pdfjsLib):reject(new Error("Biblioteca PDF.js sem inicialização."));
   script.onerror=()=>reject(new Error("Não foi possível carregar a biblioteca PDF.js. Verifica a ligação à Internet."));
   document.head.append(script);
