@@ -11,7 +11,7 @@
 <h2>Fundamentos para consulta</h2><div id="sources"></div>
 <p class="note">As referências legais são pontos de consulta, não uma validação automática da regularidade dos atos. Confirma a redação vigente e as particularidades da jurisdição, do processo e do despacho.</p>
 <div class="actions"><button id="reset" class="btn secondary" type="button">Repor verificações</button><button id="print" class="btn secondary" type="button">Imprimir</button></div>
-</section><section class="panel"><div class="tagline" id="stageName"></div><h2 id="stageTitle">Verificações</h2><div id="count" aria-live="polite">0 de 0</div><p id="sessionProgress" class="tagline" aria-live="polite"></p><div class="progress" aria-hidden="true"><div id="bar"></div></div>
+</section><section class="panel"><div class="tagline" id="stageName"></div><h2 id="stageTitle">Verificações</h2><div id="count" aria-live="polite">0 de 0</div><p id="sessionProgress" class="tagline" aria-live="polite"></p><p id="pending" class="lawstatus" role="status" aria-live="polite">As pendências desta fase surgem aqui.</p><div class="progress" aria-hidden="true"><div id="bar"></div></div>
 <div id="steps" class="steplist"></div><details id="detailGuide" style="margin-top:18px;border:1px solid var(--line);padding:15px;border-radius:12px"><summary style="cursor:pointer;font-weight:700">Ficha jurídica complementar e preparação de expediente</summary><div id="guide" class="guidance" style="margin-top:12px"></div></details>
 <div class="actions"><button id="copy" class="btn" type="button">Copiar resumo</button><button id="download" class="btn secondary" type="button">Exportar TXT</button></div>
 <p class="note">As verificações não ficam guardadas. Fechar ou atualizar a página repõe a seleção, salvo as preferências gerais do navegador. Nunca introduzir nomes ou números de processos neste módulo.</p>
@@ -82,6 +82,11 @@ function updateProgress(){
  const total=workflow.stages.reduce((sum,st)=>sum+st.steps.length,0);
  const done=workflow.stages.reduce((sum,st)=>sum+(state.get(workflow.id+"/"+st.id)?.size||0),0);
  $("sessionProgress").textContent="Neste roteiro: "+done+" de "+total+" verificações assinaladas nesta página. Não guardadas.";
+ const left=all.length-checked;
+ const pendingJudicial=stage.steps.filter((v,i)=>v.startsWith("Juiz / despacho | ")&&!all[i]?.checked).length;
+ $("pending").textContent=left===0
+  ?"Todos os pontos desta checklist estão assinalados. Isto não certifica o cumprimento de atos nem autoriza a tramitação seguinte."
+  :left+" ponto(s) por conferir nesta fase; "+pendingJudicial+" matéria(s) assinalada(s) como dependentes de despacho. Consulte os autos e o despacho antes de prosseguir.";
 }
 function summary(){if(!stage)return"";const boxes=[...$("steps").querySelectorAll("input")];return ["LEGALTECH · ROTEIRO AUXILIAR TAF",workflow.name,stage.name,workflow.urgency,"",
 ...stage.steps.map((v,i)=>(boxes[i]?.checked?"[x] ":"[ ] ")+v),"","Referências:",...workflow.basis.map(x=>x.article+" — "+x.url),"","Aviso: conferir autos, normas em vigor e despachos; o roteiro não certifica qualquer diligência."].join("\n")}
