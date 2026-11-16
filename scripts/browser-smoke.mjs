@@ -44,6 +44,12 @@ await check("Cita-Check: interface e unidade do prazo",async()=>{
  if(await page.locator("#prazoUnidade").count()!==1)throw Error("Seleção de dias/meses/anos ausente");
  if(await page.locator("#tipoAto").count()!==1)throw Error("Seletor de modalidade ausente");
 });
+await check("Anonimizador: proteção de camada de texto ligada por predefinição",async()=>{
+ await open("anonimizador.html");
+ if(!(await page.locator("#raster").isChecked()))throw Error("Modo de rasterização não está ativo por predefinição");
+ const note=await page.locator("#rasterNote").innerText();
+ if(!note.includes("conserva texto")&&!note.includes("camada de texto"))throw Error("Aviso de segurança ausente");
+});
 await check("Anonimizador: página própria",async()=>{
  await open("anonimizador.html");
  if(!((await page.locator("h1").first().innerText()).includes("Anonimizador")))throw Error("Página errada");
@@ -56,4 +62,4 @@ await check("Página inicial em largura de telemóvel",async()=>{
 });
 await browser.close();
 if(errors.length){console.error(errors.join("\n"));process.exit(1)}
-console.log("6 testes de navegação e interface concluídos.");
+console.log("7 testes de navegação e interface concluídos.");
