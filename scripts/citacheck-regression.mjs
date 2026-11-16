@@ -34,6 +34,18 @@ for(const testCase of shared.cases) {
    await expectTerm(d+"/"+m+"/"+y);
  });
 }
+// Contrato técnico adicional: calendário/dilação zero, sem presunções da citação.
+const extended=JSON.parse(fs.readFileSync(resolve("tests/parity-extended.json"),"utf8"));
+let extendedPass=0;
+for(const c of extended.cases){
+ await test("Matriz alargada Web/Desktop: "+c.id,async()=>{
+  await setBase({start:c.start,quantity:c.quantity,unit:c.unit,urgent:c.urgent,municipality:c.municipality});
+  const [y,m,d]=c.expected.split("-");
+  await expectTerm(d+"/"+m+"/"+y);
+  extendedPass++;
+ });
+}
+console.log("Matriz técnica alargada: "+extendedPass+"/"+extended.cases.length+" casos validados na Web. Não constitui certificação jurídica.");
 await test("10 dias urgentes, sem férias",async()=>{
  await setBase({start:"2026-11-16",quantity:10,urgent:true});
  await expectTerm("26/11/2026");
