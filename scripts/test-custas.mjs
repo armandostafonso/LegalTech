@@ -434,4 +434,12 @@ check("Proposta: divergência entre valor devido e obrigações fica assinalada"
 check("Proposta: reset invalida documento anterior",()=>{
  click("reset");click("proposalExport");assert.match(read("proposalNote"),/desactualizada/);
 });
+
+check("Conferência: rejeita valores monetários com mais de duas casas",()=>{
+ put("a","100.001");put("ap","100");put("b","0");put("bp","0");put("extra","0");put("extrap","0");
+ click("calc");assert.match(read("status"),/incompletos ou inválidos/);
+});
+check("Conferência: aceita exactamente dois decimais",()=>{
+ put("a","100.01");click("calc");assert.match(read("due"),/100,01/);
+});
 console.log(tests+" testes do módulo A01 concluídos.");
