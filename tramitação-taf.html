@@ -78,7 +78,8 @@ function renderGuide(){
  for(const [title,href] of [
    ["Cita-Check · simulação de citações e prazos","citacheck.html"],
    ["Prazos CPA/CPPT · contagem procedimental","regimes.html"],
-   ["Agenda local · datas previamente confirmadas","agenda.html"]
+   ["Agenda local · datas previamente confirmadas","agenda.html"],
+   ["Conferência de expediente · verificação formal","expediente.html"]
  ]){const a=node("a",title);a.href=href;target.append(a)}
  target.append(node("p","As ligações auxiliares não transportam datas, nomes, números de processos ou documentos. Confirme sempre a norma e os despachos."));
 }
