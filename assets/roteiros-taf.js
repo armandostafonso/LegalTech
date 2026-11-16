@@ -1,4 +1,4 @@
-/* Catálogo estático. Fonte: rules/roteiros-taf.json */
+/* Catálogo de roteiros TAF. Sincronizado com rules/roteiros-taf.json */
 window.LegalTechRoteirosTAF = Object.freeze({
   "version": "2026-11-16",
   "status": "Roteiros auxiliares, não constitutivos de despacho ou certificação de prazos.",
@@ -138,6 +138,238 @@ window.LegalTechRoteirosTAF = Object.freeze({
             "Apresentar os autos conforme a tramitação aplicável e os despachos proferidos.",
             "Conferir as notificações e a execução da decisão judicial.",
             "Não presumir sanções, prazos de recurso ou efeitos sem decisão e norma aplicável."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "acao-administrativa",
+      "name": "Ação administrativa (A01)",
+      "jurisdiction": "Administrativa",
+      "urgency": "Regra geral: processo não urgente; confirmar especialidade e despacho",
+      "basis": [
+        {
+          "article": "CPTA, artigos 78.º a 83.º e 87.º a 91.º",
+          "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2002-34464475"
+        },
+        {
+          "article": "Decreto-Lei n.º 164/2026, artigos 8.º e 9.º (regime transitório de 01-12-2026)",
+          "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/164-2026-1154555254"
+        }
+      ],
+      "notes": "ATENÇÃO À LEI NO TEMPO: o DL 164/2026 entra em vigor em 01-12-2026. As novas redações dos artigos 80.º e 82.º do CPTA aplicam-se somente às ações propostas após a entrada em vigor (art. 8.º/3). Confirmar data de propositura, despacho, intervenientes e eventual regime especial. A contestação tem, em regra, prazo de 30 dias (art. 82.º), sujeito a dilação e exceções.",
+      "stages": [
+        {
+          "id": "entrada",
+          "name": "Entrada, distribuição e exame preliminar",
+          "steps": [
+            "Secretaria | Conferir identificação do processo, partes, pedidos, documentos e anexos da petição inicial (CPTA, art. 78.º).",
+            "Secretaria | Conferir data de propositura para escolher a redação temporalmente aplicável dos artigos 80.º e 82.º.",
+            "Secretaria | Verificar se os pressupostos formais de atuação oficiosa ou recusa se encontram previstos na redação legal aplicável; não antecipar decisões de mérito.",
+            "Juiz / despacho | Quando necessária apreciação judicial, encaminhar os autos para despacho e cumprir a determinação concreta."
+          ]
+        },
+        {
+          "id": "citacao",
+          "name": "Citação e contestação",
+          "steps": [
+            "Secretaria | Verificar a citação oficiosa dos demandados nos termos do artigo 81.º CPTA e eventuais condicionamentos ou despachos.",
+            "Secretaria | Conferir identificação dos contrainteressados e modalidade legal de citação, incluindo eventuais anúncios ordenados.",
+            "Secretaria | Determinar e registar a data efetiva de citação, dilação aplicável e prazo de contestação segundo artigo 82.º, sem presumir uma data.",
+            "Secretaria | Conferir entrada de contestação e envio/junção do processo administrativo quando aplicáveis."
+          ]
+        },
+        {
+          "id": "saneamento",
+          "name": "Articulados posteriores, saneamento e prova",
+          "steps": [
+            "Secretaria | Conferir articulados supervenientes, requerimentos e documentos apresentados e dar o seguimento previsto na lei ou determinado.",
+            "Juiz / despacho | Aferição de exceções, aperfeiçoamento, saneamento, prova e audiência dependem da apreciação judicial e do regime aplicável.",
+            "Secretaria | Cumprir notificações e diligências de prova concretamente determinadas, verificando destinatários e prazos.",
+            "Secretaria | Registar diligências realizadas e preparar conclusão quando o estado dos autos ou despacho o exigir."
+          ]
+        },
+        {
+          "id": "decisao",
+          "name": "Sentença e atos subsequentes",
+          "steps": [
+            "Secretaria | Conferir a disponibilização e notificações da sentença às partes e intervenientes legalmente previstos.",
+            "Secretaria | Registar notificações e controlar prazos de recurso de acordo com o regime aplicável.",
+            "Juiz / despacho | A admissão de recurso, efeito, nulidades e pedidos de reforma carecem de apreciação nos termos legais.",
+            "Secretaria | Proceder às remessas e demais atos finais apenas quando houver pressupostos e determinação processual aplicáveis."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "impugnacao-judicial",
+      "name": "Impugnação judicial tributária",
+      "jurisdiction": "Tributária",
+      "urgency": "Regra geral: não urgente; verificar espécie e regime",
+      "basis": [
+        {
+          "article": "CPPT, artigos 99.º, 102.º, 103.º e 110.º a 123.º",
+          "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/1999-34577575-74510824"
+        },
+        {
+          "article": "CPPT, artigo 110.º, Portal das Finanças (consulta da redação atual)",
+          "url": "https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/cppt/Pages/cppt110.aspx"
+        }
+      ],
+      "notes": "Artigo 110.º CPPT: notificação do representante da Fazenda Pública é ordenada pelo juiz; o prazo previsto na redação consultada é de três meses. Não confundir com citações oficiosas do CPTA nem converter automaticamente três meses em 90 dias. Confirmar alterações e atos aplicáveis.",
+      "stages": [
+        {
+          "id": "entrada",
+          "name": "Petição e distribuição",
+          "steps": [
+            "Secretaria | Registar petição, documentos, identificação do ato tributário e intervenientes.",
+            "Secretaria | Conferir dados formais e anexos, incluindo procurações e elementos da liquidação impugnada.",
+            "Juiz / despacho | A notificação do representante da Fazenda Pública para contestar é ordenada pelo juiz, conforme CPPT, art. 110.º/1.",
+            "Secretaria | Dar cumprimento ao despacho e registar os movimentos, prazos e comunicações."
+          ]
+        },
+        {
+          "id": "contestacao",
+          "name": "Contestação e processo administrativo",
+          "steps": [
+            "Secretaria | Notificar o representante da Fazenda Pública quando ordenado, verificando teor e prazo legal de três meses, sem conversão automática em 90 dias.",
+            "Secretaria | Conferir a contestação e a remessa eletrónica do processo administrativo, quando enviado, segundo art. 110.º/4 do CPPT.",
+            "Secretaria | Confirmar a identificação correta de anexos e elementos do processo administrativo.",
+            "Juiz / despacho | A remessa oficiosa do processo administrativo pelo serviço periférico e eventuais convites dependem da ordem judicial aplicável (art. 110.º/2 e /5)."
+          ]
+        },
+        {
+          "id": "instrucao",
+          "name": "Instrução e alegações",
+          "steps": [
+            "Secretaria | Identificar requerimentos probatórios e outras peças apresentadas pelas partes.",
+            "Juiz / despacho | Determinação de inquirição, produção de prova, alegações e diligências depende da tramitação concreta e dos despachos.",
+            "Secretaria | Cumprir as notificações para diligências e articular convocatórias, registos e atas.",
+            "Secretaria | Conferir apresentação de alegações e outras peças e atualizar movimentos dos autos."
+          ]
+        },
+        {
+          "id": "decisao",
+          "name": "Sentença, recurso e encerramento",
+          "steps": [
+            "Secretaria | Conferir notificações da sentença ao impugnante, representante da Fazenda Pública e Ministério Público quando devidas.",
+            "Secretaria | Identificar eventual interposição de recurso e remeter para o regime específico do título V do CPPT (arts. 279.º e seguintes).",
+            "Juiz / despacho | Admissibilidade, efeito e tramitação controvertida do recurso dependem de decisão judicial.",
+            "Secretaria | Cumprir remessa, certificações e expediente final conforme a decisão e as normas aplicáveis."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "providencia-cautelar",
+      "name": "Providência cautelar administrativa",
+      "jurisdiction": "Administrativa",
+      "urgency": "Urgente; prioridade máxima ao despacho liminar",
+      "basis": [
+        {
+          "article": "CPTA, artigos 112.º a 124.º e 131.º",
+          "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2002-34464475"
+        }
+      ],
+      "notes": "Art. 116.º/1 CPTA: conclusão ao juiz com a maior urgência para despacho liminar a proferir em até 48 horas. Art. 117.º/1: oposição em dez dias quando admitido; o despacho pode determinar decretamento provisório (art. 131.º). Não citar sem examinar o despacho.",
+      "stages": [
+        {
+          "id": "entrada",
+          "name": "Receção e conclusão urgente",
+          "steps": [
+            "Secretaria | Conferir requerimento cautelar e elementos previstos no art. 114.º/3 do CPTA, incluindo processo principal e contrainteressados.",
+            "Secretaria | Assinalar caráter urgente e promover conclusão ao juiz com a maior urgência (art. 116.º/1).",
+            "Juiz / despacho | A admissibilidade liminar, eventual sanação e decretamento provisório dependem de decisão judicial (arts. 114.º/5, 116.º e 131.º).",
+            "Secretaria | Conferir se o despacho impõe providências imediatas ou determina a sequência de citações e notificações."
+          ]
+        },
+        {
+          "id": "oposicao",
+          "name": "Citação e oposição",
+          "steps": [
+            "Secretaria | Quando admitido e ordenado, citar entidade requerida e contrainteressados (art. 117.º CPTA).",
+            "Secretaria | Conferir prazo de oposição de dez dias, ressalvadas regras especiais e a data juridicamente relevante de citação.",
+            "Secretaria | Verificar se o requerido e contrainteressados já foram citados na ação principal, caso em que pode haver mera notificação (art. 117.º/5).",
+            "Secretaria | Registar oposição, documentos e incidentes e encaminhar requerimentos dependentes de despacho."
+          ]
+        },
+        {
+          "id": "prova",
+          "name": "Prova e decisão",
+          "steps": [
+            "Juiz / despacho | Determinar produção de prova e diligências, sem presumir a sua necessidade ou realização.",
+            "Secretaria | Cumprir notificações, convocatórias, atas e comunicação de diligências ordenadas.",
+            "Secretaria | Conferir última oposição, prazo ou realização de prova antes da apresentação para decisão.",
+            "Secretaria | Cumprir com urgência a notificação da decisão e respetivas comunicações para execução (art. 122.º CPTA)."
+          ]
+        },
+        {
+          "id": "posterior",
+          "name": "Providência adotada e situação posterior",
+          "steps": [
+            "Secretaria | Registar notificações e verificar cumprimento das comunicações determinadas.",
+            "Secretaria | Identificar alterações, requerimentos e eventual processo principal associado.",
+            "Juiz / despacho | Modificação, revogação, caducidade ou julgamento antecipado da causa principal exigem apreciação de pressupostos legais (arts. 121.º, 123.º e 124.º).",
+            "Secretaria | No caso de recurso, aplicar a tramitação própria do CPTA, tendo em conta a urgência."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "recurso",
+      "name": "Recursos jurisdicionais TAF",
+      "jurisdiction": "Administrativa e tributária",
+      "urgency": "Depende do processo de origem e da decisão",
+      "basis": [
+        {
+          "article": "CPTA, artigos 140.º a 147.º",
+          "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2002-34464475"
+        },
+        {
+          "article": "CPPT, artigos 279.º a 282.º",
+          "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/1999-34577575-74510824"
+        }
+      ],
+      "notes": "Distinguir a via administrativa (CPTA, incluindo art. 147.º para urgentes) da tributária (CPPT, arts. 279.º a 282.º e remissão para CPC). Não presumir prazo, efeito, subida ou destinatários; verificar decisão recorrida e o regime efetivamente aplicável.",
+      "stages": [
+        {
+          "id": "entrada",
+          "name": "Interposição e identificação do regime",
+          "steps": [
+            "Secretaria | Conferir a decisão recorrida, data de notificação, intervenientes e natureza urgente do processo.",
+            "Secretaria | Confirmar se o recurso se rege pelo CPTA ou CPPT, incluindo art. 279.º/2 CPPT para meios acessórios comuns.",
+            "Secretaria | Verificar o requerimento, alegações, conclusões, taxa de justiça e documentos quando aplicável.",
+            "Juiz / despacho | Apreciação da admissibilidade e tempestividade, quando necessária, compete ao juiz; não certificar pressupostos por mero automatismo."
+          ]
+        },
+        {
+          "id": "contraditorio",
+          "name": "Notificação do recorrido e contra-alegações",
+          "steps": [
+            "Secretaria | Em recurso administrativo, verificar notificação oficiosa do recorrido para alegar nos termos do art. 144.º/3 CPTA.",
+            "Secretaria | Conferir se o recurso é de processo urgente e se incide regra de prazo diferente (art. 147.º CPTA).",
+            "Secretaria | Em recurso tributário, aplicar CPPT (arts. 279.º a 282.º) e remissão para CPC, em vez de importar automaticamente o art. 144.º CPTA.",
+            "Secretaria | Conferir apresentação de contra-alegações, requerimentos e demais peças após o prazo aplicável."
+          ]
+        },
+        {
+          "id": "admissao",
+          "name": "Despacho e remessa",
+          "steps": [
+            "Juiz / despacho | Findos os prazos, apreciação judicial do requerimento de recurso e despacho sobre admissão/efeito/subida segundo o regime aplicável.",
+            "Secretaria | Após despacho, cumprir notificações e providenciar a remessa nos termos determinados.",
+            "Secretaria | Verificar composição do processo, peças eletrónicas e eventuais incidentes de subida em separado.",
+            "Secretaria | Registar data e destinatário da remessa e acompanhar eventuais devoluções."
+          ]
+        },
+        {
+          "id": "retorno",
+          "name": "Decisão do tribunal superior",
+          "steps": [
+            "Secretaria | Conferir a decisão do tribunal superior e notificações efetuadas.",
+            "Juiz / despacho | Determinação da tramitação subsequente e eventual execução dependem do conteúdo da decisão.",
+            "Secretaria | Dar seguimento às diligências concretamente ordenadas, incluindo custas quando legalmente devidas.",
+            "Secretaria | Arquivar ou remeter para os atos finais apenas quando reunidos os pressupostos processuais."
           ]
         }
       ]
