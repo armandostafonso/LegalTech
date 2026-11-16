@@ -24,5 +24,7 @@ jobs:
           node-version: '22'
       - name: Validar estrutura local
         run: node scripts/citacheck-parity.mjs --offline
-      - name: Comparar dados com Cita-Check Desktop
+      - name: Comparar contratos com Desktop se houver credenciais autorizadas
+        env:
+          DESKTOP_REPO_TOKEN: ${{ secrets.DESKTOP_REPO_TOKEN }}
         run: node scripts/citacheck-parity.mjs
