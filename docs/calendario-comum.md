@@ -8,7 +8,7 @@ As duas aplicações usam o mesmo contrato de configuração de calendário, gua
 
 - **Web:** `assets/calendario.js` fornece os cálculos da data de Páscoa e verifica se uma data pertence a férias judiciais. O simulador utiliza estas funções para contar e identificar férias.
 - **Windows:** `main.py` carrega `rules/calendario.json`, inclusive no executável PyInstaller, para identificar férias judiciais e feriados nacionais.
-- **Testes:** `scripts/calendar-contract.mjs` confere o objeto JavaScript com o contrato JSON; `tests/shared-cases.json` e os testes Python do Desktop verificam resultados de referência.
+- **Testes:** `scripts/calendar-contract.mjs` confere o objeto JavaScript com o contrato JSON; `tests/shared-cases.json`, `tests/parity-extended.json` e `tests/regimes-parity.json`, com os testes Python do Desktop, verificam 324 cenários técnicos de referência.
 
 ## Alcance
 
@@ -22,7 +22,7 @@ Os períodos são conferidos face ao artigo 28.º da LOSJ e ao calendário publi
 
 ## Integridade do contrato Web/Windows
 
-Os três ficheiros partilhados (calendário, feriados municipais e casos sintéticos) têm agora um [manifesto de paridade](paridade-web-desktop.md), verificado independentemente nos dois repositórios. A comparação remota através do GitHub Actions só é efetuada quando há credenciais de leitura para o repositório privado Windows. Sem credenciais, o relatório assinala que a paridade remota não foi verificada.
+Os cinco ficheiros partilhados (dois catálogos e três matrizes de casos sintéticos) têm agora um [manifesto de paridade](paridade-web-desktop.md), verificado independentemente nos dois repositórios. A comparação remota através do GitHub Actions só é efetuada quando há credenciais de leitura para o repositório privado Windows. Sem credenciais, o relatório assinala que a paridade remota não foi verificada.
 
 ## Limites
 
