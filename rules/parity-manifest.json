@@ -1,10 +1,11 @@
 {
-  "version": 1,
+  "version": 2,
   "verified_at": "2026-11-16",
-  "description": "Manifesto dos três ficheiros de contrato de calendário e cenários de teste com hashes Git SHA-1 dos bytes originais. Mesmo manifesto nos repositórios Web e Desktop. A comparação remota requer token de leitura no repositório privado.",
+  "description": "Manifesto dos quatro ficheiros de referência e 228 cenários sintéticos de prazo CPC, com SHA-1 Git dos bytes; não certifica juridicamente o motor.",
   "hashes": {
     "rules/calendario.json": "1085619ac7520b56caf8f397dede3a64d0342b15",
     "rules/municipais.json": "16604dd9990c9a4ed62732f415fdf530377b494f",
-    "tests/shared-cases.json": "76ec5e4cfbaf9b2ccdd9b994007bbea58841069b"
+    "tests/shared-cases.json": "76ec5e4cfbaf9b2ccdd9b994007bbea58841069b",
+    "tests/parity-extended.json": "43ceddc4b2f904f562d28954ddfea6240e71c731"
   }
 }
