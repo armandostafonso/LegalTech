@@ -28,6 +28,8 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Exercitar ferramentas no navegador
         run: node scripts/browser-smoke.mjs
+      - name: Testar os doze módulos especializados
+        run: node scripts/next-smoke.mjs
       - name: Acessibilidade e tema claro-escuro em ecrãs móveis
         run: node scripts/a11y-smoke.mjs
       - name: Verificar privacidade e entradas hostis em ferramentas locais
