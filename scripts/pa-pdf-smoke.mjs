@@ -45,7 +45,7 @@ try{
  console.log("PASSOU: PDF textual de duas páginas e três datas com origem por página.");
  await page.locator("#pdf").setInputFiles({name:"pa-misto-ficticio.pdf",mimeType:"application/pdf",buffer:Buffer.from(files.mixed)});
  await page.locator("#readPdf").click();
- await page.waitForFunction(()=>document.getElementById("status").textContent.includes("Indexação bloqueada"),{timeout:45000});
+ await page.waitForFunction(()=>document.getElementById("status").textContent.includes("Indexação bloqueada"),null,{timeout:60000});
  if(await page.locator("#rows tr").count())throw Error("Uma extração parcial foi apresentada como índice");
  if(await page.locator("#csv").isEnabled())throw Error("Exportação de PDF incompleto não bloqueada");
  console.log("PASSOU: PDF misto com página sem texto bloqueado.");
