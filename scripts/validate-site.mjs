@@ -15,13 +15,14 @@ for(const file of pages){
  if(!html.includes('href="index.html"')) errors.push(file+": navegação para início em falta");
  const themeScriptPos=html.indexOf('src="assets/theme.js"');
  if(themeScriptPos!==-1 && themeScriptPos>html.indexOf("</body>")) errors.push(file+": script de tema após o body");
+ const markup=html.replace(/(<script\b[^>]*>)[\s\S]*?(<\/script\s*>)/gi,"$1$2");
  const ids=new Set();
- for(const match of html.matchAll(/\bid="([^"]+)"/g)){
+ for(const match of markup.matchAll(/\bid="([^"]+)"/g)){
    idsChecked++;
    if(ids.has(match[1]))errors.push(file+": ID duplicado: "+match[1]);
    ids.add(match[1]);
  }
- for(const match of html.matchAll(/(?:href|src)="([^"]+)"/g)){
+ for(const match of markup.matchAll(/(?:href|src)="([^"]+)"/g)){
    const ref=match[1];
    if(/^(https?:|data:|#|mailto:|javascript:)/i.test(ref)) continue;
    const local=ref.split(/[?#]/)[0];
