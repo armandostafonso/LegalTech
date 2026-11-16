@@ -17,9 +17,9 @@ await check("Página inicial e pesquisa",async()=>{
  const h=await page.locator("h1").innerText();
  if(!h.includes("Menos tarefas"))throw Error("Título inesperado");
  await page.locator("#search").fill("minuta");
- if(await page.locator(".tool:visible").count()!==1)throw Error("Pesquisa não filtra para uma ferramenta");
+ if(await page.locator(".tool:visible").count()<1||!await page.locator(".tool[href=\"minutas.html\"]").isVisible())throw Error("Pesquisa não encontrou Minutas");
  await page.locator("#search").fill("");
- if(await page.locator(".tool:visible").count()!==9)throw Error("Ferramentas não recuperadas");
+ if(await page.locator(".tool:visible").count()!==21)throw Error("Ferramentas não recuperadas");
 });
 await check("Fontes normativas: inventário, filtro e marcas temporárias",async()=>{
  await open("fontes.html");
