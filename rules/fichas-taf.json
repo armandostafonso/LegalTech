@@ -46,7 +46,7 @@
           ],
           "secretaria": 0,
           "judicial": 0,
-          "draft_kind": "notificacao",
+          "draft_kind": "cota",
           "draft_subject": "Intimação para informações, consulta ou certidões | Citação e resposta"
         },
         {
@@ -111,7 +111,7 @@
           ],
           "secretaria": 0,
           "judicial": 0,
-          "draft_kind": "notificacao",
+          "draft_kind": "cota",
           "draft_subject": "Intimação para proteção de direitos, liberdades e garantias | Execução do despacho liminar"
         },
         {
@@ -176,7 +176,7 @@
           ],
           "secretaria": 0,
           "judicial": 0,
-          "draft_kind": "notificacao",
+          "draft_kind": "cota",
           "draft_subject": "Intimação tributária para consulta de documentos ou certidões | Citação e contraditório"
         },
         {
@@ -242,7 +242,7 @@
           ],
           "secretaria": 4,
           "judicial": 0,
-          "draft_kind": "notificacao",
+          "draft_kind": "cota",
           "draft_subject": "Ação administrativa (A01) | Citação e contestação"
         },
         {
@@ -406,7 +406,7 @@
           ],
           "secretaria": 4,
           "judicial": 0,
-          "draft_kind": "notificacao",
+          "draft_kind": "cota",
           "draft_subject": "Providência cautelar administrativa | Citação e oposição"
         },
         {
