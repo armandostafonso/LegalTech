@@ -11,6 +11,7 @@ on:
       - 'rules/municipais.json'
       - 'tests/shared-cases.json'
       - 'tests/parity-extended.json'
+      - 'tests/regimes-parity.json'
       - 'rules/parity-manifest.json'
       - '.github/workflows/paridade-citacheck.yml'
 permissions:
