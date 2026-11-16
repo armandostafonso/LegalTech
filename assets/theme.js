@@ -55,7 +55,7 @@
     symbol.setAttribute("aria-hidden", "true");
     const label = document.createElement("span");
     label.className = "lt-theme-label";
-    label.textContent = "Tema";
+    label.textContent = "Claro-Escuro";
     button.replaceChildren(symbol, label);
   }
   function init() {
