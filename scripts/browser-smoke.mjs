@@ -99,7 +99,7 @@ await check("Fichas TAF: 25 fases, direito transitório e minutas seguras",async
  await page.goto(new URL(url,page.url()).href);
  if(!(await page.locator("#assunto").inputValue()).includes("Ação administrativa"))throw Error("Assunto genérico não importado");
  if((await page.locator("#processo").inputValue())!=="")throw Error("Dados de processo transportados");
- if(!(await page.locator("#saida").innerText()).includes("Ação administrativa"))throw Error("Assunto não incorporado na minuta");
+ if(!(await page.locator("#saida").inputValue()).includes("Ação administrativa"))throw Error("Assunto não incorporado na minuta");
 });
 await check("Minutas: gerar texto e manter nomes introduzidos",async()=>{
  await open("minutas.html");
@@ -107,8 +107,19 @@ await check("Minutas: gerar texto e manter nomes introduzidos",async()=>{
  await page.locator("#factos").fill("Foi junto um requerimento de teste.");
  await page.locator("#tipo").selectOption("certidao");
  await page.locator("#gerar").click();
- const output=await page.locator("#saida").innerText();
+ const output=await page.locator("#saida").inputValue();
  if(!output.includes("CERTIDÃO")||!output.includes("EXEMPLO/2026")||!output.includes("requerimento de teste"))throw Error("Minuta não foi gerada");
+ await page.locator("#saida").fill("TEXTO EDITADO PELO UTILIZADOR");
+ const rtf=page.waitForEvent("download");
+ await page.locator("#rtf").click();
+ const file=await rtf;
+ if(!file.suggestedFilename().endsWith(".rtf"))throw Error("Exportação RTF inválida");
+ const fs=await import("node:fs");
+ if(!fs.readFileSync(await file.path(),"utf8").includes("TEXTO EDITADO PELO UTILIZADOR"))throw Error("Edição manual não preservada no RTF");
+ const txt=page.waitForEvent("download");
+ await page.locator("#descarregar").click();
+ const download=await txt;
+ if(!fs.readFileSync(await download.path(),"utf8").includes("TEXTO EDITADO PELO UTILIZADOR"))throw Error("Edição manual não preservada no TXT");
 });
 await check("Roteiros: mudar tipo, assinalar e repor",async()=>{
  await open("roteiros.html");
