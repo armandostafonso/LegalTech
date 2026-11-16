@@ -29,6 +29,11 @@ try{
  });
  await page.goto(pathToFileURL(resolve("pa.html")).href,{waitUntil:"domcontentloaded"});
  if(await page.locator("script[src^='https://']").count())throw Error("O PDF.js foi carregado sem ação do utilizador");
+ await page.locator("#pdf").setInputFiles({name:"nao-e-pdf.txt",mimeType:"text/plain",buffer:Buffer.from("exemplo fictício")});
+ await page.locator("#readPdf").click();
+ if(!((await page.locator("#status").innerText()).includes("extensão PDF")))throw Error("Tipo não-PDF não foi rejeitado");
+ if(await page.locator("script[src^='https://']").count())throw Error("CDN carregado para ficheiro não-PDF");
+
  const fragmented=await page.evaluate(()=>{
    const item=(str,x,width)=>({str,width,transform:[12,0,0,12,x,730]});
    const items=[item("05",60,12),item("/",72,4),item("01",76,12),item("/",88,4),item("2026",92,32),
@@ -43,6 +48,8 @@ try{
    const s=document.getElementById("status").textContent;
    return s.includes("Extração local concluída")||s.includes("Não foi possível")||s.includes("Indexação bloqueada")
  },{timeout:45000});
+ const pdfScript=page.locator("script[src*='pdf.min.js']");
+ if((await pdfScript.getAttribute("integrity"))!=="sha512-q+4liFwdPC/bNdhUpZx6aXDx/h77yEQtn4I1slHydcbZK34nLaR3cAeYSJshoxIOq3mjEf7xJE8YWIUHMn+oCQ==")throw Error("Biblioteca PDF.js importada sem hash SRI");
  const status=await page.locator("#status").innerText();
  if(!status.includes("Extração local concluída"))throw Error("PDF textual não importado: "+status);
  const rows=await page.locator("#rows tr").count();
