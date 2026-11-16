@@ -448,7 +448,7 @@ check("Reconciliação: regista duas obrigações sem imputação automática",(
  put("obParty","b");put("obRef","REC-B-40");put("obAmount","40");put("obBasis","Valor fictício com suporte documental");els.get("obChecked").checked=true;click("obAdd");
  click("obApply");click("reconcile");
  assert.match(els.get("reconcileRows").innerHTML,/100,00/);assert.match(els.get("reconcileRows").innerHTML,/40,00/);
- assert.match(read("reconcileNote"),/Conferência com advertências/);
+ assert.match(read("reconcileNote"),/Conferência aritmética sem alertas internos/);
 });
 check("Reconciliação: confirmado e imputado a uma obrigação",()=>{
  put("ledgerParty","a");put("ledgerKind","payment");put("ledgerStatus","confirmed");put("ledgerObligation","1");put("ledgerRef","REC-PA-25");put("ledgerDate","2026-11-16");put("ledgerAmount","25");click("ledgerAdd");
