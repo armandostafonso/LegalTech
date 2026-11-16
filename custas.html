@@ -9,7 +9,7 @@
 </style><script>try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||"light"}catch(e){}</script><link rel="stylesheet" href="assets/brand.css">
 </head>
 <body><main><header><a href="index.html">← LegalTech</a><button class="secondary" id="theme" type="button">◐ Tema</button></header>
-<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 0.8</p>
+<h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 0.9</p>
 <div class="notice"><strong>Âmbito:</strong> conferência aritmética de valores introduzidos e verificação de pressupostos. Não calcula autonomamente taxas legais, não lê PDF e não emite conta oficial. Não introduzas dados pessoais ou processuais confidenciais. Os dados não são enviados nem guardados por esta página.</div>
 <section class="panel"><h2>1. Identificação e regime</h2><div class="grid">
 <div class="field"><label for="process">Referência fictícia / interna</label><input id="process" placeholder="Ex.: TESTE-A01"></div>
@@ -59,7 +59,7 @@
 <div class="field"><label for="extrap">Pagamentos dessas quantias (€)</label><input id="extrap" type="number" min="0" step="0.01" value="0"></div>
 </div><p class="muted">Introduz os valores já determinados segundo o regime jurídico aplicável. Custas de parte não entram nesta conferência.</p>
 <div class="actions"><button type="button" id="calc">Conferir valores</button><button class="secondary" type="button" id="reset">Limpar</button></div></section>
-<section class="panel" aria-live="polite"><h2>7. Resultado</h2><p id="status" class="status">Aguardam-se dados.</p><table><tbody><tr><th>Total exigível</th><td id="due">—</td></tr><tr><th>Total confirmado</th><td id="paid">—</td></tr><tr><th>Diferença por cobrar</th><td id="debt">—</td></tr><tr><th>Potencial excesso</th><td id="over">—</td></tr></tbody></table><p id="notes" class="muted">A ausência de dívida apenas pode fundamentar dispensa de conta após validação dos pressupostos do artigo 29.º do RCP.</p><div class="actions"><button type="button" class="secondary" id="copy">Copiar relatório</button><button type="button" class="secondary" onclick="window.print()">Imprimir</button></div><pre id="report" hidden></pre></section>
+<section class="panel" aria-live="polite"><h2>7. Resultado</h2><p id="status" class="status">Aguardam-se dados.</p><table><tbody><tr><th>Total exigível</th><td id="due">—</td></tr><tr><th>Total confirmado</th><td id="paid">—</td></tr><tr><th>Diferença aritmética positiva</th><td id="debt">—</td></tr><tr><th>Potencial excesso</th><td id="over">—</td></tr></tbody></table><p id="notes" class="muted">A ausência de diferenças aritméticas não basta para dispensar a elaboração da conta: confirmar os pressupostos do artigo 29.º do RCP.</p><div class="actions"><button type="button" class="secondary" id="copy">Copiar relatório</button><button type="button" class="secondary" onclick="window.print()">Imprimir</button></div><pre id="report" hidden></pre></section>
 </main><script>
 const el=id=>document.getElementById(id);
 let profilesReady=false,profilesText="";
@@ -92,12 +92,14 @@ function analyseParty(p){
    if(v("excluded")==="no"){
      details.push("Art. 15.º/1/a): possível dispensa de pagamento prévio, não isenção");
      const date=v("decision"),outcome=v("outcome");
-     if(date && date>="2026-12-01"){
-       if(outcome==="condemned")details.push("RCP 15.º/2 (redacção de 2026): pagamento após notificação com a decisão principal, prazo de 10 dias");
-       else if(outcome==="notcondemned")details.push("RCP 15.º/3 (redacção de 2026): dispensa de pagamento pela parte não condenada; imputação à vencida");
+     const actDate=el("actdate").value;
+     if(date && actDate && actDate<date){warnings.push("O acto indicado antecede a decisão principal; conferir as datas");ready=false}
+     if(date && actDate && actDate>="2026-12-01"){
+       if(outcome==="condemned")details.push("RCP 15.º/2, redacção de 2026: notificação com a decisão principal para pagamento em 10 dias; confirmar o acto e a respectiva data");
+       else if(outcome==="notcondemned")details.push("RCP 15.º/3, redacção de 2026: pagamento imputável à parte vencida, após conferir a decisão sobre custas");
        else if(outcome==="partial"){warnings.push("Responsabilidade parcial: calcular a repartição antes de concluir sobre o art. 15.º");ready=false}
-     }else if(date)details.push("Decisão anterior a 01-12-2026: verificar regra do art. 15.º/2 na redacção anterior");
-     else {warnings.push("Sem data de decisão: não foi apurada a exigibilidade do pagamento posterior");ready=false}
+     }else if(date && actDate)details.push("Acto anterior a 01-12-2026: verificar regra do art. 15.º/2 na redacção anterior, independentemente da condenação");
+     else {warnings.push("Faltam a data da decisão principal ou a data do acto de custas para aplicação temporal do art. 15.º");ready=false}
    }else if(v("excluded")==="unknown"){warnings.push("Confirmar se a matéria está excluída da dispensa do art. 15.º");ready=false}
  }else if(v("entity")==="otherpublic"){
    details.push("Pessoa colectiva pública não expressamente classificada no art. 15.º/1/a): enquadramento específico a verificar");ready=false
@@ -142,9 +144,9 @@ if(nums.some(v=>v===null)){el("status").textContent="Dados incompletos ou invál
 const [a,ap,b,bp,extra,extrap]=nums;const due=a+b+extra,paid=ap+bp+extrap;const debt=Math.max(0,a-ap)+Math.max(0,b-bp)+Math.max(0,extra-extrap);const over=Math.max(0,ap-a)+Math.max(0,bp-b)+Math.max(0,extrap-extra);
 const checks=["law","table","exempt","remainder","charges"];const validated=checks.every(id=>el(id).checked)&&profilesReady;
 el("due").textContent=euro(due);el("paid").textContent=euro(paid);el("debt").textContent=euro(debt);el("over").textContent=euro(over);
-el("status").textContent=!validated?"Conferência jurídica incompleta":debt?"Diferenças por regularizar":over?"Potencial excesso a verificar":"Sem dívida nos valores introduzidos";
-el("notes").textContent=(!validated?"Existem pressupostos jurídicos por confirmar. ":"")+(debt?"Há diferenças positivas por parte/rubrica. ":"")+(over?"O excesso não implica restituição automática. ":"")+(debt===0?"Verificar a dispensa de elaboração da conta do artigo 29.º, n.º 1, alínea a), do RCP. ":"")+"Não inclui custas de parte nem valida comprovativos automaticamente.";
-report=["CONFERÊNCIA EXPERIMENTAL DE CUSTAS · A01", "Referência: "+(el("process").value||"não indicada"),"Entrada: "+(el("date").value||"não indicada"),"Valor da causa: "+(el("value").value||"não indicado"),"Objecto: "+(el("subject").value||"não indicado"),"Parte A: devido "+euro(a)+"; pago "+euro(ap),"Parte B: devido "+euro(b)+"; pago "+euro(bp),"Outras quantias: devido "+euro(extra)+"; pago "+euro(extrap),"Total exigível: "+euro(due),"Total confirmado: "+euro(paid),"Diferença por cobrar: "+euro(debt),"Potencial excesso: "+euro(over),"Validação jurídica: "+(validated?"assinalada pelo utilizador":"incompleta"),profilesText||"Fichas dos intervenientes: não analisadas","Resultado não oficial. Verificar legislação e documentos."].join("\n");el("report").textContent=report;el("report").hidden=false;});
+el("status").textContent=!validated?"Conferência jurídica incompleta":debt?"Diferenças a analisar":over?"Potencial excesso a verificar":"Sem diferenças nos valores introduzidos";
+el("notes").textContent=(!validated?"Existem pressupostos jurídicos por confirmar. ":"")+(debt?"Há diferenças positivas por parte/rubrica. ":"")+(over?"O excesso não implica restituição automática. ":"")+(debt===0?"Conferir, apenas após validação completa dos autos, a eventual dispensa de conta prevista no artigo 29.º, n.º 1, alínea a), do RCP. ":"")+"Não inclui custas de parte nem valida comprovativos automaticamente.";
+report=["CONFERÊNCIA EXPERIMENTAL DE CUSTAS · A01", "Referência: "+(el("process").value||"não indicada"),"Entrada: "+(el("date").value||"não indicada"),"Valor da causa: "+(el("value").value||"não indicado"),"Objecto: "+(el("subject").value||"não indicado"),"Parte A: devido "+euro(a)+"; pago "+euro(ap),"Parte B: devido "+euro(b)+"; pago "+euro(bp),"Outras quantias: devido "+euro(extra)+"; pago "+euro(extrap),"Total exigível: "+euro(due),"Total confirmado: "+euro(paid),"Diferença aritmética positiva (não é dívida confirmada): "+euro(debt),"Potencial excesso: "+euro(over),"Validação jurídica: "+(validated?"assinalada pelo utilizador":"incompleta"),profilesText||"Fichas dos intervenientes: não analisadas","Resultado não oficial. Verificar legislação e documentos."].join("\n");el("report").textContent=report;el("report").hidden=false;});
 el("copy").addEventListener("click",async()=>{if(!report)return;try{await navigator.clipboard.writeText(report)}catch(e){const ta=document.createElement("textarea");ta.value=report;document.body.append(ta);ta.select();document.execCommand("copy");ta.remove()}});
 el("reset").addEventListener("click",()=>{for(const id of ids){const x=el(id);if(x.type==="checkbox")x.checked=false;else if(x.tagName==="SELECT")x.selectedIndex=0;else x.value=(id==="extra"||id==="extrap")?"0":""}profilesReady=false;profilesText="";el("partiesstatus").textContent="A análise exige revisão documental e legal individualizada.";for(const p of ["pa","pb"]){for(const field of partyFields){const x=el(p+"_"+field);if(x.type==="checkbox")x.checked=false;else if(x.tagName==="SELECT")x.selectedIndex=0;else x.value=""}el(p+"_result").textContent="Aguardam-se os dados do interveniente.";}el("status").textContent="Aguardam-se dados.";for(const id of ["due","paid","debt","over"])el(id).textContent="—";el("report").hidden=true;report=""});
 el("theme").addEventListener("click",()=>{const v=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=v;try{localStorage.setItem("legaltech_theme",v)}catch(e){}});
