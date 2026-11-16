@@ -8,6 +8,17 @@
    fixed_holidays:["01-01","04-25","05-01","06-10","08-15","10-05","11-01","12-01","12-08","12-25"],
    mobile_holidays:[{name:"Sexta-Feira Santa",relative_to_easter:-2},{name:"Páscoa",relative_to_easter:0},{name:"Corpo de Deus",relative_to_easter:60}]
  });
+ const MUNICIPALITIES=Object.freeze([
+   {id:"porto",name:"Porto",day:"06-24",label:"São João"},
+   {id:"lisboa",name:"Lisboa",day:"06-13",label:"Santo António"},
+   {id:"braga",name:"Braga",day:"06-24",label:"São João"},
+   {id:"penafiel",name:"Penafiel",day:"11-11",label:"São Martinho"}
+ ]);
+ function municipalHoliday(date,municipality){
+   const code=String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
+   const entry=MUNICIPALITIES.find(x=>x.id===municipality&&x.day===code);
+   return entry?entry.label+" ("+entry.name+")":null;
+ }
  function easter(year){
    const a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,
      f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,
@@ -26,5 +37,5 @@
   const p=easter(y);
   return within(d,addDays(p,-passover.before_days),addDays(p,passover.after_days));
  }
- root.LegalTechCalendario=Object.freeze({rules:RULES,easter,isVacation:vacations});
+ root.LegalTechCalendario=Object.freeze({rules:RULES,municipalities:MUNICIPALITIES,municipalHoliday,easter,isVacation:vacations});
 })(window);
