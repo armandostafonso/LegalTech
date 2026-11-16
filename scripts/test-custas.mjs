@@ -519,7 +519,7 @@ check("Multissujeito: não duplica a referência já repartida",()=>{
 });
 check("Multissujeito: bloqueia retirada de participante com encargo",()=>{
  els.get("multiPeopleRows").listeners.click({target:{closest:()=>({dataset:{multiRemove:"1"}})}});
- assert.match(read("multiMessage"),/Retira primeiro as repartições/);
+ assert.match(read("multiMessage"),/Retira primeiro os registos correspondentes/);
 });
 check("Multissujeito: solidariedade e transacção não criam quotas",()=>{
  put("multiRef","ENC-MULTI-002");put("multiAmount","51");
