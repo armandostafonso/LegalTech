@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Contagem indicativa de prazos do CPA 87.º e CPPT 20.º/1 fixados em dias."><title>Prazos administrativos e tributários | LegalTech</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/tools.css">
+<style>
+.summary{font-size:28px;font-weight:750;letter-spacing:-1px;margin:10px 0}.meta{color:var(--muted);font-size:13px;margin:5px 0}.state{background:var(--soft);padding:12px;border-radius:10px}.timeline{width:100%;border-collapse:collapse;font-size:13px}.timeline th,.timeline td{text-align:left;padding:9px;border-bottom:1px solid var(--line)}.timeline-container{max-height:360px;overflow:auto;border:1px solid var(--line);border-radius:10px}.hint{color:var(--muted);font-size:13px;line-height:1.6}.error{color:#aa2930}
+</style></head><body>
+<header><nav><a class="brand" href="index.html">LegalTech</a><div><a href="index.html">Início</a><a href="citacheck.html">Cita-Check</a><a href="minutas.html">Minutas</a><a href="roteiros.html">Roteiros</a></div></nav></header>
+<main class="wrap"><div class="tag">Calculadora por regime</div><h1>Prazos administrativos e tributários</h1>
+<p class="sub">Contagem auxiliar de prazos legalmente fixados em <strong>dias</strong>. Seleciona a norma de contagem antes de introduzir o prazo. A ferramenta não determina se um prazo existe, quando começa ou qual o regime aplicável ao teu caso.</p>
+<div class="grid"><section class="panel inputs"><h2>Dados do prazo</h2>
+<div class="field"><label for="regime">Regime de contagem</label><select id="regime">
+<option value="cpa87">Procedimento administrativo · CPA, art. 87.º</option>
+<option value="cppt20_1">Procedimento tributário / impugnação judicial · CPPT, art. 20.º, n.º 1</option>
+</select></div>
+<p id="regimeNote" class="hint"></p>
+<div class="field"><label for="start">Data do facto inicial já verificada</label><input type="date" id="start"></div>
+<div class="field"><label for="days">Duração legal (em dias)</label><input id="days" type="number" min="1" max="3650" step="1" value="10"></div>
+<div class="field"><label for="municipality">Feriado municipal, quando aplicável</label><select id="municipality">
+<option value="">Nenhum / não confirmado</option>
+<option value="porto">Porto</option><option value="lisboa">Lisboa</option>
+<option value="braga">Braga</option><option value="penafiel">Penafiel</option>
+</select></div>
+<div class="field"><label for="closures">Encerramentos especiais (opcional)</label><textarea id="closures" rows="3" placeholder="AAAA-MM-DD, uma data por linha"></textarea><small>Utilizar apenas encerramentos comprovados do serviço competente.</small></div>
+<div class="actions"><button type="button" class="btn" id="calculate">Calcular prazo</button><button type="button" class="btn secondary" id="clear">Limpar</button></div>
+<p class="note"><strong>Limites:</strong> não calcula prazos em meses/anos, perfeição da citação, dilações, notificações nem prazos judiciais processuais. Para atos no processo judicial tributário, o artigo 20.º, n.º 2, do CPPT remete para o CPC. <a href="citacheck.html">Consultar Cita-Check</a>.</p></section>
+<section class="panel"><h2>Resultado e fundamento</h2><div class="state" id="status" aria-live="polite">Preenche os dados e clica em «Calcular prazo».</div>
+<div id="output" hidden><div class="meta">Último dia calculado</div><div id="endDate" class="summary"></div>
+<p id="explanation"></p><div class="actions"><button type="button" class="btn secondary" id="copy">Copiar resumo</button><button type="button" class="btn secondary" id="csv">Exportar CSV</button><button type="button" class="btn secondary" id="print">Imprimir</button></div>
+<h2 style="margin-top:26px">Cronologia diária</h2><div class="timeline-container"><table class="timeline"><thead><tr><th>Data</th><th>Contagem</th><th>Ocorrência</th></tr></thead><tbody id="timeline"></tbody></table></div></div>
+<p class="note"><strong>Conferência obrigatória.</strong> O resultado depende da correção da data inicial, do prazo indicado e da identificação do serviço competente. Regimes especiais ou decisões judiciais prevalecem sobre esta simulação. Não constitui certidão de prazo.</p>
+</section></div>
+<section class="panel" style="margin-top:18px"><h2>Base jurídica</h2><p><a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2015-105602322-115721810" target="_blank" rel="noopener">CPA, artigo 87.º</a>, suspensão em fins de semana e feriados nos prazos procedimentais em dias, sem prejuízo das regras e exceções do artigo.</p>
+<p><a href="https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/cppt/Pages/cppt20.aspx" target="_blank" rel="noopener">CPPT, artigo 20.º</a>, contagem contínua para procedimento tributário e interposição de impugnação judicial; contagem CPC para atos no processo judicial.</p></section>
+</main>
+<script src="assets/calendario.js"></script>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+let last=null;
+const datePT=d=>d.toLocaleDateString("pt-PT",{year:"numeric",month:"2-digit",day:"2-digit"});
+const dateISO=d=>[d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");
+const plus=(d,n)=>{let x=new Date(d.getFullYear(),d.getMonth(),d.getDate());x.setDate(x.getDate()+n);return x};
+function parseISO(raw){if(!/^\d{4}-\d{2}-\d{2}$/.test(raw))throw Error("Indica uma data válida.");const [y,m,d]=raw.split("-").map(Number);const x=new Date(y,m-1,d);if(x.getFullYear()!==y||x.getMonth()!==m-1||x.getDate()!==d)throw Error("A data inicial não existe.");return x}
+function isHoliday(d){const conf=LegalTechCalendario.rules;const key=dateISO(d).slice(5);const easter=LegalTechCalendario.easter(d.getFullYear());return conf.fixed_holidays.includes(key)||conf.mobile_holidays.some(x=>dateISO(plus(easter,x.relative_to_easter))===dateISO(d))}
+function closures(){const dates=new Set();for(const line of $("closures").value.split(/[\n,;]/)){const str=line.trim();if(!str)continue;const d=parseISO(str);dates.add(dateISO(d))}return dates}
+function openDay(d,closed,municipality){return d.getDay()!==0&&d.getDay()!==6&&!isHoliday(d)&&!closed.has(dateISO(d))&&!LegalTechCalendario.municipalHoliday(d,municipality)}
+function calculate(){
+ try{
+ const start=parseISO($("start").value),qty=Number($("days").value),regime=$("regime").value,municipality=$("municipality").value,closed=closures();
+ if(!Number.isInteger(qty)||qty<1||qty>3650)throw Error("O prazo tem de ser um inteiro entre 1 e 3650 dias.");
+ if(!["cpa87","cppt20_1"].includes(regime))throw Error("Regime inválido.");
+ let cursor=start, counted=0, excluded=0,events=[],count=0;
+ while(counted<qty){
+   cursor=plus(cursor,1);
+   const eligible=openDay(cursor,closed,municipality),include=regime==="cppt20_1"||eligible;
+   if(include)counted++;else excluded++;
+   const message=include?"Contado":("Não contado: "+(isHoliday(cursor)?"feriado nacional":LegalTechCalendario.municipalHoliday(cursor,municipality)?"feriado municipal":closed.has(dateISO(cursor))?"encerramento":"fim de semana"));
+   events.push({date:dateISO(cursor),count:include?counted:"",message});
+   if(++count>8000)throw Error("Intervalo excedido.");
+ }
+ const raw=dateISO(cursor);
+ while(!openDay(cursor,closed,municipality)){
+   cursor=plus(cursor,1);events.push({date:dateISO(cursor),count:"",message:"Transferência do termo"});if(++count>8015)throw Error("Transferência excedida.");
+ }
+ const end=dateISO(cursor);const note=regime==="cpa87"?"CPA, art. 87.º: os dias de encerramento não foram contados.":"CPPT, art. 20.º/1: contagem contínua e transferência do termo quando aplicável.";
+ last={start:dateISO(start),end,qty,regime,excluded,raw,municipality,events,note};
+ $("status").textContent="Simulação concluída · confirmar a norma e os factos do caso.";
+ $("status").classList.remove("error");
+ $("output").hidden=false;$("endDate").textContent=datePT(cursor);
+ $("explanation").textContent=note+" Data nominal: "+datePT(parseISO(raw))+". Dias não contados: "+excluded+".";
+ const body=$("timeline");body.replaceChildren();
+ for(const entry of events){const tr=document.createElement("tr");for(const value of [datePT(parseISO(entry.date)),entry.count,entry.message]){const td=document.createElement("td");td.textContent=value;tr.append(td)}body.append(tr)}
+ }catch(e){last=null;$("output").hidden=true;$("status").textContent=e.message;$("status").classList.add("error")}
+}
+function summary(){if(!last)return"";return "LegalTech · Contagem auxiliar\nRegime: "+last.note+"\nData inicial: "+last.start+"\nPrazo: "+last.qty+" dias\nTermo: "+last.end+"\nDias excluídos: "+last.excluded+"\nConferir legislação e serviço competente."}
+async function copy(){if(!last)return;try{await navigator.clipboard.writeText(summary());$("status").textContent="Resumo copiado."}catch(e){$("status").textContent="A cópia automática não está disponível neste navegador."}}
+function csv(){if(!last)return;const esc=s=>'"'+String(s).replaceAll('"','""')+'"';const lines=[["Data","Contagem","Ocorrência"],...last.events.map(e=>[e.date,e.count,e.message])];const content="\ufeff"+lines.map(row=>row.map(esc).join(";")).join("\r\n");const blob=new Blob([content],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="legaltech-prazo.csv";a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+$("calculate").addEventListener("click",calculate);$("regime").addEventListener("change",()=>{$("regimeNote").textContent=$("regime").value==="cpa87"?"Dias úteis procedimentais, com suspensão em fins de semana e feriados.":"Dias corridos, incluindo fins de semana e férias judiciais, com transferência do termo quando o serviço estiver encerrado.";$("status").textContent="Regime alterado. Recalcula para atualizar o resultado.";last=null;$("output").hidden=true});
+$("clear").addEventListener("click",()=>{$("start").value="";$("days").value="10";$("closures").value="";$("municipality").value="";last=null;$("output").hidden=true;$("status").textContent="Campos repostos."});
+$("copy").addEventListener("click",copy);$("csv").addEventListener("click",csv);$("print").addEventListener("click",()=>window.print());
+$("start").value=dateISO(new Date());$("regime").dispatchEvent(new Event("change"));
+</script></body></html>
