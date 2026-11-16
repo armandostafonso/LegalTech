@@ -370,4 +370,45 @@ check("Responsabilidade: limpeza bloqueada enquanto houver obrigações",()=>{
 check("Responsabilidade: reposição integral limpa mapa e obrigações",()=>{
  click("reset");assert.equal(read("respCount"),"0");assert.match(read("respTotalA"),/0,00/);assert.match(read("obB"),/0,00/);
 });
+
+check("Proposta: apresenta advertências sem obrigações",()=>{
+ click("proposalPreview");assert.match(els.get("proposalStatus").value,/INCOMPLETA/);
+ assert.match(read("proposalNote"),/Não existem obrigações/);
+});
+check("Proposta: contém só diferenças aritméticas por sujeito",()=>{
+ put("obParty","a");put("obType","encargo");put("obRef","PRO-A1");put("obAmount","30");put("obBasis","Artigo 532 CPC, encargo confirmado");els.get("obChecked").checked=true;click("obAdd");
+ put("obParty","b");put("obRef","PRO-B1");put("obAmount","70");put("obBasis","Decisão judicial, encargo B confirmado");els.get("obChecked").checked=true;click("obAdd");
+ click("obApply");
+ put("ap","15");put("bp","60");put("extrap","0");
+ click("proposalPreview");
+ assert.match(els.get("proposalRows").innerHTML,/30,00/);assert.match(els.get("proposalRows").innerHTML,/70,00/);
+ assert.match(els.get("proposalRows").innerHTML,/15,00/);assert.match(els.get("proposalRows").innerHTML,/10,00/);
+ assert.match(read("proposalText"),/Diferenças aritméticas não equivalem necessariamente a dívidas/);
+});
+check("Proposta: pagamento alterado torna a prévia inválida",()=>{
+ put("bp","61");click("proposalExport");
+ assert.match(read("proposalNote"),/desactualizada/);
+});
+check("Proposta: identificação de pendências separa responsabilidade e pagamento",()=>{
+ put("proposalTransit","2026-11-16");els.get("proposalVerified").checked=true;
+ click("proposalPreview");assert.match(read("proposalNote"),/Fichas dos intervenientes/);
+});
+check("Proposta: documento sem bloqueios técnicos exige verificação jurídica",()=>{
+ for(const id of ["law","table","exempt","remainder","charges"])els.get(id).checked=true;
+ for(const p of ["pa","pb"]){
+  put(p+"_role",p==="pa"?"autor":"reu");put(p+"_entity","person");
+  put(p+"_exemption","none");put(p+"_aid","none");put(p+"_excluded","no");
+  put(p+"_outcome","condemned");put(p+"_decision","2026-11-12");
+  els.get(p+"_evidence").checked=true;
+ }
+ click("analyseparties");assert.match(read("partiesstatus"),/verificados/);
+ click("proposalPreview");assert.match(els.get("proposalStatus").value,/sem bloqueios técnicos/i);
+ assert.match(read("proposalText"),/NÃO É CONTA OFICIAL/);
+});
+check("Proposta: diferenças registadas não incluem custas de parte",()=>{
+ assert.match(read("proposalText"),/Custas de parte excluídas/);
+});
+check("Proposta: reset invalida documento anterior",()=>{
+ click("reset");click("proposalExport");assert.match(read("proposalNote"),/desactualizada/);
+});
 console.log(tests+" testes do módulo A01 concluídos.");
