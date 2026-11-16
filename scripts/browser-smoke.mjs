@@ -47,7 +47,7 @@ await check("Agenda local: eventos, exportação ICS e limpeza",async()=>{
 });
 await check("Tramitação TAF: fases, urgência, progressão e remissão CPPT",async()=>{
  await open("tramitação-taf.html");
- if(await page.locator("#workflow option").count()!==7)throw Error("Roteiros TAF incompletos");
+ if(await page.locator("#workflow option").count()!==9)throw Error("Roteiros TAF incompletos");
  await page.locator("#workflow").selectOption("intimacao-informacao");
  await page.locator("#phase").selectOption("citacao");
  const text=await page.locator("#steps").innerText();
@@ -68,6 +68,14 @@ await check("Tramitação TAF: fases, urgência, progressão e remissão CPPT",a
  if(!(await page.locator("#warning").innerText()).includes("três meses"))throw Error("Prazo de contestação CPPT ausente");
  await page.locator("#workflow").selectOption("providencia-cautelar");
  if(!(await page.locator("#warning").innerText()).includes("48 horas"))throw Error("Urgência cautelar ausente");
+ await page.locator("#workflow").selectOption("pre-contratual");
+ if(!(await page.locator("#warning").innerText()).includes("48 horas"))throw Error("Prazo liminar pré-contratual ausente");
+ await page.locator("#phase").selectOption("suspensao");
+ if(!(await page.locator("#steps").innerText()).includes("103.º-A"))throw Error("Incidente pré-contratual ausente");
+ await page.locator("#workflow").selectOption("reclamacao-oef");
+ if(!(await page.locator("#warning").innerText()).includes("subida imediata"))throw Error("Variante da reclamação OEF ausente");
+ await page.locator("#phase").selectOption("subida");
+ if(!(await page.locator("#steps").innerText()).includes("278.º/3"))throw Error("Subida imediata não identificada");
  await page.locator("#workflow").selectOption("recurso");
  if(!(await page.locator("#sources").innerText()).includes("279.º"))throw Error("Recursos CPPT ausentes");
 });
