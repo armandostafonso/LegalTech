@@ -4,7 +4,7 @@
 <link rel="manifest" href="site.webmanifest"><meta name="apple-mobile-web-app-title" content="LegalTech Suite"><meta name="application-name" content="LegalTech Suite">
 <script id="lt-theme-bootstrap">(function(){try{var a=localStorage.getItem("legaltech_theme"),b=localStorage.getItem("theme"),t=(a==="light"||a==="dark")?a:(b==="light"||b==="dark")?b:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;localStorage.setItem("legaltech_theme",t);localStorage.setItem("theme",t)}catch(e){}})();</script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="LegalTech Suite: vinte e uma ferramentas de produtividade jurídica, tramitação, documentos, prazos e privacidade, com revisão humana obrigatória.">
+<meta name="description" content="LegalTech Suite: vinte e duas ferramentas de produtividade jurídica, tramitação, documentos, prazos e privacidade, com revisão humana obrigatória.">
 <meta name="theme-color" content="#f7f8fb"><title>LegalTech Suite · Ferramentas jurídicas</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <style>
@@ -33,6 +33,12 @@ try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme
 <section class="hero"><div class="eyebrow">A plataforma de ferramentas jurídicas</div><h1>Menos tarefas repetitivas.<br>Mais tempo para o essencial.</h1>
 <p>Uma suite integrada de ferramentas para o trabalho jurídico, criada com atenção à clareza, privacidade e rigor.</p>
 <label for="search" style="display:block;font-size:13px;font-weight:650;margin-bottom:8px">Encontrar ferramenta</label><input class="search" id="search" type="search" placeholder="Pesquisar por prazo, PDF, minuta, tramitação…" autocomplete="off"></section>
+<section class="suite-start" aria-label="Começar uma tarefa">
+  <div class="suite-start-copy"><span class="suite-start-tag">NOVO · FLUXO DE TRABALHO</span>
+  <h2>Do despacho ao expediente, com um roteiro de conferência.</h2>
+  <p>Prepara uma tarefa, assinala verificações, revê o relatório e abre as ferramentas relacionadas. Sem execução automática ou dados guardados.</p></div>
+  <a href="flow.html" class="suite-start-action">Iniciar no LegalTech Flow <span aria-hidden="true">↗</span></a>
+</section>
 <div class="filters" role="group" aria-label="Filtrar ferramentas por categoria">
 <button type="button" data-filter="all" aria-pressed="true">Todas</button>
 <button type="button" data-filter="atos" aria-pressed="false">Atos e expediente</button>
@@ -42,8 +48,9 @@ try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme
 <button type="button" data-filter="privacidade" aria-pressed="false">Privacidade</button>
 <button type="button" data-filter="legislação" aria-pressed="false">Legislação</button>
 </div>
-<section id="ferramentas" aria-label="Ferramentas disponíveis"><div class="heading"><h2>Ferramentas disponíveis</h2><span id="count" aria-live="polite">21 ferramentas</span></div>
+<section id="ferramentas" aria-label="Ferramentas disponíveis"><div class="heading"><h2>Ferramentas disponíveis</h2><span id="count" aria-live="polite">22 ferramentas</span></div>
 <div class="grid" id="grid">
+<a class="tool" href="flow.html" data-search="flow despacho roteiro tarefas conferir checklist preparação cumprimento execução minuta expedição"><span class="glyph" aria-hidden="true">◇</span><b>LegalTech Flow</b><span class="lt-module-subtitle">Preparação e conferência de tarefas</span><p>Organiza um ato de secretaria em verificações, relatório editável e ferramentas de apoio. Sem IA externa nem execução de atos.</p><small>Abrir ferramenta ↗</small></a>
 <a class="tool" href="citacheck.html" data-search="cita check prazo prazo processual citação notificação dilação férias judiciais"><span class="glyph" aria-hidden="true">◷</span><b>Cita-Check</b><p>Simula a perfeição da citação ou notificação, os prazos e as dilações e gera uma proposta de cota.</p><small>Abrir ferramenta ↗</small></a>
 <a class="tool" href="anonimizador.html" data-search="anonimizar pdf documento tarja proteção dados pessoais expurgo"><span class="glyph" aria-hidden="true">▣</span><b>LegalTech PDF</b><span class="lt-module-subtitle">Anonimizador de PDF</span><p>Oculta ou substitui dados identificativos em PDFs, com processamento no navegador e revisão obrigatória.</p><small>Abrir ferramenta ↗</small></a>
 <a class="tool" href="minutas.html" data-search="minuta cota certidão notificação ofício tribunal secretaria texto"><span class="glyph" aria-hidden="true">▤</span><b>LegalTech Docs</b><span class="lt-module-subtitle">Minutas de secretaria</span><p>Cria rascunhos editáveis de cotas, certidões e ofícios a partir de campos simples. Sem guardar dados.</p><small>Abrir ferramenta ↗</small></a>
@@ -74,7 +81,7 @@ try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme
 <script>
 const input=document.getElementById("search"),cards=[...document.querySelectorAll(".tool")];
 const categories={
-"citacheck.html":"prazos","anonimizador.html":"privacidade","minutas.html":"atos",
+"flow.html":"atos","citacheck.html":"prazos","anonimizador.html":"privacidade","minutas.html":"atos",
 "tramitação-taf.html":"tramitação","expediente.html":"atos","fontes.html":"legislação",
 "roteiros.html":"tramitação","agenda.html":"prazos","regimes.html":"prazos",
 "assistant.html":"atos","notify.html":"atos","hearing.html":"atos","compare.html":"documentos",
