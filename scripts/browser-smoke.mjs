@@ -25,6 +25,21 @@ await check("Painel de trabalho: pesquisa, filtros e privacidade",async()=>{
  await page.reload();
  if(await page.locator("#workspace-search").inputValue()!=="")throw Error("Pesquisa persistiu após recarga");
 });
+await check("Ecossistema institucional: 6 áreas e ligações",async()=>{
+ await open("index.html");
+ if(await page.locator(".home-domain").count()!==6)throw Error("Seis áreas do ecossistema esperadas");
+ if(await page.locator(".home-orbit").count()!==1)throw Error("Apresentação visual ausente");
+ if(await page.locator(".home-hero-actions a[href='workspace.html']").count()!==1)throw Error("Acesso ao painel ausente");
+ if(await page.locator(".home-hero-actions a[href='flow.html']").count()!==1)throw Error("Acesso ao Flow ausente");
+ if(!(await page.locator(".home-proof").innerText()).includes("22 ferramentas · 6 áreas"))throw Error("Indicador do catálogo incorreto");
+});
+await check("Percursos rápidos do Workspace",async()=>{
+ await open("workspace.html");
+ if(await page.locator(".workspace-journey").count()!==4)throw Error("Quatro tarefas rápidas esperadas");
+ for(const name of ["flow.html","citacheck.html","tramitação-taf.html","anonimizador.html"]){
+  if(await page.locator('.workspace-journey[href="'+name+'"]').count()!==1)throw Error("Percurso em falta: "+name);
+ }
+});
 await check("Página inicial e pesquisa",async()=>{
  await open("index.html");
  const h=await page.locator("h1").innerText();
