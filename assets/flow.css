@@ -45,3 +45,6 @@
 @media(max-width:850px){.flow-panel-grid{grid-template-columns:1fr}.flow-panel{padding:18px}.flow-wrap{padding:18px 16px 50px}}
 @media(prefers-reduced-motion:reduce){.flow-meter>div{transition:none}}
 @media print{.flow-wrap{padding:0}.flow-panel{box-shadow:none;break-inside:avoid}.flow-actions,.flow-links,.flow-privacy{display:none!important}}
+
+.flow-skip{position:absolute;left:-9999px;top:0;z-index:100}
+.flow-skip:focus{left:12px;top:12px;padding:10px 14px;border:2px solid var(--lt-gold);background:var(--paper);color:var(--ink);border-radius:8px}
