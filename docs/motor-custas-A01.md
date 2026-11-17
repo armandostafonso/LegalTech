@@ -289,6 +289,22 @@ Antes de usar a ferramenta como apoio a contas reais, é necessário submeter os
 
 Não carregar autos reais em páginas públicas ou ambientes de teste não autorizados. Os testes actuais utilizam **apenas identificadores e valores fictícios**.
 
+## Percurso simples de conferência (reorganização de interface, v2.0)
+
+Por razões de usabilidade, a página A01 passou a abrir por defeito num **percurso guiado de três etapas**, mantendo todas as 19 secções anteriores na vista **Ferramentas técnicas**. A mudança é apenas na apresentação: não elimina regras, movimentos, cálculos ou avisos.
+
+1. **Processo:** identificação, data de entrada, valor e objecto, com as verificações jurídicas gerais.
+2. **Taxas e pagamentos:** calculadora condicionada de taxa-base por impulso, confirmação mínima da ausência de isenção e de apoio judiciário para a parte seleccionada e botão para **actualizar os totais verificados**. O registo manual de outros impulsos e o livro financeiro continuam disponíveis mediante abertura facultativa.
+3. **Conferência:** proposta experimental de conferência, incluindo diferenças e advertências sobre os requisitos jurídicos ainda por validar.
+
+Ao avançar para a segunda etapa, o valor tributário pode ser **pré-preenchido com o valor da causa**, mas o utilizador recebe um aviso para confirmar se os montantes correspondem à mesma base relevante. A data de entrada **não é copiada automaticamente** para a data de propositura, pois podem não coincidir.
+
+A verificação simplificada de benefícios nunca substitui a ficha jurídica: se o perfil já identificar uma isenção ou apoio judiciário, a interface simples **não permite apagar esse benefício com uma selecção simplificada**. Na dúvida, conserva o estado «por verificar» e exige análise técnica. Os benefícios não se convertem automaticamente em montantes zero.
+
+A transferência rápida para a conferência **reutiliza exactamente as validações da transferência de obrigações** anteriormente existentes; recusa obrigações por verificar e não cria pagamentos ou determina dívida vencida.
+
+**Limites:** a vista guiada não resolve todos os pressupostos da conta. A proposta continua a mostrar impedimentos quando faltam ficha de partes, segunda prestação, remanescente, condenação final ou outros elementos; nestes casos é necessário abrir as ferramentas técnicas. Não existe leitura automática de autos, validação de DUC em sistemas oficiais ou elaboração de conta oficial.
+
 ## Limitações que bloqueiam o uso como conta oficial
 
 - A taxa-base simulada não contempla isenções, reduções, prestações, regimes especiais, custas de recursos e incidentes. As obrigações de recurso ou incidente são valores **manuais**, não calculados automaticamente.
@@ -304,7 +320,7 @@ Não carregar autos reais em páginas públicas ou ambientes de teste não autor
 
 ## Testes
 
-- Script: `node scripts/test-custas.mjs` (157 casos técnicos na versão 2.0).
+- Script: `node scripts/test-custas.mjs` (169 casos técnicos na versão 2.0, incluindo testes de navegação simples e transferência rápida).
 - Verificação global da página: `node scripts/validate-site.mjs`.
 - Integração contínua: `.github/workflows/custas-tests.yml`.
 
