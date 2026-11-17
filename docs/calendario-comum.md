@@ -26,7 +26,7 @@ Os cinco ficheiros partilhados (dois catálogos e três matrizes de casos sinté
 
 ## Limites
 
-**Isto ainda não é um motor de prazos único.** Os cálculos de termo, suspensão, dilação e três dias úteis mantêm implementações próprias em JavaScript e Python, e as regras específicas de citação só existem na versão Web. Os cenários partilhados reduzem divergências, mas não provam equivalência geral.
+**Existe um núcleo de cálculo com contrato equivalente em JavaScript e Python**, utilizado pelas interfaces, mas não um único ficheiro executável: ver [núcleo de prazos e suas limitações](prazo-core.md). As modalidades específicas de citação continuam na Web, e os três dias úteis com multa são tratados separadamente nas interfaces. Os 324 cenários técnicos não comprovam equivalência geral nem correção jurídica.
 
 Não alterar prazos processuais e efeitos de citação exclusivamente com base em igualdade de testes. É necessário confronto normativo e avaliação de casos reais devidamente autorizados.
 
