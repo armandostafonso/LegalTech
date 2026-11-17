@@ -48,3 +48,6 @@
 
 .flow-skip{position:absolute;left:-9999px;top:0;z-index:100}
 .flow-skip:focus{left:12px;top:12px;padding:10px 14px;border:2px solid var(--lt-gold);background:var(--paper);color:var(--ink);border-radius:8px}
+
+.flow-handoff{margin:12px 0 16px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+.flow-handoff p{font-size:12px;color:var(--muted);line-height:1.55;margin:0 0 10px}
