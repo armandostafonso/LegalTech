@@ -2,7 +2,7 @@ import fs from "node:fs";
 import vm from "node:vm";
 import assert from "node:assert/strict";
 
-const html=fs.readFileSync("custas.html","utf8");
+const html=fs.readFileSync("custas-tecnico.html","utf8");
 const fixtures=JSON.parse(fs.readFileSync("scripts/fixtures/custas-a01-cenarios.json","utf8"));
 const inline=[...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
   .filter(m=>!/\bsrc\s*=/.test(m[1])&&m[2].trim())
