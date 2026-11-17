@@ -157,7 +157,48 @@ try{
   'document.getElementById("partyExemption").value="yes";',
   'document.getElementById("partyAdd").click();'
  ].join(""));
+
  assert.match(await evaluate("document.getElementById('partyList').textContent"),/Isenção: assinalada/);
+ const savedText=await evaluate(`(async()=>{
+  const old=URL.createObjectURL.bind(URL);
+  URL.createObjectURL=blob=>{window.__savedBlob=blob;return old(blob)};
+  document.getElementById("saveProject").click();
+  URL.createObjectURL=old;
+  return await window.__savedBlob.text();
+ })()`);
+ const project=JSON.parse(savedText);
+ assert.equal(project.version,1);
+ assert.equal(project.data.charges.length,1);
+ assert.equal(project.data.movements.length,1);
+ assert.equal(project.data.parties[0].exemption,"yes");
+ await evaluate("document.getElementById('caseValue').value='1'");
+ await evaluate(`(async()=>{
+  const file=new File([${JSON.stringify(savedText)}],"projecto.json",{type:"application/json"});
+  const input=document.getElementById("projectFile");
+  Object.defineProperty(input,"files",{configurable:true,value:[file]});
+  input.dispatchEvent(new Event("change",{bubbles:true}));
+  for(let i=0;i<50;i++){
+   if(document.getElementById("message").textContent.includes("Projecto retomado"))break;
+   await new Promise(r=>setTimeout(r,20));
+  }
+  return document.getElementById("message").textContent;
+ })()`);
+ assert.equal(await evaluate("document.getElementById('caseValue').value"),"30000");
+ assert.match(await evaluate("document.getElementById('stepLabel').textContent"),/Passo 2/);
+ assert.match(await evaluate("document.getElementById('chargeList').textContent"),/510,00/);
+ const importError=await evaluate(`(async()=>{
+  const file=new File(['{"format":"invalido"}'],"estranho.json",{type:"application/json"});
+  const input=document.getElementById("projectFile");
+  Object.defineProperty(input,"files",{configurable:true,value:[file]});
+  input.dispatchEvent(new Event("change",{bubbles:true}));
+  for(let i=0;i<50;i++){
+   if(document.getElementById("message").textContent.includes("Não foi possível abrir"))break;
+   await new Promise(r=>setTimeout(r,20));
+  }
+  return document.getElementById("message").textContent;
+ })()`);
+ assert.match(importError,/Não foi possível abrir/);
+ assert.equal(await evaluate("document.getElementById('caseValue').value"),"30000");
  assert.equal(exceptions.length,0,exceptions.join("; "));
  console.log("Browser A01 OK: motor técnico, conta simples e assistente de seis passos.");
 
