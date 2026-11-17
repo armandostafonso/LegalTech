@@ -256,7 +256,7 @@ tr:last-child td{border-bottom:0}
  }
  function collectExtras(warnings){
   if(!el("ccHasExtras").checked)return [];
-  if(extras.length===0)warnings.push("Foram assinaladas rubricas adicionais, mas ainda não foi identificada qualquer uma.");
+  if(extras.length===0)warnings.push("Foram assinaladas rubricas adicionais, mas não foi identificada qualquer rubrica.");
   const result=[];
   for(const x of extras){
    const f=x.inputs;
