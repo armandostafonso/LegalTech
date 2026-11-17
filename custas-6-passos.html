@@ -361,7 +361,7 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  function renderAll(){
   renderParties();
   renderList("chargeList",data.charges,x=>({head:x.impulse+" · "+eur(x.cents),details:personName(x.personId)+" · "+x.origin+" · "+x.table+" · início "+x.year+
-   " · "+(x.verified?"Documentação conferida":"A conferir")+(x.ref?" · "+x.ref:"")}));
+   " · "+(x.startDate||"data por conferir")+" · "+(x.verified?"Documentação conferida":"A conferir")+(x.ref?" · "+x.ref:"")}));
   renderList("expenseList",data.expenses,x=>({head:x.label+" · "+eur(x.cents),details:personName(x.personId)+" · "+x.kind+
    " · "+(x.verified?"Verificado":"A conferir")}));
   renderList("moveList",data.movements,x=>({head:(x.kind==="guide"?"Guia emitida":x.kind==="cancel"?"Guia anulada":x.kind==="payment"?"Pagamento":"Restituição")+" · "+eur(x.cents),
@@ -497,10 +497,18 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   const year=Number(byId("chargeYear").value),basis=byId("chargeBasis").value.trim();
   if(personId===null||base===null||cents===null)return;
   if(!Number.isInteger(year)||year<2009||year>2099){note("Indica um ano válido para este processo autónomo.");return}
+  const startDate=byId("chargeStartDate").value;
+  if(startDate&&(!core.validISODate(startDate)||Number(startDate.slice(0,4))!==year)){
+   note("A data de início não corresponde ao ano do processo autónomo.");return
+  }
+  const ref=byId("chargeRef").value.trim().slice(0,75);
+  if(ref&&data.charges.some(x=>x.personId===personId&&x.ref.toLowerCase()===ref.toLowerCase())){
+   note("Já existe uma taxa com a mesma referência para este responsável. Distingue os impulsos ou prestações.");return
+  }
   if(!basis){note("Regista a base legal, decisão ou observação relativa à taxa de justiça.");return}
   data.charges.push({id:seq++,personId,origin:byId("chargeOrigin").value,impulse:byId("chargeImpulse").value,
-   table:byId("chargeTable").value,year,baseCents:base,cents,basis,
-   ref:byId("chargeRef").value.trim().slice(0,75),verified:byId("chargeVerified").checked});
+   table:byId("chargeTable").value,year,startDate,baseCents:base,cents,basis,
+   ref,verified:byId("chargeVerified").checked});
   byId("chargeAmount").value="";byId("chargeRef").value="";byId("chargeBasis").value="";
   byId("chargeVerified").checked=false;renderAll();invalidate();note("Processo autónomo e taxa registados.");
  }
@@ -554,6 +562,8 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
    "Decisão final / trânsito: "+(byId("caseDecision").value.trim()||"por conferir"),
    "Dispensa de elaboração da conta: "+byId("dispensa").value+"; pressuposto indicado: "+byId("dispensaReason").value,
    "Ano da acção principal: "+dateYear(),
+   "Data exacta de propositura: "+(byId("filingDate").value||"por conferir"),
+   "Regime do artigo 6.º do RCP (DL 164/2026): "+core.regime2026(dateYear(),byId("filingDate").value).article6,
    "UC indicada: "+(byId("ucValue").value||"por verificar")+" €",
    "Valor fixado: "+(byId("caseValue").value||"por verificar")+" €",
    "Decisão sobre custas: "+(byId("ruling").value.trim()||"não transcrita"),"",
@@ -561,7 +571,7 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   for(const p of data.parties)lines.push(p.label+" · "+p.role+" · responsabilidade "+(p.share===null?"por conferir":p.share+"%")+
    " · isenção "+p.exemption+" · apoio "+p.aid);
   lines.push("","PASSO 3 · TAXAS DE JUSTIÇA");
-  for(const x of data.charges)lines.push(personNameForReport(x.personId)+" | "+x.origin+" | "+x.impulse+" | "+x.table+" | ano "+x.year+" | "+eur(x.cents)+" | "+x.basis);
+  for(const x of data.charges)lines.push(personNameForReport(x.personId)+" | "+x.origin+" | "+x.impulse+" | "+x.table+" | início "+(x.startDate||x.year)+" | "+eur(x.cents)+" | "+x.basis);
   lines.push("","PASSO 4 · ENCARGOS");
   for(const x of data.expenses)lines.push(personNameForReport(x.personId)+" | "+x.label+" | "+eur(x.cents)+" | "+x.basis);
   lines.push("","MOVIMENTOS DE PAGAMENTO");
@@ -581,7 +591,7 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  }
 
  const savedFields=["processRef","jurisdiction","filingYear","ucValue","caseValue","caseDecision",
-    "dispensa","dispensaReason","ruling","probableCosts","advanceCharges"];
+    "dispensa","dispensaReason","ruling","probableCosts","advanceCharges","filingDate"];
  function projectSnapshot(){
   const fields={};
   for(const id of savedFields)fields[id]=String(byId(id).value);
@@ -631,7 +641,8 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  function personNameForReport(id){return personName(id)}
 
  function finish(){
-  const state={...data,year:dateYear(),dispensa:byId("dispensa").value,agreement:byId("reviewed").checked};
+  const state={...data,year:dateYear(),filingDate:byId("filingDate").value,
+   dispensa:byId("dispensa").value,dispensaReason:byId("dispensaReason").value,agreement:byId("reviewed").checked};
   const result=core.summary(state);lastSummary=result;
   const probable=core.parseCents(byId("probableCosts").value),advance=core.parseCents(byId("advanceCharges").value);
   if(probable===null||advance===null){
@@ -658,7 +669,7 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  }
  byId("filingYear").addEventListener("input",updateYear);
  byId("caseValue").addEventListener("change",()=>{if(!byId("chargeValue").value)byId("chargeValue").value=byId("caseValue").value;invalidate()});
- for(const id of ["dispensa","dispensaReason","processRef","jurisdiction","ucValue","caseValue","caseDecision","ruling","reviewed","probableCosts","advanceCharges"])
+ for(const id of ["dispensa","dispensaReason","processRef","jurisdiction","ucValue","caseValue","caseDecision","ruling","reviewed","probableCosts","advanceCharges","filingDate"])
   byId(id).addEventListener("change",invalidate);
  byId("draftDispensa").addEventListener("click",generateDispensa);
  byId("copyDispensa").addEventListener("click",async()=>{
