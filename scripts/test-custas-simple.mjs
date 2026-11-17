@@ -51,7 +51,7 @@ function harness(){
   text(id){return el(id).textContent},
   rows(){return el("ccRows").children.map(row=>row.children.map(cell=>cell.textContent))},
   ready(value="30000",uc="102"){
-   this.set("ccValue",value);this.set("ccUC",uc);this.set("ccDate","2026-11-16");
+   this.set("ccValue",value);this.set("ccYear","2025");el("ccYear").listeners.input();this.set("ccUC",uc);
    this.set("ccSecond","waived");this.set("ccDecision","autor");this.checked("ccVerified");
    this.checked("ccAuthorDetail");this.checked("ccDefDetail");
   }
@@ -145,7 +145,7 @@ check("Acima de 275 mil: remanescente deve ser conferido",()=>{
  assert.match(h.el("ccWarnings").children[1].children.map(x=>x.textContent).join(" "),/remanescente/);
 });
 check("Processo anterior a 2012: bloqueio por regime temporal",()=>{
- const h=harness();h.ready();h.set("ccDate","2011-12-31");h.click("ccCalculate");
+ const h=harness();h.ready();h.set("ccYear","2011");h.click("ccCalculate");
  assert.match(h.text("ccStatus"),/anterior a 29-03-2012/);
 });
 check("Montantes negativos e mais de duas casas decimais são rejeitados",()=>{
@@ -242,4 +242,50 @@ check("Repartição de custas com percentagens inconsistentes é bloqueada",()=>
  h.set("ccShareAuthor","70");h.set("ccShareDef","20");h.click("ccCalculate");
  assert.match(h.text("ccStatus"),/totalizar 100%/);
 });
+
+check("Ano: preencher UC de 102 euros automaticamente em 2018",()=>{
+ const h=harness();h.set("ccYear","2018");h.el("ccYear").listeners.input();
+ assert.equal(h.el("ccUC").value,"102");assert.match(h.text("ccUCNote"),/102,00/);
+});
+check("Ano de 2009: não presumir UC quando houve dois valores",()=>{
+ const h=harness();h.set("ccYear","2009");h.el("ccYear").listeners.input();
+ assert.equal(h.el("ccUC").value,"");assert.match(h.text("ccUCNote"),/96.*102/);
+});
+check("Ano 2012: bloquear regime de transição sem data exacta",()=>{
+ const h=harness();h.ready();h.set("ccYear","2012");h.click("ccCalculate");
+ assert.match(h.text("ccStatus"),/data exacta/);
+});
+check("Ano 2026: manter ressalva de alteração legal intra-anual",()=>{
+ const h=harness();h.ready();h.set("ccYear","2026");h.click("ccCalculate");
+ const w=h.el("ccWarnings").children[1].children.map(x=>x.textContent).join(" ");
+ assert.match(w,/01-12-2026/);
+});
+check("Ano 2027: não inventar valor futuro da UC",()=>{
+ const h=harness();h.set("ccYear","2027");h.el("ccYear").listeners.input();
+ assert.equal(h.el("ccUC").value,"");assert.match(h.text("ccUCNote"),/sem valor histórico confirmado/);
+});
+check("Ano: alteração invalida o relatório anterior",()=>{
+ const h=harness();h.ready();h.click("ccCalculate");assert.ok(!h.el("ccResult").className.includes("cc-hidden"));
+ h.set("ccYear","2024");h.el("ccYear").listeners.input();
+ assert.ok(h.el("ccResult").className.includes("cc-hidden"));
+});
+check("Conta: resumo separa diferenças e excessos de partes distintas",()=>{
+ const h=harness();h.ready();h.checked("ccContested");h.change("ccContested");h.set("ccDefPrepay","normal");
+ h.set("ccAuthorFirst","500");h.click("ccCalculate");
+ assert.match(h.text("ccDifference"),/255,00/);
+ const cells=h.el("ccPartyRows").children.map(row=>row.children.map(c=>c.textContent));
+ assert.match(cells[0][4],/245,00/);assert.match(cells[1][3],/255,00/);
+ assert.match(h.el("ccWarnings").children[1].children.map(x=>x.textContent).join(" "),/não foram compensados/);
+});
+check("Recurso autónomo: montante manual, fundamento e aviso de Tabela I-B",()=>{
+ const h=harness();h.ready();h.checked("ccHasExtras");h.change("ccHasExtras");h.click("ccExtraAdd");
+ h.set("ccExtra1kind","appeal");h.set("ccExtra1description","Recurso, teste");
+ h.set("ccExtra1basis","Artigo 6.º/2 RCP, Tabela I-B");
+ h.set("ccExtra1due","306");h.set("ccExtra1paid","102");
+ h.click("ccCalculate");
+ assert.match(h.rows()[2][0],/Recurso/);
+ assert.match(h.rows()[2][1],/306,00/);
+ assert.match(h.el("ccWarnings").children[1].children.map(x=>x.textContent).join(" "),/Tabela I-B/);
+});
+
 console.log(passed+" testes do percurso simples A01 concluídos.");
