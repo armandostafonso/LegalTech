@@ -36,6 +36,8 @@ jobs:
           npx playwright install --with-deps chromium webkit
       - name: Exercitar ferramentas no navegador
         run: node scripts/browser-smoke.mjs
+      - name: Testar LegalTech Flow em Chromium e WebKit
+        run: node scripts/flow-browser.mjs
       - name: Testar os doze módulos especializados
         run: node scripts/next-smoke.mjs
       - name: Acessibilidade e tema claro-escuro em ecrãs móveis
