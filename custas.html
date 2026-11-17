@@ -89,11 +89,14 @@ tr:last-child td{border-bottom:0}
 </section>
 <section class="cc-panel" aria-labelledby="cc-author-title">
  <div class="cc-rowtitle"><span class="cc-num">2</span><h2 id="cc-author-title">Petição inicial · Autor</h2></div>
- <p class="cc-sub">A petição foi apresentada. Confere os comprovativos das prestações pagas pelo autor.</p>
+ <p class="cc-sub">A petição foi apresentada. Regista quanto foi pago, mesmo que a parte tenha liquidado logo a totalidade.</p>
+ <div class="cc-field" style="max-width:370px"><label for="ccAuthorTotal">Total pago pelo autor (€)</label><input id="ccAuthorTotal" type="number" min="0" step="0.01" value="0"></div>
+ <label class="cc-toggle" for="ccAuthorDetail"><input id="ccAuthorDetail" type="checkbox"><span>Discriminar por prestações</span></label>
+ <div id="ccAuthorDetailFields" class="cc-hidden">
  <div class="cc-two">
   <div class="cc-field"><label for="ccAuthorFirst">Pagamento da 1.ª prestação (€)</label><input id="ccAuthorFirst" type="number" min="0" step="0.01" value="0"></div>
   <div class="cc-field"><label for="ccAuthorSecond">Pagamento da 2.ª prestação (€)</label><input id="ccAuthorSecond" type="number" min="0" step="0.01" value="0"></div>
- </div>
+ </div></div>
 </section>
 <section class="cc-panel" aria-labelledby="cc-response-title">
  <div class="cc-rowtitle"><span class="cc-num">3</span><h2 id="cc-response-title">Contestação · Entidade demandada (ex.: AT)</h2></div>
@@ -101,18 +104,30 @@ tr:last-child td{border-bottom:0}
  <div id="ccNoContest" class="cc-quiet"><strong>Não contestou → não se regista taxa pela contestação.</strong> A responsabilidade final por outras custas é apreciada separadamente.</div>
  <div id="ccRespondedFields" class="cc-hidden">
   <p class="cc-sub">Se houve contestação, confirma quanto foi pago. Para entidades públicas, verifica também a eventual dispensa de pagamento prévio.</p>
-  <div class="cc-two">
+  <div class="cc-field" style="max-width:370px"><label for="ccDefTotal">Total pago pela entidade demandada (€)</label><input id="ccDefTotal" type="number" min="0" step="0.01" value="0"></div>
+  <label class="cc-toggle" for="ccDefDetail"><input id="ccDefDetail" type="checkbox"><span>Discriminar por prestações</span></label>
+  <div id="ccDefDetailFields" class="cc-hidden"><div class="cc-two">
    <div class="cc-field"><label for="ccDefFirst">Pagamento da 1.ª prestação (€)</label><input id="ccDefFirst" type="number" min="0" step="0.01" value="0"></div>
    <div class="cc-field"><label for="ccDefSecond">Pagamento da 2.ª prestação (€)</label><input id="ccDefSecond" type="number" min="0" step="0.01" value="0"></div>
-  </div>
+  </div></div>
   <div class="cc-field" style="margin-top:14px;max-width:580px">
    <label for="ccDefPrepay">Pagamento prévio da entidade demandada</label>
    <select id="ccDefPrepay"><option value="unknown">Ainda tenho de verificar</option><option value="normal">Era exigível pagamento prévio</option><option value="deferred">Dispensa de pagamento prévio confirmada (art. 15.º RCP)</option><option value="special">Isenção / apoio judiciário / outro regime: analisar tecnicamente</option></select>
   </div>
  </div>
 </section>
+<section class="cc-panel" aria-labelledby="cc-extras-title">
+ <div class="cc-rowtitle"><span class="cc-num">4</span><h2 id="cc-extras-title">Multas e incidentes</h2></div>
+ <p class="cc-sub">Se não existem, não precisas de preencher mais nada. Se existem, identifica cada rubrica e o valor fixado ou legalmente apurado.</p>
+ <label class="cc-toggle" for="ccHasExtras"><input id="ccHasExtras" type="checkbox"><span>Existem multas ou incidentes a conferir?</span></label>
+ <div id="ccExtrasFields" class="cc-hidden">
+  <div id="ccExtrasList"></div>
+  <button type="button" class="cc-plainbutton" id="ccExtraAdd">+ Acrescentar multa ou incidente</button>
+  <p class="cc-quiet">Não se presume a taxa de um incidente nem o valor de uma multa. Confirma a decisão, a Tabela II e o fundamento legal antes de registar o montante. A responsabilidade e a exigibilidade final são apreciadas separadamente.</p>
+ </div>
+</section>
 <section class="cc-panel" aria-labelledby="cc-final-title">
- <div class="cc-rowtitle"><span class="cc-num">4</span><h2 id="cc-final-title">Segunda prestação e conferência final</h2></div>
+ <div class="cc-rowtitle"><span class="cc-num">5</span><h2 id="cc-final-title">Segunda prestação e conferência final</h2></div>
  <div class="cc-two">
   <div class="cc-field">
    <label for="ccSecond">A segunda prestação é devida?</label>
@@ -138,7 +153,7 @@ tr:last-child td{border-bottom:0}
   <div><small>Total registado como pago</small><strong id="ccPaidTotal">—</strong></div>
   <div><small>Diferença aritmética conhecida</small><strong id="ccDifference">—</strong></div>
  </div>
- <div class="cc-overflow"><table aria-label="Conferência dos impulsos e pagamentos"><thead><tr><th>Parte / impulso</th><th>Taxa I-A</th><th>1.ª devida</th><th>1.ª paga</th><th>2.ª devida</th><th>2.ª paga</th><th>Diferença</th></tr></thead><tbody id="ccRows"></tbody></table></div>
+ <div class="cc-overflow"><table aria-label="Conferência dos impulsos e pagamentos"><thead><tr><th>Parte / impulso</th><th>Taxa I-A / montante fixado</th><th>1.ª devida</th><th>1.ª paga</th><th>2.ª devida</th><th>2.ª paga</th><th>Diferença</th></tr></thead><tbody id="ccRows"></tbody></table></div>
  <div class="cc-obs" id="ccObservations"></div>
  <div id="ccWarnings" class="cc-warning cc-hidden"></div>
  <p class="cc-legal" id="ccLegal">Fundamentos: artigos 6.º, n.º 1, 11.º, 13.º, n.º 2, 14.º e 14.º-A do RCP; Tabela I-A; artigo 530.º, n.º 1, do CPC. A responsabilidade final por custas depende da decisão (artigo 527.º do CPC) e do regime da conta (artigos 29.º e 30.º do RCP).</p>
@@ -172,11 +187,68 @@ tr:last-child td{border-bottom:0}
   values.forEach((value,i)=>{const cell=document.createElement("td");cell.textContent=value;if(i>0)cell.className="cc-numeric";tr.appendChild(cell)});
   tbody.appendChild(tr);
  }
+
+ const extras=[];
+ function payment(side){
+  const detailed=el(side==="author"?"ccAuthorDetail":"ccDefDetail").checked;
+  const total=euro(side==="author"?"ccAuthorTotal":"ccDefTotal");
+  const first=euro(side==="author"?"ccAuthorFirst":"ccDefFirst");
+  const second=euro(side==="author"?"ccAuthorSecond":"ccDefSecond");
+  if(total===null||first===null||second===null)return null;
+  if(detailed)return {paid:first+second,first,second,detail:true};
+  return {paid:total,first:null,second:null,detail:false};
+ }
+ function addExtra(){
+  if(extras.length>=20){el("ccStatus").textContent="Limite de 20 rubricas adicionais; utiliza as ferramentas técnicas.";return}
+  const id=extras.length?Math.max(...extras.map(x=>x.id))+1:1;
+  const wrapper=document.createElement("div");wrapper.className="cc-quiet";
+  wrapper.style.marginBottom="12px";
+  const title=document.createElement("strong");title.textContent="Rubrica "+id;wrapper.appendChild(title);
+  const grid=document.createElement("div");grid.className="cc-three";
+  const fields=[
+   ["kind","Tipo","select",[["incident","Incidente"],["fine","Multa"]]],
+   ["description","Qual incidente / multa?","text"],
+   ["party","Responsável","select",[["autor","Autor"],["demandada","Entidade demandada"],["outro","Outro / por conferir"]]],
+   ["basis","Fundamento legal / decisão","text"],
+   ["due","Montante fixado (€)","number"],
+   ["paid","Total pago (€)","number"]
+  ];
+  const inputs={};
+  for(const [key,label,type,opts] of fields){
+   const div=document.createElement("div");div.className="cc-field";
+   const lab=document.createElement("label");lab.textContent=label;lab.htmlFor="ccExtra"+id+key;
+   const input=document.createElement(type==="select"?"select":"input");input.id="ccExtra"+id+key;
+   if(type==="select")for(const [value,name] of opts){const o=document.createElement("option");o.value=value;o.textContent=name;input.appendChild(o)}
+   else{input.type=type;if(type==="number"){input.min="0";input.step="0.01";input.value="0"}else input.maxLength=180}
+   input.addEventListener("input",invalidate);input.addEventListener("change",invalidate);
+   inputs[key]=input;div.appendChild(lab);div.appendChild(input);grid.appendChild(div);
+  }
+  wrapper.appendChild(grid);
+  const remove=document.createElement("button");remove.type="button";remove.className="cc-plainbutton";remove.textContent="Remover rubrica";
+  remove.addEventListener("click",()=>{const index=extras.findIndex(x=>x.id===id);if(index>=0)extras.splice(index,1);wrapper.remove();invalidate()});
+  wrapper.appendChild(remove);el("ccExtrasList").appendChild(wrapper);
+  extras.push({id,wrapper,inputs});invalidate();
+ }
+ function collectExtras(warnings){
+  if(!el("ccHasExtras").checked)return [];
+  if(extras.length===0)warnings.push("Foram assinalados incidentes ou multas, mas ainda não foi identificada qualquer rubrica.");
+  const result=[];
+  for(const x of extras){
+   const f=x.inputs;
+   const due=Number(f.due.value),paid=Number(f.paid.value);
+   if(!f.description.value.trim()||!f.basis.value.trim()||!Number.isFinite(due)||!Number.isFinite(paid)||due<0||paid<0||Math.round(due*100)!==due*100||Math.round(paid*100)!==paid*100)return {error:"Identifica cada multa ou incidente, o fundamento e os montantes válidos (duas casas decimais)."};
+   const dueCents=Math.round(due*100),paidCents=Math.round(paid*100);
+   if(!Number.isSafeInteger(dueCents)||!Number.isSafeInteger(paidCents))return {error:"Montante de multa ou incidente demasiado elevado."};
+   if(f.party.value==="outro")warnings.push("Responsável da rubrica «"+f.description.value.trim()+"» ainda por confirmar.");
+   result.push({kind:f.kind.value,description:f.description.value.trim().slice(0,180),party:f.party.value,basis:f.basis.value.trim().slice(0,180),due:dueCents,paid:paidCents});
+  }
+  return result;
+ }
  function build(){
   const value=euro("ccValue"),uc=euro("ccUC");
   const warnings=[];
   if(value===null||value<=0||uc===null||uc<=0)return {error:"Indica um valor da causa positivo e uma UC válida, com até duas casas decimais."};
-  for(const id of ["ccAuthorFirst","ccAuthorSecond","ccDefFirst","ccDefSecond"]){
+  for(const id of ["ccAuthorTotal","ccDefTotal","ccAuthorFirst","ccAuthorSecond","ccDefFirst","ccDefSecond"]){
    if(euro(id)===null)return {error:"Verifica os pagamentos introduzidos. Utiliza valores não negativos e até duas casas decimais."};
   }
   const startDate=el("ccDate").value;
@@ -188,10 +260,16 @@ tr:last-child td{border-bottom:0}
   if(val>275000)warnings.push("Valor superior a 275 000 €: falta apurar o remanescente, eventual dispensa judicial e responsabilidade final.");
   const secondMode=el("ccSecond").value;
   if(secondMode==="unknown")warnings.push("A exigibilidade da segunda prestação ainda está por confirmar (RCP, artigos 14.º e 14.º-A).");
-  const authorFirst=euro("ccAuthorFirst"),authorSecond=euro("ccAuthorSecond");
-  const defFirst=euro("ccDefFirst"),defSecond=euro("ccDefSecond");
+  const author=payment("author"),defendant=payment("def");
+  if(!author||!defendant)return {error:"Verifica os valores pagos: só são permitidos montantes não negativos, com duas casas decimais."};
+  const authorFirst=author.first??0,authorSecond=author.second??0;
+  const defFirst=defendant.first??0,defSecond=defendant.second??0;
   const contested=el("ccContested").checked,defMode=el("ccDefPrepay").value;
-  const aPaid=authorFirst+authorSecond,dPaid=defFirst+defSecond;
+  const aPaid=author.paid,dPaid=defendant.paid;
+  const extraRows=collectExtras(warnings);
+  if(extraRows.error)return extraRows;
+  if(!author.detail)warnings.push("Autor: pagamento total registado sem discriminação por prestações; conferir imputação à primeira e à segunda prestação.");
+  if(contested&&!defendant.detail)warnings.push("Entidade demandada: pagamento total registado sem discriminação por prestações.");
   if(!contested && dPaid>0)warnings.push("Existe pagamento preenchido para a entidade demandada sem contestação registada. Verificar a origem do movimento.");
   if(contested && defMode==="unknown")warnings.push("Confirmar o regime de pagamento prévio da entidade demandada, especialmente se for uma entidade pública.");
   if(contested && defMode==="special")warnings.push("Isenção, apoio judiciário ou outro regime da entidade demandada exigem análise específica.");
@@ -209,21 +287,22 @@ tr:last-child td{border-bottom:0}
    if(prepay==="special")status="Regime especial a conferir";
    return {name,act,total:base,first,second:secondMode==="due"?second:secondMode==="waived"?0:null,paid,paidFirst,paidSecond,prepay,difference,status};
   };
-  const a=impulse("Autor","Petição inicial",aPaid,authorFirst,authorSecond,"normal");
-  const b=contested?impulse("Entidade demandada","Contestação",dPaid,defFirst,defSecond,defMode):impulse("Entidade demandada","Não apresentada",0,0,0,"normal");
-  if(authorFirst<first && authorSecond>0)warnings.push("Autor: a primeira prestação não está integralmente paga, embora exista pagamento indicado para a segunda. Conferir a afectação dos comprovativos.");
-  if(authorFirst>first)warnings.push("Autor: o pagamento atribuído à primeira prestação excede o valor dessa prestação. Confirmar a guia e o motivo.");
-  if(secondMode==="waived"&&authorSecond>0)warnings.push("Autor: está indicado pagamento da segunda prestação apesar de ter sido assinalada dispensa. Confirmar eventual excesso.");
+  const a=impulse("Autor","Petição inicial",aPaid,author.detail?authorFirst:null,author.detail?authorSecond:null,"normal");
+  const b=contested?impulse("Entidade demandada","Contestação",dPaid,defendant.detail?defFirst:null,defendant.detail?defSecond:null,defMode):impulse("Entidade demandada","Não apresentada",0,0,0,"normal");
+  if(author.detail&&authorFirst<first && authorSecond>0)warnings.push("Autor: a primeira prestação não está integralmente paga, embora exista pagamento indicado para a segunda. Conferir a afectação dos comprovativos.");
+  if(author.detail&&authorFirst>first)warnings.push("Autor: o pagamento atribuído à primeira prestação excede o valor dessa prestação. Confirmar a guia e o motivo.");
+  if(author.detail&&secondMode==="waived"&&authorSecond>0)warnings.push("Autor: está indicado pagamento da segunda prestação apesar de ter sido assinalada dispensa. Confirmar eventual excesso.");
   if(contested){
-   if(defFirst<first&&defSecond>0)warnings.push("Entidade demandada: a primeira prestação não está integralmente paga, apesar de existir pagamento da segunda.");
-   if(defFirst>first)warnings.push("Entidade demandada: o pagamento da primeira prestação excede o valor calculado.");
-   if(secondMode==="waived"&&defSecond>0)warnings.push("Entidade demandada: foi indicado pagamento da segunda prestação apesar da dispensa.");
+   if(defendant.detail&&defFirst<first&&defSecond>0)warnings.push("Entidade demandada: a primeira prestação não está integralmente paga, apesar de existir pagamento da segunda.");
+   if(defendant.detail&&defFirst>first)warnings.push("Entidade demandada: o pagamento da primeira prestação excede o valor calculado.");
+   if(defendant.detail&&secondMode==="waived"&&defSecond>0)warnings.push("Entidade demandada: foi indicado pagamento da segunda prestação apesar da dispensa.");
   }
   if(a.difference<0)warnings.push("Autor: pagamento superior à taxa considerada. O excesso aritmético não constitui automaticamente direito à restituição.");
   if(contested && b.difference<0)warnings.push("Entidade demandada: pagamento superior à taxa considerada, sujeito a verificação.");
   if(secondMode==="unknown" && (aPaid>first || (contested&&dPaid>first)))warnings.push("Pagamentos superiores à primeira prestação podem corresponder a uma segunda prestação que ainda não foi qualificada.");
-  const calculatedDue=a.first+(a.second??0)+b.first+(b.second??0);
-  const totalPaid=aPaid+(contested?dPaid:0);
+  const extrasDue=extraRows.reduce((sum,x)=>sum+x.due,0),extrasPaid=extraRows.reduce((sum,x)=>sum+x.paid,0);
+  const calculatedDue=a.first+(a.second??0)+b.first+(b.second??0)+extrasDue;
+  const totalPaid=aPaid+(contested?dPaid:0)+extrasPaid;
   const diff=calculatedDue-totalPaid;
   const rowsData=[a,b];
   const explanations=[
@@ -232,7 +311,7 @@ tr:last-child td{border-bottom:0}
    contested?"Entidade demandada: contestação apresentada; pagos "+money(dPaid)+" (1.ª: "+money(defFirst)+"; 2.ª: "+money(defSecond)+"). "+b.status+".":"Entidade demandada: não apresentou contestação. Não se calcula taxa de justiça por esse impulso (RCP, artigo 6.º/1 e CPC, artigo 530.º/1).",
    final==="unknown"?"A condenação final em custas fica por conferir.":final==="autor"?"Decisão de custas indicada: a cargo do autor.":final==="demandada"?"Decisão de custas indicada: a cargo da entidade demandada.":final==="ambos"?"Decisão de custas indicada: repartida entre as partes; falta quantificar o decaimento.":"Decisão final de custas com regime especial; análise complementar necessária."
   ];
-  return {value,uc,units,base,first,second,secondMode,contested,defMode,a,b,rowsData,warnings,calculatedDue,totalPaid,diff,explanations,process:el("ccProcess").value.trim().slice(0,80),startDate};
+  return {value,uc,units,base,first,second,secondMode,contested,defMode,a,b,rowsData,extraRows,warnings,calculatedDue,totalPaid,diff,explanations,process:el("ccProcess").value.trim().slice(0,80),startDate};
  }
  function render(result){
   output=result;
@@ -243,10 +322,12 @@ tr:last-child td{border-bottom:0}
   const tbody=el("ccRows");tbody.replaceChildren();
   for(const r of result.rowsData){
    if(r.act==="Não apresentada"){addRow(tbody,[r.name+" · sem contestação","—","—","—","—","—","Não aplicável"]);continue}
-   addRow(tbody,[r.name+" · "+r.act,money(r.total),money(r.first),money(r.paidFirst),r.second===null?"Por conferir":r.second===0?"Dispensada":money(r.second),money(r.paidSecond),result.secondMode==="unknown"?"Por conferir":r.prepay==="deferred"?"Dispensa prévia · art. 15.º":r.prepay==="special"?"Regime especial":r.difference>0?money(r.difference)+" a conferir":r.difference<0?money(Math.abs(r.difference))+" excesso":"0,00 €"]);
+   addRow(tbody,[r.name+" · "+r.act,money(r.total),money(r.first),r.paidFirst===null?"Por discriminar":money(r.paidFirst),r.second===null?"Por conferir":r.second===0?"Dispensada":money(r.second),r.paidSecond===null?"Por discriminar":money(r.paidSecond),result.secondMode==="unknown"?"Por conferir":r.prepay==="deferred"?"Dispensa prévia · art. 15.º":r.prepay==="special"?"Regime especial":r.difference>0?money(r.difference)+" a conferir":r.difference<0?money(Math.abs(r.difference))+" excesso":"0,00 €"]);
   }
+  for(const x of result.extraRows)addRow(tbody,[(x.kind==="fine"?"Multa":"Incidente")+" · "+x.description+" ("+x.party+")",money(x.due),"—","—","—",money(x.paid),money(x.due-x.paid)+" a conferir"]);
   el("ccObservations").replaceChildren();
   for(const line of result.explanations)el("ccObservations").appendChild(text("p",line));
+  for(const x of result.extraRows)el("ccObservations").appendChild(text("p",(x.kind==="fine"?"Multa":"Incidente")+" «"+x.description+"»: devido "+money(x.due)+", pago "+money(x.paid)+". Responsável: "+x.party+". Fundamento indicado: "+x.basis+"."));
   const w=el("ccWarnings");
   w.replaceChildren();
   if(result.warnings.length){
@@ -262,14 +343,19 @@ tr:last-child td{border-bottom:0}
  }
  function reportText(r){
   const lines=["LEGALTECH SUITE | QUADRO SIMPLES DE CONFERÊNCIA","PROPOSTA NÃO OFICIAL",r.process||"Processo sem referência","Valor fixado: "+money(r.value),"Taxa I-A por impulso: "+r.units+" UC = "+money(r.base),"", "Parte | Impulso | 1.ª devida | 1.ª paga | 2.ª devida | 2.ª paga | Diferença"];
-  for(const p of r.rowsData)lines.push([p.name,p.act,p.act==="Não apresentada"?"—":money(p.first),p.act==="Não apresentada"?"—":money(p.paidFirst),p.second===null?"Por conferir":p.second===0?"Dispensada":money(p.second),p.act==="Não apresentada"?"—":money(p.paidSecond),p.act==="Não apresentada"?"Não aplicável":r.secondMode==="unknown"?"Por conferir":p.prepay==="deferred"?"Dispensa prévia":p.prepay==="special"?"Regime especial":money(p.difference)].join(" | "));
+  for(const p of r.rowsData)lines.push([p.name,p.act,p.act==="Não apresentada"?"—":money(p.first),p.act==="Não apresentada"?"—":p.paidFirst===null?"Por discriminar":money(p.paidFirst),p.second===null?"Por conferir":p.second===0?"Dispensada":money(p.second),p.act==="Não apresentada"?"—":p.paidSecond===null?"Por discriminar":money(p.paidSecond),p.act==="Não apresentada"?"Não aplicável":r.secondMode==="unknown"?"Por conferir":p.prepay==="deferred"?"Dispensa prévia":p.prepay==="special"?"Regime especial":money(p.difference)].join(" | "));
+  for(const x of r.extraRows)lines.push((x.kind==="fine"?"Multa":"Incidente")+" | "+x.description+" | devido "+money(x.due)+" | pago "+money(x.paid)+" | "+x.basis);
   lines.push("",...r.explanations);
   if(r.warnings.length)lines.push("PONTOS A CONFERIR:",...r.warnings.map(x=>"• "+x));
   lines.push("Fundamento: RCP, artigos 6.º/1, 11.º, 13.º/2, 14.º, 14.º-A e 15.º quando aplicável, Tabela I-A; CPC, artigos 527.º e 530.º/1; RCP, artigos 29.º e 30.º.","A diferença aritmética não equivale necessariamente a dívida ou restituição. Não é uma conta judicial oficial.");
   return lines.join("\n");
  }
  el("ccContested").addEventListener("change",updateResponded);
- const tracked=["ccProcess","ccValue","ccUC","ccDate","ccAuthorFirst","ccAuthorSecond","ccDefFirst","ccDefSecond","ccDefPrepay","ccSecond","ccDecision","ccVerified"];
+ el("ccAuthorDetail").addEventListener("change",()=>{setVisible("ccAuthorDetailFields",el("ccAuthorDetail").checked);invalidate()});
+ el("ccDefDetail").addEventListener("change",()=>{setVisible("ccDefDetailFields",el("ccDefDetail").checked);invalidate()});
+ el("ccHasExtras").addEventListener("change",()=>{setVisible("ccExtrasFields",el("ccHasExtras").checked);invalidate()});
+ el("ccExtraAdd").addEventListener("click",addExtra);
+ const tracked=["ccAuthorTotal","ccDefTotal","ccProcess","ccValue","ccUC","ccDate","ccAuthorFirst","ccAuthorSecond","ccDefFirst","ccDefSecond","ccDefPrepay","ccSecond","ccDecision","ccVerified"];
  for(const id of tracked){el(id).addEventListener("input",invalidate);el(id).addEventListener("change",invalidate)}
  el("ccCalculate").addEventListener("click",()=>{
   const result=build();
@@ -281,6 +367,9 @@ tr:last-child td{border-bottom:0}
   for(const id of ["ccProcess","ccValue","ccDate"])el(id).value="";
   el("ccUC").value="102";
   for(const id of ["ccAuthorFirst","ccAuthorSecond","ccDefFirst","ccDefSecond"])el(id).value="0";
+  el("ccAuthorTotal").value="0";el("ccDefTotal").value="0";
+  el("ccAuthorDetail").checked=false;el("ccDefDetail").checked=false;setVisible("ccAuthorDetailFields",false);setVisible("ccDefDetailFields",false);
+  el("ccHasExtras").checked=false;setVisible("ccExtrasFields",false);extras.splice(0);el("ccExtrasList").replaceChildren();
   el("ccContested").checked=false;el("ccDefPrepay").value="unknown";el("ccSecond").value="unknown";el("ccDecision").value="unknown";el("ccVerified").checked=false;
   updateResponded();el("ccStatus").textContent="Dados limpos. Preenche os valores e prepara o quadro.";
  });
