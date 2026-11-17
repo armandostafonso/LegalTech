@@ -150,3 +150,12 @@ input,select,textarea{max-width:100%}
  .lt-theme-control .lt-theme-label{font-size:12px}
 }
 @media print{.lt-nav,.lt-theme-control{display:none!important}}
+
+/* LegalTech Suite | Entrada de fluxo no painel inicial */
+.suite-start{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:20px;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:23px 26px;margin:4px 0 25px;box-shadow:var(--shadow)}
+.suite-start-tag{font-size:11px;letter-spacing:.12em;color:var(--accent);font-weight:750}
+.suite-start h2{margin:6px 0;font-size:21px;letter-spacing:-.04em}
+.suite-start p{margin:0;color:var(--muted);font-size:13px;line-height:1.55;max-width:62ch}
+.suite-start-action{display:inline-flex;align-items:center;gap:10px;justify-content:center;background:var(--stamp);color:var(--stamp-ink)!important;border-radius:11px;padding:13px 17px;font-size:13px;font-weight:700;min-height:46px;white-space:nowrap}
+.suite-start-action:hover{filter:brightness(1.08)}
+@media(max-width:790px){.suite-start{grid-template-columns:1fr;padding:20px}.suite-start-action{white-space:normal}}
