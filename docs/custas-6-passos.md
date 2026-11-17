@@ -26,7 +26,7 @@ A estrutura e os termos acompanham o guia; as opções e validações informáti
 5. No passo 5, acrescenta as sanções que efectivamente devam ser objecto da conta, após conferir o despacho. Coimas e multas penais podem requerer liquidação em formulários específicos.
 6. No passo 6, confirma os autos, gera a síntese por responsável, revê os avisos, e copia ou imprime o relatório. **O registo oficial continua a efectuar-se no sistema competente.**
 
-Cada etapa dispõe de uma **checklist recolhível** com os pontos a verificar.
+Cada etapa dispõe de uma **checklist recolhível** com os pontos a verificar. Na primeira etapa, quando a dispensa de conta e o respectivo pressuposto estejam assinalados, existe ainda uma **minuta auxiliar de termo de dispensa**, baseada no artigo 7.º-A da Portaria n.º 419-A/2009; o utilizador deve completar a identificação dos autos e rever a fundamentação antes de a utilizar.
 
 ## Guardar e retomar sem transmissão
 
@@ -49,7 +49,7 @@ A remoção de um interveniente com movimentos, taxas ou encargos associados é 
 
 ## Testes
 
-- `node scripts/test-custas-6-passos.mjs`: **30 testes** do núcleo, cálculos, validação de projectos JSON e integridade de referências.
+- `node scripts/test-custas-6-passos.mjs`: **31 testes** do núcleo, cálculos, validação de projectos JSON e integridade de referências.
 - `node scripts/test-custas-browser.mjs`: percurso no Chromium, incluindo registo de taxa, pagamento, finalização, bloqueio de remoção de interveniente, guarda/retoma e rejeição de ficheiro inválido.
 - `node scripts/validate-site.mjs`: sintaxe e integridade estrutural do HTML, scripts e ligações do site.
 
