@@ -96,7 +96,7 @@ A workflow `Verificar LegalTech` executa `node scripts/validate-site.mjs` para v
 
 O percurso `custas-6-passos.html` é uma **ferramenta experimental e não oficial**, criada a partir da metodologia do guião «Como fazer a conta em seis passos» do Centro de Formação da DGAJ, fornecido pelo utilizador. Não representa nem replica o SCJ e não incorpora o documento original.
 
-O assistente inclui **checklists jurídicas recolhíveis em cada etapa**, fichas de intervenientes editáveis e alertas quando se tenta eliminar uma pessoa com taxas ou pagamentos associados. A anulação de guias exige a guia correspondente e a remoção de pagamentos é bloqueada quando deixaria restituições confirmadas sem cobertura.
+[Manual completo do assistente de seis passos](docs/custas-6-passos.md). O assistente inclui **checklists jurídicas recolhíveis em cada etapa**, fichas de intervenientes editáveis e alertas quando se tenta eliminar uma pessoa com taxas ou pagamentos associados. A anulação de guias exige a guia correspondente e a remoção de pagamentos é bloqueada quando deixaria restituições confirmadas sem cobertura.
 
 As seis etapas são: (1) seleção da informação relevante e verificação prévia dos pressupostos de dispensa da conta; (2) responsabilidade por custas, com fichas de intervenientes e referência à decisão; (3) processos autónomos e taxas de justiça; (4) encargos e outros pagamentos, com distinção entre guias emitidas e valores pagos; (5) multas, penalidades e coimas; (6) finalização com saldos individuais, avisos, relatório copiável e impressão.
 
