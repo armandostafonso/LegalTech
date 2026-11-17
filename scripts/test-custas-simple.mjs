@@ -125,7 +125,7 @@ check("AT sem contestação: pagamento declarado é sinalizado sem criar taxa",(
 });
 check("Escalão máximo 275 mil: 16 UC por impulso",()=>{
  const h=harness();h.ready("275000");h.click("ccCalculate");
- assert.match(h.text("ccBaseTotal"),/1 632,00/);
+ assert.match(h.text("ccBaseTotal").replace(/\s/g,""),/1632,00/);
 });
 check("Acima de 275 mil: remanescente deve ser conferido",()=>{
  const h=harness();h.ready("400000");h.click("ccCalculate");
