@@ -49,7 +49,7 @@ input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{ou
 .cc-summary > div{background:var(--cc-soft);border-radius:12px;padding:15px}
 .cc-summary small{display:block;color:var(--cc-mute);font-size:12px}
 .cc-summary strong{display:block;font-size:21px;letter-spacing:-.5px;margin-top:4px;font-variant-numeric:tabular-nums}
-.cc-overflow{overflow-x:auto;border:1px solid var(--cc-line);border-radius:13px}
+.cc-party-heading{font-size:15px;font-weight:720;margin:20px 0 10px}.cc-overflow{overflow-x:auto;border:1px solid var(--cc-line);border-radius:13px}
 table{width:100%;border-collapse:collapse;min-width:630px}
 th,td{text-align:left;padding:12px;border-bottom:1px solid var(--cc-line);vertical-align:top;font-size:13px}
 th{background:var(--cc-soft);color:var(--cc-mute);font-weight:750}
@@ -117,13 +117,13 @@ tr:last-child td{border-bottom:0}
  </div>
 </section>
 <section class="cc-panel" aria-labelledby="cc-extras-title">
- <div class="cc-rowtitle"><span class="cc-num">4</span><h2 id="cc-extras-title">Multas e incidentes</h2></div>
- <p class="cc-sub">Se não existem, não precisas de preencher mais nada. Se existem, identifica cada rubrica e o valor fixado ou legalmente apurado.</p>
- <label class="cc-toggle" for="ccHasExtras"><input id="ccHasExtras" type="checkbox"><span>Existem multas ou incidentes a conferir?</span></label>
+ <div class="cc-rowtitle"><span class="cc-num">4</span><h2 id="cc-extras-title">Recursos, multas e outros impulsos</h2></div>
+ <p class="cc-sub">Se não há mais impulsos ou quantias a conferir, deixa esta secção fechada. Se existem, identifica cada rubrica e o valor fixado ou legalmente apurado.</p>
+ <label class="cc-toggle" for="ccHasExtras"><input id="ccHasExtras" type="checkbox"><span>Existem recursos, multas, incidentes ou outros impulsos a conferir?</span></label>
  <div id="ccExtrasFields" class="cc-hidden">
   <div id="ccExtrasList"></div>
-  <button type="button" class="cc-plainbutton" id="ccExtraAdd">+ Acrescentar multa ou incidente</button>
-  <p class="cc-quiet">Não se presume a taxa de um incidente nem o valor de uma multa. Confirma a decisão, a Tabela II e o fundamento legal antes de registar o montante. A responsabilidade e a exigibilidade final são apreciadas separadamente.</p>
+  <button type="button" class="cc-plainbutton" id="ccExtraAdd">+ Acrescentar rubrica</button>
+  <p class="cc-quiet">O valor deve estar previamente apurado e comprovado. Nos recursos, confirma a Tabela I-B; nos incidentes, a Tabela II quando aplicável; nas multas e encargos, a decisão e a norma concreta. A exigibilidade final é apreciada separadamente.</p>
  </div>
 </section>
 <section class="cc-panel" aria-labelledby="cc-final-title">
@@ -159,7 +159,7 @@ tr:last-child td{border-bottom:0}
   <p class="cc-quiet">A repartição indicada na decisão é registada apenas para conferência. Não se distribuem automaticamente taxas de impulso, multas ou incidentes pelas percentagens.</p>
  </div>
  <label class="cc-check" for="ccVerified"><input id="ccVerified" type="checkbox">Conferi o valor da causa, os comprovativos dos pagamentos, a tabela aplicável e as eventuais dispensas legais.</label>
- <div class="cc-quiet">Se existirem recursos, incidentes, encargos, remanescente acima de 275 000 €, benefícios especiais ou outras partes, o quadro será assinalado como parcial. Esta versão não está validada para impugnações judiciais tributárias ou outras espécies processuais. <a href="custas-tecnico.html">Abrir análise técnica</a>.</div>
+ <div class="cc-quiet">Se existirem recursos, incidentes ou encargos não registados, remanescente acima de 275 000 €, benefícios especiais ou outras partes, o quadro será assinalado como parcial. Esta versão não está validada para impugnações judiciais tributárias ou outras espécies processuais. <a href="custas-tecnico.html">Abrir análise técnica</a>.</div>
  <div class="cc-toolbar"><button id="ccCalculate" type="button" class="cc-mainbutton">Preparar quadro de conta</button><button type="button" id="ccReset" class="cc-plainbutton">Limpar</button></div>
  <p id="ccStatus" class="cc-status" role="status" aria-live="polite">Preenche os valores e prepara o quadro.</p>
 </section>
@@ -169,8 +169,12 @@ tr:last-child td{border-bottom:0}
  <div class="cc-summary">
   <div><small>Taxa-base do impulso (I-A)</small><strong id="ccBaseTotal">—</strong></div>
   <div><small>Total registado como pago</small><strong id="ccPaidTotal">—</strong></div>
-  <div><small>Diferença aritmética conhecida</small><strong id="ccDifference">—</strong></div>
+  <div><small>Diferenças positivas por parte</small><strong id="ccDifference">—</strong></div>
  </div>
+ <h3 class="cc-party-heading">Síntese por interveniente, sem compensação entre partes</h3>
+ <div class="cc-overflow"><table aria-label="Conferência de montantes por interveniente"><thead><tr><th>Interveniente</th><th>Montante considerado</th><th>Pagamentos declarados</th><th>Diferença positiva</th><th>Excesso potencial</th></tr></thead><tbody id="ccPartyRows"></tbody></table></div>
+ <p class="cc-quiet">São diferenças aritméticas, não dívidas ou créditos confirmados. A responsabilidade final, as dispensas e a imputação de cada pagamento devem ser verificadas.</p>
+ <h3 class="cc-party-heading">Detalhe por impulso</h3>
  <div class="cc-overflow"><table aria-label="Conferência dos impulsos e pagamentos"><thead><tr><th>Parte / impulso</th><th>Taxa I-A / montante fixado</th><th>1.ª devida</th><th>1.ª paga</th><th>2.ª devida</th><th>2.ª paga</th><th>Diferença</th></tr></thead><tbody id="ccRows"></tbody></table></div>
  <div id="ccAccountConclusion" class="cc-quiet" style="margin-top:15px"></div>
  <div class="cc-obs" id="ccObservations"></div>
@@ -208,6 +212,8 @@ tr:last-child td{border-bottom:0}
  }
 
  const extras=[];
+ const extraNames={incident:"Incidente",fine:"Multa",appeal:"Recurso",charge:"Encargo",other:"Outro impulso"};
+ const extraName=kind=>extraNames[kind]||"Outra rubrica";
  function payment(side){
   const detailed=el(side==="author"?"ccAuthorDetail":"ccDefDetail").checked;
   const total=euro(side==="author"?"ccAuthorTotal":"ccDefTotal");
@@ -225,7 +231,7 @@ tr:last-child td{border-bottom:0}
   const title=document.createElement("strong");title.textContent="Rubrica "+id;wrapper.appendChild(title);
   const grid=document.createElement("div");grid.className="cc-three";
   const fields=[
-   ["kind","Tipo","select",[["incident","Incidente"],["fine","Multa"]]],
+   ["kind","Tipo","select",[["incident","Incidente"],["fine","Multa"],["appeal","Recurso"],["charge","Encargo"],["other","Outro impulso"]]],
    ["description","Qual incidente / multa?","text"],
    ["party","Responsável","select",[["autor","Autor"],["demandada","Entidade demandada"],["outro","Outro / por conferir"]]],
    ["basis","Fundamento legal / decisão","text"],
@@ -250,7 +256,7 @@ tr:last-child td{border-bottom:0}
  }
  function collectExtras(warnings){
   if(!el("ccHasExtras").checked)return [];
-  if(extras.length===0)warnings.push("Foram assinalados incidentes ou multas, mas ainda não foi identificada qualquer rubrica.");
+  if(extras.length===0)warnings.push("Foram assinaladas rubricas adicionais, mas ainda não foi identificada qualquer uma.");
   const result=[];
   for(const x of extras){
    const f=x.inputs;
@@ -259,6 +265,8 @@ tr:last-child td{border-bottom:0}
    const dueCents=Math.round(due*100),paidCents=Math.round(paid*100);
    if(!Number.isSafeInteger(dueCents)||!Number.isSafeInteger(paidCents))return {error:"Montante de multa ou incidente demasiado elevado."};
    if(f.party.value==="outro")warnings.push("Responsável da rubrica «"+f.description.value.trim()+"» ainda por confirmar.");
+   if(f.kind.value==="appeal")warnings.push("Recurso «"+f.description.value.trim()+"»: conferir autonomamente a taxa da Tabela I-B, o momento do impulso e o regime temporal.");
+   if(f.kind.value==="other")warnings.push("Impulso «"+f.description.value.trim()+"»: confirmar a espécie do acto e o fundamento da tributação.");
    result.push({kind:f.kind.value,description:f.description.value.trim().slice(0,180),party:f.party.value,basis:f.basis.value.trim().slice(0,180),due:dueCents,paid:paidCents});
   }
   return result;
@@ -356,10 +364,10 @@ tr:last-child td{border-bottom:0}
    if(r.act==="Não apresentada"){addRow(tbody,[r.name+" · sem contestação","—","—","—","—","—","Não aplicável"]);continue}
    addRow(tbody,[r.name+" · "+r.act,money(r.total),money(r.first),r.paidFirst===null?"Por discriminar":money(r.paidFirst),r.second===null?"Por conferir":r.second===0?"Dispensada":money(r.second),r.paidSecond===null?"Por discriminar":money(r.paidSecond),result.secondMode==="unknown"?"Por conferir":r.prepay==="deferred"?"Dispensa prévia · art. 15.º":r.prepay==="special"?"Regime especial":r.difference>0?money(r.difference)+" a conferir":r.difference<0?money(Math.abs(r.difference))+" excesso":"0,00 €"]);
   }
-  for(const x of result.extraRows)addRow(tbody,[(x.kind==="fine"?"Multa":"Incidente")+" · "+x.description+" ("+x.party+")",money(x.due),"—","—","—",money(x.paid),money(x.due-x.paid)+" a conferir"]);
+  for(const x of result.extraRows)addRow(tbody,[extraName(x.kind)+" · "+x.description+" ("+x.party+")",money(x.due),"—","—","—",money(x.paid),money(x.due-x.paid)+" a conferir"]);
   el("ccObservations").replaceChildren();
   for(const line of result.explanations)el("ccObservations").appendChild(text("p",line));
-  for(const x of result.extraRows)el("ccObservations").appendChild(text("p",(x.kind==="fine"?"Multa":"Incidente")+" «"+x.description+"»: devido "+money(x.due)+", pago "+money(x.paid)+". Responsável: "+x.party+". Fundamento indicado: "+x.basis+"."));
+  for(const x of result.extraRows)el("ccObservations").appendChild(text("p",extraName(x.kind)+" «"+x.description+"»: devido "+money(x.due)+", pago "+money(x.paid)+". Responsável: "+x.party+". Fundamento indicado: "+x.basis+"."));
   const w=el("ccWarnings");
   w.replaceChildren();
   if(result.warnings.length){
@@ -376,7 +384,7 @@ tr:last-child td{border-bottom:0}
  function reportText(r){
   const lines=["LEGALTECH SUITE | QUADRO SIMPLES DE CONFERÊNCIA","PROPOSTA NÃO OFICIAL",r.process||"Processo sem referência","Valor fixado: "+money(r.value),"Taxa I-A por impulso: "+r.units+" UC = "+money(r.base),"", "Parte | Impulso | 1.ª devida | 1.ª paga | 2.ª devida | 2.ª paga | Diferença"];
   for(const p of r.rowsData)lines.push([p.name,p.act,p.act==="Não apresentada"?"—":money(p.first),p.act==="Não apresentada"?"—":p.paidFirst===null?"Por discriminar":money(p.paidFirst),p.second===null?"Por conferir":p.second===0?"Dispensada":money(p.second),p.act==="Não apresentada"?"—":p.paidSecond===null?"Por discriminar":money(p.paidSecond),p.act==="Não apresentada"?"Não aplicável":r.secondMode==="unknown"?"Por conferir":p.prepay==="deferred"?"Dispensa prévia":p.prepay==="special"?"Regime especial":money(p.difference)].join(" | "));
-  for(const x of r.extraRows)lines.push((x.kind==="fine"?"Multa":"Incidente")+" | "+x.description+" | devido "+money(x.due)+" | pago "+money(x.paid)+" | "+x.basis);
+  for(const x of r.extraRows)lines.push(extraName(x.kind)+" | "+x.description+" | devido "+money(x.due)+" | pago "+money(x.paid)+" | "+x.basis);
   lines.push("",r.accountConclusion,...r.explanations);
   if(r.warnings.length)lines.push("PONTOS A CONFERIR:",...r.warnings.map(x=>"• "+x));
   lines.push("Fundamento: RCP, artigos 6.º/1, 11.º, 13.º/2, 14.º, 14.º-A e 15.º quando aplicável, Tabela I-A; CPC, artigos 527.º e 530.º/1; RCP, artigos 29.º e 30.º.","A diferença aritmética não equivale necessariamente a dívida ou restituição. Não é uma conta judicial oficial.");
