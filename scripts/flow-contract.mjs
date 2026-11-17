@@ -25,6 +25,10 @@ const p = core.buildPlan({
 assert.ok(p.checks.some(x => x.id === "registos"));
 assert.ok(p.checks.some(x => x.id === "mandato"));
 assert.ok(p.checks.some(x => x.id === "urgencia"));
+const neg = core.buildPlan({type: "notificacao", instruction: "Não notifique, salvo se houver despacho."});
+assert.ok(neg.checks.some(x => x.id === "negacao"));
+assert.ok(neg.checks.some(x => x.id === "condicao"));
+
 const flagged = core.report(p, [p.checks[0].id]);
 assert.ok(flagged.includes("[x] "));
 assert.ok(flagged.includes("[ ] "));
