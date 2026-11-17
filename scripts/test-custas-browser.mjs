@@ -87,7 +87,7 @@ try{
  await run([
   'const set=(id,value)=>document.getElementById(id).value=value;',
   'set("ccProcess","BROWSER-TESTE");set("ccValue","30000");set("ccUC","102");',
-  'set("ccDate","2026-11-16");set("ccAuthorFirst","255");',
+  'set("ccYear","2025");document.getElementById("ccYear").dispatchEvent(new Event("input",{bubbles:true}));set("ccAuthorFirst","255");',
   'set("ccSecond","waived");set("ccDecision","autor");',
   'document.getElementById("ccVerified").checked=true;',
   'document.getElementById("ccCalculate").click();'
