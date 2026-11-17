@@ -100,5 +100,97 @@
   if(data.agreement!==true)warnings.push("Falta confirmar a conferência integral dos autos e dos comprovativos.");
   return {accounts,sums,warnings,accountRequired:data.dispensa!=="yes"};
  }
- return Object.freeze({ucForYear,parseCents,suggestIA,summary,iaBrackets,yearMin,yearMax});
+
+ // Importação de projectos: contrato de dados estrito, sem executar conteúdo externo.
+ function validateProject(file){
+  const fail=message=>{throw new Error("Ficheiro de projecto inválido: "+message)};
+  if(!file||typeof file!=="object"||file.format!=="legaltech-custas-seis-passos"||file.version!==1)
+   fail("versão ou formato não reconhecido.");
+  if(!file.data||typeof file.data!=="object"||!file.fields||typeof file.fields!=="object")
+   fail("dados incompletos.");
+  const cleanString=(v,max=160,required=false)=>{
+   if(typeof v!=="string"||v.length>max||(required&&!v.trim()))fail("campo de texto inválido.");
+   return v;
+  };
+  const integer=(v,positive=false)=>{
+   if(!Number.isSafeInteger(v)||v< (positive?1:0)||v>1e12)fail("montante ou identificador inválido.");
+   return v;
+  };
+  const inSet=(v,allowed)=>{if(!allowed.includes(v))fail("opção desconhecida.");return v};
+  const lists=["parties","charges","expenses","movements","sanctions"];
+  for(const key of lists)if(!Array.isArray(file.data[key])||file.data[key].length>200)fail("lista "+key+" inválida ou demasiado extensa.");
+  const ids=new Set();
+  const entryId=v=>{const id=integer(v,true);if(ids.has(id))fail("identificador repetido.");ids.add(id);return id};
+  const people=file.data.parties.map(p=>{
+   if(!p||typeof p!=="object")fail("interveniente inválido.");
+   const share=p.share===null?null:Number(p.share);
+   if(share!==null&&(!Number.isFinite(share)||share<0||share>100||Math.round(share*100)!==share*100))fail("percentagem de responsabilidade inválida.");
+   return {id:entryId(p.id),label:cleanString(p.label,70,true),
+    role:inSet(p.role,["Autor","Demandado","Contrainteressado","Outro"]),
+    aid:inSet(p.aid,["unknown","none","full","instalments","other"]),
+    exemption:inSet(p.exemption,["unknown","no","yes"]),share};
+  });
+  const personIds=new Set(people.map(p=>p.id));
+  const personId=v=>{if(!personIds.has(v))fail("referência a interveniente inexistente.");return v};
+  const charges=file.data.charges.map(x=>({
+    id:entryId(x.id),personId:personId(x.personId),
+    origin:inSet(x.origin,["Acção principal","Recurso","Incidente","Procedimento cautelar","Outro processo autónomo"]),
+    impulse:inSet(x.impulse,["Petição inicial","Contestação","Recurso","Incidente","Outro"]),
+    table:inSet(x.table,["IA","IB","IC","IIA","IIB","other"]),
+    year:(()=>{if(!Number.isInteger(x.year)||x.year<2009||x.year>2099)fail("ano do impulso inválido.");return x.year})(),
+    baseCents:integer(x.baseCents,true),cents:integer(x.cents),
+    basis:cleanString(x.basis,180,true),ref:cleanString(x.ref,75),
+    verified:x.verified===true
+  }));
+  const expenses=file.data.expenses.map(x=>({
+   id:entryId(x.id),personId:personId(x.personId),cents:integer(x.cents,true),
+   label:cleanString(x.label,110,true),basis:cleanString(x.basis,160,true),
+   kind:inSet(x.kind,["igfej","honorarios","entidade","outro"]),verified:x.verified===true
+  }));
+  const sanctions=file.data.sanctions.map(x=>({
+   id:entryId(x.id),personId:personId(x.personId),cents:integer(x.cents,true),
+   label:cleanString(x.label,120,true),basis:cleanString(x.basis,160,true),
+   kind:inSet(x.kind,["processual","penalidade","coima","penal"]),verified:x.verified===true
+  }));
+  const movements=file.data.movements.map(x=>({
+   id:entryId(x.id),personId:personId(x.personId),cents:integer(x.cents,true),
+   kind:inSet(x.kind,["guide","cancel","payment","refund"]),
+   status:inSet(x.status,["pending","confirmed"]),
+   ref:cleanString(x.ref,80,true),
+   date:cleanString(x.date,10)
+  }));
+  for(const m of movements){
+   if(m.date&&!/^\d{4}-\d{2}-\d{2}$/.test(m.date))fail("data de movimento inválida.");
+   const sameRef=movements.filter(x=>x.personId===m.personId&&x.ref===m.ref);
+   if(sameRef.filter(x=>x.kind===m.kind&&x.cents===m.cents&&x.date===m.date).length>1)
+    fail("movimento duplicado.");
+   if(m.kind==="cancel"&&(!sameRef.some(x=>x.kind==="guide"&&x.cents===m.cents)||
+       sameRef.filter(x=>x.kind==="cancel").length>1))fail("anulação sem guia correspondente.");
+  }
+  const groups=new Set(movements.map(m=>m.personId+"|"+m.ref));
+  for(const group of groups){
+   const groupMoves=movements.filter(m=>m.personId+"|"+m.ref===group&&m.status==="confirmed");
+   const paid=groupMoves.filter(m=>m.kind==="payment").reduce((a,m)=>a+m.cents,0);
+   const refunded=groupMoves.filter(m=>m.kind==="refund").reduce((a,m)=>a+m.cents,0);
+   if(refunded>paid)fail("restituição confirmada superior aos pagamentos.");
+  }
+  const names=["processRef","jurisdiction","filingYear","ucValue","caseValue","caseDecision",
+    "dispensa","dispensaReason","ruling","probableCosts","advanceCharges","reviewed"];
+  const fields={};
+  for(const key of names){
+   const val=file.fields[key];
+   if(key==="reviewed"){fields[key]=val===true;continue}
+   fields[key]=cleanString(val,key==="ruling"?600:key==="caseDecision"?180:key==="processRef"?80:40);
+  }
+  inSet(fields.jurisdiction,["administrativo","tributario","civil","outro"]);
+  inSet(fields.dispensa,["unknown","yes","no"]);
+  inSet(fields.dispensaReason,["none","noDebt","aid","insolvency","execution"]);
+  if(fields.filingYear&&(!/^\d{4}$/.test(fields.filingYear)||+fields.filingYear<2009||+fields.filingYear>2099))fail("ano da acção inválido.");
+  for(const key of ["ucValue","caseValue","probableCosts","advanceCharges"])
+   if(fields[key]!==""&&parseCents(fields[key])===null)fail("campo monetário inválido.");
+  return {format:"legaltech-custas-seis-passos",version:1,
+   data:{parties:people,charges,expenses,movements,sanctions},fields};
+ }
+
+ return Object.freeze({ucForYear,parseCents,suggestIA,summary,validateProject,iaBrackets,yearMin,yearMax});
 });
