@@ -103,8 +103,64 @@ try{
  ].join(""));
  assert.match(await evaluate("document.getElementById('ccRows').textContent"),/Contestação/);
  assert.match(await evaluate("document.getElementById('ccRows').textContent"),/255,00/);
+
+ // Testar o novo assistente de seis passos em navegador real com o núcleo carregado localmente.
+ const wizardSource=fs.readFileSync("custas-6-passos.html","utf8");
+ const wizardCore=fs.readFileSync("assets/custas-6-core.js","utf8");
+ const wizardHTML=wizardSource
+  .replace('<script src="assets/custas-6-core.js"></script>','<script>'+wizardCore+'</script>')
+  .replaceAll('<script src="assets/theme.js"></script>',"")
+  .replaceAll('<script src="assets/suite-nav.js"></script>',"");
+ await evaluate("document.open();document.write("+JSON.stringify(wizardHTML)+");document.close();");
+ assert.equal(await evaluate("document.querySelectorAll('[data-step-panel]').length"),6);
+ assert.equal(await evaluate("document.getElementById('progress').getAttribute('aria-valuenow')"),"1");
+ await run([
+  'const year=document.getElementById("filingYear");year.value="2025";year.dispatchEvent(new Event("input",{bubbles:true}));',
+  'document.getElementById("caseValue").value="30000";',
+  'document.getElementById("next").click();'
+ ].join(""));
+ assert.match(await evaluate("document.getElementById('stepLabel').textContent"),/Passo 2/);
+ assert.equal(await evaluate("document.getElementById('ucValue').value"),"102");
+ await evaluate("document.getElementById('next').click()");
+ assert.match(await evaluate("document.getElementById('stepLabel').textContent"),/Passo 3/);
+ await run([
+  'const set=(id,v)=>document.getElementById(id).value=v;',
+  'set("chargePerson","1");set("chargeYear","2025");set("chargeValue","30000");',
+  'set("chargeTable","IA");document.getElementById("suggestIA").click();',
+  'set("chargeRef","PI-TESTE");set("chargeBasis","Tabela I-A");',
+  'document.getElementById("chargeVerified").checked=true;',
+  'document.getElementById("chargeAdd").click();'
+ ].join(""));
+ assert.match(await evaluate("document.getElementById('chargeList').textContent"),/510,00/);
+ await evaluate("document.getElementById('next').click()");
+ assert.match(await evaluate("document.getElementById('stepLabel').textContent"),/Passo 4/);
+ await run([
+  'const set=(id,v)=>document.getElementById(id).value=v;',
+  'set("movePerson","1");set("moveKind","payment");set("moveStatus","confirmed");',
+  'set("moveRef","DUC-WIZARD-TESTE");set("moveDate","2025-04-03");set("moveAmount","255");',
+  'document.getElementById("moveAdd").click();'
+ ].join(""));
+ assert.match(await evaluate("document.getElementById('moveList').textContent"),/255,00/);
+ await evaluate("document.getElementById('next').click()");
+ await evaluate("document.getElementById('next').click()");
+ assert.match(await evaluate("document.getElementById('stepLabel').textContent"),/Passo 6/);
+ await run('document.getElementById("ruling").value="Decisão de teste";document.getElementById("reviewed").checked=true;document.getElementById("finish").click()');
+ assert.equal(await evaluate("document.getElementById('finalResult').hidden"),false);
+ assert.match(await evaluate("document.getElementById('sumDiff').textContent"),/255,00/);
+ assert.equal(await evaluate("document.getElementById('printReport').disabled"),false);
+ await evaluate("document.querySelector('[data-step-tab=\"1\"]').click()");
+ await run('document.querySelector("#partyList .record .danger").click()');
+ assert.match(await evaluate("document.getElementById('message').textContent"),/tem taxas, encargos, movimentos/);
+ assert.match(await evaluate("document.getElementById('partyList').textContent"),/Autor/);
+ await run([
+  'document.querySelector("#partyList .record .secondary").click();',
+  'document.getElementById("partyExemption").value="yes";',
+  'document.getElementById("partyAdd").click();'
+ ].join(""));
+ assert.match(await evaluate("document.getElementById('partyList').textContent"),/Isenção: assinalada/);
  assert.equal(exceptions.length,0,exceptions.join("; "));
- console.log("Browser A01 OK: motor técnico e conta simples com/sem contestação.");
+ console.log("Browser A01 OK: motor técnico, conta simples e assistente de seis passos.");
+
 }finally{
  if(ws?.readyState===WebSocket.OPEN)ws.close();
  chrome.kill("SIGKILL");
