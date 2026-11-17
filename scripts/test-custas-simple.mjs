@@ -28,12 +28,13 @@ function harness(){
   scrollIntoView(){}
  }
  const elements=new Map(tags.map(m=>[m[2],new Element(m[1],m[0])]));
+ const createElement=tag=>{const e=new Element(tag);Object.defineProperty(e,"id",{get(){return this._id},set(v){this._id=v;elements.set(v,this)}});return e};
  for(const m of markup.matchAll(/<select\b[^>]*id="([^"]+)"[^>]*>([\s\S]*?)<\/select>/gi)){
   const first=m[2].match(/<option value="([^"]*)"/);if(first)elements.get(m[1]).value=first[1];
  }
  const document={
   getElementById:id=>{assert.ok(elements.has(id),"ID em falta: "+id);return elements.get(id)},
-  createElement:tag=>new Element(tag)
+  createElement
  };
  const copies=[],prints=[];
  const context=vm.createContext({document,Intl,Number,Math,console,
