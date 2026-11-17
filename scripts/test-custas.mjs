@@ -746,6 +746,7 @@ check("Vista simples: percurso em três etapas inicia no processo",()=>{
  assert.match(read("custasStepHint"),/Identifica o processo/);
 });
 check("Vista simples: etapa 2 orienta taxas e preenche valor da causa para confirmar",()=>{
+ for(const p of ["pa","pb"]){put(p+"_exemption","unknown");put(p+"_aid","unknown")}
  put("value","30000");click("custasNext");
  assert.equal(document.documentElement.dataset.custasStep,"2");
  assert.equal(els.get("autoValue").value,"30000");
