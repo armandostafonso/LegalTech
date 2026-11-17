@@ -26,6 +26,8 @@ for (const [name, engine] of [["Chromium",chromium],["WebKit",webkit]]) {
     assert.ok((await page.locator("#flow-report").inputValue()).includes("[x]"));
     const toolUrls = await page.locator("#flow-tools a").evaluateAll(nodes => nodes.map(n => n.getAttribute("href")));
     assert.ok(toolUrls.includes("notify.html"));
+    assert.equal(await page.locator("#flow-handoff-copy").count(), 1);
+    assert.ok(await page.locator(".flow-handoff").innerText().then(t => t.includes("área de transferência")));
     assert.ok(toolUrls.every(x => !x.includes("registos") && !x.includes("Exemplo")));
     const download = page.waitForEvent("download");
     await page.locator("#flow-txt").click();
