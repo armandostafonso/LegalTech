@@ -92,6 +92,8 @@
     ["conferencia_final", "Efetuar revisão humana do documento e do ato antes de qualquer execução."]
   ]);
   const HINTS = Object.freeze([
+    {id: "negacao", rx: /\b(n[ãa]o|sem|proibido|abstenha)\b/i, text: "A instrução pode conter uma negação ou proibição: confirmar se o ato está efetivamente determinado antes de o preparar."},
+    {id: "condicao", rx: /\b(se|caso|ap[óo]s|desde que|mediante)\b/i, text: "A instrução pode conter condição ou sequência: verificar se os pressupostos se verificaram e qual o momento do ato."},
     {id: "registos", rx: /\bregist[oa]s?\b/i, text: "A instrução menciona registos: confirmar situação e prova documental antes de reportar."},
     {id: "mandato", rx: /\b(ren[úu]ncia|mandat[áa]ri[oa]s?|mandato)\b/i, text: "Há referência a mandato ou renúncia: confirmar representação, efeitos e destinatários."},
     {id: "apensos", rx: /\b(apens[oa]s?|desapens|incorporar)\b/i, text: "Há referência a apensos ou incorporação: conferir peças, ligação e integridade."},
