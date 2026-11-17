@@ -119,6 +119,12 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
    <div class="field"><label for="dispensa">Dispensa de conta</label><select id="dispensa"><option value="unknown">Por verificar</option><option value="no">Não: proceder à conferência</option><option value="yes">Sim: pressupostos confirmados</option></select></div>
    <div class="field"><label for="dispensaReason">Pressuposto a conferir</label><select id="dispensaReason"><option value="none">Seleccionar, se aplicável</option><option value="noDebt">Sem quantias em dívida</option><option value="aid">Apoio judiciário, dispensa de taxa e encargos</option><option value="insolvency">Insolvência: sem verba na massa</option><option value="execution">Execução sem valores a levar à conta</option></select></div>
   </div>
+  <div class="actionrow not-print"><button type="button" id="draftDispensa" class="secondary">Preparar minuta de termo de dispensa</button></div>
+  <div id="draftDispensaBox" hidden>
+   <p class="micro">Minuta auxiliar. Completar a identificação do processo, confirmar os pressupostos e rever antes de juntar aos autos.</p>
+   <textarea id="draftDispensaText" rows="7" readonly aria-label="Minuta de termo de dispensa"></textarea>
+   <div class="actionrow not-print"><button type="button" id="copyDispensa" class="secondary">Copiar minuta</button></div>
+  </div>
  </div>
  <div class="fields">
   <div class="field"><label for="processRef">Referência interna (fictícia)</label><input id="processRef" maxlength="80" autocomplete="off" placeholder="Ex.: PROCESSO-TESTE"></div>
@@ -423,6 +429,31 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   if(!data.parties.some(p=>p.id===x)){note("Selecciona um interveniente registado no passo 2.");return null}
   return x;
  }
+ function generateDispensa(){
+  const selected=byId("dispensa").value,basis=byId("dispensaReason").value;
+  if(selected!=="yes"||basis==="none"){
+   byId("draftDispensaBox").hidden=true;
+   note("Confirma a dispensa e selecciona o respectivo pressuposto no artigo 29.º, n.º 1, do RCP.");return
+  }
+  const reasons={
+   noDebt:["a)","não se verificarem quantias em dívida"],
+   insolvency:["b)","não existirem verbas na massa insolvente para pagamento das custas"],
+   execution:["c)","se tratar de execução sem quantias a levar à conta, nas condições legais"],
+   aid:["d)","o responsável beneficiar da modalidade de apoio judiciário de dispensa de taxa de justiça e demais encargos"]
+  };
+  const [alinea,explanation]=reasons[basis]||["[a confirmar]","pressupostos por apurar"];
+  const noteText="TERMO DE DISPENSA DE ELABORAÇÃO DA CONTA (MINUTA PARA CONFERÊNCIA)\n\n"+
+   "Em [data], consigna-se, para efeitos do artigo 7.º-A da Portaria n.º 419-A/2009, "+
+   "que foi verificada nos autos a ocorrência dos pressupostos previstos na alínea "+alinea+
+   " do n.º 1 do artigo 29.º do Regulamento das Custas Processuais, "+
+   "por "+explanation+".\n\n"+
+   "Processo: [identificação do processo].\n"+
+   "Responsável(is): [identificação e verificação individual].\n"+
+   "Elementos documentais conferidos: [indicar].\n\n"+
+   "Este texto é uma minuta auxiliar e exige revisão e validação pela secretaria.";
+  byId("draftDispensaText").value=noteText;
+  byId("draftDispensaBox").hidden=false;note("Minuta preparada. Revê e completa os dados antes de utilizar.");
+ }
  function addParty(){
   const label=byId("partyLabel").value.trim(),shareRaw=byId("partyShare").value.trim();
   const share=shareRaw===""?null:Number(shareRaw);
@@ -508,6 +539,9 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  function makeReport(result){
   const lines=["LEGALTECH SUITE | CONFERÊNCIA DE CUSTAS EM SEIS PASSOS","PROPOSTA NÃO OFICIAL",
    "Processo: "+(byId("processRef").value.trim()||"Sem identificação"),
+   "Jurisdição / espécie: "+byId("jurisdiction").value,
+   "Decisão final / trânsito: "+(byId("caseDecision").value.trim()||"por conferir"),
+   "Dispensa de elaboração da conta: "+byId("dispensa").value+"; pressuposto indicado: "+byId("dispensaReason").value,
    "Ano da acção principal: "+dateYear(),
    "UC indicada: "+(byId("ucValue").value||"por verificar")+" €",
    "Valor fixado: "+(byId("caseValue").value||"por verificar")+" €",
@@ -615,6 +649,16 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  byId("caseValue").addEventListener("change",()=>{if(!byId("chargeValue").value)byId("chargeValue").value=byId("caseValue").value;invalidate()});
  for(const id of ["dispensa","dispensaReason","processRef","jurisdiction","ucValue","caseValue","caseDecision","ruling","reviewed","probableCosts","advanceCharges"])
   byId(id).addEventListener("change",invalidate);
+ byId("draftDispensa").addEventListener("click",generateDispensa);
+ byId("copyDispensa").addEventListener("click",async()=>{
+  const value=byId("draftDispensaText").value;
+  if(!value){note("Prepara primeiro a minuta de dispensa.");return}
+  try{await navigator.clipboard.writeText(value);note("Minuta copiada. Confirmar antes de juntar aos autos.")}
+  catch(e){byId("draftDispensaText").focus();byId("draftDispensaText").select();note("Selecciona e copia manualmente a minuta.")}
+ });
+ for(const id of ["dispensa","dispensaReason"])byId(id).addEventListener("change",()=>{
+  byId("draftDispensaBox").hidden=true;byId("draftDispensaText").value="";
+ });
  byId("saveProject").addEventListener("click",saveProject);
  byId("openProject").addEventListener("click",()=>byId("projectFile").click());
  byId("projectFile").addEventListener("change",loadProject);
