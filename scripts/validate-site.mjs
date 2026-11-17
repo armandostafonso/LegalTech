@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 
-const pages=["index.html","anonimizador.html","citacheck.html","minutas.html","roteiros.html","tramitação-taf.html","regimes.html","agenda.html","expediente.html","fontes.html","assistant.html","notify.html","hearing.html","compare.html","remessas.html","appeals.html","pa.html","termos.html","lex-monitor.html","privacy-check.html","audit-despacho.html","mapa-taf.html","instalar.html","privacidade.html","custas.html"];
+const pages=["flow.html","index.html","anonimizador.html","citacheck.html","minutas.html","roteiros.html","tramitação-taf.html","regimes.html","agenda.html","expediente.html","fontes.html","assistant.html","notify.html","hearing.html","compare.html","remessas.html","appeals.html","pa.html","termos.html","lex-monitor.html","privacy-check.html","audit-despacho.html","mapa-taf.html","instalar.html","privacidade.html","custas.html"];
 const errors=[];
 let scriptsChecked=0,linksChecked=0,idsChecked=0;
 for(const file of pages){
@@ -39,7 +39,7 @@ for(const file of pages){
  }
  if(!html.includes("</html>"))errors.push(file+": HTML incompleto");
 }
-for(const asset of ["assets/brand.css","assets/ux.css","assets/next.css","assets/next.js","assets/pa-pdf.js","assets/prazo-core.js","assets/theme.js","assets/legaltech-mark.svg","favicon.svg","site.webmanifest"]){
+for(const asset of ["assets/brand.css","assets/ux.css","assets/next.css","assets/flow.css","assets/flow-core.js","assets/flow.js","assets/next.js","assets/pa-pdf.js","assets/prazo-core.js","assets/theme.js","assets/legaltech-mark.svg","favicon.svg","site.webmanifest"]){
  if(!fs.existsSync(asset))errors.push("Recurso de identidade em falta: "+asset);
 }
 const manifest=JSON.parse(fs.readFileSync("site.webmanifest","utf8"));
