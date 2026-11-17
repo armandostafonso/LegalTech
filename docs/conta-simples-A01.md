@@ -6,7 +6,7 @@
 
 ## Como utilizar
 
-1. Indicar o **valor da causa fixado na sentença ou decisão relevante**, a UC aplicável ao processo e, de preferência, a data de propositura.
+1. Indicar o **valor da causa fixado na sentença ou decisão relevante** e apenas o **ano de propositura**. A UC desse ano surge automaticamente quando o valor histórico está confirmado; o campo continua editável para conferência documental. No ano de 2009 existiram dois valores (96 € até 19 de Abril e 102 € desde 20 de Abril). Em 2012, a data exacta é indispensável para verificar o regime da Lei n.º 7/2012; em 2026 deve ser verificada a transição de 1 de Dezembro.
 2. Na **petição inicial**, inserir simplesmente o **total comprovadamente pago**. Se for necessário, assinalar «Discriminar por prestações» para introduzir separadamente os pagamentos da primeira e da segunda. O total não é somado novamente aos pagamentos discriminados.
 3. Na **contestação**, assinalar se a entidade demandada (por exemplo, a Autoridade Tributária) apresentou ou não contestação. Se não contestou, **não é criada taxa de justiça por esse impulso**. Se contestou, indicar o **total pago** (ou discriminar prestações facultativamente) e conferir se há dispensa de pagamento prévio.
 4. Se houver **multas ou incidentes**, assinalar a opção e acrescentar cada rubrica, com tipo, identificação, responsável, fundamento legal ou decisão, montante fixado e total pago. A ferramenta não inventa taxas de incidentes nem multas; o utilizador deve conferir a Tabela II e a decisão judicial. Se não houver, esta secção fica fechada.
@@ -59,3 +59,22 @@ A conta simples tem testes específicos em \`scripts/test-custas-simple.mjs\`, q
 - [Regulamento das Custas Processuais](https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975)
 - [Código de Processo Civil](https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2013-34580575)
 - [Decreto-Lei n.º 164/2026](https://diariodarepublica.pt/dr/detalhe/decreto-lei/164-2026-1154555254)
+
+
+## Campo «Ano de propositura» e UC histórica (novembro de 2026)
+
+- A página simples aceita apenas o **ano**, com quatro algarismos, e mostra a **UC ao lado**.
+- **2010–2026:** UC de **102,00 €**, preenchida automaticamente, com possibilidade de revisão manual. O valor de 2026 foi mantido pela Lei n.º 73-A/2025, artigo 242.º.
+- **2009:** o ano não permite saber qual o valor: eram **96,00 € até 19-04-2009** e **102,00 € desde 20-04-2009**. Não há preenchimento automático; utiliza o módulo técnico com a data exacta.
+- **2012:** a data de início da acção é necessária para distinguir a alteração legislativa em vigor desde 29-03-2012; a página simples bloqueia o cálculo sem validação específica.
+- **2026:** o valor da UC é conhecido, mas o **ano**, isoladamente, não permite concluir o regime decorrente das alterações previstas para 01-12-2026; o resultado é acompanhado de ressalva.
+- **Anos posteriores a 2026:** a UC não é projectada sem fonte legal confirmada; o preenchimento manual carece de verificação.
+- O artigo 5.º, n.º 3, do RCP fixa a UC da taxa de justiça em função do início de cada processo autónomo. Recursos e incidentes podem exigir a UC vigente no momento do respectivo início, não necessariamente no ano de propositura da acção principal.
+
+**Fontes:** [RCP consolidado, artigo 5.º](https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975); [Evolução histórica da UC, Portal da Habitação](https://www.portaldahabitacao.pt/unidade-de-conta-uc); [Guia Prático das Custas Processuais, CEJ](https://cej.justica.gov.pt/LinkClick.aspx?fileticket=mBfuThSKNbM%3D&portalid=30).
+
+## Actualizações recentes
+
+- As rubricas adicionais incluem **recurso, incidente, multa, encargo e outro impulso**. O utilizador introduz o montante, o responsável e o fundamento; não são aplicados automaticamente valores de tabela a recursos.
+- O quadro final contém uma **síntese por interveniente**. Um excesso de pagamento de uma parte não abate à diferença positiva de outra. São resultados aritméticos, não certidões de dívida ou de reembolso.
+- A regressão técnica do formulário simples cobre os campos de ano e UC, as transições temporais, os recursos opcionais e os saldos sem compensação.
