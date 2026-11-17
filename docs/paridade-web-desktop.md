@@ -14,7 +14,7 @@ Os dois projetos mantêm ficheiros com conteúdo de referência idêntico:
 
 Cada repositório possui também o mesmo `rules/parity-manifest.json`, que contém os hashes Git dos cinco ficheiros. Os testes locais verificam esses valores em cada atualização. No Windows, o verificador normaliza CRLF para LF antes de calcular o hash, porque o Git pode converter fins de linha durante o *checkout*.
 
-**Isto não constitui um motor jurídico comum.** Os algoritmos Web e Python permanecem diferentes, e a igualdade de 324 cenários não comprova equivalência para todos os prazos, meios de comunicação ou casos de direito transitório.
+**Existe agora um contrato de algoritmo comum implementado em dois núcleos independentes:** `assets/prazo-core.js` e `prazo_core.py`, usados pelas interfaces de prazo respetivas. A igualdade de 324 cenários não comprova equivalência geral nem correção jurídica. Ver [arquitetura e limitações do núcleo](prazo-core.md).
 
 ## Repositório Windows privado
 
