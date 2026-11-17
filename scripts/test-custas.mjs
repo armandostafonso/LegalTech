@@ -800,4 +800,23 @@ check("Vista simples: acesso técnico conserva toda a ferramenta",()=>{
  assert.equal(document.documentElement.dataset.custasView,"simples");
  assert.equal(document.documentElement.dataset.custasStep,"2");
 });
+
+check("Vista simples: transferência de totais sem obrigação mostra aviso",()=>{
+ click("custasQuickSync");
+ assert.match(read("custasSimpleSyncResult"),/Regista primeiro as obrigações/);
+});
+check("Vista simples: cálculo validado transfere taxas sem abrir o painel técnico",()=>{
+ put("autoParty","a");put("autoType","peticao");put("autoDate","2026-11-16");
+ put("autoValue","30000");put("autoUC","102");put("autoRef","SIMPLE-TAXA-01");
+ put("pa_entity","person");put("pa_exemption","none");put("pa_aid","none");
+ els.get("autoVerified").checked=true;
+ click("autoPreview");click("autoInsert");
+ assert.match(read("autoResult"),/Obrigação de taxa-base criada/);
+ click("custasQuickSync");
+ assert.equal(els.get("a").value,"255.00");
+ assert.match(read("custasSimpleSyncResult"),/Valores transferidos/);
+});
+check("Vista simples: limpar mantém os valores e obrigacões a zero",()=>{
+ click("reset");assert.match(read("obA"),/0,00/);
+});
 console.log(tests+" testes do módulo A01 concluídos.");
