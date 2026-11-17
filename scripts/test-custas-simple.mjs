@@ -118,6 +118,17 @@ check("AT com contestação e dispensa prévia: não declarar dívida vencida",(
  assert.match(h.el("ccObservations").children[2].textContent,/Dispensa prévia/);
  assert.match(h.el("ccWarnings").children[1].children.map(x=>x.textContent).join(" "),/não tratar a diferença como dívida vencida/);
 });
+check("AT com dispensa prévia: o quadro não apresenta dívida vencida",()=>{
+ const h=harness();h.ready();h.checked("ccContested");h.change("ccContested");
+ h.set("ccDefPrepay","deferred");h.click("ccCalculate");
+ assert.equal(h.rows()[1][6],"Dispensa prévia · art. 15.º");
+ assert.equal(h.text("ccDifference"),"Por conferir");
+});
+check("Pagamento de segunda prestação dispensada exige conferência do excesso",()=>{
+ const h=harness();h.ready();h.set("ccAuthorFirst","255");h.set("ccAuthorSecond","255");
+ h.click("ccCalculate");
+ assert.match(h.el("ccWarnings").children[1].children.map(x=>x.textContent).join(" "),/pagamento da segunda prestação apesar/);
+});
 check("AT sem contestação: pagamento declarado é sinalizado sem criar taxa",()=>{
  const h=harness();h.ready();h.set("ccDefFirst","100");h.click("ccCalculate");
  assert.equal(h.rows()[1][6],"Não aplicável");
