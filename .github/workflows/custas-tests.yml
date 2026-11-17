@@ -4,7 +4,9 @@ on:
   push:
     paths:
       - 'custas.html'
+      - 'custas-tecnico.html'
       - 'scripts/test-custas.mjs'
+      - 'scripts/test-custas-simple.mjs'
       - 'scripts/test-custas-cenarios.mjs'
       - 'scripts/test-custas-browser.mjs'
       - 'scripts/fixtures/**'
@@ -13,7 +15,9 @@ on:
   pull_request:
     paths:
       - 'custas.html'
+      - 'custas-tecnico.html'
       - 'scripts/test-custas.mjs'
+      - 'scripts/test-custas-simple.mjs'
       - 'scripts/test-custas-cenarios.mjs'
       - 'scripts/test-custas-browser.mjs'
       - 'scripts/fixtures/**'
@@ -35,7 +39,9 @@ jobs:
           node-version: '22'
       - name: Verificar sintaxe e ligações do site
         run: node scripts/validate-site.mjs
-      - name: Testes de regressão do módulo A01
+      - name: Testes da conta simples por impulso
+        run: node scripts/test-custas-simple.mjs
+      - name: Testes de regressão do módulo técnico A01
         run: node scripts/test-custas.mjs
       - name: Cenários sintéticos multi-interveniente
         run: node scripts/test-custas-cenarios.mjs
