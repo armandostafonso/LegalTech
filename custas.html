@@ -140,6 +140,24 @@ tr:last-child td{border-bottom:0}
    <small>Esta decisão não cria, por si só, uma taxa de contestação.</small>
   </div>
  </div>
+ <div class="cc-two" style="margin-top:16px">
+  <div class="cc-field">
+   <label for="ccAccountNeed">Há lugar à elaboração de conta? (art. 29.º RCP)</label>
+   <select id="ccAccountNeed"><option value="unknown">Ainda por conferir</option><option value="yes">Sim, há lugar a conta</option><option value="no">Dispensa de conta confirmada</option></select>
+   <small>Esta decisão exige verificar a existência de quantias em dívida e as excepções legais. Não é determinada apenas pela diferença aritmética.</small>
+  </div>
+  <div class="cc-field">
+   <label for="ccAccountBasis">Fundamento da dispensa ou observação</label>
+   <input id="ccAccountBasis" maxlength="240" placeholder="Ex.: artigo 29.º do RCP e conferência dos autos">
+  </div>
+ </div>
+ <div id="ccShareFields" class="cc-hidden">
+  <div class="cc-two" style="margin-top:16px">
+   <div class="cc-field"><label for="ccShareAuthor">Custas a cargo do autor (%)</label><input id="ccShareAuthor" type="number" min="0" max="100" step="0.01" value="50"></div>
+   <div class="cc-field"><label for="ccShareDef">Custas a cargo da entidade demandada (%)</label><input id="ccShareDef" type="number" min="0" max="100" step="0.01" value="50"></div>
+  </div>
+  <p class="cc-quiet">A repartição indicada na decisão é registada apenas para conferência. Não se distribuem automaticamente taxas de impulso, multas ou incidentes pelas percentagens.</p>
+ </div>
  <label class="cc-check" for="ccVerified"><input id="ccVerified" type="checkbox">Conferi o valor da causa, os comprovativos dos pagamentos, a tabela aplicável e as eventuais dispensas legais.</label>
  <div class="cc-quiet">Se existirem recursos, incidentes, encargos, remanescente acima de 275 000 €, benefícios especiais ou outras partes, o quadro será assinalado como parcial. Esta versão não está validada para impugnações judiciais tributárias ou outras espécies processuais. <a href="custas-tecnico.html">Abrir análise técnica</a>.</div>
  <div class="cc-toolbar"><button id="ccCalculate" type="button" class="cc-mainbutton">Preparar quadro de conta</button><button type="button" id="ccReset" class="cc-plainbutton">Limpar</button></div>
@@ -154,6 +172,7 @@ tr:last-child td{border-bottom:0}
   <div><small>Diferença aritmética conhecida</small><strong id="ccDifference">—</strong></div>
  </div>
  <div class="cc-overflow"><table aria-label="Conferência dos impulsos e pagamentos"><thead><tr><th>Parte / impulso</th><th>Taxa I-A / montante fixado</th><th>1.ª devida</th><th>1.ª paga</th><th>2.ª devida</th><th>2.ª paga</th><th>Diferença</th></tr></thead><tbody id="ccRows"></tbody></table></div>
+ <div id="ccAccountConclusion" class="cc-quiet" style="margin-top:15px"></div>
  <div class="cc-obs" id="ccObservations"></div>
  <div id="ccWarnings" class="cc-warning cc-hidden"></div>
  <p class="cc-legal" id="ccLegal">Fundamentos: artigos 6.º, n.º 1, 11.º, 13.º, n.º 2, 14.º e 14.º-A do RCP; Tabela I-A; artigo 530.º, n.º 1, do CPC. A responsabilidade final por custas depende da decisão (artigo 527.º do CPC) e do regime da conta (artigos 29.º e 30.º do RCP).</p>
@@ -276,6 +295,16 @@ tr:last-child td{border-bottom:0}
   if(contested && defMode==="deferred")warnings.push("A entidade demandada tem dispensa de pagamento prévio assinalada: não tratar a diferença como dívida vencida (RCP, artigo 15.º).");
   if(!el("ccVerified").checked)warnings.push("Pagamentos, base tributável e regime legal ainda não confirmados pelo utilizador.");
   const final=el("ccDecision").value;
+  const accountNeed=el("ccAccountNeed").value,accountBasis=el("ccAccountBasis").value.trim();
+  let shares=null;
+  if(final==="ambos"){
+   const left=euro("ccShareAuthor"),right=euro("ccShareDef");
+   if(left===null||right===null||left+right!==10000)return {error:"A repartição de custas indicada na decisão deve totalizar 100%."};
+   shares={author:left,defendant:right};
+  }
+  if(accountNeed==="no"&&!accountBasis)return {error:"Para assinalar dispensa de conta, indica o fundamento ou a observação que a sustenta."};
+  if(accountNeed==="unknown")warnings.push("Verificar se há lugar à elaboração de conta nos termos do artigo 29.º do RCP.");
+  if(accountNeed==="no")warnings.push("Dispensa de conta assinalada pelo utilizador; confirmar a aplicação do artigo 29.º do RCP e eventuais excepções.");
   if(final==="unknown")warnings.push("Responsabilidade final pelas custas ainda não confirmada.");
   const due=secondMode==="due"?base:first;
   const impulse=(name,act,paid,paidFirst,paidSecond,prepay)=>{
@@ -305,19 +334,22 @@ tr:last-child td{border-bottom:0}
   const totalPaid=aPaid+(contested?dPaid:0)+extrasPaid;
   const diff=calculatedDue-totalPaid;
   const rowsData=[a,b];
+  const accountConclusion=accountNeed==="no"?"Dispensa de conta assinalada. Fundamento indicado: "+accountBasis+". O quadro abaixo é apenas uma conferência dos impulsos e pagamentos; não constitui conta final.":accountNeed==="yes"?"Foi assinalada a necessidade de conta. A imputação final exige aplicar a decisão, as dispensas e as regras do RCP. A diferença abaixo não é automaticamente a quantia a cobrar.":"Necessidade de conta por confirmar (artigo 29.º RCP). O quadro é apenas uma conferência dos impulsos e pagamentos.";
+  if(shares)warnings.push("Decaimento indicado: autor "+(shares.author/100)+"%; entidade demandada "+(shares.defendant/100)+"%. A repartição não foi aplicada automaticamente aos impulsos ou multas.");
   const explanations=[
    "Valor fixado: "+money(value)+". Tabela I-A: "+units+" UC × "+money(uc)+" = "+money(base)+" por impulso, com 1.ª prestação de "+money(first)+(secondMode==="due"?" e 2.ª prestação de "+money(second)+".":secondMode==="waived"?". A 2.ª prestação foi assinalada como dispensada.":". A 2.ª prestação ainda está por verificar."),
    "Autor: petição inicial apresentada; pagos "+money(aPaid)+(author.detail?" (1.ª: "+money(authorFirst)+"; 2.ª: "+money(authorSecond)+")":" (sem discriminação por prestações)")+". "+a.status+".",
    contested?"Entidade demandada: contestação apresentada; pagos "+money(dPaid)+(defendant.detail?" (1.ª: "+money(defFirst)+"; 2.ª: "+money(defSecond)+")":" (sem discriminação por prestações)")+". "+b.status+".":"Entidade demandada: não apresentou contestação. Não se calcula taxa de justiça por esse impulso (RCP, artigo 6.º/1 e CPC, artigo 530.º/1).",
    final==="unknown"?"A condenação final em custas fica por conferir.":final==="autor"?"Decisão de custas indicada: a cargo do autor.":final==="demandada"?"Decisão de custas indicada: a cargo da entidade demandada.":final==="ambos"?"Decisão de custas indicada: repartida entre as partes; falta quantificar o decaimento.":"Decisão final de custas com regime especial; análise complementar necessária."
   ];
-  return {value,uc,units,base,first,second,secondMode,contested,defMode,a,b,rowsData,extraRows,warnings,calculatedDue,totalPaid,diff,explanations,process:el("ccProcess").value.trim().slice(0,80),startDate};
+  return {value,uc,units,base,first,second,secondMode,contested,defMode,a,b,rowsData,extraRows,accountNeed,accountBasis,accountConclusion,shares,warnings,calculatedDue,totalPaid,diff,explanations,process:el("ccProcess").value.trim().slice(0,80),startDate};
  }
  function render(result){
   output=result;
   el("ccBaseTotal").textContent=money(result.base);
   el("ccPaidTotal").textContent=money(result.totalPaid);
   el("ccDifference").textContent=result.secondMode==="unknown"||(result.contested&&["deferred","special"].includes(result.defMode))?"Por conferir":(result.diff<0?"−":"")+money(Math.abs(result.diff));
+  el("ccAccountConclusion").textContent=result.accountConclusion;
   el("ccResultMeta").textContent=(result.process||"Processo sem referência")+" · Valor fixado "+money(result.value)+" · "+(result.startDate||"data por conferir");
   const tbody=el("ccRows");tbody.replaceChildren();
   for(const r of result.rowsData){
@@ -345,7 +377,7 @@ tr:last-child td{border-bottom:0}
   const lines=["LEGALTECH SUITE | QUADRO SIMPLES DE CONFERÊNCIA","PROPOSTA NÃO OFICIAL",r.process||"Processo sem referência","Valor fixado: "+money(r.value),"Taxa I-A por impulso: "+r.units+" UC = "+money(r.base),"", "Parte | Impulso | 1.ª devida | 1.ª paga | 2.ª devida | 2.ª paga | Diferença"];
   for(const p of r.rowsData)lines.push([p.name,p.act,p.act==="Não apresentada"?"—":money(p.first),p.act==="Não apresentada"?"—":p.paidFirst===null?"Por discriminar":money(p.paidFirst),p.second===null?"Por conferir":p.second===0?"Dispensada":money(p.second),p.act==="Não apresentada"?"—":p.paidSecond===null?"Por discriminar":money(p.paidSecond),p.act==="Não apresentada"?"Não aplicável":r.secondMode==="unknown"?"Por conferir":p.prepay==="deferred"?"Dispensa prévia":p.prepay==="special"?"Regime especial":money(p.difference)].join(" | "));
   for(const x of r.extraRows)lines.push((x.kind==="fine"?"Multa":"Incidente")+" | "+x.description+" | devido "+money(x.due)+" | pago "+money(x.paid)+" | "+x.basis);
-  lines.push("",...r.explanations);
+  lines.push("",r.accountConclusion,...r.explanations);
   if(r.warnings.length)lines.push("PONTOS A CONFERIR:",...r.warnings.map(x=>"• "+x));
   lines.push("Fundamento: RCP, artigos 6.º/1, 11.º, 13.º/2, 14.º, 14.º-A e 15.º quando aplicável, Tabela I-A; CPC, artigos 527.º e 530.º/1; RCP, artigos 29.º e 30.º.","A diferença aritmética não equivale necessariamente a dívida ou restituição. Não é uma conta judicial oficial.");
   return lines.join("\n");
@@ -355,7 +387,8 @@ tr:last-child td{border-bottom:0}
  el("ccDefDetail").addEventListener("change",()=>{setVisible("ccDefDetailFields",el("ccDefDetail").checked);invalidate()});
  el("ccHasExtras").addEventListener("change",()=>{setVisible("ccExtrasFields",el("ccHasExtras").checked);invalidate()});
  el("ccExtraAdd").addEventListener("click",addExtra);
- const tracked=["ccAuthorTotal","ccDefTotal","ccProcess","ccValue","ccUC","ccDate","ccAuthorFirst","ccAuthorSecond","ccDefFirst","ccDefSecond","ccDefPrepay","ccSecond","ccDecision","ccVerified"];
+ el("ccDecision").addEventListener("change",()=>setVisible("ccShareFields",el("ccDecision").value==="ambos"));
+ const tracked=["ccAccountNeed","ccAccountBasis","ccShareAuthor","ccShareDef","ccAuthorTotal","ccDefTotal","ccProcess","ccValue","ccUC","ccDate","ccAuthorFirst","ccAuthorSecond","ccDefFirst","ccDefSecond","ccDefPrepay","ccSecond","ccDecision","ccVerified"];
  for(const id of tracked){el(id).addEventListener("input",invalidate);el(id).addEventListener("change",invalidate)}
  el("ccCalculate").addEventListener("click",()=>{
   const result=build();
@@ -370,7 +403,7 @@ tr:last-child td{border-bottom:0}
   el("ccAuthorTotal").value="0";el("ccDefTotal").value="0";
   el("ccAuthorDetail").checked=false;el("ccDefDetail").checked=false;setVisible("ccAuthorDetailFields",false);setVisible("ccDefDetailFields",false);
   el("ccHasExtras").checked=false;setVisible("ccExtrasFields",false);extras.splice(0);el("ccExtrasList").replaceChildren();
-  el("ccContested").checked=false;el("ccDefPrepay").value="unknown";el("ccSecond").value="unknown";el("ccDecision").value="unknown";el("ccVerified").checked=false;
+  el("ccContested").checked=false;el("ccDefPrepay").value="unknown";el("ccSecond").value="unknown";el("ccDecision").value="unknown";el("ccAccountNeed").value="unknown";el("ccAccountBasis").value="";el("ccShareAuthor").value="50";el("ccShareDef").value="50";setVisible("ccShareFields",false);el("ccVerified").checked=false;
   updateResponded();el("ccStatus").textContent="Dados limpos. Preenche os valores e prepara o quadro.";
  });
  el("ccPrint").addEventListener("click",()=>{if(!output)return;window.print()});
