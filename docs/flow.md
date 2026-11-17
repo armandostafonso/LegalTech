@@ -44,3 +44,7 @@ Estes testes não constituem validação jurídica de todas as modalidades proce
 3. Adicionar modelos de expediente revistos por especialistas, com versões normativas.
 4. Integrar testes de acessibilidade e revisão jurídico-processual de cada roteiro.
 5. Criar edição offline empacotada com verificação de integridade e controlo de dependências.
+
+## Passagem manual entre ferramentas
+
+Após preparar um roteiro, o botão «Copiar contexto para outra ferramenta» compõe um resumo com tipo de ato, etiqueta genérica, instrução desidentificada, notas e verificações assinaladas. A cópia depende de clique explícito; o Flow não envia os dados ao módulo de destino, não os inclui no URL e não os persiste. O utilizador pode abrir uma ferramenta relacionada e colar o resumo onde for adequado. A área de transferência é gerida pelo sistema operativo e pode reter conteúdo. Não usar dados reais confidenciais ou identificativos sem autorização.
