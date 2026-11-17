@@ -2,7 +2,10 @@
 
 **Versão da interface:** 2.0 (experimental, novembro de 2026)  
 **Espécie:** acção administrativa (CPTA)  
-**Página:** `custas.html`
+**Página técnica:** `custas-tecnico.html`  
+**Página principal simplificada:** `custas.html` ([guia breve](conta-simples-A01.md))
+
+A página de entrada foi substituída por uma **conta simples** com valor fixado, petição inicial, contestação apresentada ou não apresentada, prestações pagas e quadro de conferência imprimível. Todos os painéis e cálculos técnicos anteriores foram preservados na página `custas-tecnico.html`. Os testes técnicos antigos passaram a ler explicitamente essa página, sem alterar os algoritmos anteriores. A nova entrada está descrita no [guia da conta simples](conta-simples-A01.md).
 
 ## Âmbito efectivamente implementado
 
