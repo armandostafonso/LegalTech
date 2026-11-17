@@ -138,7 +138,7 @@ tr:last-child td{border-bottom:0}
   <div><small>Total registado como pago</small><strong id="ccPaidTotal">—</strong></div>
   <div><small>Diferença aritmética conhecida</small><strong id="ccDifference">—</strong></div>
  </div>
- <div class="cc-overflow"><table aria-label="Conferência dos impulsos e pagamentos"><thead><tr><th>Parte / impulso</th><th>Taxa I-A</th><th>1.ª prestação</th><th>2.ª prestação</th><th>Pago</th><th>Diferença</th></tr></thead><tbody id="ccRows"></tbody></table></div>
+ <div class="cc-overflow"><table aria-label="Conferência dos impulsos e pagamentos"><thead><tr><th>Parte / impulso</th><th>Taxa I-A</th><th>1.ª devida</th><th>1.ª paga</th><th>2.ª devida</th><th>2.ª paga</th><th>Diferença</th></tr></thead><tbody id="ccRows"></tbody></table></div>
  <div class="cc-obs" id="ccObservations"></div>
  <div id="ccWarnings" class="cc-warning cc-hidden"></div>
  <p class="cc-legal" id="ccLegal">Fundamentos: artigos 6.º, n.º 1, 11.º, 13.º, n.º 2, 14.º e 14.º-A do RCP; Tabela I-A; artigo 530.º, n.º 1, do CPC. A responsabilidade final por custas depende da decisão (artigo 527.º do CPC) e do regime da conta (artigos 29.º e 30.º do RCP).</p>
@@ -210,6 +210,14 @@ tr:last-child td{border-bottom:0}
   };
   const a=impulse("Autor","Petição inicial",aPaid,authorFirst,authorSecond,"normal");
   const b=contested?impulse("Entidade demandada","Contestação",dPaid,defFirst,defSecond,defMode):impulse("Entidade demandada","Não apresentada",0,0,0,"normal");
+  if(authorFirst<first && authorSecond>0)warnings.push("Autor: a primeira prestação não está integralmente paga, embora exista pagamento indicado para a segunda. Conferir a afectação dos comprovativos.");
+  if(authorFirst>first)warnings.push("Autor: o pagamento atribuído à primeira prestação excede o valor dessa prestação. Confirmar a guia e o motivo.");
+  if(secondMode==="waived"&&authorSecond>0)warnings.push("Autor: está indicado pagamento da segunda prestação apesar de ter sido assinalada dispensa. Confirmar eventual excesso.");
+  if(contested){
+   if(defFirst<first&&defSecond>0)warnings.push("Entidade demandada: a primeira prestação não está integralmente paga, apesar de existir pagamento da segunda.");
+   if(defFirst>first)warnings.push("Entidade demandada: o pagamento da primeira prestação excede o valor calculado.");
+   if(secondMode==="waived"&&defSecond>0)warnings.push("Entidade demandada: foi indicado pagamento da segunda prestação apesar da dispensa.");
+  }
   if(a.difference<0)warnings.push("Autor: pagamento superior à taxa considerada. O excesso aritmético não constitui automaticamente direito à restituição.");
   if(contested && b.difference<0)warnings.push("Entidade demandada: pagamento superior à taxa considerada, sujeito a verificação.");
   if(secondMode==="unknown" && (aPaid>first || (contested&&dPaid>first)))warnings.push("Pagamentos superiores à primeira prestação podem corresponder a uma segunda prestação que ainda não foi qualificada.");
@@ -229,12 +237,12 @@ tr:last-child td{border-bottom:0}
   output=result;
   el("ccBaseTotal").textContent=money(result.base);
   el("ccPaidTotal").textContent=money(result.totalPaid);
-  el("ccDifference").textContent=(result.diff<0?"−":"")+money(Math.abs(result.diff));
+  el("ccDifference").textContent=result.secondMode==="unknown"?"Por conferir":(result.diff<0?"−":"")+money(Math.abs(result.diff));
   el("ccResultMeta").textContent=(result.process||"Processo sem referência")+" · Valor fixado "+money(result.value)+" · "+(result.startDate||"data por conferir");
   const tbody=el("ccRows");tbody.replaceChildren();
   for(const r of result.rowsData){
-   if(r.act==="Não apresentada"){addRow(tbody,[r.name+" · sem contestação","—","—","—","—","Não aplicável"]);continue}
-   addRow(tbody,[r.name+" · "+r.act,money(r.total),money(r.first),r.second===null?"Por conferir":r.second===0?"Dispensada":money(r.second),money(r.paid),result.secondMode==="unknown"?"Provisória":r.difference>0?money(r.difference)+" a conferir":r.difference<0?money(Math.abs(r.difference))+" excesso":"0,00 €"]);
+   if(r.act==="Não apresentada"){addRow(tbody,[r.name+" · sem contestação","—","—","—","—","—","Não aplicável"]);continue}
+   addRow(tbody,[r.name+" · "+r.act,money(r.total),money(r.first),money(r.paidFirst),r.second===null?"Por conferir":r.second===0?"Dispensada":money(r.second),money(r.paidSecond),result.secondMode==="unknown"?"Por conferir":r.difference>0?money(r.difference)+" a conferir":r.difference<0?money(Math.abs(r.difference))+" excesso":"0,00 €"]);
   }
   el("ccObservations").replaceChildren();
   for(const line of result.explanations)el("ccObservations").appendChild(text("p",line));
@@ -252,8 +260,8 @@ tr:last-child td{border-bottom:0}
   el("ccExportStatus").textContent="";
  }
  function reportText(r){
-  const lines=["LEGALTECH SUITE | QUADRO SIMPLES DE CONFERÊNCIA","PROPOSTA NÃO OFICIAL",r.process||"Processo sem referência","Valor fixado: "+money(r.value),"Taxa I-A por impulso: "+r.units+" UC = "+money(r.base),"", "Parte | Impulso | 1.ª | 2.ª | Pago | Diferença"];
-  for(const p of r.rowsData)lines.push([p.name,p.act,p.act==="Não apresentada"?"—":money(p.first),p.second===null?"Por conferir":p.second===0?"Dispensada":money(p.second),money(p.paid),p.act==="Não apresentada"?"Não aplicável":r.secondMode==="unknown"?"Provisória":money(p.difference)].join(" | "));
+  const lines=["LEGALTECH SUITE | QUADRO SIMPLES DE CONFERÊNCIA","PROPOSTA NÃO OFICIAL",r.process||"Processo sem referência","Valor fixado: "+money(r.value),"Taxa I-A por impulso: "+r.units+" UC = "+money(r.base),"", "Parte | Impulso | 1.ª devida | 1.ª paga | 2.ª devida | 2.ª paga | Diferença"];
+  for(const p of r.rowsData)lines.push([p.name,p.act,p.act==="Não apresentada"?"—":money(p.first),p.act==="Não apresentada"?"—":money(p.paidFirst),p.second===null?"Por conferir":p.second===0?"Dispensada":money(p.second),p.act==="Não apresentada"?"—":money(p.paidSecond),p.act==="Não apresentada"?"Não aplicável":r.secondMode==="unknown"?"Por conferir":money(p.difference)].join(" | "));
   lines.push("",...r.explanations);
   if(r.warnings.length)lines.push("PONTOS A CONFERIR:",...r.warnings.map(x=>"• "+x));
   lines.push("Fundamento: RCP, artigos 6.º/1, 11.º, 13.º/2, 14.º, 14.º-A e 15.º quando aplicável, Tabela I-A; CPC, artigos 527.º e 530.º/1; RCP, artigos 29.º e 30.º.","A diferença aritmética não equivale necessariamente a dívida ou restituição. Não é uma conta judicial oficial.");
