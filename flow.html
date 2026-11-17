@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="LegalTech Flow: preparar e conferir tarefas de secretaria com roteiro local, exportação e revisão humana.">
+<meta name="apple-mobile-web-app-title" content="LegalTech Suite">
+<meta name="application-name" content="LegalTech Suite">
+<meta name="theme-color" content="#f4f6f9">
+<title>LegalTech Flow | LegalTech Suite</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="site.webmanifest">
+<script id="lt-theme-bootstrap">(function(){try{var a=localStorage.getItem("legaltech_theme"),b=localStorage.getItem("theme"),t=(a==="light"||a==="dark")?a:(b==="light"||b==="dark")?b:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;localStorage.setItem("legaltech_theme",t)}catch(e){}})();</script>
+<link rel="stylesheet" href="assets/tools.css">
+<link rel="stylesheet" href="assets/brand.css">
+<link rel="stylesheet" href="assets/ux.css">
+<link rel="stylesheet" href="assets/next.css">
+<link rel="stylesheet" href="assets/flow.css">
+</head>
+<body>
+<a href="#flow-main" class="flow-skip">Saltar para o conteúdo</a>
+<header><nav><a class="brand" href="index.html">LegalTech <span class="lt-suite">Suite</span></a><div><a href="index.html">Início</a><a href="citacheck.html">Cita-Check</a><a href="minutas.html">Docs</a><a href="tramitação-taf.html">Tramitação TAF</a></div></nav></header>
+<main id="flow-main" class="flow-wrap">
+  <section class="flow-hero">
+    <div class="flow-kicker">Preparação · Conferência · Exportação</div>
+    <h1>LegalTech Flow</h1>
+    <p>Um percurso de trabalho para preparar atos de secretaria, verificar pressupostos e produzir um roteiro editável. Sem execução automática de atos.</p>
+  </section>
+  <section class="flow-privacy" aria-label="Privacidade e limites">
+    <span aria-hidden="true">◇</span>
+    <div><strong>Ferramenta local e auxiliar</strong><p>Os textos introduzidos não são enviados a serviços externos nem guardados pelo Flow após fechar ou recarregar a página. Utiliza apenas situações fictícias, anonimizadas ou expressamente autorizadas. As verificações não provam a prática dos atos nem substituem os autos, a legislação ou um despacho.</p></div>
+  </section>
+  <div class="flow-dots" aria-label="Etapas do fluxo">
+    <span><strong>1.</strong> Preparar</span><span><strong>2.</strong> Conferir</span><span><strong>3.</strong> Exportar</span>
+  </div>
+  <div class="flow-panel-grid">
+    <section class="flow-panel" aria-labelledby="flow-form-title">
+      <h2 id="flow-form-title">1. Preparar a tarefa</h2>
+      <p class="flow-help">Seleciona o tipo de ato e introduz apenas os elementos necessários. Não serão determinados automaticamente os destinatários, os prazos ou a modalidade legal.</p>
+      <form id="flow-form">
+        <div class="flow-field">
+          <label for="flow-type">Tipo de ato a preparar</label>
+          <select id="flow-type" required>
+            <option value="notificacao">Notificação</option>
+            <option value="citacao">Citação</option>
+            <option value="oficio">Ofício</option>
+            <option value="certidao">Certidão</option>
+            <option value="conclusao">Conclusão</option>
+            <option value="remessa">Remessa</option>
+            <option value="diligencia">Diligência / ata</option>
+            <option value="outro">Outro ato de secretaria</option>
+          </select>
+        </div>
+        <div class="flow-field">
+          <label for="flow-reference">Etiqueta de trabalho (opcional)</label>
+          <input id="flow-reference" maxlength="70" autocomplete="off" placeholder="Exemplo fictício A">
+          <small>Não introduzas números de processo nem dados identificativos reais sem autorização.</small>
+        </div>
+        <div class="flow-field">
+          <label for="flow-instruction">Instrução ou resumo desidentificado (opcional)</label>
+          <textarea id="flow-instruction" maxlength="2500" spellcheck="true" placeholder="Exemplo fictício: notifique-se para juntar documento comprovativo no prazo indicado no despacho."></textarea>
+          <small>Expressões como «registos», «renúncia» ou «urgente» podem gerar alertas textuais, mas não são interpretadas juridicamente.</small>
+        </div>
+        <div class="flow-field">
+          <label for="flow-date">Data previamente confirmada (opcional)</label>
+          <input id="flow-date" type="date">
+          <small>Não é calculada nem validada juridicamente. Não equivale ao termo de um prazo.</small>
+        </div>
+        <div class="flow-field">
+          <label for="flow-notes">Notas de conferência (opcional)</label>
+          <textarea id="flow-notes" maxlength="1500" placeholder="Pressupostos e elementos a confirmar, sem dados pessoais."></textarea>
+        </div>
+        <div class="flow-actions">
+          <button type="submit" class="flow-button" id="flow-prepare">Preparar roteiro</button>
+          <button type="button" class="flow-button secondary" id="flow-clear">Limpar sessão</button>
+        </div>
+        <p id="status" class="flow-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+    <section class="flow-panel" aria-labelledby="flow-checks-title">
+      <h2 id="flow-checks-title" tabindex="-1">2. Conferir os pressupostos</h2>
+      <p class="flow-help">Assinala exclusivamente verificações que efetivamente realizaste. Uma marca é uma declaração manual, não uma certificação de regularidade.</p>
+      <div id="flow-empty" class="flow-empty">Seleciona o tipo de ato e clica em «Preparar roteiro» para começar.</div>
+      <div id="flow-generated" hidden>
+        <div class="flow-progress-top">
+          <strong>Progresso da conferência</strong>
+          <span id="flow-progress" class="flow-help">0 verificações assinaladas</span>
+        </div>
+        <div id="flow-meter-box" class="flow-meter" role="progressbar" aria-label="Percentagem de verificações assinaladas" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="flow-meter"></div></div>
+        <div id="flow-checks" class="flow-checks"></div>
+        <div class="flow-section-divider"></div>
+        <h3 style="font-size:16px;margin:0 0 8px">Ferramentas relacionadas</h3>
+        <p class="flow-help">Abrem separadamente. Não há transferência automática do texto ou dos dados entre módulos nesta versão.</p>
+        <nav id="flow-tools" class="flow-links" aria-label="Ferramentas relacionadas"></nav>
+      </div>
+    </section>
+  </div>
+  <section class="flow-panel flow-result" aria-labelledby="flow-result-title">
+    <h2 id="flow-result-title">3. Rever e exportar o roteiro</h2>
+    <p class="flow-help">O relatório inclui o estado das verificações assinaladas. Podes editá-lo antes de exportar. Se o editares diretamente, as marcas seguintes não substituirão o texto até escolheres «Recriar relatório».</p>
+    <label for="flow-report" style="display:block;font-size:13px;font-weight:650;margin-bottom:6px">Relatório editável</label>
+    <textarea id="flow-report" class="flow-report" placeholder="O relatório será apresentado aqui." aria-label="Relatório editável do roteiro" spellcheck="true"></textarea>
+    <div class="flow-actions">
+      <button class="flow-button secondary" type="button" id="flow-regenerate" disabled>Recriar relatório</button>
+      <button class="flow-button" type="button" id="flow-copy" disabled>Copiar</button>
+      <button class="flow-button secondary" type="button" id="flow-txt" disabled>Exportar TXT</button>
+      <button class="flow-button secondary" type="button" id="flow-rtf" disabled>Exportar RTF</button>
+    </div>
+    <p class="flow-footnote">Exportar ou copiar cria um ficheiro ou conteúdo no dispositivo do utilizador, sujeito às regras de segurança desse equipamento e do serviço de destino. Esta ferramenta não executa a diligência, nem regista atos no CITIUS.</p>
+  </section>
+</main>
+<footer><div class="wrap"><span>LegalTech Suite · Ferramenta independente de preparação</span><span><a href="index.html">Todas as ferramentas</a> · <a href="privacidade.html">Privacidade e limites</a></span></div></footer>
+<script src="assets/next.js"></script>
+<script src="assets/flow-core.js"></script>
+<script src="assets/flow.js"></script>
+<script src="assets/suite-nav.js"></script>
+<script src="assets/theme.js"></script>
+</body>
+</html>
