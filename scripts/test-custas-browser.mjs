@@ -35,7 +35,7 @@ try{
   return result.result?.result?.value;
  };
  await send("Runtime.enable");
- const source=fs.readFileSync("custas.html","utf8");
+ const source=fs.readFileSync("custas-tecnico.html","utf8");
  const html=source.replace(/<script\b[^>]*\bsrc=(["'])[^"']+\1[^>]*>\s*<\/script>/gi,"").replace(/<link\b[^>]*\bhref=(["'])https?:\/\/[^"']+\1[^>]*>/gi,"");
  await evaluate("document.open();document.write("+JSON.stringify(html)+");document.close();");
  const run=expression=>evaluate("(()=>{"+expression+"})()");
