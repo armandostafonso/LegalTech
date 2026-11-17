@@ -52,6 +52,7 @@ function harness(){
   ready(value="30000",uc="102"){
    this.set("ccValue",value);this.set("ccUC",uc);this.set("ccDate","2026-11-16");
    this.set("ccSecond","waived");this.set("ccDecision","autor");this.checked("ccVerified");
+   this.checked("ccAuthorDetail");this.checked("ccDefDetail");
   }
  };
 }
@@ -162,5 +163,28 @@ check("A página principal tem ligação às ferramentas técnicas",()=>{
  assert.match(html,/href="custas-tecnico\.html"/);
  assert.match(html,/artigo 14.º-A/);
  assert.match(html,/src="assets\/theme\.js"/);
+});
+
+check("Pagamento total do autor sem discriminar prestações",()=>{
+ const h=harness();h.ready();h.checked("ccAuthorDetail",false);h.set("ccAuthorTotal","510");h.click("ccCalculate");
+ assert.match(h.text("ccPaidTotal"),/510,00/);
+ assert.equal(h.rows()[0][3],"Por discriminar");
+ assert.equal(h.rows()[0][5],"Por discriminar");
+});
+check("Pagamento integral da AT após contestação, sem dupla contagem",()=>{
+ const h=harness();h.ready();h.checked("ccContested");h.change("ccContested");
+ h.checked("ccDefDetail",false);h.set("ccDefPrepay","normal");
+ h.set("ccDefTotal","510");h.set("ccDefFirst","255");h.click("ccCalculate");
+ assert.match(h.text("ccPaidTotal"),/510,00/);
+ assert.equal(h.rows()[1][3],"Por discriminar");
+});
+check("Multas e incidentes: opção desligada não cria rubricas",()=>{
+ const h=harness();h.ready();h.click("ccCalculate");
+ assert.equal(h.rows().length,2);
+});
+check("Multas e incidentes: assinalados sem rubrica geram aviso",()=>{
+ const h=harness();h.ready();h.checked("ccHasExtras");h.change("ccHasExtras");
+ h.click("ccCalculate");
+ assert.match(h.el("ccWarnings").children[1].children.map(x=>x.textContent).join(" "),/não foi identificada qualquer rubrica/);
 });
 console.log(passed+" testes do percurso simples A01 concluídos.");
