@@ -236,7 +236,7 @@ tr:last-child td{border-bottom:0}
   for(const x of extras){
    const f=x.inputs;
    const due=Number(f.due.value),paid=Number(f.paid.value);
-   if(!f.description.value.trim()||!f.basis.value.trim()||!Number.isFinite(due)||!Number.isFinite(paid)||due<0||paid<0||Math.round(due*100)!==due*100||Math.round(paid*100)!==paid*100)return {error:"Identifica cada multa ou incidente, o fundamento e os montantes válidos (duas casas decimais)."};
+   if(!f.description.value.trim()||!f.basis.value.trim()||!Number.isFinite(due)||!Number.isFinite(paid)||due<0||paid<0||Math.abs(Math.round(due*100)-due*100)>1e-6||Math.abs(Math.round(paid*100)-paid*100)>1e-6)return {error:"Identifica cada multa ou incidente, o fundamento e os montantes válidos (duas casas decimais)."};
    const dueCents=Math.round(due*100),paidCents=Math.round(paid*100);
    if(!Number.isSafeInteger(dueCents)||!Number.isSafeInteger(paidCents))return {error:"Montante de multa ou incidente demasiado elevado."};
    if(f.party.value==="outro")warnings.push("Responsável da rubrica «"+f.description.value.trim()+"» ainda por confirmar.");
@@ -268,8 +268,8 @@ tr:last-child td{border-bottom:0}
   const aPaid=author.paid,dPaid=defendant.paid;
   const extraRows=collectExtras(warnings);
   if(extraRows.error)return extraRows;
-  if(!author.detail)warnings.push("Autor: pagamento total registado sem discriminação por prestações; conferir imputação à primeira e à segunda prestação.");
-  if(contested&&!defendant.detail)warnings.push("Entidade demandada: pagamento total registado sem discriminação por prestações.");
+  if(!author.detail&&aPaid>0)warnings.push("Autor: pagamento total registado sem discriminação por prestações; conferir imputação à primeira e à segunda prestação.");
+  if(contested&&!defendant.detail&&dPaid>0)warnings.push("Entidade demandada: pagamento total registado sem discriminação por prestações.");
   if(!contested && dPaid>0)warnings.push("Existe pagamento preenchido para a entidade demandada sem contestação registada. Verificar a origem do movimento.");
   if(contested && defMode==="unknown")warnings.push("Confirmar o regime de pagamento prévio da entidade demandada, especialmente se for uma entidade pública.");
   if(contested && defMode==="special")warnings.push("Isenção, apoio judiciário ou outro regime da entidade demandada exigem análise específica.");
@@ -307,8 +307,8 @@ tr:last-child td{border-bottom:0}
   const rowsData=[a,b];
   const explanations=[
    "Valor fixado: "+money(value)+". Tabela I-A: "+units+" UC × "+money(uc)+" = "+money(base)+" por impulso, com 1.ª prestação de "+money(first)+(secondMode==="due"?" e 2.ª prestação de "+money(second)+".":secondMode==="waived"?". A 2.ª prestação foi assinalada como dispensada.":". A 2.ª prestação ainda está por verificar."),
-   "Autor: petição inicial apresentada; pagos "+money(aPaid)+" (1.ª: "+money(authorFirst)+"; 2.ª: "+money(authorSecond)+"). "+a.status+".",
-   contested?"Entidade demandada: contestação apresentada; pagos "+money(dPaid)+" (1.ª: "+money(defFirst)+"; 2.ª: "+money(defSecond)+"). "+b.status+".":"Entidade demandada: não apresentou contestação. Não se calcula taxa de justiça por esse impulso (RCP, artigo 6.º/1 e CPC, artigo 530.º/1).",
+   "Autor: petição inicial apresentada; pagos "+money(aPaid)+(author.detail?" (1.ª: "+money(authorFirst)+"; 2.ª: "+money(authorSecond)+")":" (sem discriminação por prestações)")+". "+a.status+".",
+   contested?"Entidade demandada: contestação apresentada; pagos "+money(dPaid)+(defendant.detail?" (1.ª: "+money(defFirst)+"; 2.ª: "+money(defSecond)+")":" (sem discriminação por prestações)")+". "+b.status+".":"Entidade demandada: não apresentou contestação. Não se calcula taxa de justiça por esse impulso (RCP, artigo 6.º/1 e CPC, artigo 530.º/1).",
    final==="unknown"?"A condenação final em custas fica por conferir.":final==="autor"?"Decisão de custas indicada: a cargo do autor.":final==="demandada"?"Decisão de custas indicada: a cargo da entidade demandada.":final==="ambos"?"Decisão de custas indicada: repartida entre as partes; falta quantificar o decaimento.":"Decisão final de custas com regime especial; análise complementar necessária."
   ];
   return {value,uc,units,base,first,second,secondMode,contested,defMode,a,b,rowsData,extraRows,warnings,calculatedDue,totalPaid,diff,explanations,process:el("ccProcess").value.trim().slice(0,80),startDate};
