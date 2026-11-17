@@ -341,6 +341,24 @@ tr:last-child td{border-bottom:0}
   const calculatedDue=a.first+(a.second??0)+b.first+(b.second??0)+extrasDue;
   const totalPaid=aPaid+(contested?dPaid:0)+extrasPaid;
   const diff=calculatedDue-totalPaid;
+  // Cada parte conserva o seu próprio saldo. Um excesso de A não compensa a diferença de B.
+  const partyAmounts=[
+   {party:"Autor",key:"autor",due:a.first+(a.second??0),paid:aPaid},
+   {party:"Entidade demandada",key:"demandada",due:b.first+(b.second??0),paid:contested?dPaid:0},
+   {party:"Outro / por identificar",key:"outro",due:0,paid:0}
+  ];
+  for(const extra of extraRows){
+   const item=partyAmounts.find(p=>p.key===extra.party);
+   if(item){item.due+=extra.due;item.paid+=extra.paid}
+  }
+  const partyTotals=partyAmounts.filter(p=>p.key!=="outro"||p.due||p.paid).map(p=>({
+   ...p,positive:Math.max(0,p.due-p.paid),excess:Math.max(0,p.paid-p.due),
+   provisional:secondMode==="unknown"&&(p.key==="autor"||(p.key==="demandada"&&contested)),
+   deferred:p.key==="demandada"&&contested&&["deferred","special"].includes(defMode)
+  }));
+  const sumPositive=partyTotals.reduce((sum,p)=>sum+p.positive,0);
+  const sumExcess=partyTotals.reduce((sum,p)=>sum+p.excess,0);
+  if(sumPositive>0&&sumExcess>0)warnings.push("Existem diferenças positivas e excessos em partes distintas: os valores não foram compensados entre si.");
   const rowsData=[a,b];
   const accountConclusion=accountNeed==="no"?"Dispensa de conta assinalada. Fundamento indicado: "+accountBasis+". O quadro abaixo é apenas uma conferência dos impulsos e pagamentos; não constitui conta final.":accountNeed==="yes"?"Foi assinalada a necessidade de conta. A imputação final exige aplicar a decisão, as dispensas e as regras do RCP. A diferença abaixo não é automaticamente a quantia a cobrar.":"Necessidade de conta por confirmar (artigo 29.º RCP). O quadro é apenas uma conferência dos impulsos e pagamentos.";
   if(shares)warnings.push("Decaimento indicado: autor "+(shares.author/100)+"%; entidade demandada "+(shares.defendant/100)+"%. A repartição não foi aplicada automaticamente aos impulsos ou multas.");
@@ -350,15 +368,19 @@ tr:last-child td{border-bottom:0}
    contested?"Entidade demandada: contestação apresentada; pagos "+money(dPaid)+(defendant.detail?" (1.ª: "+money(defFirst)+"; 2.ª: "+money(defSecond)+")":" (sem discriminação por prestações)")+". "+b.status+".":"Entidade demandada: não apresentou contestação. Não se calcula taxa de justiça por esse impulso (RCP, artigo 6.º/1 e CPC, artigo 530.º/1).",
    final==="unknown"?"A condenação final em custas fica por conferir.":final==="autor"?"Decisão de custas indicada: a cargo do autor.":final==="demandada"?"Decisão de custas indicada: a cargo da entidade demandada.":final==="ambos"?"Decisão de custas indicada: repartida entre as partes; falta quantificar o decaimento.":"Decisão final de custas com regime especial; análise complementar necessária."
   ];
-  return {value,uc,units,base,first,second,secondMode,contested,defMode,a,b,rowsData,extraRows,accountNeed,accountBasis,accountConclusion,shares,warnings,calculatedDue,totalPaid,diff,explanations,process:el("ccProcess").value.trim().slice(0,80),startDate};
+  return {value,uc,units,base,first,second,secondMode,contested,defMode,a,b,rowsData,extraRows,accountNeed,accountBasis,accountConclusion,shares,warnings,calculatedDue,totalPaid,diff,partyTotals,sumPositive,sumExcess,explanations,process:el("ccProcess").value.trim().slice(0,80),startDate};
  }
  function render(result){
   output=result;
   el("ccBaseTotal").textContent=money(result.base);
   el("ccPaidTotal").textContent=money(result.totalPaid);
-  el("ccDifference").textContent=result.secondMode==="unknown"||(result.contested&&["deferred","special"].includes(result.defMode))?"Por conferir":(result.diff<0?"−":"")+money(Math.abs(result.diff));
+  el("ccDifference").textContent=result.secondMode==="unknown"||(result.contested&&["deferred","special"].includes(result.defMode))?"Por conferir":money(result.sumPositive);
   el("ccAccountConclusion").textContent=result.accountConclusion;
   el("ccResultMeta").textContent=(result.process||"Processo sem referência")+" · Valor fixado "+money(result.value)+" · "+(result.startDate||"data por conferir");
+  const pbody=el("ccPartyRows");pbody.replaceChildren();
+  for(const p of result.partyTotals){
+   addRow(pbody,[p.party,money(p.due),money(p.paid),p.provisional?"Por conferir":p.deferred?"Regime especial":money(p.positive),money(p.excess)]);
+  }
   const tbody=el("ccRows");tbody.replaceChildren();
   for(const r of result.rowsData){
    if(r.act==="Não apresentada"){addRow(tbody,[r.name+" · sem contestação","—","—","—","—","—","Não aplicável"]);continue}
@@ -382,7 +404,7 @@ tr:last-child td{border-bottom:0}
   el("ccExportStatus").textContent="";
  }
  function reportText(r){
-  const lines=["LEGALTECH SUITE | QUADRO SIMPLES DE CONFERÊNCIA","PROPOSTA NÃO OFICIAL",r.process||"Processo sem referência","Valor fixado: "+money(r.value),"Taxa I-A por impulso: "+r.units+" UC = "+money(r.base),"", "Parte | Impulso | 1.ª devida | 1.ª paga | 2.ª devida | 2.ª paga | Diferença"];
+  const lines=["LEGALTECH SUITE | QUADRO SIMPLES DE CONFERÊNCIA","PROPOSTA NÃO OFICIAL",r.process||"Processo sem referência","Valor fixado: "+money(r.value),"Taxa I-A por impulso: "+r.units+" UC = "+money(r.base),"","SÍNTESE POR INTERVENIENTE (SEM COMPENSAÇÃO):",...r.partyTotals.map(p=>p.party+" | considerado "+money(p.due)+" | pago "+money(p.paid)+" | diferença positiva "+(p.provisional||p.deferred?"por conferir":money(p.positive))+" | excesso potencial "+money(p.excess)),"Total das diferenças positivas individuais: "+(r.secondMode==="unknown"||(r.contested&&["deferred","special"].includes(r.defMode))?"por conferir":money(r.sumPositive)),"Total de excessos potenciais: "+money(r.sumExcess),"","Parte | Impulso | 1.ª devida | 1.ª paga | 2.ª devida | 2.ª paga | Diferença"];
   for(const p of r.rowsData)lines.push([p.name,p.act,p.act==="Não apresentada"?"—":money(p.first),p.act==="Não apresentada"?"—":p.paidFirst===null?"Por discriminar":money(p.paidFirst),p.second===null?"Por conferir":p.second===0?"Dispensada":money(p.second),p.act==="Não apresentada"?"—":p.paidSecond===null?"Por discriminar":money(p.paidSecond),p.act==="Não apresentada"?"Não aplicável":r.secondMode==="unknown"?"Por conferir":p.prepay==="deferred"?"Dispensa prévia":p.prepay==="special"?"Regime especial":money(p.difference)].join(" | "));
   for(const x of r.extraRows)lines.push(extraName(x.kind)+" | "+x.description+" | devido "+money(x.due)+" | pago "+money(x.paid)+" | "+x.basis);
   lines.push("",r.accountConclusion,...r.explanations);
