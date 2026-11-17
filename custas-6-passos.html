@@ -93,7 +93,13 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
 <span class="kicker">Custas processuais · Método de seis etapas</span>
 <h1>Fazer a conta, em seis passos.</h1>
 <p class="lead">Um percurso orientado, inspirado no guião de formação da DGAJ enviado pelo utilizador. Selecciona a informação relevante, identifica os responsáveis e confere as quantias até obteres uma proposta de conferência. Não é o SCJ nem emite uma conta oficial.</p>
-<div class="toprow"><strong id="stepLabel">Passo 1 de 6</strong><span class="micro">Dados apenas na memória desta página. Não são enviados pelo módulo.</span></div>
+<div class="toprow"><strong id="stepLabel">Passo 1 de 6</strong><span class="micro">Os dados não são enviados pelo módulo; só são guardados quando descarregas um ficheiro.</span></div>
+<div class="actionrow not-print" aria-label="Guardar ou retomar um projecto de conta">
+ <button type="button" id="saveProject" class="secondary">Guardar trabalho (.json)</button>
+ <button type="button" id="openProject" class="secondary">Retomar trabalho guardado</button>
+ <input type="file" id="projectFile" accept=".json,application/json" hidden>
+ <span class="micro">Ficheiro local. Pode conter dados que introduziste; conserva-o em local seguro.</span>
+</div>
 <div class="progress" role="progressbar" aria-label="Progresso no assistente" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1" id="progress"><span id="progressFill"></span></div>
 <nav class="steps" aria-label="Os seis passos">
  <button class="step-tab" data-step-tab="0" type="button" aria-current="step"><b>01</b><span>Informação relevante</span></button>
@@ -263,6 +269,16 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   if(!list.length){parent.appendChild(el("div","empty","Ainda sem registos nesta secção."));return}
   for(const obj of list){
    parent.appendChild(rowLine(describe(obj).head,describe(obj).details,()=>{
+    if(target==="moveList"&&obj.kind==="guide"&&
+       data.movements.some(x=>x.kind==="cancel"&&x.personId===obj.personId&&x.ref===obj.ref)){
+     note("Retira primeiro a anulação da guia antes de remover a própria guia.");return
+    }
+    if(target==="moveList"&&obj.kind==="payment"&&obj.status==="confirmed"){
+     const same=data.movements.filter(x=>x.personId===obj.personId&&x.ref===obj.ref&&x.status==="confirmed");
+     const leftPaid=same.filter(x=>x.kind==="payment").reduce((v,x)=>v+x.cents,0)-obj.cents;
+     const refunded=same.filter(x=>x.kind==="refund").reduce((v,x)=>v+x.cents,0);
+     if(leftPaid<refunded){note("Retira primeiro as restituições relacionadas antes de retirar este pagamento.");return}
+    }
     list.splice(list.findIndex(i=>i.id===obj.id),1);renderAll();invalidate();
    }));
   }
@@ -274,6 +290,9 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
    const details="Isenção: "+(p.exemption==="yes"?"assinalada":p.exemption==="no"?"não identificada":"por verificar")+
     " · Apoio: "+p.aid+(p.share===null?" · Responsabilidade por conferir":" · Responsabilidade "+p.share+"%");
    const line=rowLine(p.label+" · "+p.role,details,()=>{
+    if(["charges","expenses","movements","sanctions"].some(key=>data[key].some(x=>x.personId===p.id))){
+     note("Este interveniente tem taxas, encargos, movimentos ou penalidades associados. Retira primeiro esses registos para preservar a integridade da conta.");return
+    }
     data.parties.splice(data.parties.indexOf(p),1);
     if(editingPartyId===p.id)resetPartyEditor();
     renderAll();invalidate();
@@ -480,7 +499,57 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   lines.push("A diferença aritmética não é uma dívida oficial; o resultado depende de verificação legal e documental.");
   return lines.join("\n");
  }
+
+ const savedFields=["processRef","jurisdiction","filingYear","ucValue","caseValue","caseDecision",
+    "dispensa","dispensaReason","ruling","probableCosts","advanceCharges"];
+ function projectSnapshot(){
+  const fields={};
+  for(const id of savedFields)fields[id]=String(byId(id).value);
+  fields.reviewed=byId("reviewed").checked;
+  return {format:"legaltech-custas-seis-passos",version:1,step,maxVisited,
+   fields,data:{parties:data.parties,charges:data.charges,expenses:data.expenses,
+    movements:data.movements,sanctions:data.sanctions}};
+ }
+ function saveProject(){
+  let file;
+  try{file=core.validateProject(projectSnapshot())}
+  catch(e){note("Não é possível guardar enquanto existirem registos inconsistentes: "+e.message);return}
+  const json=JSON.stringify(file,null,2);
+  const blob=new Blob([json],{type:"application/json;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const anchor=document.createElement("a");
+  anchor.href=url;anchor.download="legaltech-conta-seis-passos.json";
+  document.body.appendChild(anchor);anchor.click();anchor.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+  note("Trabalho preparado para guardar num ficheiro local JSON. O ficheiro contém os dados introduzidos; guarda-o em local seguro.");
+ }
+ async function loadProject(event){
+  const selected=event.target.files?.[0];
+  if(!selected)return;
+  try{
+   if(selected.size>450000)throw new Error("o ficheiro excede o tamanho permitido (450 kB).");
+   const project=core.validateProject(JSON.parse(await selected.text()));
+   for(const key of ["parties","charges","expenses","movements","sanctions"])
+    data[key].splice(0,data[key].length,...project.data[key]);
+   seq=Math.max(2,...Object.values(project.data).flat().map(o=>o.id))+1;
+   resetPartyEditor();
+   byId("filingYear").value=project.fields.filingYear;
+   updateYear();
+   for(const id of savedFields)byId(id).value=project.fields[id];
+   byId("reviewed").checked=project.fields.reviewed;
+   byId("chargeYear").value=project.fields.filingYear;
+   byId("chargeValue").value=project.fields.caseValue;
+   renderAll();invalidate();step=0;maxVisited=project.maxVisited;
+   navigate(project.step);
+   note("Projecto retomado na etapa "+(project.step+1)+". Confere a legislação e os comprovativos antes de utilizar os resultados.");
+  }catch(e){
+   note("Não foi possível abrir o projecto. Os dados anteriores foram mantidos quando o erro ocorreu na validação: "+e.message);
+  }finally{
+   event.target.value="";
+  }
+ }
  function personNameForReport(id){return personName(id)}
+
  function finish(){
   const state={...data,year:dateYear(),dispensa:byId("dispensa").value,agreement:byId("reviewed").checked};
   const result=core.summary(state);lastSummary=result;
@@ -511,6 +580,9 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  byId("caseValue").addEventListener("change",()=>{if(!byId("chargeValue").value)byId("chargeValue").value=byId("caseValue").value;invalidate()});
  for(const id of ["dispensa","dispensaReason","processRef","jurisdiction","ucValue","caseValue","caseDecision","ruling","reviewed","probableCosts","advanceCharges"])
   byId(id).addEventListener("change",invalidate);
+ byId("saveProject").addEventListener("click",saveProject);
+ byId("openProject").addEventListener("click",()=>byId("projectFile").click());
+ byId("projectFile").addEventListener("change",loadProject);
  byId("partyAdd").addEventListener("click",addParty);
  byId("partyCancel").addEventListener("click",()=>{resetPartyEditor();note("Edição cancelada.");});
  byId("suggestIA").addEventListener("click",suggestIA);
