@@ -216,4 +216,30 @@ check("Incidente sem identificação e fundamento é bloqueado",()=>{
  h.click("ccCalculate");
  assert.match(h.text("ccStatus"),/Identifica cada multa ou incidente/);
 });
+
+check("Dispensa de conta sem fundamento é rejeitada",()=>{
+ const h=harness();h.ready();h.set("ccAccountNeed","no");h.click("ccCalculate");
+ assert.match(h.text("ccStatus"),/fundamento ou a observação/);
+});
+check("Dispensa de conta fundamentada fica expressa na conclusão",()=>{
+ const h=harness();h.ready();h.set("ccAccountNeed","no");
+ h.set("ccAccountBasis","Despacho e artigo 29.º do RCP");
+ h.click("ccCalculate");
+ assert.match(h.text("ccAccountConclusion"),/Dispensa de conta assinalada/);
+ assert.match(h.text("ccAccountConclusion"),/artigo 29.º/);
+});
+check("Necessidade de conta não converte diferença aritmética em dívida",()=>{
+ const h=harness();h.ready();h.set("ccAccountNeed","yes");h.click("ccCalculate");
+ assert.match(h.text("ccAccountConclusion"),/não é automaticamente a quantia a cobrar/);
+});
+check("Repartição de custas a 70 e 30 por cento é informativa",()=>{
+ const h=harness();h.ready();h.set("ccDecision","ambos");h.change("ccDecision");
+ h.set("ccShareAuthor","70");h.set("ccShareDef","30");h.click("ccCalculate");
+ assert.match(h.el("ccWarnings").children[1].children.map(x=>x.textContent).join(" "),/autor 70%/);
+});
+check("Repartição de custas com percentagens inconsistentes é bloqueada",()=>{
+ const h=harness();h.ready();h.set("ccDecision","ambos");h.change("ccDecision");
+ h.set("ccShareAuthor","70");h.set("ccShareDef","20");h.click("ccCalculate");
+ assert.match(h.text("ccStatus"),/totalizar 100%/);
+});
 console.log(passed+" testes do percurso simples A01 concluídos.");
