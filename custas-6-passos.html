@@ -198,6 +198,10 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
 </section>
 <section data-step-panel="5" aria-labelledby="title6" hidden>
  <div class="step-heading"><span class="step-round">06</span><div><h2 id="title6">Finalização</h2><p class="sub">Confere o que foi registado, as quantias por responsável e as ressalvas necessárias antes de qualquer conta no sistema oficial.</p></div></div>
+ <div class="fields not-print">
+  <div class="field"><label for="probableCosts">Saldo de custas prováveis (€), se aplicável</label><input id="probableCosts" type="number" min="0" step="0.01" value="0"><small>Registo informativo a conferir no sistema oficial.</small></div>
+  <div class="field"><label for="advanceCharges">Pagamento antecipado de encargos (€), se aplicável</label><input id="advanceCharges" type="number" min="0" step="0.01" value="0"><small>Não é automaticamente descontado sem verificação da sua imputação.</small></div>
+ </div>
  <label class="check not-print"><input type="checkbox" id="reviewed"> Conferi os autos, a decisão, os documentos de pagamento e as versões legais aplicáveis.</label>
  <div class="actionrow not-print"><button class="primary" type="button" id="finish">Preparar quadro de conferência</button><button type="button" class="secondary" id="copyReport" disabled>Copiar relatório</button><button type="button" class="secondary" id="printReport" disabled>Imprimir / guardar PDF</button></div>
  <div id="finalResult" hidden>
@@ -334,6 +338,9 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
    if(y===null||y<2009||y>2099||value===null||value<=0||uc===null||uc<=0){
     note("Para avançar, indica ano, valor da causa e UC válidos. A UC de 2009 exige verificação manual.");return
    }
+   if(byId("dispensa").value==="yes"&&byId("dispensaReason").value==="none"){
+    note("Selecciona o pressuposto de dispensa de conta que foi confirmado nos autos.");return
+   }
   }
   if(target>maxVisited+1){note("Segue as etapas pela ordem indicada.");return}
   step=target;maxVisited=Math.max(maxVisited,step);
@@ -465,7 +472,9 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   lines.push("","PASSO 6 · RESUMO INDIVIDUAL");
   for(const a of result.accounts)lines.push(a.label+" | taxa "+eur(a.charges)+" | encargos "+eur(a.expenses)+" | multas "+eur(a.sanctions)+
    " | pagamentos líquidos "+eur(a.netPayments)+" | diferença positiva "+eur(a.positive)+" | excesso potencial "+eur(a.excess));
-  lines.push("","Total de diferenças positivas sem compensar entre responsáveis: "+eur(result.sums.positive));
+  lines.push("","Custas prováveis indicadas: "+(byId("probableCosts").value||"0")+" €","Adiantamentos para encargos indicados: "+(byId("advanceCharges").value||"0")+" €",
+   "Estes valores são informativos e não foram imputados ou compensados automaticamente.",
+   "Total de diferenças positivas sem compensar entre responsáveis: "+eur(result.sums.positive));
   lines.push(result.accountRequired?"Necessidade de conta a validar (RCP 29.º).":"Dispensa de conta indicada: verificar e documentar pressupostos (RCP 29.º e Portaria 419-A/2009, 7.º-A).");
   lines.push("","PONTOS POR CONFERIR",...result.warnings.map(x=>"• "+x));
   lines.push("A diferença aritmética não é uma dívida oficial; o resultado depende de verificação legal e documental.");
@@ -475,6 +484,12 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  function finish(){
   const state={...data,year:dateYear(),dispensa:byId("dispensa").value,agreement:byId("reviewed").checked};
   const result=core.summary(state);lastSummary=result;
+  const probable=core.parseCents(byId("probableCosts").value),advance=core.parseCents(byId("advanceCharges").value);
+  if(probable===null||advance===null){
+   note("Corrige o saldo de custas prováveis e o adiantamento de encargos (até duas casas decimais).");return
+  }
+  if(probable||advance)result.warnings.push("Custas prováveis ou adiantamentos indicados: confirmar imputação e relevância na conta oficial; não foram deduzidos automaticamente.");
+  if(!byId("ruling").value.trim())result.warnings.push("Falta transcrever ou resumir a decisão judicial sobre a responsabilidade em custas.");
   const body=byId("finalRows");body.replaceChildren();
   for(const a of result.accounts)body.appendChild(tr([a.label,eur(a.charges),eur(a.expenses),eur(a.sanctions),
    eur(a.netPayments),eur(a.positive),eur(a.excess)]));
@@ -494,7 +509,7 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  }
  byId("filingYear").addEventListener("input",updateYear);
  byId("caseValue").addEventListener("change",()=>{if(!byId("chargeValue").value)byId("chargeValue").value=byId("caseValue").value;invalidate()});
- for(const id of ["dispensa","dispensaReason","processRef","jurisdiction","ucValue","caseValue","caseDecision","ruling","reviewed"])
+ for(const id of ["dispensa","dispensaReason","processRef","jurisdiction","ucValue","caseValue","caseDecision","ruling","reviewed","probableCosts","advanceCharges"])
   byId(id).addEventListener("change",invalidate);
  byId("partyAdd").addEventListener("click",addParty);
  byId("partyCancel").addEventListener("click",()=>{resetPartyEditor();note("Edição cancelada.");});
