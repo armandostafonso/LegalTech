@@ -31,6 +31,7 @@ Suite integrada de ferramentas jurídicas práticas em português de Portugal. P
 | Tramitação TAF | `tramitação-taf.html` | Nove roteiros: intimações, ações, impugnações, cautelares, recursos, pré-contratual e reclamações OEF |
 | Prazos CPA e CPPT | `regimes.html` | Contagem auxiliar em dias com regras dos artigos 87.º CPA e 20.º/1 CPPT |
 | Conferência de custas (A01) | `custas.html` | Taxas, encargos, contas individualizadas multissujeito, benefícios e reconciliação financeira |
+| Conta de custas em 6 passos | `custas-6-passos.html` | Assistente guiado baseado no método de seis etapas do guião DGAJ: informação, responsabilidade, taxas, encargos, multas e finalização |
 | Privacidade | `privacidade.html` | Informação sobre limites, dependências e tratamento local |
 | Agenda local | `agenda.html` | Datas previamente conferidas, exportação ICS e CSV, sem armazenamento persistente |
 
@@ -89,6 +90,17 @@ A workflow `Verificar LegalTech` executa `node scripts/validate-site.mjs` para v
 2. Auditoria técnica da anonimização, incluindo inspeção do PDF de saída.
 3. Acessibilidade e testes de utilização em telemóveis.
 4. Documentação de versões legais e de alterações às regras de cálculo.
+
+
+## Conta de custas em seis passos
+
+O percurso `custas-6-passos.html` é uma **ferramenta experimental e não oficial**, criada a partir da metodologia do guião «Como fazer a conta em seis passos» do Centro de Formação da DGAJ, fornecido pelo utilizador. Não representa nem replica o SCJ e não incorpora o documento original.
+
+As seis etapas são: (1) seleção da informação relevante e verificação prévia dos pressupostos de dispensa da conta; (2) responsabilidade por custas, com fichas de intervenientes e referência à decisão; (3) processos autónomos e taxas de justiça; (4) encargos e outros pagamentos, com distinção entre guias emitidas e valores pagos; (5) multas, penalidades e coimas; (6) finalização com saldos individuais, avisos, relatório copiável e impressão.
+
+**Limites:** os montantes jurídicos devem ser conferidos pelo utilizador, só há sugestão aritmética da Tabela I-A até 275 000 €, o montante devido por recursos e incidentes é manual e as alterações legais intra-anuais não são inferidas de um ano isolado. Os pagamentos só entram nos saldos quando marcados como confirmados. Os dados são mantidos exclusivamente em memória durante a utilização do módulo e perdem-se ao actualizar a página. Não utilizar com dados confidenciais. As diferenças apuradas não são certidões de dívida nem contas judiciais.
+
+Executar `node scripts/test-custas-6-passos.mjs` para testar o núcleo aritmético, a composição dos saldos e a existência dos seis passos. O workflow `.github/workflows/custas-tests.yml` executa estes testes em conjunto com os testes das versões simples e técnica.
 
 ## Desenvolvimento
 
