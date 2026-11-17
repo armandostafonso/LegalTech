@@ -52,6 +52,11 @@
     }
    }
   }
+  for(const ch of charges){
+   if(ch.year===2009||ch.year===2012||ch.year===2026)
+    warnings.push("Processo autónomo "+(ch.ref||ch.impulse||"sem referência")+": confirmar a data e o regime legal do ano "+ch.year+".");
+   if(ch.year>2026)warnings.push("Processo autónomo "+(ch.ref||ch.impulse||"sem referência")+": UC futura por verificar.");
+  }
   for(const movement of movements){
    const a=byId.get(movement.personId);
    if(!a){warnings.push("Movimento financeiro sem responsável válido.");continue}
@@ -69,7 +74,16 @@
    if(a.unverified)warnings.push(a.label+": "+a.unverified+" rubrica(s) sem confirmação documental.");
    if(a.aid==="full"||a.exemption==="yes")
     warnings.push(a.label+": apoio judiciário ou isenção assinalados; não presumir exigibilidade.");
+   if(a.aid==="unknown"||a.exemption==="unknown")warnings.push(a.label+": situação de isenção ou apoio judiciário por confirmar.");
    if(a.netPayments<0)warnings.push(a.label+": restituições superiores aos pagamentos confirmados.");
+  }
+  const allocated=accounts.filter(a=>a.share!==null&&a.share!==undefined);
+  if(allocated.length===accounts.length&&allocated.length>0){
+   const sum=allocated.reduce((n,a)=>n+Number(a.share),0);
+   if(!Number.isFinite(sum)||Math.abs(sum-100)>0.0001)
+    warnings.push("As percentagens de responsabilidade indicadas não totalizam 100 %.");
+  }else if(allocated.length>0){
+   warnings.push("A repartição da responsabilidade é incompleta. Conferir decisão judicial.");
   }
   if(!accounts.length)warnings.push("Ainda não foram identificados responsáveis.");
   if(!charges.length)warnings.push("Não existem taxas de justiça ou processos autónomos registados.");
