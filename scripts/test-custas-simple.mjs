@@ -15,7 +15,7 @@ function harness(){
  class Element {
   constructor(tag,source=""){
    this.tagName=tag.toUpperCase();this.value=(source.match(/\bvalue="([^"]*)"/)||[])[1]||"";
-   this.checked=false;this.listeners={};this.children=[];this.className=(source.match(/\bclass="([^"]*)"/)||[])[1]||"";
+   this.checked=false;this.listeners={};this.children=[];this.style={};this.className=(source.match(/\bclass="([^"]*)"/)||[])[1]||"";
    this.textContent="";this.hidden=false;this.disabled=false;
    this.classList={toggle:(name,force)=>{const tokens=new Set(this.className.split(/\s+/).filter(Boolean));
     if(force===undefined? !tokens.has(name):force)tokens.add(name);else tokens.delete(name);
@@ -186,5 +186,33 @@ check("Multas e incidentes: assinalados sem rubrica geram aviso",()=>{
  const h=harness();h.ready();h.checked("ccHasExtras");h.change("ccHasExtras");
  h.click("ccCalculate");
  assert.match(h.el("ccWarnings").children[1].children.map(x=>x.textContent).join(" "),/não foi identificada qualquer rubrica/);
+});
+
+check("Incidente identificado entra no quadro com devido e pago",()=>{
+ const h=harness();h.ready();h.checked("ccHasExtras");h.change("ccHasExtras");
+ h.click("ccExtraAdd");
+ h.set("ccExtra1description","Incidente de intervenção de terceiros");
+ h.set("ccExtra1basis","Decisão de 12-11-2026, RCP Tabela II");
+ h.set("ccExtra1due","102.29");h.set("ccExtra1paid","50");
+ h.click("ccCalculate");
+ assert.equal(h.rows().length,3);
+ assert.match(h.rows()[2][0],/Incidente de intervenção de terceiros/);
+ assert.match(h.rows()[2][1],/102,29/);
+ assert.match(h.rows()[2][5],/50,00/);
+});
+check("Multa identificada entra na tabela com fundamento",()=>{
+ const h=harness();h.ready();h.checked("ccHasExtras");h.change("ccHasExtras");
+ h.click("ccExtraAdd");
+ h.set("ccExtra1kind","fine");h.set("ccExtra1description","Multa processual fixada");
+ h.set("ccExtra1basis","Despacho de 10-11-2026");
+ h.set("ccExtra1due","204");h.set("ccExtra1paid","0");
+ h.click("ccCalculate");
+ assert.match(h.rows()[2][0],/Multa/);
+ assert.match(h.el("ccObservations").children.map(x=>x.textContent).join(" "),/Despacho de 10-11-2026/);
+});
+check("Incidente sem identificação e fundamento é bloqueado",()=>{
+ const h=harness();h.ready();h.checked("ccHasExtras");h.change("ccHasExtras");h.click("ccExtraAdd");
+ h.click("ccCalculate");
+ assert.match(h.text("ccStatus"),/Identifica cada multa ou incidente/);
 });
 console.log(passed+" testes do percurso simples A01 concluídos.");
