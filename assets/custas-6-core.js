@@ -23,6 +23,36 @@
   const units=iaBrackets.find(([limit])=>baseCents<=limit*100)?.[1];
   return units?{units,cents:units*ucCents}:null;
  }
+
+ function validISODate(value){
+  if(typeof value!=="string"||!/^(?:19|20)\d{2}-\d{2}-\d{2}$/.test(value))return false;
+  const d=new Date(value+"T00:00:00Z");
+  return Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===value;
+ }
+ function regime2026(filingYear,filingDate="",actDate=""){
+  const y=Number(filingYear),known=validISODate(filingDate)&&Number(filingDate.slice(0,4))===y;
+  const article6=y<2026?"anterior":y>2026?"novo (confirmar alterações posteriores)":
+   known?(filingDate<"2026-12-01"?"anterior":"novo"):"indeterminado";
+  return {article6,otherActs:validISODate(actDate)?(actDate<"2026-12-01"?"anterior":"novo"):"indeterminado",filingDateValid:known};
+ }
+ function quoteTableI(options){
+  const {table,baseCents,ucCents,year,startDate=""}=options||{};
+  if(table!=="IA"&&table!=="IB")return {ok:false,reason:"Apenas as colunas I-A e I-B estão implementadas."};
+  if(!Number.isSafeInteger(year)||year<2012||year>2026)
+   return {ok:false,reason:"Regime histórico ou futuro não automatizado: confirmar o cálculo manualmente."};
+  if(year===2012&&(!validISODate(startDate)||startDate<"2012-03-29"))
+   return {ok:false,reason:"Em 2012, confirmar data posterior a 28-03-2012 e regras transitórias."};
+  if(startDate&&(!validISODate(startDate)||Number(startDate.slice(0,4))!==year))
+   return {ok:false,reason:"A data de início é inválida ou não coincide com o ano."};
+  const r=suggestIA(baseCents,ucCents);
+  if(!r)return {ok:false,reason:"Valor fora dos escalões até 275.000 € ou UC inválida; conferir remanescente."};
+  const totalCents=table==="IA"?r.cents:Math.round(r.cents/2);
+  const firstCents=table==="IA"?Math.floor(totalCents/2):null;
+  return {ok:true,table,units:table==="IA"?r.units:r.units/2,totalCents,firstCents,
+   secondCents:table==="IA"?totalCents-firstCents:null,
+   note:table==="IA"?"Segunda prestação sujeita ao artigo 14.º-A do RCP.":
+   "A coluna I-B não é dividida em duas prestações nesta rotina."};
+ }
  function normalizeRows(input){
   return Array.isArray(input)?input:[];
  }
@@ -53,6 +83,10 @@
    }
   }
   for(const ch of charges){
+   if(ch.startDate&&(!validISODate(ch.startDate)||Number(ch.startDate.slice(0,4))!==ch.year))
+    warnings.push("Processo autónomo "+(ch.ref||ch.impulse||"sem referência")+": data de início incompatível com o ano.");
+   if(ch.year===2012&&!ch.startDate)
+    warnings.push("Processo autónomo "+(ch.ref||ch.impulse||"sem referência")+": confirmar data de início em 2012 (marco de 29-03-2012).");
    if(ch.year===2009||ch.year===2012||ch.year===2026)
     warnings.push("Processo autónomo "+(ch.ref||ch.impulse||"sem referência")+": confirmar a data e o regime legal do ano "+ch.year+".");
    if(ch.year>2026)warnings.push("Processo autónomo "+(ch.ref||ch.impulse||"sem referência")+": UC futura por verificar.");
@@ -95,6 +129,12 @@
   if(year===2012)warnings.push("Em 2012 existem alterações legais intra-anuais: confirmar a data exacta para definir o regime.");
   if(year===2026)warnings.push("Em 2026 há alterações legais com efeitos em datas diferentes: confirmar o regime de cada impulso.");
   if(year>2026)warnings.push("Valor da UC e versão do RCP após 2026 exigem confirmação.");
+  if(year===2026&&regime2026(year,data.filingDate||"").article6==="indeterminado")
+   warnings.push("Acção de 2026: indicar a data exacta de propositura para determinar a aplicação do novo artigo 6.º do RCP.");
+  if(data.filingDate&&(!validISODate(data.filingDate)||Number(data.filingDate.slice(0,4))!==year))
+   warnings.push("Data exacta de propositura não corresponde ao ano indicado.");
+  if(data.dispensa==="yes"&&sums.positive>0)
+   warnings.push("Dispensa assinalada, mas existem diferenças positivas: rever pressupostos e exigibilidade antes de documentar a dispensa.");
   if(data.dispensa==="yes")warnings.push("Foi indicada dispensa de elaboração da conta: documentar os pressupostos nos autos (RCP 29.º e Portaria 419-A/2009, art. 7.º-A).");
   if(data.dispensa==="unknown")warnings.push("Falta verificar se existem pressupostos de dispensa da conta (RCP 29.º).");
   if(data.agreement!==true)warnings.push("Falta confirmar a conferência integral dos autos e dos comprovativos.");
@@ -140,8 +180,10 @@
     year:(()=>{if(!Number.isInteger(x.year)||x.year<2009||x.year>2099)fail("ano do impulso inválido.");return x.year})(),
     baseCents:integer(x.baseCents,true),cents:integer(x.cents),
     basis:cleanString(x.basis,180,true),ref:cleanString(x.ref,75),
-    verified:x.verified===true
+    startDate:cleanString(x.startDate??"",10),verified:x.verified===true
   }));
+  for(const x of charges)if(x.startDate&&(!validISODate(x.startDate)||Number(x.startDate.slice(0,4))!==x.year))
+   fail("data do processo autónomo inválida ou incompatível com o ano.");
   const expenses=file.data.expenses.map(x=>({
    id:entryId(x.id),personId:personId(x.personId),cents:integer(x.cents,true),
    label:cleanString(x.label,110,true),basis:cleanString(x.basis,160,true),
@@ -175,17 +217,19 @@
    if(refunded>paid)fail("restituição confirmada superior aos pagamentos.");
   }
   const names=["processRef","jurisdiction","filingYear","ucValue","caseValue","caseDecision",
-    "dispensa","dispensaReason","ruling","probableCosts","advanceCharges","reviewed"];
+    "dispensa","dispensaReason","ruling","probableCosts","advanceCharges","filingDate","reviewed"];
   const fields={};
   for(const key of names){
    const val=file.fields[key];
    if(key==="reviewed"){fields[key]=val===true;continue}
-   fields[key]=cleanString(val,key==="ruling"?600:key==="caseDecision"?180:key==="processRef"?80:40);
+   fields[key]=cleanString(key==="filingDate"&&val===undefined?"":val,key==="ruling"?600:key==="caseDecision"?180:key==="processRef"?80:40);
   }
   inSet(fields.jurisdiction,["administrativo","tributario","civil","outro"]);
   inSet(fields.dispensa,["unknown","yes","no"]);
   inSet(fields.dispensaReason,["none","noDebt","aid","insolvency","execution"]);
   if(fields.filingYear&&(!/^\d{4}$/.test(fields.filingYear)||+fields.filingYear<2009||+fields.filingYear>2099))fail("ano da acção inválido.");
+  if(fields.filingDate&&(!validISODate(fields.filingDate)||Number(fields.filingDate.slice(0,4))!==Number(fields.filingYear)))
+   fail("data de propositura incompatível com o ano da acção.");
   for(const key of ["ucValue","caseValue","probableCosts","advanceCharges"])
    if(fields[key]!==""&&parseCents(fields[key])===null)fail("campo monetário inválido.");
   const step=file.step===undefined?0:file.step;
@@ -196,5 +240,5 @@
    data:{parties:people,charges,expenses,movements,sanctions},fields};
  }
 
- return Object.freeze({ucForYear,parseCents,suggestIA,summary,validateProject,iaBrackets,yearMin,yearMax});
+ return Object.freeze({ucForYear,parseCents,suggestIA,quoteTableI,regime2026,validISODate,summary,validateProject,iaBrackets,yearMin,yearMax});
 });
