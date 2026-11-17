@@ -12,6 +12,21 @@ async function open(name){
 async function check(name,fn){
  try{await fn();console.log("✓",name)}catch(e){errors.push(name+": "+String(e));console.error("✗",name,e)}
 }
+await check("Sobre: proposta de valor, privacidade e navegação",async()=>{
+ await open("sobre.html");
+ if(!(await page.locator("h1").innerText()).includes("Tecnologia ao serviço"))throw Error("Título institucional em falta");
+ if(await page.locator(".about-grid .about-card").count()!==3)throw Error("Três princípios institucionais esperados");
+ if(await page.locator(".about-trust-grid .about-card").count()!==4)throw Error("Informação de transparência incompleta");
+ if(await page.locator('a[href="privacidade.html"]').count()<1)throw Error("Ligação a privacidade em falta");
+ if(!(await page.locator("main").innerText()).includes("projeto independente"))throw Error("Independência não declarada");
+ const previous=await page.evaluate(()=>document.documentElement.dataset.theme);
+ const switcher=page.locator(".lt-theme-control").first();
+ await switcher.click();
+ const next=await page.evaluate(()=>document.documentElement.dataset.theme);
+ if(previous===next)throw Error("Alternância de tema falhou");
+ await page.reload();
+ if(await page.evaluate(()=>document.documentElement.dataset.theme)!==next)throw Error("Preferência de tema não conservada");
+});
 await check("Painel de trabalho: pesquisa, filtros e privacidade",async()=>{
  await open("workspace.html");
  if(await page.locator(".workspace-tool").count()!==22)throw Error("Catálogo do painel incompleto");
