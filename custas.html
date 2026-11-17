@@ -206,7 +206,8 @@ tr:last-child td{border-bottom:0}
    let status=difference>0?"Diferença a conferir":difference<0?"Excesso potencial a conferir":"Sem diferença aritmética";
    if(secondMode==="unknown")status="Parcial: 2.ª por confirmar";
    if(prepay==="deferred")status="Dispensa prévia, art. 15.º; não exigível antecipadamente";
-   return {name,act,total:base,first,second:secondMode==="due"?second:secondMode==="waived"?0:null,paid,paidFirst,paidSecond,difference,status};
+   if(prepay==="special")status="Regime especial a conferir";
+   return {name,act,total:base,first,second:secondMode==="due"?second:secondMode==="waived"?0:null,paid,paidFirst,paidSecond,prepay,difference,status};
   };
   const a=impulse("Autor","Petição inicial",aPaid,authorFirst,authorSecond,"normal");
   const b=contested?impulse("Entidade demandada","Contestação",dPaid,defFirst,defSecond,defMode):impulse("Entidade demandada","Não apresentada",0,0,0,"normal");
@@ -231,18 +232,18 @@ tr:last-child td{border-bottom:0}
    contested?"Entidade demandada: contestação apresentada; pagos "+money(dPaid)+" (1.ª: "+money(defFirst)+"; 2.ª: "+money(defSecond)+"). "+b.status+".":"Entidade demandada: não apresentou contestação. Não se calcula taxa de justiça por esse impulso (RCP, artigo 6.º/1 e CPC, artigo 530.º/1).",
    final==="unknown"?"A condenação final em custas fica por conferir.":final==="autor"?"Decisão de custas indicada: a cargo do autor.":final==="demandada"?"Decisão de custas indicada: a cargo da entidade demandada.":final==="ambos"?"Decisão de custas indicada: repartida entre as partes; falta quantificar o decaimento.":"Decisão final de custas com regime especial; análise complementar necessária."
   ];
-  return {value,uc,units,base,first,second,secondMode,contested,a,b,rowsData,warnings,calculatedDue,totalPaid,diff,explanations,process:el("ccProcess").value.trim().slice(0,80),startDate};
+  return {value,uc,units,base,first,second,secondMode,contested,defMode,a,b,rowsData,warnings,calculatedDue,totalPaid,diff,explanations,process:el("ccProcess").value.trim().slice(0,80),startDate};
  }
  function render(result){
   output=result;
   el("ccBaseTotal").textContent=money(result.base);
   el("ccPaidTotal").textContent=money(result.totalPaid);
-  el("ccDifference").textContent=result.secondMode==="unknown"?"Por conferir":(result.diff<0?"−":"")+money(Math.abs(result.diff));
+  el("ccDifference").textContent=result.secondMode==="unknown"||(result.contested&&["deferred","special"].includes(result.defMode))?"Por conferir":(result.diff<0?"−":"")+money(Math.abs(result.diff));
   el("ccResultMeta").textContent=(result.process||"Processo sem referência")+" · Valor fixado "+money(result.value)+" · "+(result.startDate||"data por conferir");
   const tbody=el("ccRows");tbody.replaceChildren();
   for(const r of result.rowsData){
    if(r.act==="Não apresentada"){addRow(tbody,[r.name+" · sem contestação","—","—","—","—","—","Não aplicável"]);continue}
-   addRow(tbody,[r.name+" · "+r.act,money(r.total),money(r.first),money(r.paidFirst),r.second===null?"Por conferir":r.second===0?"Dispensada":money(r.second),money(r.paidSecond),result.secondMode==="unknown"?"Por conferir":r.difference>0?money(r.difference)+" a conferir":r.difference<0?money(Math.abs(r.difference))+" excesso":"0,00 €"]);
+   addRow(tbody,[r.name+" · "+r.act,money(r.total),money(r.first),money(r.paidFirst),r.second===null?"Por conferir":r.second===0?"Dispensada":money(r.second),money(r.paidSecond),result.secondMode==="unknown"?"Por conferir":r.prepay==="deferred"?"Dispensa prévia · art. 15.º":r.prepay==="special"?"Regime especial":r.difference>0?money(r.difference)+" a conferir":r.difference<0?money(Math.abs(r.difference))+" excesso":"0,00 €"]);
   }
   el("ccObservations").replaceChildren();
   for(const line of result.explanations)el("ccObservations").appendChild(text("p",line));
@@ -261,7 +262,7 @@ tr:last-child td{border-bottom:0}
  }
  function reportText(r){
   const lines=["LEGALTECH SUITE | QUADRO SIMPLES DE CONFERÊNCIA","PROPOSTA NÃO OFICIAL",r.process||"Processo sem referência","Valor fixado: "+money(r.value),"Taxa I-A por impulso: "+r.units+" UC = "+money(r.base),"", "Parte | Impulso | 1.ª devida | 1.ª paga | 2.ª devida | 2.ª paga | Diferença"];
-  for(const p of r.rowsData)lines.push([p.name,p.act,p.act==="Não apresentada"?"—":money(p.first),p.act==="Não apresentada"?"—":money(p.paidFirst),p.second===null?"Por conferir":p.second===0?"Dispensada":money(p.second),p.act==="Não apresentada"?"—":money(p.paidSecond),p.act==="Não apresentada"?"Não aplicável":r.secondMode==="unknown"?"Por conferir":money(p.difference)].join(" | "));
+  for(const p of r.rowsData)lines.push([p.name,p.act,p.act==="Não apresentada"?"—":money(p.first),p.act==="Não apresentada"?"—":money(p.paidFirst),p.second===null?"Por conferir":p.second===0?"Dispensada":money(p.second),p.act==="Não apresentada"?"—":money(p.paidSecond),p.act==="Não apresentada"?"Não aplicável":r.secondMode==="unknown"?"Por conferir":p.prepay==="deferred"?"Dispensa prévia":p.prepay==="special"?"Regime especial":money(p.difference)].join(" | "));
   lines.push("",...r.explanations);
   if(r.warnings.length)lines.push("PONTOS A CONFERIR:",...r.warnings.map(x=>"• "+x));
   lines.push("Fundamento: RCP, artigos 6.º/1, 11.º, 13.º/2, 14.º, 14.º-A e 15.º quando aplicável, Tabela I-A; CPC, artigos 527.º e 530.º/1; RCP, artigos 29.º e 30.º.","A diferença aritmética não equivale necessariamente a dívida ou restituição. Não é uma conta judicial oficial.");
