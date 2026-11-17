@@ -739,4 +739,64 @@ check("Multissujeito: exportação CSV neutraliza nome iniciado por fórmula",()
 check("Multissujeito: limpeza integral dos testes de segurança",()=>{
  click("reset");assert.equal(read("multiPeopleCount"),"0");assert.match(els.get("multiMoveRows").innerHTML,/Sem movimentos/);
 });
+
+check("Vista simples: percurso em três etapas inicia no processo",()=>{
+ assert.equal(document.documentElement.dataset.custasView,"simples");
+ assert.equal(document.documentElement.dataset.custasStep,"1");
+ assert.match(read("custasStepHint"),/Identifica o processo/);
+});
+check("Vista simples: etapa 2 orienta taxas e preenche valor da causa para confirmar",()=>{
+ put("value","30000");click("custasNext");
+ assert.equal(document.documentElement.dataset.custasStep,"2");
+ assert.equal(els.get("autoValue").value,"30000");
+ assert.match(read("autoResult"),/Confirma se coincidem/);
+});
+check("Vista simples: verificação mínima de isenção mantém bloqueio enquanto desconhecida",()=>{
+ assert.equal(els.get("custasSimpleExemption").value,"unknown");
+ put("custasSimpleExemption","none");
+ els.get("custasSimpleExemption").listeners.change();
+ assert.equal(els.get("pa_exemption").value,"none");
+});
+check("Vista simples: confirmação mínima de apoio judiciário altera só a parte indicada",()=>{
+ put("custasSimpleAid","none");els.get("custasSimpleAid").listeners.change();
+ assert.equal(els.get("pa_aid").value,"none");
+ assert.equal(els.get("pb_aid").value,"unknown");
+});
+check("Vista simples: não apaga uma isenção jurídica anteriormente assinalada",()=>{
+ put("pa_exemption","mp");
+ put("custasSimpleExemption","none");els.get("custasSimpleExemption").listeners.change();
+ assert.equal(els.get("pa_exemption").value,"mp");
+ assert.match(read("custasSimpleLegalNotice"),/Não é possível sobrepor/);
+});
+check("Vista simples: seleccionar outra parte refresca a confirmação",()=>{
+ put("autoParty","b");click("custasStep2");
+ assert.equal(els.get("custasSimpleExemption").value,"unknown");
+ assert.equal(els.get("custasSimpleAid").value,"unknown");
+ put("custasSimpleExemption","none");els.get("custasSimpleExemption").listeners.change();
+ assert.equal(els.get("pb_exemption").value,"none");
+ assert.equal(els.get("pa_exemption").value,"mp");
+});
+check("Vista simples: registos financeiros adicionais podem abrir e fechar",()=>{
+ assert.equal(document.documentElement.dataset.custasFinance,"fechado");
+ click("custasFinance");
+ assert.equal(document.documentElement.dataset.custasFinance,"aberto");
+ assert.match(read("custasFinance"),/Ocultar registos/);
+ click("custasFinance");
+ assert.equal(document.documentElement.dataset.custasFinance,"fechado");
+});
+check("Vista simples: a conferência é a terceira etapa",()=>{
+ click("custasFooterNext");
+ assert.equal(document.documentElement.dataset.custasStep,"3");
+ assert.match(read("custasStepHint"),/Prepara a proposta/);
+ assert.equal(els.get("custasNext").disabled,true);
+ click("custasPrev");assert.equal(document.documentElement.dataset.custasStep,"2");
+});
+check("Vista simples: acesso técnico conserva toda a ferramenta",()=>{
+ click("custasAdvanced");
+ assert.equal(document.documentElement.dataset.custasView,"avancado");
+ assert.equal(els.get("custasAdvanced").ariaPressed,"true");
+ click("custasSimple");
+ assert.equal(document.documentElement.dataset.custasView,"simples");
+ assert.equal(document.documentElement.dataset.custasStep,"2");
+});
 console.log(tests+" testes do módulo A01 concluídos.");
