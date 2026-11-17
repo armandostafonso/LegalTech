@@ -32,6 +32,10 @@ html[data-custas-view="avancado"] .custas-wizard,
 html[data-custas-view="avancado"] .custas-footer{display:none}
 @media(max-width:650px){.custas-wizard{padding:14px}.custas-progress{gap:5px}.custas-progress button{font-size:12px;padding:10px 5px}.custas-footer{flex-wrap:wrap}}
 @media print{.custas-switch,.custas-wizard,.custas-footer{display:none!important}html[data-custas-view="simples"] main > section.panel:not([data-custas-step="3"]){display:none!important}}
+html[data-custas-view="avancado"] .custas-simple-legal{display:none}
+.custas-simple-legal{border:1px solid var(--line);background:var(--soft);border-radius:14px;margin-top:16px;padding:14px}
+.custas-simple-legal p{margin:0 0 12px}
+.custas-simple-legal .custas-helper{margin-top:10px;margin-bottom:0}
 </style><script>try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||"light"}catch(e){}</script><link rel="stylesheet" href="assets/brand.css">
 </head>
 <body><main><header><a class="brand" href="index.html">LegalTech <span class="lt-suite">Suite</span></a><button class="secondary" id="theme" type="button">◐ Tema</button></header>
@@ -107,6 +111,16 @@ html[data-custas-view="avancado"] .custas-footer{display:none}
 <div class="field"><label for="autoValue">Valor tributário (€)</label><input id="autoValue" type="number" min="0" step="0.01" placeholder="Ex.: 400000"></div>
 <div class="field"><label for="autoUC">UC do processo (€)</label><input id="autoUC" type="number" min="0.01" step="0.01" placeholder="Confirmar UC legal"></div>
 <div class="field"><label for="autoRef">Identificador único do impulso</label><input id="autoRef" maxlength="70" placeholder="Ex.: PI-001"></div>
+</div>
+<div class="custas-simple-legal" id="custasSimpleLegal">
+<p class="muted"><strong>Verificação mínima da parte responsável</strong> · Confirma estes dois dados antes de criar a obrigação. Se houver benefício, utiliza as ferramentas técnicas para determinar o regime.</p>
+<div class="grid">
+<div class="field"><label for="custasSimpleExemption">A parte beneficia de isenção de custas?</label>
+<select id="custasSimpleExemption"><option value="unknown">Ainda não confirmei</option><option value="none">Confirmei que não se verifica isenção</option><option value="review">Existe isenção ou dúvida: analisar tecnicamente</option></select></div>
+<div class="field"><label for="custasSimpleAid">A parte beneficia de apoio judiciário?</label>
+<select id="custasSimpleAid"><option value="unknown">Ainda não confirmei</option><option value="none">Confirmei que não se aplica</option><option value="review">Existe benefício ou dúvida: analisar tecnicamente</option></select></div>
+</div>
+<p id="custasSimpleLegalNotice" class="custas-helper" aria-live="polite">A criação da obrigação mantém-se bloqueada enquanto estas situações não estiverem confirmadas.</p>
 </div>
 <label class="checkrow"><input id="autoVerified" type="checkbox"> Confirmei a versão do RCP, a UC, a existência do impulso e que <strong>não há isenção, redução ou regime especial</strong> que altere esta taxa-base.</label>
 <div class="actions"><button type="button" class="secondary" id="autoPreview">Calcular taxa-base</button><button type="button" id="autoInsert">Criar obrigação calculada</button></div>
@@ -360,6 +374,7 @@ function custasSetStep(next){
   el(id).textContent=step===1?"Seguinte: taxas":step===2?"Seguinte: conferência":"Conferência";
  }
  el("custasFooterLabel").textContent="Etapa "+step+" de 3 · "+custasStepLabels[step];
+ if(step===2)custasRefreshLegal();
  if(step===2&&!el("autoValue").value&&el("value").value){
   el("autoValue").value=el("value").value;
   el("autoResult").textContent="Valor tributário pré-preenchido com o valor da causa. Confirma se coincidem antes de calcular.";
@@ -385,6 +400,36 @@ el("custasFinance").addEventListener("click",()=>{
  el("custasFinance").textContent=open?"Ocultar registos adicionais":"Mostrar outros impulsos e pagamentos";
  el("custasFinance").ariaExpanded=open?"true":"false";
 });
+
+/* Confirmações mínimas de ausência de benefício, por parte: não apagam regimes conhecidos. */
+function custasRefreshLegal(){
+ const p=el("autoParty").value==="b"?"pb":"pa";
+ const exemption=el(p+"_exemption").value,aid=el(p+"_aid").value;
+ el("custasSimpleExemption").value=["unknown","none"].includes(exemption)?exemption:"review";
+ el("custasSimpleAid").value=["unknown","none"].includes(aid)?aid:"review";
+ el("custasSimpleLegalNotice").textContent="Fica registada apenas a confirmação da parte seleccionada ("+(p==="pa"?"A":"B")+"). Regimes especiais exigem análise técnica.";
+}
+function custasSimpleUpdate(kind){
+ const party=el("autoParty").value==="b"?"pb":"pa";
+ const target=el(party+"_"+(kind==="exemption"?"exemption":"aid"));
+ const input=el(kind==="exemption"?"custasSimpleExemption":"custasSimpleAid");
+ const old=target.value,selected=input.value;
+ if(selected==="none"&&!["none","unknown"].includes(old)){
+  custasRefreshLegal();
+  el("custasSimpleLegalNotice").textContent="A ficha desta parte já identifica possível isenção ou apoio judiciário. Não é possível sobrepor a informação no percurso simples; usa as ferramentas técnicas.";
+  return;
+ }
+ const value=selected==="none"?"none":"unknown";
+ if(value!==old){
+  target.value=value;
+  if(typeof Event==="function"&&typeof target.dispatchEvent==="function")target.dispatchEvent(new Event("change",{bubbles:true}));
+  else{profilesReady=false;profilesText="";}
+ }
+ el("custasSimpleLegalNotice").textContent=selected==="none"?"Confirmação registada para esta parte. Verifica também os restantes pressupostos jurídicos.":"Esta situação exige conferência. Não será tratada como isenção automática ou taxa de valor zero.";
+}
+el("custasSimpleExemption").addEventListener("change",()=>custasSimpleUpdate("exemption"));
+el("custasSimpleAid").addEventListener("change",()=>custasSimpleUpdate("aid"));
+el("autoParty").addEventListener("change",custasRefreshLegal);
 custasSetStep(1);
 custasSetView("simples");
 
