@@ -188,7 +188,11 @@
   if(fields.filingYear&&(!/^\d{4}$/.test(fields.filingYear)||+fields.filingYear<2009||+fields.filingYear>2099))fail("ano da acção inválido.");
   for(const key of ["ucValue","caseValue","probableCosts","advanceCharges"])
    if(fields[key]!==""&&parseCents(fields[key])===null)fail("campo monetário inválido.");
-  return {format:"legaltech-custas-seis-passos",version:1,
+  const step=file.step===undefined?0:file.step;
+  const maxVisited=file.maxVisited===undefined?step:file.maxVisited;
+  if(!Number.isInteger(step)||step<0||step>5||
+     !Number.isInteger(maxVisited)||maxVisited<step||maxVisited>5)fail("posição do assistente inválida.");
+  return {format:"legaltech-custas-seis-passos",version:1,step,maxVisited,
    data:{parties:people,charges,expenses,movements,sanctions},fields};
  }
 
