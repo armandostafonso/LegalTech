@@ -430,6 +430,7 @@ function custasSimpleUpdate(kind){
 el("custasSimpleExemption").addEventListener("change",()=>custasSimpleUpdate("exemption"));
 el("custasSimpleAid").addEventListener("change",()=>custasSimpleUpdate("aid"));
 el("autoParty").addEventListener("change",custasRefreshLegal);
+document.documentElement.dataset.custasFinance="fechado";
 custasSetStep(1);
 custasSetView("simples");
 
