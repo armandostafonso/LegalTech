@@ -29,6 +29,14 @@ Acção com valor fixado de **30 000 €**, UC de **102 €**, tabela I-A = **5 
 
 **Nota temporal:** o Decreto-Lei n.º 164/2026, de 6 de agosto, entra em vigor em 1 de dezembro de 2026, com regras de aplicação no tempo previstas no seu artigo 8.º. A nova redacção do artigo 6.º aplica-se apenas às acções propostas após essa data. A ferramenta rápida não aplica automaticamente isenções, reduções especiais, multas ou actualizações de regimes transitórios.
 
+## Conferência da necessidade de conta e da decisão final
+
+A página inclui uma opção específica para confirmar se **há lugar à elaboração de conta** (artigo 29.º do RCP). As escolhas são: por conferir, há lugar a conta, ou dispensa de conta confirmada. Quando é assinalada dispensa, exige-se um fundamento ou observação. **O programa não conclui automaticamente que há dispensa apenas porque a diferença aritmética é zero.**
+
+A condenação final em custas pode ser assinalada a cargo do autor, da entidade demandada, repartida ou sujeita a regime especial. Se for repartida, são introduzidas as percentagens do autor e da entidade demandada, que devem somar 100%. Estes valores são **informativos** e não distribuem automaticamente taxas de impulso, multas, incidentes ou encargos. A imputação final requer aplicação da decisão judicial e do regime legal.
+
+A conclusão imprimível distingue entre **quadro de conferência** e **conta final da secretaria**, sem presumir dívida vencida nem restituição.
+
 ## O que a conta simples não faz
 
 - Não atribui à AT uma taxa de contestação quando não há contestação.
