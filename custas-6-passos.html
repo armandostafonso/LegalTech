@@ -133,7 +133,7 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   <div class="field"><label for="partyAid">Apoio judiciário</label><select id="partyAid"><option value="unknown">Por verificar</option><option value="none">Sem apoio conhecido</option><option value="full">Dispensa de taxa e encargos</option><option value="instalments">Pagamento faseado</option><option value="other">Outra modalidade / pendente</option></select></div>
   <div class="field"><label for="partyShare">Responsabilidade final indicada (%)</label><input id="partyShare" type="number" min="0" max="100" step="0.01" placeholder="Deixar vazio se desconhecida"></div>
  </div>
- <div class="actionrow"><button type="button" class="secondary" id="partyAdd">Adicionar interveniente</button></div>
+ <div class="actionrow"><button type="button" class="secondary" id="partyAdd">Adicionar interveniente</button><button type="button" class="secondary" id="partyCancel" hidden>Cancelar edição</button></div>
  <div class="record-list" id="partyList"></div>
  <div class="field" style="margin-top:18px"><label for="ruling">Decisão sobre custas / fundamento</label><textarea id="ruling" maxlength="600" placeholder="Regista a condenação em custas e a proporção fixada na decisão judicial."></textarea></div>
  <div class="note">Fundamentos indicados no guião: artigos 527.º e 607.º, n.º 6, do CPC, artigo 94.º, n.º 2, do CPTA, e artigo 30.º do RCP. A conta deve ser individualizada por sujeito responsável.</div>
@@ -234,7 +234,7 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   {id:1,label:"Autor",role:"Autor",aid:"unknown",exemption:"unknown",share:null},
   {id:2,label:"Entidade demandada",role:"Demandado",aid:"unknown",exemption:"unknown",share:null}
  ],charges:[],expenses:[],movements:[],sanctions:[]};
- let seq=3,step=0,maxVisited=0,lastReport="",lastSummary=null;
+ let seq=3,step=0,maxVisited=0,lastReport="",lastSummary=null,editingPartyId=null;
  const labels=["Informação relevante","Responsabilidade","Processo autónomo e taxa de justiça","Encargos e outros pagamentos","Multas, penalidades e coimas","Finalização"];
  function note(text){byId("message").textContent=text}
  function el(tag,cls,content){
@@ -264,10 +264,35 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   }
  }
  function personName(id){return data.parties.find(p=>p.id===id)?.label||"Interveniente não identificado"}
+ function renderParties(){
+  const parent=byId("partyList");parent.replaceChildren();
+  for(const p of data.parties){
+   const details="Isenção: "+(p.exemption==="yes"?"assinalada":p.exemption==="no"?"não identificada":"por verificar")+
+    " · Apoio: "+p.aid+(p.share===null?" · Responsabilidade por conferir":" · Responsabilidade "+p.share+"%");
+   const line=rowLine(p.label+" · "+p.role,details,()=>{
+    data.parties.splice(data.parties.indexOf(p),1);
+    if(editingPartyId===p.id)resetPartyEditor();
+    renderAll();invalidate();
+   });
+   const edit=el("button","secondary","Editar");edit.type="button";edit.addEventListener("click",()=>{
+    editingPartyId=p.id;
+    byId("partyLabel").value=p.label;byId("partyRole").value=p.role;
+    byId("partyAid").value=p.aid;byId("partyExemption").value=p.exemption;
+    byId("partyShare").value=p.share===null?"":String(p.share);
+    byId("partyAdd").textContent="Guardar alterações";byId("partyCancel").hidden=false;
+    note("Edita os dados do interveniente e guarda as alterações.");
+   });
+   line.appendChild(edit);parent.appendChild(line);
+  }
+ }
+ function resetPartyEditor(){
+  editingPartyId=null;
+  for(const id of ["partyLabel","partyShare"])byId(id).value="";
+  byId("partyRole").value="Autor";byId("partyAid").value="unknown";byId("partyExemption").value="unknown";
+  byId("partyAdd").textContent="Adicionar interveniente";byId("partyCancel").hidden=true;
+ }
  function renderAll(){
-  renderList("partyList",data.parties,p=>({head:p.label+" · "+p.role,details:
-   "Isenção: "+(p.exemption==="yes"?"assinalada":p.exemption==="no"?"não identificada":"por verificar")+" · Apoio: "+p.aid+
-   (p.share===null?" · Responsabilidade por conferir":" · Responsabilidade "+p.share+"%")}));
+  renderParties();
   renderList("chargeList",data.charges,x=>({head:x.impulse+" · "+eur(x.cents),details:personName(x.personId)+" · "+x.origin+" · "+x.table+" · início "+x.year+
    " · "+(x.verified?"Documentação conferida":"A conferir")+(x.ref?" · "+x.ref:"")}));
   renderList("expenseList",data.expenses,x=>({head:x.label+" · "+eur(x.cents),details:personName(x.personId)+" · "+x.kind+
@@ -341,12 +366,15 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   const label=byId("partyLabel").value.trim(),shareRaw=byId("partyShare").value.trim();
   const share=shareRaw===""?null:Number(shareRaw);
   if(!label){note("Indica uma designação para o interveniente.");return}
-  if(label.length>70||data.parties.some(p=>p.label.toLowerCase()===label.toLowerCase())){note("A designação deve ser única e ter no máximo 70 caracteres.");return}
+  if(label.length>70||data.parties.some(p=>p.id!==editingPartyId&&p.label.toLowerCase()===label.toLowerCase())){note("A designação deve ser única e ter no máximo 70 caracteres.");return}
   if(share!==null&&(!Number.isFinite(share)||share<0||share>100||Math.round(share*100)!==share*100)){note("A percentagem de responsabilidade deve situar-se entre 0 e 100, com duas casas decimais.");return}
-  data.parties.push({id:seq++,label,role:byId("partyRole").value,aid:byId("partyAid").value,
-   exemption:byId("partyExemption").value,share});
-  byId("partyLabel").value="";byId("partyShare").value="";renderAll();invalidate();
-  note("Interveniente acrescentado. As percentagens de responsabilidade são apenas informativas.");
+  const updated={label,role:byId("partyRole").value,aid:byId("partyAid").value,
+   exemption:byId("partyExemption").value,share};
+  const editing=editingPartyId!==null;
+  if(editing){const p=data.parties.find(p=>p.id===editingPartyId);if(!p){note("Interveniente não encontrado.");return}Object.assign(p,updated)}
+  else data.parties.push({id:seq++,...updated});
+  resetPartyEditor();renderAll();invalidate();
+  note(editing?"Interveniente actualizado.":"Interveniente acrescentado. As percentagens são informativas.");
  }
  function suggestIA(){
   if(byId("chargeTable").value!=="IA"){note("A sugestão aritmética está disponível apenas para a Tabela I-A.");return}
@@ -469,6 +497,7 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  for(const id of ["dispensa","dispensaReason","processRef","jurisdiction","ucValue","caseValue","caseDecision","ruling","reviewed"])
   byId(id).addEventListener("change",invalidate);
  byId("partyAdd").addEventListener("click",addParty);
+ byId("partyCancel").addEventListener("click",()=>{resetPartyEditor();note("Edição cancelada.");});
  byId("suggestIA").addEventListener("click",suggestIA);
  byId("chargeAdd").addEventListener("click",addCharge);
  byId("expenseAdd").addEventListener("click",addExpense);
