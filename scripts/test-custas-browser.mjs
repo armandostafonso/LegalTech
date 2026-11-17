@@ -115,6 +115,18 @@ try{
  assert.equal(await evaluate("document.querySelectorAll('[data-step-panel]').length"),6);
  assert.equal(await evaluate("document.getElementById('progress').getAttribute('aria-valuenow')"),"1");
  await run([
+  'document.getElementById("dispensa").value="yes";',
+  'document.getElementById("dispensaReason").value="noDebt";',
+  'document.getElementById("draftDispensa").click();'
+ ].join(""));
+ assert.match(await evaluate("document.getElementById('draftDispensaText').value"),/artigo 29.º/);
+ assert.equal(await evaluate("document.getElementById('draftDispensaBox').hidden"),false);
+ await run([
+  'document.getElementById("dispensa").value="no";',
+  'document.getElementById("dispensa").dispatchEvent(new Event("change",{bubbles:true}));'
+ ].join(""));
+ assert.equal(await evaluate("document.getElementById('draftDispensaBox').hidden"),true);
+ await run([
   'const year=document.getElementById("filingYear");year.value="2025";year.dispatchEvent(new Event("input",{bubbles:true}));',
   'document.getElementById("caseValue").value="30000";',
   'document.getElementById("next").click();'
