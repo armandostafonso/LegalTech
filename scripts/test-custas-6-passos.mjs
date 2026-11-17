@@ -100,4 +100,69 @@ check("Não existem IDs duplicados no HTML do assistente",()=>{
  const ids=[...markup.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
  assert.equal(new Set(ids).size,ids.length);
 });
+
+function validProject(){
+ return {format:"legaltech-custas-seis-passos",version:1,step:4,maxVisited:4,
+  fields:{processRef:"TESTE-100",jurisdiction:"administrativo",filingYear:"2025",
+   ucValue:"102",caseValue:"30000",caseDecision:"Sentença de teste",
+   dispensa:"no",dispensaReason:"none",ruling:"Responsabilidade fixada no despacho de teste.",
+   probableCosts:"0",advanceCharges:"0",reviewed:false},
+  data:{parties:[
+   {id:1,label:"Autor",role:"Autor",aid:"none",exemption:"no",share:50},
+   {id:2,label:"Entidade demandada",role:"Demandado",aid:"none",exemption:"no",share:50}],
+   charges:[{id:3,personId:1,origin:"Acção principal",impulse:"Petição inicial",table:"IA",
+      year:2025,baseCents:3000000,cents:51000,basis:"RCP, Tabela I-A",ref:"PI",verified:true}],
+   expenses:[],sanctions:[],
+   movements:[{id:4,personId:1,kind:"payment",status:"confirmed",ref:"DUC-TESTE",date:"2025-04-03",cents:25500}]}}
+}
+check("Projecto JSON: validação e preservação de etapa/valores",()=>{
+ const out=core.validateProject(validProject());
+ assert.equal(out.step,4);assert.equal(out.maxVisited,4);
+ assert.equal(out.data.charges[0].cents,51000);
+ assert.equal(core.summary({...out.data,year:2025,dispensa:"no",agreement:true}).accounts[0].positive,25500);
+});
+check("Projecto JSON: formato e versão desconhecidos são rejeitados",()=>{
+ const p=validProject();p.format="outro";
+ assert.throws(()=>core.validateProject(p),/formato/);
+ const v=validProject();v.version=2;
+ assert.throws(()=>core.validateProject(v),/versão/);
+});
+check("Projecto JSON: não aceita movimentos de partes inexistentes",()=>{
+ const p=validProject();p.data.movements[0].personId=999;
+ assert.throws(()=>core.validateProject(p),/inexistente/);
+});
+check("Projecto JSON: não aceita pagamento sem estrutura consistente",()=>{
+ const p=validProject();p.data.movements[0].cents=-3;
+ assert.throws(()=>core.validateProject(p),/inválido/);
+});
+check("Projecto JSON: impede restituição confirmada superior ao pagamento",()=>{
+ const p=validProject();p.data.movements.push({id:5,personId:1,kind:"refund",status:"confirmed",ref:"DUC-TESTE",date:"2025-04-04",cents:30000});
+ assert.throws(()=>core.validateProject(p),/restituição/);
+});
+check("Projecto JSON: impede guia anulada sem guia emitida",()=>{
+ const p=validProject();p.data.movements.push({id:5,personId:1,kind:"cancel",status:"pending",ref:"GUIA",date:"2025-04-04",cents:10200});
+ assert.throws(()=>core.validateProject(p),/anulação/);
+});
+check("Projecto JSON: impede IDs duplicados",()=>{
+ const p=validProject();p.data.expenses.push({id:3,personId:2,cents:1000,label:"Perícia",basis:"Despacho",kind:"igfej",verified:true});
+ assert.throws(()=>core.validateProject(p),/repetido/);
+});
+check("Projecto JSON: rejeita percentagem fora de 0 a 100",()=>{
+ const p=validProject();p.data.parties[1].share=101;
+ assert.throws(()=>core.validateProject(p),/percentagem/);
+});
+check("Projecto JSON: impede etapas inválidas",()=>{
+ const p=validProject();p.step=8;
+ assert.throws(()=>core.validateProject(p),/posição/);
+});
+check("Projecto JSON: rejeita campos de texto excessivamente longos",()=>{
+ const p=validProject();p.data.parties[0].label="X".repeat(2000);
+ assert.throws(()=>core.validateProject(p),/texto/);
+});
+check("Projecto JSON: ignora campos executáveis não previstos",()=>{
+ const p=validProject();p.fields.script="<script>alert(1)</script>";
+ const out=core.validateProject(p);
+ assert.equal(Object.hasOwn(out.fields,"script"),false);
+});
+
 console.log(passed+" testes do assistente de 6 passos concluídos.");
