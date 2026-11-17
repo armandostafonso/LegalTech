@@ -130,6 +130,7 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   <div class="field"><label for="processRef">Referência interna (fictícia)</label><input id="processRef" maxlength="80" autocomplete="off" placeholder="Ex.: PROCESSO-TESTE"></div>
   <div class="field"><label for="jurisdiction">Jurisdição / espécie</label><select id="jurisdiction"><option value="administrativo">Acção administrativa (A01)</option><option value="tributario">Tributário (conferência parcial)</option><option value="civil">Cível (conferência parcial)</option><option value="outro">Outra (conferência parcial)</option></select></div>
   <div class="field"><label for="filingYear">Ano de propositura</label><input id="filingYear" type="number" min="2009" max="2099" step="1" placeholder="2025" inputmode="numeric"></div>
+  <div class="field"><label for="filingDate">Data exacta de propositura (opcional)</label><input id="filingDate" type="date"><small>Importante para regimes transitórios; o ano basta para iniciar.</small></div>
   <div class="field"><label for="ucValue">UC desse ano (€)</label><input id="ucValue" type="number" min="0.01" step="0.01" placeholder="Preenchimento automático"><small id="ucHelp">Selecciona o ano. A UC pode ser corrigida mediante confirmação legal.</small></div>
   <div class="field"><label for="caseValue">Valor fixado da causa (€)</label><input id="caseValue" type="number" min="0.01" step="0.01" placeholder="Ex.: 30000"></div>
   <div class="field"><label for="caseDecision">Decisão final / data do trânsito (opcional)</label><input id="caseDecision" maxlength="180" placeholder="Ex.: acórdão transitado em ..."></div>
@@ -169,14 +170,16 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   <div class="field"><label for="chargeOrigin">Origem</label><select id="chargeOrigin"><option value="Acção principal">Acção principal</option><option value="Recurso">Recurso</option><option value="Incidente">Incidente</option><option value="Procedimento cautelar">Procedimento cautelar</option><option value="Outro processo autónomo">Outro processo autónomo</option></select></div>
   <div class="field"><label for="chargeImpulse">Impulso</label><select id="chargeImpulse"><option value="Petição inicial">Petição inicial</option><option value="Contestação">Contestação</option><option value="Recurso">Recurso</option><option value="Incidente">Incidente</option><option value="Outro">Outro</option></select></div>
   <div class="field"><label for="chargeYear">Ano de início deste processo autónomo</label><input id="chargeYear" type="number" min="2009" max="2099" step="1" inputmode="numeric"></div>
+  <div class="field"><label for="chargeStartDate">Data exacta do processo autónomo (opcional)</label><input id="chargeStartDate" type="date"><small>Obrigatória na sugestão automática relativa a 2012.</small></div>
   <div class="field"><label for="chargeValue">Base tributável (€)</label><input id="chargeValue" type="number" min="0.01" step="0.01" placeholder="Ex.: 30000"></div>
   <div class="field"><label for="chargeTable">Tabela aplicável</label><select id="chargeTable"><option value="IA">I-A · regra geral</option><option value="IB">I-B · recursos e casos especiais</option><option value="IC">I-C · especial complexidade</option><option value="IIA">II-A · incidentes e outros</option><option value="IIB">II-B · regimes específicos</option><option value="other">Outra norma / tabela</option></select></div>
+  <div class="field"><label for="chargeSuggestionMode">Modo de cálculo da Tabela I-A</label><select id="chargeSuggestionMode"><option value="total">Taxa total a conferir</option><option value="first">Apenas 1.ª prestação</option></select><small>Não registar taxa total e prestações cumulativamente.</small></div>
   <div class="field"><label for="chargeAmount">Taxa a considerar (€)</label><input id="chargeAmount" type="number" min="0" step="0.01" placeholder="Montante confirmado"></div>
   <div class="field"><label for="chargeRef">Referência do impulso</label><input id="chargeRef" maxlength="75" placeholder="Ex.: PI, REC-1, INC-1"></div>
   <div class="field"><label for="chargeBasis">Fundamento / observações</label><input id="chargeBasis" maxlength="180" placeholder="Tabela, despacho, dispensa ..."></div>
  </div>
- <div class="actionrow"><button class="secondary" id="suggestIA" type="button">Sugerir I-A até 275 000 €</button><label class="check"><input id="chargeVerified" type="checkbox">Valor e fundamento conferidos nos autos</label></div>
- <div class="note" id="chargeHint">A sugestão I-A é apenas aritmética. Não aplica automaticamente segunda prestação, reduções, isenções, remanescente ou alterações históricas.</div>
+ <div class="actionrow"><button class="secondary" id="suggestIA" type="button">Calcular I-A / I-B até 275 000 €</button><label class="check"><input id="chargeVerified" type="checkbox">Valor e fundamento conferidos nos autos</label></div>
+ <div class="note" id="chargeHint">A sugestão I-A ou I-B é indicativa. Confirmar a segunda prestação (artigo 14.º-A), reduções, isenções, remanescente e regime temporal.</div>
  <details><summary>Checklist dos processos autónomos e da taxa</summary><ul>
  <li>Identificar cada acção, recurso, incidente e procedimento cautelar com tributação própria (RCP 1.º, n.º 2).</li>
  <li>Conferir a base tributável (RCP 11.º e 12.º) e a UC do ano em que iniciou cada processo autónomo.</li>
@@ -358,7 +361,7 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  function renderAll(){
   renderParties();
   renderList("chargeList",data.charges,x=>({head:x.impulse+" · "+eur(x.cents),details:personName(x.personId)+" · "+x.origin+" · "+x.table+" · início "+x.year+
-   " · "+(x.verified?"Documentação conferida":"A conferir")+(x.ref?" · "+x.ref:"")}));
+   " · "+(x.startDate||"data por conferir")+" · "+(x.verified?"Documentação conferida":"A conferir")+(x.ref?" · "+x.ref:"")}));
   renderList("expenseList",data.expenses,x=>({head:x.label+" · "+eur(x.cents),details:personName(x.personId)+" · "+x.kind+
    " · "+(x.verified?"Verificado":"A conferir")}));
   renderList("moveList",data.movements,x=>({head:(x.kind==="guide"?"Guia emitida":x.kind==="cancel"?"Guia anulada":x.kind==="payment"?"Pagamento":"Restituição")+" · "+eur(x.cents),
@@ -469,27 +472,43 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   note(editing?"Interveniente actualizado.":"Interveniente acrescentado. As percentagens são informativas.");
  }
  function suggestIA(){
-  if(byId("chargeTable").value!=="IA"){note("A sugestão aritmética está disponível apenas para a Tabela I-A.");return}
-  const base=inputMoney("chargeValue",true),year=Number(byId("chargeYear").value);
+  const table=byId("chargeTable").value,base=inputMoney("chargeValue",true);
+  const year=Number(byId("chargeYear").value),startDate=byId("chargeStartDate").value;
   if(base===null)return;
   const uc=core.ucForYear(year);
-  if(uc===null){note("Para este ano, é necessário confirmar manualmente a UC do processo autónomo.");return}
-  const result=core.suggestIA(base,uc*100);
-  if(!result){note("Não há sugestão automática para valores acima de 275 000 €, remanescentes ou valores inválidos.");return}
-  byId("chargeAmount").value=(result.cents/100).toFixed(2);
-  byId("chargeHint").textContent="Sugestão: "+result.units+" UC × "+uc.toFixed(2)+" € = "+eur(result.cents)+
-   ". Valor a verificar; não compreende reduções, prestações adicionais nem remanescente.";
-  invalidate();
+  if(uc===null){note("UC e regime histórico por confirmar; introduz o montante depois de conferir.");return}
+  const q=core.quoteTableI({table,baseCents:base,ucCents:uc*100,year,startDate});
+  if(!q.ok){note(q.reason);return}
+  const first=byId("chargeSuggestionMode").value==="first";
+  if(first&&table==="IB"){note("A Tabela I-B não é dividida em duas prestações nesta rotina.");return}
+  const amount=first?q.firstCents:q.totalCents;
+  byId("chargeAmount").value=(amount/100).toFixed(2);
+  byId("chargeBasis").value=first?"Tabela I-A; artigos 6.º/1 e 13.º/2 RCP; 1.ª prestação a conferir.":
+   table==="IA"?"Tabela I-A; artigos 6.º/1, 13.º/2 e 14.º-A RCP; taxa total a conferir.":
+   "Tabela I-B; artigo 6.º/2 RCP; taxa do recurso a conferir.";
+  byId("chargeVerified").checked=false;
+  byId("chargeHint").textContent="Tabela I-"+(table==="IA"?"A":"B")+": "+q.units+" UC = "+eur(q.totalCents)+
+   (table==="IA"?"; 1.ª prestação "+eur(q.firstCents)+"; 2.ª prestação teórica "+eur(q.secondCents)+". ":". ")+
+   q.note+" Confirmar exigibilidade e documentação.";
+  invalidate();note("Sugestão preenchida. Confirma montante e fundamento antes de adicionar.");
  }
  function addCharge(){
   const personId=who("chargePerson"),base=inputMoney("chargeValue",true),cents=inputMoney("chargeAmount",false);
   const year=Number(byId("chargeYear").value),basis=byId("chargeBasis").value.trim();
   if(personId===null||base===null||cents===null)return;
   if(!Number.isInteger(year)||year<2009||year>2099){note("Indica um ano válido para este processo autónomo.");return}
+  const startDate=byId("chargeStartDate").value;
+  if(startDate&&(!core.validISODate(startDate)||Number(startDate.slice(0,4))!==year)){
+   note("A data de início não corresponde ao ano do processo autónomo.");return
+  }
+  const ref=byId("chargeRef").value.trim().slice(0,75);
+  if(ref&&data.charges.some(x=>x.personId===personId&&x.ref.toLowerCase()===ref.toLowerCase())){
+   note("Já existe uma taxa com a mesma referência para este responsável. Distingue os impulsos ou prestações.");return
+  }
   if(!basis){note("Regista a base legal, decisão ou observação relativa à taxa de justiça.");return}
   data.charges.push({id:seq++,personId,origin:byId("chargeOrigin").value,impulse:byId("chargeImpulse").value,
-   table:byId("chargeTable").value,year,baseCents:base,cents,basis,
-   ref:byId("chargeRef").value.trim().slice(0,75),verified:byId("chargeVerified").checked});
+   table:byId("chargeTable").value,year,startDate,baseCents:base,cents,basis,
+   ref,verified:byId("chargeVerified").checked});
   byId("chargeAmount").value="";byId("chargeRef").value="";byId("chargeBasis").value="";
   byId("chargeVerified").checked=false;renderAll();invalidate();note("Processo autónomo e taxa registados.");
  }
@@ -543,6 +562,8 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
    "Decisão final / trânsito: "+(byId("caseDecision").value.trim()||"por conferir"),
    "Dispensa de elaboração da conta: "+byId("dispensa").value+"; pressuposto indicado: "+byId("dispensaReason").value,
    "Ano da acção principal: "+dateYear(),
+   "Data exacta de propositura: "+(byId("filingDate").value||"por conferir"),
+   "Regime do artigo 6.º do RCP (DL 164/2026): "+core.regime2026(dateYear(),byId("filingDate").value).article6,
    "UC indicada: "+(byId("ucValue").value||"por verificar")+" €",
    "Valor fixado: "+(byId("caseValue").value||"por verificar")+" €",
    "Decisão sobre custas: "+(byId("ruling").value.trim()||"não transcrita"),"",
@@ -550,7 +571,7 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   for(const p of data.parties)lines.push(p.label+" · "+p.role+" · responsabilidade "+(p.share===null?"por conferir":p.share+"%")+
    " · isenção "+p.exemption+" · apoio "+p.aid);
   lines.push("","PASSO 3 · TAXAS DE JUSTIÇA");
-  for(const x of data.charges)lines.push(personNameForReport(x.personId)+" | "+x.origin+" | "+x.impulse+" | "+x.table+" | ano "+x.year+" | "+eur(x.cents)+" | "+x.basis);
+  for(const x of data.charges)lines.push(personNameForReport(x.personId)+" | "+x.origin+" | "+x.impulse+" | "+x.table+" | início "+(x.startDate||x.year)+" | "+eur(x.cents)+" | "+x.basis);
   lines.push("","PASSO 4 · ENCARGOS");
   for(const x of data.expenses)lines.push(personNameForReport(x.personId)+" | "+x.label+" | "+eur(x.cents)+" | "+x.basis);
   lines.push("","MOVIMENTOS DE PAGAMENTO");
@@ -570,7 +591,7 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  }
 
  const savedFields=["processRef","jurisdiction","filingYear","ucValue","caseValue","caseDecision",
-    "dispensa","dispensaReason","ruling","probableCosts","advanceCharges"];
+    "dispensa","dispensaReason","ruling","probableCosts","advanceCharges","filingDate"];
  function projectSnapshot(){
   const fields={};
   for(const id of savedFields)fields[id]=String(byId(id).value);
@@ -620,7 +641,8 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  function personNameForReport(id){return personName(id)}
 
  function finish(){
-  const state={...data,year:dateYear(),dispensa:byId("dispensa").value,agreement:byId("reviewed").checked};
+  const state={...data,year:dateYear(),filingDate:byId("filingDate").value,
+   dispensa:byId("dispensa").value,dispensaReason:byId("dispensaReason").value,agreement:byId("reviewed").checked};
   const result=core.summary(state);lastSummary=result;
   const probable=core.parseCents(byId("probableCosts").value),advance=core.parseCents(byId("advanceCharges").value);
   if(probable===null||advance===null){
@@ -647,7 +669,7 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  }
  byId("filingYear").addEventListener("input",updateYear);
  byId("caseValue").addEventListener("change",()=>{if(!byId("chargeValue").value)byId("chargeValue").value=byId("caseValue").value;invalidate()});
- for(const id of ["dispensa","dispensaReason","processRef","jurisdiction","ucValue","caseValue","caseDecision","ruling","reviewed","probableCosts","advanceCharges"])
+ for(const id of ["dispensa","dispensaReason","processRef","jurisdiction","ucValue","caseValue","caseDecision","ruling","reviewed","probableCosts","advanceCharges","filingDate"])
   byId(id).addEventListener("change",invalidate);
  byId("draftDispensa").addEventListener("click",generateDispensa);
  byId("copyDispensa").addEventListener("click",async()=>{
