@@ -24,6 +24,9 @@ h1{font-size:clamp(28px,4.5vw,40px);line-height:1.14;letter-spacing:-1.5px;margi
 .cc-sub{margin:0 0 18px;font-size:13px;color:var(--cc-mute)}
 .cc-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .cc-three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.cc-case-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(110px,.7fr) minmax(140px,.8fr);gap:13px}
+@media(max-width:850px){.cc-case-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.cc-case-grid>.cc-field:nth-child(-n+2){grid-column:span 2}}
 .cc-field{display:flex;flex-direction:column;gap:6px}
 .cc-field label{font-weight:640;font-size:13px}
 .cc-field small{font-size:12px;color:var(--cc-mute)}
@@ -80,12 +83,12 @@ tr:last-child td{border-bottom:0}
 <section class="cc-panel" aria-labelledby="cc-case-title">
  <div class="cc-rowtitle"><span class="cc-num">1</span><h2 id="cc-case-title">Valor do processo</h2></div>
  <p class="cc-sub">Utiliza o valor da causa fixado na sentença ou na última decisão relevante.</p>
- <div class="cc-three">
+ <div class="cc-case-grid">
   <div class="cc-field"><label for="ccProcess">Referência do processo (fictícia)</label><input id="ccProcess" autocomplete="off" maxlength="80" placeholder="Ex.: PROC-TESTE"></div>
   <div class="cc-field"><label for="ccValue">Valor fixado na decisão (€)</label><input id="ccValue" inputmode="decimal" type="number" min="0.01" step="0.01" placeholder="Ex.: 30 000" required></div>
-  <div class="cc-field"><label for="ccUC">Unidade de conta (€)</label><input id="ccUC" inputmode="decimal" type="number" min="0.01" step="0.01" value="102" required><small>Confirma o valor da UC aplicável ao processo.</small></div>
+  <div class="cc-field"><label for="ccYear">Ano de propositura</label><input id="ccYear" inputmode="numeric" type="number" min="2009" max="2099" step="1" placeholder="Ex.: 2018" required></div>
+  <div class="cc-field"><label for="ccUC">UC desse ano (€)</label><input id="ccUC" inputmode="decimal" type="number" min="0.01" step="0.01" placeholder="Automática" required><small id="ccUCNote" aria-live="polite">Indica o ano para preencher a UC.</small></div>
  </div>
- <div class="cc-field" style="max-width:330px;margin-top:14px"><label for="ccDate">Data da propositura (para conferir o regime)</label><input id="ccDate" type="date"></div>
 </section>
 <section class="cc-panel" aria-labelledby="cc-author-title">
  <div class="cc-rowtitle"><span class="cc-num">2</span><h2 id="cc-author-title">Petição inicial · Autor</h2></div>
@@ -191,6 +194,26 @@ tr:last-child td{border-bottom:0}
  const el=id=>document.getElementById(id);
  const fmt=new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR"});
  const rows=[[2000,1],[8000,2],[16000,3],[24000,4],[30000,5],[40000,6],[60000,7],[80000,8],[100000,9],[150000,10],[200000,12],[250000,14],[275000,16]];
+ // Valores históricos verificados para os anos de vigência abrangidos: UC de 102 € desde 20-04-2009 até 2026.
+ // Não projectar automaticamente a UC para anos futuros e não inferir regimes intra-anuais a partir do ano.
+ const ucByYear=Object.fromEntries(Array.from({length:18},(_,i)=>[2009+i,102]));
+ function yearValue(){
+  const raw=el("ccYear").value.trim();
+  if(!/^\\d{4}$/.test(raw))return null;
+  const year=Number(raw);
+  return Number.isInteger(year)&&year>=2009&&year<=2099?year:null;
+ }
+ function autofillUC(){
+  const year=yearValue(),uc=year===null?null:ucByYear[year];
+  if(uc!==undefined&&uc!==null){
+   el("ccUC").value=String(uc);
+   el("ccUCNote").textContent="Valor histórico: "+uc.toLocaleString("pt-PT",{minimumFractionDigits:2})+" €; confirma a aplicabilidade ao acto.";
+  }else{
+   el("ccUC").value="";
+   el("ccUCNote").textContent=year===null?"Indica um ano válido (ex.: 2018).":"UC sem valor histórico confirmado para "+year+". Consulta a legislação antes de preencher.";
+  }
+  invalidate();
+ }
  const money=c=>fmt.format(c/100);
  let output=null;
  function euro(id){
@@ -272,16 +295,20 @@ tr:last-child td{border-bottom:0}
   return result;
  }
  function build(){
-  const value=euro("ccValue"),uc=euro("ccUC");
+  const value=euro("ccValue"),uc=euro("ccUC"),year=yearValue();
   const warnings=[];
+  if(year===null)return {error:"Indica o ano da propositura com quatro algarismos."};
+  if(year<2012)return {error:"Processo anterior a 2012: consulta o regime histórico no motor técnico antes de calcular."};
+  if(year===2012)return {error:"No ano de 2012, a data exacta é necessária para saber se a acção foi proposta antes ou depois de 29 de março. Consulta o motor técnico."};
   if(value===null||value<=0||uc===null||uc<=0)return {error:"Indica um valor da causa positivo e uma UC válida, com até duas casas decimais."};
+  if(ucByYear[year]===undefined)warnings.push("Não está confirmado o valor histórico da UC para o ano "+year+". O valor indicado foi introduzido manualmente.");
+  else if(uc!==Math.round(ucByYear[year]*100))warnings.push("A UC introduzida diverge do valor histórico de "+ucByYear[year]+" € para "+year+". Confirma antes de utilizar os cálculos.");
   for(const id of ["ccAuthorTotal","ccDefTotal","ccAuthorFirst","ccAuthorSecond","ccDefFirst","ccDefSecond"]){
    if(euro(id)===null)return {error:"Verifica os pagamentos introduzidos. Utiliza valores não negativos e até duas casas decimais."};
   }
-  const startDate=el("ccDate").value;
-  if(startDate && (startDate<"2012-03-29"||!/\d{4}-\d{2}-\d{2}/.test(startDate)))return {error:"Processo anterior a 29-03-2012 ou data inválida: confere a legislação histórica nas ferramentas técnicas."};
-  if(!startDate)warnings.push("Data de propositura não indicada: confirmar legislação temporalmente aplicável.");
-  if(startDate>="2026-12-01")warnings.push("Acção proposta desde 01-12-2026: confirmar as regras e reduções da nova redacção do RCP.");
+  const startDate=String(year);
+  if(year===2026)warnings.push("O ano de 2026 não permite distinguir as acções propostas antes ou desde 01-12-2026: confirmar a data exacta e o regime transitório antes de aplicar regras alteradas.");
+  if(year>2026)warnings.push("Ano posterior a 2026: confirmar o RCP vigente e as regras transitórias aplicáveis.");
   const val=value/100,unc=uc/100,units=unitsFor(Math.min(val,275000));
   const base=Math.round(units*uc),first=Math.round(base/2),second=base-first;
   if(val>275000)warnings.push("Valor superior a 275 000 €: falta apurar o remanescente, eventual dispensa judicial e responsabilidade final.");
@@ -368,7 +395,7 @@ tr:last-child td{border-bottom:0}
    contested?"Entidade demandada: contestação apresentada; pagos "+money(dPaid)+(defendant.detail?" (1.ª: "+money(defFirst)+"; 2.ª: "+money(defSecond)+")":" (sem discriminação por prestações)")+". "+b.status+".":"Entidade demandada: não apresentou contestação. Não se calcula taxa de justiça por esse impulso (RCP, artigo 6.º/1 e CPC, artigo 530.º/1).",
    final==="unknown"?"A condenação final em custas fica por conferir.":final==="autor"?"Decisão de custas indicada: a cargo do autor.":final==="demandada"?"Decisão de custas indicada: a cargo da entidade demandada.":final==="ambos"?"Decisão de custas indicada: repartida entre as partes; falta quantificar o decaimento.":"Decisão final de custas com regime especial; análise complementar necessária."
   ];
-  return {value,uc,units,base,first,second,secondMode,contested,defMode,a,b,rowsData,extraRows,accountNeed,accountBasis,accountConclusion,shares,warnings,calculatedDue,totalPaid,diff,partyTotals,sumPositive,sumExcess,explanations,process:el("ccProcess").value.trim().slice(0,80),startDate};
+  return {value,uc,year,units,base,first,second,secondMode,contested,defMode,a,b,rowsData,extraRows,accountNeed,accountBasis,accountConclusion,shares,warnings,calculatedDue,totalPaid,diff,partyTotals,sumPositive,sumExcess,explanations,process:el("ccProcess").value.trim().slice(0,80),startDate};
  }
  function render(result){
   output=result;
@@ -376,7 +403,7 @@ tr:last-child td{border-bottom:0}
   el("ccPaidTotal").textContent=money(result.totalPaid);
   el("ccDifference").textContent=result.secondMode==="unknown"||(result.contested&&["deferred","special"].includes(result.defMode))?"Por conferir":money(result.sumPositive);
   el("ccAccountConclusion").textContent=result.accountConclusion;
-  el("ccResultMeta").textContent=(result.process||"Processo sem referência")+" · Valor fixado "+money(result.value)+" · "+(result.startDate||"data por conferir");
+  el("ccResultMeta").textContent=(result.process||"Processo sem referência")+" · Valor fixado "+money(result.value)+" · "+("ano de propositura "+result.year);
   const pbody=el("ccPartyRows");pbody.replaceChildren();
   for(const p of result.partyTotals){
    addRow(pbody,[p.party,money(p.due),money(p.paid),p.provisional?"Por conferir":p.deferred?"Regime especial":money(p.positive),money(p.excess)]);
@@ -404,7 +431,7 @@ tr:last-child td{border-bottom:0}
   el("ccExportStatus").textContent="";
  }
  function reportText(r){
-  const lines=["LEGALTECH SUITE | QUADRO SIMPLES DE CONFERÊNCIA","PROPOSTA NÃO OFICIAL",r.process||"Processo sem referência","Valor fixado: "+money(r.value),"Taxa I-A por impulso: "+r.units+" UC = "+money(r.base),"","SÍNTESE POR INTERVENIENTE (SEM COMPENSAÇÃO):",...r.partyTotals.map(p=>p.party+" | considerado "+money(p.due)+" | pago "+money(p.paid)+" | diferença positiva "+(p.provisional||p.deferred?"por conferir":money(p.positive))+" | excesso potencial "+money(p.excess)),"Total das diferenças positivas individuais: "+(r.secondMode==="unknown"||(r.contested&&["deferred","special"].includes(r.defMode))?"por conferir":money(r.sumPositive)),"Total de excessos potenciais: "+money(r.sumExcess),"","Parte | Impulso | 1.ª devida | 1.ª paga | 2.ª devida | 2.ª paga | Diferença"];
+  const lines=["LEGALTECH SUITE | QUADRO SIMPLES DE CONFERÊNCIA","PROPOSTA NÃO OFICIAL",r.process||"Processo sem referência","Valor fixado: "+money(r.value),"Ano de propositura: "+r.year,"UC considerada: "+money(r.uc),"Taxa I-A por impulso: "+r.units+" UC = "+money(r.base),"","SÍNTESE POR INTERVENIENTE (SEM COMPENSAÇÃO):",...r.partyTotals.map(p=>p.party+" | considerado "+money(p.due)+" | pago "+money(p.paid)+" | diferença positiva "+(p.provisional||p.deferred?"por conferir":money(p.positive))+" | excesso potencial "+money(p.excess)),"Total das diferenças positivas individuais: "+(r.secondMode==="unknown"||(r.contested&&["deferred","special"].includes(r.defMode))?"por conferir":money(r.sumPositive)),"Total de excessos potenciais: "+money(r.sumExcess),"","Parte | Impulso | 1.ª devida | 1.ª paga | 2.ª devida | 2.ª paga | Diferença"];
   for(const p of r.rowsData)lines.push([p.name,p.act,p.act==="Não apresentada"?"—":money(p.first),p.act==="Não apresentada"?"—":p.paidFirst===null?"Por discriminar":money(p.paidFirst),p.second===null?"Por conferir":p.second===0?"Dispensada":money(p.second),p.act==="Não apresentada"?"—":p.paidSecond===null?"Por discriminar":money(p.paidSecond),p.act==="Não apresentada"?"Não aplicável":r.secondMode==="unknown"?"Por conferir":p.prepay==="deferred"?"Dispensa prévia":p.prepay==="special"?"Regime especial":money(p.difference)].join(" | "));
   for(const x of r.extraRows)lines.push(extraName(x.kind)+" | "+x.description+" | devido "+money(x.due)+" | pago "+money(x.paid)+" | "+x.basis);
   lines.push("",r.accountConclusion,...r.explanations);
@@ -418,7 +445,8 @@ tr:last-child td{border-bottom:0}
  el("ccHasExtras").addEventListener("change",()=>{setVisible("ccExtrasFields",el("ccHasExtras").checked);invalidate()});
  el("ccExtraAdd").addEventListener("click",addExtra);
  el("ccDecision").addEventListener("change",()=>setVisible("ccShareFields",el("ccDecision").value==="ambos"));
- const tracked=["ccAccountNeed","ccAccountBasis","ccShareAuthor","ccShareDef","ccAuthorTotal","ccDefTotal","ccProcess","ccValue","ccUC","ccDate","ccAuthorFirst","ccAuthorSecond","ccDefFirst","ccDefSecond","ccDefPrepay","ccSecond","ccDecision","ccVerified"];
+ el("ccYear").addEventListener("input",autofillUC);
+ const tracked=["ccAccountNeed","ccAccountBasis","ccShareAuthor","ccShareDef","ccAuthorTotal","ccDefTotal","ccProcess","ccValue","ccUC","ccAuthorFirst","ccAuthorSecond","ccDefFirst","ccDefSecond","ccDefPrepay","ccSecond","ccDecision","ccVerified"];
  for(const id of tracked){el(id).addEventListener("input",invalidate);el(id).addEventListener("change",invalidate)}
  el("ccCalculate").addEventListener("click",()=>{
   const result=build();
@@ -427,8 +455,8 @@ tr:last-child td{border-bottom:0}
   el("ccResult").scrollIntoView({behavior:"smooth",block:"start"});
  });
  el("ccReset").addEventListener("click",()=>{
-  for(const id of ["ccProcess","ccValue","ccDate"])el(id).value="";
-  el("ccUC").value="102";
+  for(const id of ["ccProcess","ccValue","ccYear"])el(id).value="";
+  el("ccUC").value="";el("ccUCNote").textContent="Indica o ano para preencher a UC.";
   for(const id of ["ccAuthorFirst","ccAuthorSecond","ccDefFirst","ccDefSecond"])el(id).value="0";
   el("ccAuthorTotal").value="0";el("ccDefTotal").value="0";
   el("ccAuthorDetail").checked=false;el("ccDefDetail").checked=false;setVisible("ccAuthorDetailFields",false);setVisible("ccDefDetailFields",false);
