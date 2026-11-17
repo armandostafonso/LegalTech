@@ -41,6 +41,11 @@ try{
  const run=expression=>evaluate("(()=>{"+expression+"})()");
  for(let i=0;i<50;i++){if(await evaluate("!!document.getElementById('multiAdd')"))break;await new Promise(r=>setTimeout(r,40))}
  assert.equal(await evaluate("!!document.getElementById('multiAdd')"),true);
+ assert.equal(await evaluate("document.documentElement.dataset.custasView"),"simples");
+ await evaluate("document.getElementById('custasStep2').click()");
+ assert.equal(await evaluate("document.documentElement.dataset.custasStep"),"2");
+ await evaluate("document.getElementById('custasAdvanced').click()");
+ assert.equal(await evaluate("document.documentElement.dataset.custasView"),"avancado");
  for(const [name,role] of [["BROWSER-A","autor"],["BROWSER-B","reu"]]){
   await run("document.getElementById('multiName').value="+JSON.stringify(name)+";document.getElementById('multiRole').value="+JSON.stringify(role)+";document.getElementById('multiAdd').click();");
  }
