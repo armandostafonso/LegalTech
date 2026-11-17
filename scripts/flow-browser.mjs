@@ -11,6 +11,15 @@ for (const [name, engine] of [["Chromium",chromium],["WebKit",webkit]]) {
     const requests = [];
     page.on("request", req => {if (/^https?:\/\//i.test(req.url())) requests.push(req.url());});
     await page.goto(url, {waitUntil:"domcontentloaded"});
+    const layout = await page.evaluate(() => ({
+      viewport: document.documentElement.clientWidth,
+      documentWidth: document.documentElement.scrollWidth,
+      inputSize: parseFloat(getComputedStyle(document.querySelector("#flow-reference")).fontSize),
+      buttonHeight: document.querySelector("#flow-prepare").getBoundingClientRect().height
+    }));
+    assert.ok(layout.documentWidth <= layout.viewport + 1, "Scroll horizontal em " + name);
+    assert.ok(layout.inputSize >= 16, "Input abaixo de 16px em " + name);
+    assert.ok(layout.buttonHeight >= 44, "Botão inferior a 44px em " + name);
     assert.equal(await page.locator("#flow-txt").isEnabled(), false);
     await page.locator("#flow-type").selectOption("notificacao");
     await page.locator("#flow-reference").fill("Exemplo fictício");
