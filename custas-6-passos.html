@@ -129,6 +129,12 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   <div class="field"><label for="caseDecision">Decisão final / data do trânsito (opcional)</label><input id="caseDecision" maxlength="180" placeholder="Ex.: acórdão transitado em ..."></div>
  </div>
  <div class="note" id="yearNote">A UC de cada processo autónomo fixa-se no momento do seu início (RCP, artigo 5.º, n.º 3). Em recursos e incidentes, o ano pode ser diferente.</div>
+ <details><summary>Checklist de preparação dos autos</summary>
+ <ul><li>Verificar as modalidades de apoio judiciário e as eventuais isenções e seus limites (RCP, artigo 4.º).</li>
+ <li>Identificar dispensa de pagamento prévio (RCP, artigo 15.º), litisconsórcio, coligação, assistentes e intervenientes.</li>
+ <li>Localizar as decisões sobre custas, multas, complexidade especial e os diferentes processos autónomos.</li>
+ <li>Confirmar os pagamentos de taxa e respectivos impulsos, encargos, adiantamentos e documentos por liquidar.</li>
+ <li>Se houver dispensa da conta, verificar e documentar os pressupostos antes de preparar a liquidação (RCP 29.º e Portaria 419-A/2009, 7.º-A).</li></ul></details>
 </section>
 <section data-step-panel="1" aria-labelledby="title2" hidden>
  <div class="step-heading"><span class="step-round">02</span><div><h2 id="title2">Responsabilidade</h2><p class="sub">Regista os responsáveis e a decisão judicial. A percentagem de decaimento é informativa: não é aplicada automaticamente às taxas de impulso.</p></div></div>
@@ -143,6 +149,12 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  <div class="record-list" id="partyList"></div>
  <div class="field" style="margin-top:18px"><label for="ruling">Decisão sobre custas / fundamento</label><textarea id="ruling" maxlength="600" placeholder="Regista a condenação em custas e a proporção fixada na decisão judicial."></textarea></div>
  <div class="note">Fundamentos indicados no guião: artigos 527.º e 607.º, n.º 6, do CPC, artigo 94.º, n.º 2, do CPTA, e artigo 30.º do RCP. A conta deve ser individualizada por sujeito responsável.</div>
+ <details><summary>Checklist da responsabilidade</summary><ul>
+ <li>Transcrever ou resumir a condenação em custas constante do último julgado relevante.</li>
+ <li>Identificar quem suporta as custas em cada acção, incidente, procedimento ou recurso.</li>
+ <li>Confirmar a percentagem da responsabilidade, sem a aplicar automaticamente às taxas de impulso.</li>
+ <li>Elaborar a conferência por cada sujeito responsável, incluindo principal e apensos, nos termos do RCP 30.º.</li>
+ </ul></details>
 </section>
 <section data-step-panel="2" aria-labelledby="title3" hidden>
  <div class="step-heading"><span class="step-round">03</span><div><h2 id="title3">Processo autónomo e taxa de justiça</h2><p class="sub">Regista a acção, cada recurso, incidente ou procedimento com tributação própria. A taxa é associada a um interveniente e à UC do ano de início desse impulso.</p></div></div>
@@ -159,6 +171,12 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  </div>
  <div class="actionrow"><button class="secondary" id="suggestIA" type="button">Sugerir I-A até 275 000 €</button><label class="check"><input id="chargeVerified" type="checkbox">Valor e fundamento conferidos nos autos</label></div>
  <div class="note" id="chargeHint">A sugestão I-A é apenas aritmética. Não aplica automaticamente segunda prestação, reduções, isenções, remanescente ou alterações históricas.</div>
+ <details><summary>Checklist dos processos autónomos e da taxa</summary><ul>
+ <li>Identificar cada acção, recurso, incidente e procedimento cautelar com tributação própria (RCP 1.º, n.º 2).</li>
+ <li>Conferir a base tributável (RCP 11.º e 12.º) e a UC do ano em que iniciou cada processo autónomo.</li>
+ <li>Seleccionar I-A, I-B, I-C, II-A, II-B ou o regime especial devidamente fundamentado.</li>
+ <li>Confirmar a taxa efectivamente paga, segunda prestação, benefícios e eventual remanescente.</li>
+ </ul></details>
  <div class="actionrow"><button type="button" class="primary" id="chargeAdd">Adicionar processo / taxa</button></div>
  <div class="record-list" id="chargeList"></div>
 </section>
@@ -187,6 +205,12 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   <div class="actionrow"><button type="button" id="moveAdd" class="secondary">Registar movimento</button></div>
   <div class="record-list" id="moveList"></div>
   <div class="note">Só pagamentos e restituições <strong>comprovados</strong> entram nos saldos. Guias emitidas ou anuladas nunca são contabilizadas como pagamento. Restituições são ligadas à referência dos pagamentos comprovados.</div>
+ <details><summary>Checklist de encargos e movimentos</summary><ul>
+ <li>Separar despesas enquadráveis no RCP 16.º, pagamentos ao IGFEJ e outros pagamentos a entidades.</li>
+ <li>Conferir as notas de honorários ou facturas já liquidadas e as ainda por liquidar.</li>
+ <li>Associar cada guia, pagamento ou restituição ao responsável e à referência do comprovativo.</li>
+ <li>Evitar contar uma guia emitida como se representasse um pagamento confirmado.</li>
+ </ul></details>
  </div>
 </section>
 <section data-step-panel="4" aria-labelledby="title5" hidden>
@@ -201,6 +225,11 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
  <div class="actionrow"><label class="check"><input id="sanctionVerified" type="checkbox">Decisão e falta de liquidação conferidas</label><button id="sanctionAdd" type="button" class="secondary">Adicionar multa ou penalidade</button></div>
  <div class="record-list" id="sanctionList"></div>
  <div class="note">O guião distingue as multas processuais, as penalidades e as coimas. O registo nestes campos não substitui as funcionalidades específicas de liquidação/conta-crime.</div>
+ <details><summary>Checklist de multas e penalidades</summary><ul>
+ <li>Identificar o despacho, o responsável, a data e o valor ainda por liquidar.</li>
+ <li>Não voltar a contabilizar multas processuais ou penalidades que já tenham sido liquidadas.</li>
+ <li>Em matéria penal ou contraordenacional, confirmar a utilização da liquidação específica e dos pagamentos a entidades.</li>
+ </ul></details>
 </section>
 <section data-step-panel="5" aria-labelledby="title6" hidden>
  <div class="step-heading"><span class="step-round">06</span><div><h2 id="title6">Finalização</h2><p class="sub">Confere o que foi registado, as quantias por responsável e as ressalvas necessárias antes de qualquer conta no sistema oficial.</p></div></div>
@@ -222,6 +251,12 @@ footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
   <div id="accountConclusion" class="note"></div>
   <details open><summary>Pontos a confirmar</summary><ul id="warningList"></ul></details>
   <div class="note">A diferença positiva é aritmética, não uma dívida exigível confirmada. A eventual dispensa de conta, as isenções, o apoio judiciário, a repartição de custas e os documentos têm de ser validados no processo. Não existe compensação automática entre pessoas distintas.</div>
+ <details><summary>Checklist de finalização</summary><ul>
+ <li>Conferir os resultados individuais e os valores atribuídos a cada interveniente.</li>
+ <li>Verificar eventual saldo de custas prováveis ou pagamento antecipado de encargos (RCP 30.º, n.º 3, alíneas f) e g)).</li>
+ <li>Confirmar a necessidade de elaborar conta ou, em caso de dispensa, documentar a verificação dos pressupostos.</li>
+ <li>Registar a conta apenas no sistema oficial, após validação integral dos autos e da legislação aplicável.</li>
+ </ul></details>
  </div>
 </section>
 <p class="status" id="message" role="status" aria-live="polite">Preenche o processo e escolhe «Seguinte».</p>
