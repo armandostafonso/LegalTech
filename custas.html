@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-PT"><head>
+<html lang="pt-PT" data-custas-view="simples" data-custas-step="1" data-custas-finance="fechado"><head>
 <script id="lt-theme-bootstrap">(function(){try{var a=localStorage.getItem("legaltech_theme"),b=localStorage.getItem("theme"),t=(a==="light"||a==="dark")?a:(b==="light"||b==="dark")?b:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;localStorage.setItem("legaltech_theme",t);localStorage.setItem("theme",t)}catch(e){}})();</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="description" content="Conferência experimental de taxas de justiça para ações administrativas.">
 <title>Conferência de custas · LegalTech Suite</title>
@@ -7,12 +7,58 @@
 :root{color-scheme:light;--bg:#f7f8fb;--paper:#fff;--ink:#152035;--muted:#5c6b7d;--line:#e2e7ee;--accent:#2554a6;--soft:#eef4ff}
 :root[data-theme=dark]{color-scheme:dark;--bg:#11151d;--paper:#1a202b;--ink:#f3f6fc;--muted:#bbc7d7;--line:#313949;--accent:#94baff;--soft:#222d41}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:980px;margin:auto;padding:24px 18px 60px}a{color:var(--accent)}header{display:flex;align-items:center;justify-content:space-between;gap:12px}h1{font-size:clamp(28px,4vw,40px);letter-spacing:-1.2px;margin:25px 0 6px}h2{font-size:19px;margin:0 0 14px}.muted,small{color:var(--muted)}.panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:16px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.field{display:flex;flex-direction:column;gap:5px}label{font-size:13px;font-weight:650}input,select,textarea{width:100%;border:1px solid var(--line);background:var(--paper);color:var(--ink);padding:12px;border-radius:10px;font:inherit}button{background:var(--ink);color:var(--paper);border:0;border-radius:10px;padding:12px 16px;cursor:pointer;font:inherit}button.secondary{background:var(--soft);color:var(--accent)}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.notice{padding:14px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:13px}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}td:last-child,th:last-child{text-align:right}fieldset{border:1px solid var(--line);border-radius:12px;margin:12px 0;padding:12px}legend{font-weight:700}fieldset label{display:block;font-weight:400;margin:9px 0}fieldset input{width:auto;margin-right:8px}.status{font-weight:750;font-size:18px}#report{white-space:pre-wrap;background:var(--soft);padding:16px;border-radius:12px}.partybox{border:1px solid var(--line);border-radius:15px;padding:16px;margin:14px 0}.partybox h3{font-size:16px;margin:0 0 14px}.checkrow{font-weight:400;display:flex;align-items:center;gap:6px;padding:11px 0}.checkrow input{width:auto}.parties{display:grid;gap:12px} @media(max-width:650px){.grid{grid-template-columns:1fr}.panel{padding:16px}}@media print{button,.actions,header{display:none!important}body{background:white}.panel{break-inside:avoid}}
+
+/* Vista orientada por tarefas: as ferramentas jurídicas conservam os seus IDs, regras e estado. */
+.custas-switch{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:18px 0 8px}
+.custas-switch button{font-size:14px}
+.custas-switch .is-selected{background:var(--ink);color:var(--paper)}
+.custas-wizard{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:17px 20px;margin-top:12px}
+.custas-progress{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.custas-progress button{min-height:47px;background:var(--soft);color:var(--ink);font-size:14px;padding:10px 8px;font-weight:600}
+.custas-progress button.is-selected{background:var(--ink);color:var(--paper)}
+.custas-helper{margin:12px 0 0;color:var(--muted);font-size:14px}
+.custas-mini-actions{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.custas-mini-actions button{font-size:14px}
+.custas-finance-link{display:none;margin-top:12px}
+.custas-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:18px}
+.custas-footer button{font-size:14px}
+html[data-custas-view="simples"] main > section.panel{display:none}
+html[data-custas-view="simples"][data-custas-step="1"] main > section.panel[data-custas-step="1"],
+html[data-custas-view="simples"][data-custas-step="2"] main > section.panel[data-custas-step="2"],
+html[data-custas-view="simples"][data-custas-step="3"] main > section.panel[data-custas-step="3"]{display:block}
+html[data-custas-view="simples"][data-custas-step="2"] .custas-finance-link{display:block}
+html[data-custas-view="simples"][data-custas-finance="fechado"] main > section.panel[data-custas-finance-extra="yes"]{display:none}
+html[data-custas-view="avancado"] .custas-wizard,
+html[data-custas-view="avancado"] .custas-footer{display:none}
+@media(max-width:650px){.custas-wizard{padding:14px}.custas-progress{gap:5px}.custas-progress button{font-size:12px;padding:10px 5px}.custas-footer{flex-wrap:wrap}}
+@media print{.custas-switch,.custas-wizard,.custas-footer{display:none!important}html[data-custas-view="simples"] main > section.panel:not([data-custas-step="3"]){display:none!important}}
 </style><script>try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||"light"}catch(e){}</script><link rel="stylesheet" href="assets/brand.css">
 </head>
 <body><main><header><a class="brand" href="index.html">LegalTech <span class="lt-suite">Suite</span></a><button class="secondary" id="theme" type="button">◐ Tema</button></header>
 <h1>Conferência de custas</h1><p class="muted">A01 · Acção administrativa · Versão experimental 2.0</p>
 <div class="notice"><strong>Âmbito:</strong> cálculo limitado da taxa-base por impulso com Tabela I-A/I-B e conferência de valores. Não determina automaticamente o total legalmente exigível, não lê PDF e não emite conta oficial. Não introduzas dados pessoais ou processuais confidenciais. Os dados não são enviados nem guardados por esta página.</div>
-<section class="panel"><h2>1. Identificação e regime</h2><div class="grid">
+
+<div class="custas-switch" role="group" aria-label="Apresentação do motor de custas">
+<button type="button" id="custasSimple" class="is-selected" aria-pressed="true">Percurso simples</button>
+<button type="button" id="custasAdvanced" class="secondary" aria-pressed="false">Ferramentas técnicas</button>
+</div>
+<div class="custas-wizard" id="custasWizard">
+<nav class="custas-progress" aria-label="Etapas da conferência">
+<button type="button" id="custasStep1" class="is-selected" aria-current="step">1. Processo</button>
+<button type="button" id="custasStep2">2. Taxas e pagamentos</button>
+<button type="button" id="custasStep3">3. Conferência</button>
+</nav>
+<p id="custasStepHint" class="custas-helper" aria-live="polite">Indica os dados do processo fictício e confirma os pressupostos jurídicos aplicáveis.</p>
+<div class="custas-mini-actions">
+<button type="button" id="custasPrev" class="secondary" disabled>Etapa anterior</button>
+<button type="button" id="custasNext">Seguinte: taxas</button>
+</div>
+<div class="custas-finance-link">
+<button type="button" class="secondary" id="custasFinance" aria-expanded="false">Mostrar outros impulsos e pagamentos</button>
+<p class="custas-helper">Usa estes registos para prestações ou pagamentos adicionais. Para isenções, remanescente, recursos e situações especiais, consulta as ferramentas técnicas.</p>
+</div>
+</div>
+<section class="panel" data-custas-step="1"><h2>1. Identificação e regime</h2><div class="grid">
 <div class="field"><label for="process">Referência fictícia / interna</label><input id="process" placeholder="Ex.: TESTE-A01"></div>
 <div class="field"><label for="date">Data de entrada</label><input id="date" type="date"></div>
 <div class="field"><label for="value">Valor da causa (€)</label><input id="value" type="number" min="0" step="0.01" placeholder="0,00"></div>
@@ -52,7 +98,7 @@
 <p id="partiesstatus" class="muted" aria-live="polite">A análise exige revisão documental e legal individualizada.</p>
 <p class="muted"><small>Fundamentos: <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975" target="_blank" rel="noopener">RCP, arts. 4.º e 15.º</a>; <a href="https://diariodarepublica.pt/dr/detalhe/decreto-lei/164-2026-1154555254" target="_blank" rel="noopener">DL n.º 164/2026, arts. 8.º e 9.º</a>; Lei n.º 34/2004. As isenções podem ter efeitos específicos sobre encargos. A aplicação das novas regras depende também da data do acto.</small></p></section>
 
-<section class="panel" id="automatico-a01"><h2>Calculadora normativa de taxa-base · A01</h2>
+<section class="panel" id="automatico-a01" data-custas-step="2"><h2>Calculadora normativa de taxa-base · A01</h2>
 <p class="muted">Apura a taxa-base de um impulso segundo os 13 escalões da Tabela I do RCP, na versão aplicável a acções iniciadas a partir de 29 de março de 2012. O resultado distingue a taxa total da <strong>primeira prestação (metade da taxa I-A)</strong>; a segunda prestação é tratada em separado. Não inclui remanescente, reduções, isenções, apoio judiciário ou despesas. Para valores superiores a 275.000 €, calcula apenas a parcela até esse limite.</p>
 <div class="grid">
 <div class="field"><label for="autoParty">Parte responsável</label><select id="autoParty"><option value="a">Parte A</option><option value="b">Parte B</option></select></div>
@@ -103,7 +149,7 @@
 <p id="benefitResult" class="notice" role="status" aria-live="polite">Selecciona uma obrigação. Não são aplicados benefícios por defeito.</p>
 <p class="muted"><small>Redução do artigo 6.º/3: o valor passa para 90%, não é reduzido em 90%. A redacção de 2026 aplica-se apenas a acções propostas a partir de 01-12-2026, por força do artigo 8.º/3 do <a href="https://diariodarepublica.pt/dr/detalhe/decreto-lei/164-2026-1154555254" target="_blank" rel="noopener">DL 164/2026</a>. Isenções do <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975-45001375" target="_blank" rel="noopener">artigo 4.º do RCP</a> carecem de verificação individual.</small></p>
 </section>
-<section class="panel" id="obrigacoes">
+<section class="panel" id="obrigacoes" data-custas-step="2" data-custas-finance-extra="yes">
 <h2>6. Obrigações por impulso processual</h2>
 <p class="muted">Regista os montantes <strong>já determinados juridicamente</strong> para cada impulso. As taxas-base têm cálculo condicionado e os encargos finais podem ser gerados a partir do mapa acima. Não existe cálculo completo automático nesta secção. A transferência substitui os totais devidos, sem os somar aos valores anteriores.</p>
 <div class="grid">
@@ -152,7 +198,7 @@
   <p class="muted" id="respNote">Os lançamentos neste mapa não alteram o livro de pagamentos. Para afectar o encargo à conferência, regista as obrigações individuais e depois utiliza «Transferir os totais devidos». A transferência não cria pagamentos.</p>
   <p class="muted"><small>Enquadramento: <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2013-34580575-53416375" target="_blank" rel="noopener">CPC, artigo 527.º</a>, <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2013-34580575-53451975" target="_blank" rel="noopener">artigos 529.º e 532.º</a> e <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975-45001875" target="_blank" rel="noopener">RCP, artigos 29.º e 30.º</a>. As custas de parte não são lançadas à conta da secretaria.</small></p>
 </section>
-<section class="panel" id="livro-movimentos"><h2>7. Livro de movimentos financeiros</h2>
+<section class="panel" id="livro-movimentos" data-custas-step="2" data-custas-finance-extra="yes"><h2>7. Livro de movimentos financeiros</h2>
 <p class="muted">Registo temporário, neste navegador, de guias e movimentos. <strong>Uma guia emitida ou anulada não é um pagamento.</strong> Só pagamentos ou restituições marcados como confirmados entram nos saldos. Não introduzas referências processuais reais em testes públicos.</p>
 <div class="grid">
 <div class="field"><label for="ledgerParty">Interveniente</label><select id="ledgerParty"><option value="a">Parte A</option><option value="b">Parte B</option><option value="extra">Outras quantias</option></select></div>
@@ -266,7 +312,7 @@
 <div class="table-scroll"><table aria-label="Mapa financeiro por impulso"><thead><tr><th>Parte / impulso</th><th>Obrigação</th><th>Pago líquido imputado</th><th>Diferença positiva</th><th>Excesso potencial</th><th>Estado</th></tr></thead><tbody id="reconcileRows"><tr><td colspan="6">Ainda não foi efectuada a reconciliação.</td></tr></tbody></table></div>
 <p class="muted"><small>Nota: este mapa é uma operação aritmética, não decide vencimento, restituição, compensação, dispensa de pagamento prévio ou responsabilidade final. Para a proposta de conferência, regista as decisões e documentos relevantes.</small></p>
 </section>
-<section class="panel" id="proposta-conferencia">
+<section class="panel" id="proposta-conferencia" data-custas-step="3">
   <h2>Proposta de conferência por sujeito processual</h2>
   <p class="muted">Prévia de trabalho da secretaria, <strong>não é uma conta judicial oficial</strong>. Consolida as obrigações introduzidas, pagamentos confirmados e encargos distribuídos, com indicação de divergências e pressupostos em falta. Não calcula custas de parte nem presume que toda a diferença aritmética seja legalmente exigível.</p>
   <div class="grid">
@@ -280,8 +326,68 @@
   <pre id="proposalText" hidden></pre>
   <p class="muted"><small>Referências: artigos 29.º e 30.º do RCP, artigos 527.º, 529.º e 532.º do CPC. O texto é apenas uma proposta de conferência, não substitui os mecanismos oficiais de processamento da conta.</small></p>
 </section>
+
+<nav class="custas-footer" aria-label="Navegação entre etapas">
+<button type="button" id="custasFooterPrev" class="secondary" disabled>Etapa anterior</button>
+<span id="custasFooterLabel" class="muted">Etapa 1 de 3 · Processo</span>
+<button type="button" id="custasFooterNext">Seguinte: taxas</button>
+</nav>
 </main><script>
 const el=id=>document.getElementById(id);
+
+/* Navegação simples: não calcula, não altera e não elimina qualquer obrigação. */
+const custasHints={
+ 1:"Identifica o processo fictício e confirma os pressupostos jurídicos aplicáveis.",
+ 2:"Calcula a taxa-base do impulso. Para registar outras taxas ou pagamentos, abre «Mostrar outros impulsos e pagamentos».",
+ 3:"Prepara a proposta. Se houver avisos, abre «Ferramentas técnicas» para conferir os regimes especiais."
+};
+const custasStepLabels={1:"Processo",2:"Taxas e pagamentos",3:"Conferência"};
+let custasCurrentStep=1;
+function custasSetStep(next){
+ const step=Math.max(1,Math.min(3,Number(next)||1));
+ custasCurrentStep=step;
+ document.documentElement.dataset.custasStep=String(step);
+ for(let i=1;i<=3;i++){
+  const button=el("custasStep"+i);
+  button.className=i===step?"is-selected":"";
+  button.ariaCurrent=i===step?"step":null;
+ }
+ el("custasStepHint").textContent=custasHints[step];
+ const prev=step===1,nextDisabled=step===3;
+ for(const id of ["custasPrev","custasFooterPrev"])el(id).disabled=prev;
+ for(const id of ["custasNext","custasFooterNext"]){
+  el(id).disabled=nextDisabled;
+  el(id).textContent=step===1?"Seguinte: taxas":step===2?"Seguinte: conferência":"Conferência";
+ }
+ el("custasFooterLabel").textContent="Etapa "+step+" de 3 · "+custasStepLabels[step];
+ if(step===2&&!el("autoValue").value&&el("value").value){
+  el("autoValue").value=el("value").value;
+  el("autoResult").textContent="Valor tributário pré-preenchido com o valor da causa. Confirma se coincidem antes de calcular.";
+ }
+ if(typeof window!=="undefined"&&typeof window.scrollTo==="function")window.scrollTo({top:0,behavior:"smooth"});
+}
+function custasSetView(mode){
+ const technical=mode==="avancado";
+ document.documentElement.dataset.custasView=technical?"avancado":"simples";
+ for(const [id,selected] of [["custasSimple",!technical],["custasAdvanced",technical]]){
+  el(id).className=selected?"is-selected":"secondary";
+  el(id).ariaPressed=selected?"true":"false";
+ }
+}
+el("custasSimple").addEventListener("click",()=>custasSetView("simples"));
+el("custasAdvanced").addEventListener("click",()=>custasSetView("avancado"));
+for(let i=1;i<=3;i++)el("custasStep"+i).addEventListener("click",()=>custasSetStep(i));
+for(const id of ["custasNext","custasFooterNext"])el(id).addEventListener("click",()=>custasSetStep(custasCurrentStep+1));
+for(const id of ["custasPrev","custasFooterPrev"])el(id).addEventListener("click",()=>custasSetStep(custasCurrentStep-1));
+el("custasFinance").addEventListener("click",()=>{
+ const open=document.documentElement.dataset.custasFinance!=="aberto";
+ document.documentElement.dataset.custasFinance=open?"aberto":"fechado";
+ el("custasFinance").textContent=open?"Ocultar registos adicionais":"Mostrar outros impulsos e pagamentos";
+ el("custasFinance").ariaExpanded=open?"true":"false";
+});
+custasSetStep(1);
+custasSetView("simples");
+
 let profilesReady=false,profilesText="";
 const partyFields=["role","entity","exemption","aid","excluded","outcome","decision","evidence"];
 for(const p of ["pa","pb"])for(const field of partyFields){
