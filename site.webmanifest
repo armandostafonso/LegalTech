@@ -20,5 +20,46 @@
   "categories": [
     "productivity",
     "utilities"
+  ],
+  "shortcuts": [
+    {
+      "name": "Painel de trabalho",
+      "short_name": "Painel",
+      "description": "Abrir o catálogo de ferramentas",
+      "url": "./workspace.html",
+      "icons": [
+        {
+          "src": "./assets/legaltech-mark.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "LegalTech Flow",
+      "short_name": "Flow",
+      "description": "Preparar e conferir atos",
+      "url": "./flow.html",
+      "icons": [
+        {
+          "src": "./assets/legaltech-mark.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Cita-Check",
+      "short_name": "Prazos",
+      "description": "Apoio à conferência de prazos",
+      "url": "./citacheck.html",
+      "icons": [
+        {
+          "src": "./assets/legaltech-mark.svg",
+          "sizes": "any",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
   ]
 }
