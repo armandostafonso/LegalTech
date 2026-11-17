@@ -12,6 +12,19 @@ async function open(name){
 async function check(name,fn){
  try{await fn();console.log("✓",name)}catch(e){errors.push(name+": "+String(e));console.error("✗",name,e)}
 }
+await check("Painel de trabalho: pesquisa, filtros e privacidade",async()=>{
+ await open("workspace.html");
+ if(await page.locator(".workspace-tool").count()!==22)throw Error("Catálogo do painel incompleto");
+ await page.locator("#workspace-search").fill("notificacao");
+ if(await page.locator(".workspace-tool").count()<1)throw Error("Pesquisa sem normalização de acentos");
+ await page.locator("#workspace-search").fill("");
+ await page.locator('#workspace-filters button[data-category="Prazos"]').click();
+ if(await page.locator(".workspace-tool").count()!==2)throw Error("Filtro de prazos incorreto");
+ await page.locator('#workspace-filters button[data-category="Todas"]').click();
+ if(await page.locator(".workspace-tool").count()!==22)throw Error("Restauro do catálogo falhou");
+ await page.reload();
+ if(await page.locator("#workspace-search").inputValue()!=="")throw Error("Pesquisa persistiu após recarga");
+});
 await check("Página inicial e pesquisa",async()=>{
  await open("index.html");
  const h=await page.locator("h1").innerText();
