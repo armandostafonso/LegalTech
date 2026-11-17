@@ -7,10 +7,11 @@
 ## Como utilizar
 
 1. Indicar o **valor da causa fixado na sentença ou decisão relevante**, a UC aplicável ao processo e, de preferência, a data de propositura.
-2. Na **petição inicial**, inserir o valor comprovadamente pago na primeira e na segunda prestações. O programa calcula a taxa I-A em função do valor fixado.
-3. Na **contestação**, assinalar se a entidade demandada (por exemplo, a Autoridade Tributária) apresentou ou não contestação. Se não contestou, **não é criada taxa de justiça por esse impulso**. Se contestou, indicar as prestações pagas e conferir se há dispensa de pagamento prévio.
-4. Confirmar se a segunda prestação é **devida, dispensada nos termos do artigo 14.º-A ou ainda não verificada**. Indicar, apenas para referência, o regime de condenação final por custas.
-5. Seleccionar **Preparar quadro de conta**. Rever as diferenças e as advertências antes de imprimir ou copiar.
+2. Na **petição inicial**, inserir simplesmente o **total comprovadamente pago**. Se for necessário, assinalar «Discriminar por prestações» para introduzir separadamente os pagamentos da primeira e da segunda. O total não é somado novamente aos pagamentos discriminados.
+3. Na **contestação**, assinalar se a entidade demandada (por exemplo, a Autoridade Tributária) apresentou ou não contestação. Se não contestou, **não é criada taxa de justiça por esse impulso**. Se contestou, indicar o **total pago** (ou discriminar prestações facultativamente) e conferir se há dispensa de pagamento prévio.
+4. Se houver **multas ou incidentes**, assinalar a opção e acrescentar cada rubrica, com tipo, identificação, responsável, fundamento legal ou decisão, montante fixado e total pago. A ferramenta não inventa taxas de incidentes nem multas; o utilizador deve conferir a Tabela II e a decisão judicial. Se não houver, esta secção fica fechada.
+5. Confirmar se a segunda prestação é **devida, dispensada nos termos do artigo 14.º-A ou ainda não verificada**. Indicar, apenas para referência, o regime de condenação final por custas.
+6. Seleccionar **Preparar quadro de conta**. Rever as diferenças e as advertências antes de imprimir ou copiar.
 
 ### Exemplo fictício
 
@@ -34,14 +35,14 @@ Acção com valor fixado de **30 000 €**, UC de **102 €**, tabela I-A = **5 
 - Não presume que a ausência de pagamento da AT, tendo contestado, constitua logo uma dívida vencida, sem verificar o artigo 15.º e o regime aplicável.
 - Não presume que a segunda prestação seja devida se a situação não tiver sido verificada.
 - Não transforma um excesso aritmético em ordem de restituição.
-- Não calcula automaticamente remanescente acima de 275 000 €, custas de parte, recursos, incidentes, encargos ou pluralidade de partes.
+- Não calcula automaticamente remanescente acima de 275 000 €, custas de parte, recursos, taxas de incidentes, multas, encargos ou pluralidade de partes. Multas e incidentes podem ser **registados manualmente**, com montante, pagamento e fundamento; não se presume a sua exigibilidade nem responsabilidade final.
 - Não substitui a conta da secretaria nem consulta CITIUS, SITAF ou serviços bancários.
 
 A versão técnica anterior foi **preservada integralmente** na página separada. A versão simples só utiliza dados introduzidos pelo utilizador, sem comunicação com serviços externos e sem arquivo persistente. Não introduzir dados identificativos ou documentos confidenciais em ambientes não autorizados.
 
 ## Testes
 
-A conta simples tem testes específicos em \`scripts/test-custas-simple.mjs\`, que cobrem a falta de contestação, os escalões da Tabela I-A, pagamentos da primeira e segunda prestações, dispensas, excesso potencial, regime temporal, validação de montantes e invalidação dos resultados após alterações. Os testes do motor técnico continuam em \`scripts/test-custas.mjs\` e os cenários sintéticos em \`scripts/test-custas-cenarios.mjs\`. O workflow do GitHub Actions inclui ambos.
+A conta simples tem testes específicos em \`scripts/test-custas-simple.mjs\`, que cobrem a falta de contestação, os escalões da Tabela I-A, pagamento total ou discriminado, multas e incidentes introduzidos manualmente, dispensas, excesso potencial, regime temporal, validação de montantes e invalidação dos resultados após alterações. Os testes do motor técnico continuam em \`scripts/test-custas.mjs\` e os cenários sintéticos em \`scripts/test-custas-cenarios.mjs\`. O workflow do GitHub Actions inclui ambos.
 
 **Os testes são técnicos e não substituem a validação jurídica de contas reais devidamente anonimizadas.**
 
