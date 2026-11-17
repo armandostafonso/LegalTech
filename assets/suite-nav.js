@@ -4,6 +4,7 @@
 "use strict";
 const entries=[
  ["index.html","Início"],
+ ["flow.html","Flow"],
  ["citacheck.html","CitaCheck"],
  ["anonimizador.html","PDF"],
  ["minutas.html","Docs"],
