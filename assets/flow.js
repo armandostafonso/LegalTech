@@ -24,6 +24,21 @@
     byId("flow-meter-box").setAttribute("aria-valuenow", String(pct));
     if (!edited) report.value = buildText();
   }
+  function transferText() {
+    if (!plan) return "";
+    const verified = plan.checks.filter(item => selected.has(item.id)).map(item => "- " + item.label);
+    return [
+      "LEGALTECH SUITE | CONTEXTO AUXILIAR",
+      "Tipo de ato: " + plan.label,
+      "Etiqueta genérica: " + (plan.reference || "Não indicada"),
+      "Data previamente confirmada: " + (plan.confirmedDate || "Não indicada"),
+      "Instrução desidentificada:", plan.instruction || "(Não introduzida)",
+      "Notas:", plan.notes || "(Sem notas)",
+      "Verificações assinaladas manualmente:",
+      ...(verified.length ? verified : ["(Nenhuma)"]),
+      "Roteiro auxiliar; não comprova atos nem valida prazos."
+    ].join("\n");
+  }
   function render() {
     checks.replaceChildren();
     links.replaceChildren();
@@ -90,6 +105,7 @@
     } catch (error) { status(error.message || "Não foi possível preparar o roteiro."); }
   });
   byId("flow-clear").addEventListener("click", reset);
+  byId("flow-handoff-copy").addEventListener("click", () => { if (plan) N.copy(transferText()); });
   byId("flow-notes").addEventListener("input", () => {
     if (!plan) return;
     plan.notes = byId("flow-notes").value.slice(0, C.LIMITS.notes);
