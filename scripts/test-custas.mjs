@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import vm from "node:vm";
 import assert from "node:assert/strict";
-const html=fs.readFileSync("custas.html","utf8");
+const html=fs.readFileSync("custas-tecnico.html","utf8");
 // Os scripts externos não têm corpo; os IDs são recolhidos apenas do HTML.
 const inline=[...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)]
  .filter(m=>!/\bsrc\s*=/.test(m[1])&&m[2].trim()).map(m=>m[2]);
