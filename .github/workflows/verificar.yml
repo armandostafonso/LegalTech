@@ -16,6 +16,8 @@ jobs:
           node-version: '22'
       - name: Verificar páginas, scripts e recursos
         run: node scripts/validate-site.mjs
+      - name: Validar LegalTech Flow sem navegador
+        run: node scripts/flow-contract.mjs
       - name: Validar calendário comum
         run: node scripts/calendar-contract.mjs
       - name: Verificar núcleo de prazos e 324 cenários (sem browser)
@@ -34,6 +36,8 @@ jobs:
           npx playwright install --with-deps chromium webkit
       - name: Exercitar ferramentas no navegador
         run: node scripts/browser-smoke.mjs
+      - name: Testar LegalTech Flow em Chromium e WebKit
+        run: node scripts/flow-browser.mjs
       - name: Testar os doze módulos especializados
         run: node scripts/next-smoke.mjs
       - name: Acessibilidade e tema claro-escuro em ecrãs móveis
