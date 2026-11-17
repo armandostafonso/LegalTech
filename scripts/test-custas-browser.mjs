@@ -80,7 +80,31 @@ try{
  await evaluate("document.getElementById('proposalPreview').click()");
  assert.match(await evaluate("document.getElementById('proposalNote').textContent"),/contabilidade multissujeito autónoma/);
  assert.equal(exceptions.length,0,exceptions.join("; "));
- console.log("Browser A01 OK: percentagens, importação, pagamentos, reconciliação e isolamento de A/B.");
+ const simpleSource=fs.readFileSync("custas.html","utf8");
+ const simpleHTML=simpleSource.replaceAll('<script src="assets/theme.js"></script>',"").replaceAll('<script src="assets/suite-nav.js"></script>',"");
+ await evaluate("document.open();document.write("+JSON.stringify(simpleHTML)+");document.close();");
+ assert.equal(await evaluate("!!document.getElementById('ccCalculate')"),true,"Conta simples não abriu");
+ await run([
+  'const set=(id,value)=>document.getElementById(id).value=value;',
+  'set("ccProcess","BROWSER-TESTE");set("ccValue","30000");set("ccUC","102");',
+  'set("ccDate","2026-11-16");set("ccAuthorFirst","255");',
+  'set("ccSecond","waived");set("ccDecision","autor");',
+  'document.getElementById("ccVerified").checked=true;',
+  'document.getElementById("ccCalculate").click();'
+ ].join(""));
+ assert.match(await evaluate("document.getElementById('ccBaseTotal').textContent"),/510,00/);
+ assert.match(await evaluate("document.getElementById('ccRows').textContent"),/sem contestação/);
+ await run([
+  'document.getElementById("ccContested").checked=true;',
+  'document.getElementById("ccContested").dispatchEvent(new Event("change",{bubbles:true}));',
+  'document.getElementById("ccDefFirst").value="255";',
+  'document.getElementById("ccDefPrepay").value="normal";',
+  'document.getElementById("ccCalculate").click();'
+ ].join(""));
+ assert.match(await evaluate("document.getElementById('ccRows').textContent"),/Contestação/);
+ assert.match(await evaluate("document.getElementById('ccRows').textContent"),/255,00/);
+ assert.equal(exceptions.length,0,exceptions.join("; "));
+ console.log("Browser A01 OK: motor técnico e conta simples com/sem contestação.");
 }finally{
  if(ws?.readyState===WebSocket.OPEN)ws.close();
  chrome.kill("SIGKILL");
