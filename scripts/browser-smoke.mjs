@@ -19,7 +19,7 @@ await check("Página inicial e pesquisa",async()=>{
  await page.locator("#search").fill("minuta");
  if(await page.locator(".tool:visible").count()<1||!await page.locator(".tool[href=\"minutas.html\"]").isVisible())throw Error("Pesquisa não encontrou Minutas");
  await page.locator("#search").fill("");
- if(await page.locator(".tool:visible").count()!==21)throw Error("Ferramentas não recuperadas");
+ if(await page.locator(".tool:visible").count()!==22)throw Error("Ferramentas não recuperadas");
 });
 await check("Catálogo por categorias: filtros e pesquisa combinada",async()=>{
  await open("index.html");
@@ -30,7 +30,7 @@ await check("Catálogo por categorias: filtros e pesquisa combinada",async()=>{
  if(await page.locator(".tool:visible").count()!==1)throw Error("Pesquisa combinada falhou");
  await page.locator("#search").fill("");
  await page.locator('.filters button[data-filter="all"]').click();
- if(await page.locator(".tool:visible").count()!==21)throw Error("Restauro de ferramentas falhou");
+ if(await page.locator(".tool:visible").count()!==22)throw Error("Restauro de ferramentas falhou");
 });
 await check("Fontes normativas: inventário, filtro e marcas temporárias",async()=>{
  await open("fontes.html");
