@@ -5,6 +5,9 @@ on:
     paths:
       - 'custas.html'
       - 'custas-tecnico.html'
+      - 'custas-6-passos.html'
+      - 'assets/custas-6-core.js'
+      - 'scripts/test-custas-6-passos.mjs'
       - 'scripts/test-custas.mjs'
       - 'scripts/test-custas-simple.mjs'
       - 'scripts/test-custas-cenarios.mjs'
@@ -16,6 +19,9 @@ on:
     paths:
       - 'custas.html'
       - 'custas-tecnico.html'
+      - 'custas-6-passos.html'
+      - 'assets/custas-6-core.js'
+      - 'scripts/test-custas-6-passos.mjs'
       - 'scripts/test-custas.mjs'
       - 'scripts/test-custas-simple.mjs'
       - 'scripts/test-custas-cenarios.mjs'
@@ -39,6 +45,8 @@ jobs:
           node-version: '22'
       - name: Verificar sintaxe e ligações do site
         run: node scripts/validate-site.mjs
+      - name: Testes do assistente de seis passos
+        run: node scripts/test-custas-6-passos.mjs
       - name: Testes da conta simples por impulso
         run: node scripts/test-custas-simple.mjs
       - name: Testes de regressão do módulo técnico A01
