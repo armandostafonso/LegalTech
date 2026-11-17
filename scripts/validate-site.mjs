@@ -45,6 +45,11 @@ for(const asset of ["assets/brand.css","assets/ux.css","assets/next.css","assets
 const manifest=JSON.parse(fs.readFileSync("site.webmanifest","utf8"));
 if(manifest.start_url!=="./index.html"||manifest.scope!=="./")errors.push("Manifesto fora do âmbito LegalTech");
 if(!manifest.icons?.length||!manifest.icons.every(icon=>fs.existsSync(icon.src.replace(/^\.\//,""))))errors.push("Ícone do manifesto inválido");
+if(!Array.isArray(manifest.shortcuts)||manifest.shortcuts.length<3)errors.push("Atalhos PWA em falta");
+else for(const shortcut of manifest.shortcuts){
+ if(!shortcut.name||!shortcut.url||!fs.existsSync(shortcut.url.replace(/^\.\//,"")))errors.push("Atalho PWA inválido: "+String(shortcut.name));
+ if(!shortcut.icons?.every(icon=>fs.existsSync(icon.src.replace(/^\.\//,""))))errors.push("Ícone de atalho PWA inválido");
+}
 try{new vm.Script(fs.readFileSync("assets/next.js","utf8"),{filename:"assets/next.js"});scriptsChecked++}catch(e){errors.push("assets/next.js: "+e.message)}
 try{new vm.Script(fs.readFileSync("assets/pa-pdf.js","utf8"),{filename:"assets/pa-pdf.js"});scriptsChecked++}catch(e){errors.push("assets/pa-pdf.js: "+e.message)}
 try{new vm.Script(fs.readFileSync("assets/prazo-core.js","utf8"),{filename:"assets/prazo-core.js"});scriptsChecked++}catch(e){errors.push("assets/prazo-core.js: "+e.message)}
