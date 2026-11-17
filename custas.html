@@ -58,6 +58,8 @@ html[data-custas-view="avancado"] .custas-simple-legal{display:none}
 <button type="button" id="custasNext">Seguinte: taxas</button>
 </div>
 <div class="custas-finance-link">
+<button type="button" id="custasQuickSync">Actualizar totais verificados</button>
+<p id="custasSimpleSyncResult" class="custas-helper" aria-live="polite">Depois de criar obrigações, transfere os totais para a proposta de conferência.</p>
 <button type="button" class="secondary" id="custasFinance" aria-expanded="false">Mostrar outros impulsos e pagamentos</button>
 <p class="custas-helper">Usa estes registos para prestações ou pagamentos adicionais. Para isenções, remanescente, recursos e situações especiais, consulta as ferramentas técnicas.</p>
 </div>
@@ -352,7 +354,7 @@ const el=id=>document.getElementById(id);
 /* Navegação simples: não calcula, não altera e não elimina qualquer obrigação. */
 const custasHints={
  1:"Identifica o processo fictício e confirma os pressupostos jurídicos aplicáveis.",
- 2:"Calcula a taxa-base do impulso. Para registar outras taxas ou pagamentos, abre «Mostrar outros impulsos e pagamentos».",
+ 2:"Calcula a taxa-base e regista a obrigação. Depois, selecciona «Actualizar totais verificados». Outros impulsos ou pagamentos são opcionais.",
  3:"Prepara a proposta. Se houver avisos, abre «Ferramentas técnicas» para conferir os regimes especiais."
 };
 const custasStepLabels={1:"Processo",2:"Taxas e pagamentos",3:"Conferência"};
@@ -560,12 +562,17 @@ el("obRows").addEventListener("click",event=>{
  if(obligations.some(o=>o.sourceId===id)){el("obMessage").textContent="Retira primeiro a segunda prestação vinculada a este impulso.";return}
  obligations.splice(index,1);obInvalidate();obSummary();el("obMessage").textContent="Obrigação retirada; os totais precisam de nova conferência.";
 });
-el("obApply").addEventListener("click",()=>{
+function custasApplyObligations(){
  if(!obligations.length){el("obMessage").textContent="Regista primeiro as obrigações que pretendes conferir.";return}
  if(obligations.some(x=>!x.checked||x.benefitAuditCurrent===false)){el("obMessage").textContent="Existem obrigações sem verificação jurídica actualizada.";return}
  const totals=obAmounts();
  for(const [party,id] of [["a","a"],["b","b"],["extra","extra"]])el(id).value=(totals[party]/100).toFixed(2);
  obSynced=true;obSummary();el("obMessage").textContent="Valores transferidos por substituição, sem adição aos totais anteriores. Confere a responsabilidade final antes de emitir a conta.";
+}
+el("obApply").addEventListener("click",custasApplyObligations);
+el("custasQuickSync").addEventListener("click",()=>{
+ custasApplyObligations();
+ el("custasSimpleSyncResult").textContent=el("obMessage").textContent;
 });
 el("obClear").addEventListener("click",()=>{
  if(respEntries.some(x=>x.posted)){el("obMessage").textContent="Existem encargos lançados através do mapa de responsabilidade: retira primeiro esses lançamentos.";return}
