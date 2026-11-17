@@ -1,0 +1,50 @@
+/* LegalTech Flow | Interface isolada, com tokens da identidade LegalTech Suite */
+.flow-wrap{max-width:1150px;margin:0 auto;padding:26px 26px 70px}
+.flow-hero{max-width:780px;margin:16px 0 24px}
+.flow-hero h1{font-size:clamp(32px,5vw,50px);margin:9px 0 10px;letter-spacing:-.04em;line-height:1.13}
+.flow-hero p{color:var(--muted);font-size:17px;max-width:70ch}
+.flow-kicker{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);font-weight:750}
+.flow-privacy{display:flex;align-items:flex-start;gap:12px;max-width:100%;padding:16px 18px;background:var(--soft);border:1px solid var(--line);border-radius:14px;color:var(--ink);margin:0 0 23px}
+.flow-privacy strong{display:block;margin-bottom:2px}
+.flow-privacy p{font-size:13px;line-height:1.55;color:var(--muted);margin:0}
+.flow-dots{display:flex;gap:8px;margin:0 0 22px;flex-wrap:wrap}
+.flow-dots span{border:1px solid var(--line);color:var(--muted);border-radius:99px;padding:7px 13px;font-size:12px;background:var(--paper)}
+.flow-dots strong{color:var(--ink)}
+.flow-panel-grid{display:grid;grid-template-columns:minmax(280px,430px) minmax(0,1fr);gap:18px;align-items:start}
+.flow-panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:23px;box-shadow:var(--shadow);min-width:0}
+.flow-panel h2{font-size:20px;margin:0 0 6px;letter-spacing:-.02em}
+.flow-help{font-size:13px;color:var(--muted);line-height:1.6;margin:0 0 17px}
+.flow-field{margin:0 0 16px}
+.flow-field label{display:block;font-size:13px;font-weight:650;margin:0 0 6px}
+.flow-field input,.flow-field select,.flow-field textarea,.flow-report{width:100%;font:inherit;color:var(--ink);border:1px solid var(--line);background:var(--paper);padding:11px 12px;border-radius:11px}
+.flow-field textarea{min-height:110px;resize:vertical}
+.flow-field small{display:block;color:var(--muted);font-size:12px;margin-top:5px}
+.flow-actions{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}
+.flow-button{display:inline-flex;justify-content:center;align-items:center;gap:5px;border-radius:11px;background:var(--stamp);color:var(--stamp-ink);border:1px solid var(--stamp);padding:11px 14px;cursor:pointer;min-height:44px;font-size:13px;font-weight:700}
+.flow-button.secondary{background:var(--soft);color:var(--ink);border-color:var(--line)}
+.flow-button[disabled]{cursor:not-allowed;opacity:.45}
+.flow-section-divider{height:1px;background:var(--line);margin:20px 0}
+.flow-progress-top{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-top:12px}
+.flow-meter{height:8px;background:var(--soft);border-radius:30px;overflow:hidden;margin:11px 0 16px}
+.flow-meter>div{height:100%;width:0;background:var(--stamp);transition:width .16s}
+.flow-checks{display:grid;gap:9px}
+.flow-check{display:flex;align-items:start;gap:11px;padding:11px 12px;border:1px solid var(--line);border-radius:11px;cursor:pointer;line-height:1.5;font-size:14px}
+.flow-check input{width:20px;height:20px;margin:0;flex-shrink:0;accent-color:var(--stamp)}
+.flow-check:has(input:checked){background:var(--soft)}
+.flow-check small{display:block;color:var(--muted);font-size:11px}
+.flow-tips{margin-top:18px}
+.flow-links{display:flex;gap:8px;flex-wrap:wrap}
+.flow-links a{display:inline-flex;background:var(--soft);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px;min-height:40px;align-items:center}
+.flow-links a:hover{border-color:var(--accent);color:var(--accent)}
+.flow-result{margin-top:18px}
+.flow-report{min-height:300px;resize:vertical;white-space:pre-wrap;font:13px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace}
+.flow-footnote{font-size:12px;color:var(--muted);line-height:1.6}
+.flow-status{font-size:13px;color:var(--muted);min-height:22px}
+.flow-empty{border:1px dashed var(--line);padding:30px 20px;border-radius:12px;color:var(--muted);text-align:center;font-size:14px}
+[hidden]{display:none!important}
+@media(max-width:850px){.flow-panel-grid{grid-template-columns:1fr}.flow-panel{padding:18px}.flow-wrap{padding:18px 16px 50px}}
+@media(prefers-reduced-motion:reduce){.flow-meter>div{transition:none}}
+@media print{.flow-wrap{padding:0}.flow-panel{box-shadow:none;break-inside:avoid}.flow-actions,.flow-links,.flow-privacy{display:none!important}}
+
+.flow-skip{position:absolute;left:-9999px;top:0;z-index:100}
+.flow-skip:focus{left:12px;top:12px;padding:10px 14px;border:2px solid var(--lt-gold);background:var(--paper);color:var(--ink);border-radius:8px}
