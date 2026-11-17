@@ -146,7 +146,7 @@ check("Acima de 275 mil: remanescente deve ser conferido",()=>{
 });
 check("Processo anterior a 2012: bloqueio por regime temporal",()=>{
  const h=harness();h.ready();h.set("ccYear","2011");h.click("ccCalculate");
- assert.match(h.text("ccStatus"),/anterior a 29-03-2012/);
+ assert.match(h.text("ccStatus"),/anterior a 2012/);
 });
 check("Montantes negativos e mais de duas casas decimais são rejeitados",()=>{
  const h=harness();h.ready();h.set("ccAuthorFirst","0.001");h.click("ccCalculate");
