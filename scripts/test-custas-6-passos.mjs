@@ -165,4 +165,13 @@ check("Projecto JSON: ignora campos executáveis não previstos",()=>{
  assert.equal(Object.hasOwn(out.fields,"script"),false);
 });
 
+check("Minuta de dispensa: estrutura textual verificável sem automatizar decisão",()=>{
+ const html=fs.readFileSync("custas-6-passos.html","utf8");
+ assert.ok(html.includes('id="draftDispensa"'));
+ assert.ok(html.includes('id="draftDispensaText"'));
+ assert.ok(html.includes('id="copyDispensa"'));
+ assert.ok(html.includes('Portaria n.º 419-A/2009'));
+ assert.ok(html.includes('artigo 29.º'));
+});
+
 console.log(passed+" testes do assistente de 6 passos concluídos.");
