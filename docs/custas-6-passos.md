@@ -54,3 +54,18 @@ A remoção de um interveniente com movimentos, taxas ou encargos associados é 
 - `node scripts/validate-site.mjs`: sintaxe e integridade estrutural do HTML, scripts e ligações do site.
 
 Estes testes validam operações técnicas, **não a correcção das contas em casos judiciais reais**.
+
+
+## Desenvolvimento adicional: tabela I e aplicação temporal (17-11-2026)
+
+O assistente continua com seis etapas do guião DGAJ; não foi modificada a estrutura de navegação.
+
+**Novo cálculo no passo 3:** para casos elegíveis, a Tabela I-A apresenta a taxa total e a discriminação das duas prestações (artigo 13.º, n.º 2, do RCP). O utilizador pode optar por preencher o valor total ou apenas a primeira prestação. A eventual dispensa da segunda prestação (artigo 14.º-A do RCP) tem de ser conferida manualmente. O programa **não soma automaticamente total e prestações**, e os pagamentos confirmados são registados à parte no passo 4. A Tabela I-B dispõe agora de sugestão aritmética própria, não dividida em duas prestações nesta rotina.
+
+**Datas e alterações legislativas:** o ano continua a ser o campo principal. A data exacta de propositura e a data exacta de início de cada processo autónomo são facultativas, mas necessárias para resolver certos casos transitórios. Não se automatizam taxas anteriores a 29-03-2012 sem enquadramento histórico. O cálculo limita-se a valores até 275.000 €, a UC conhecida e às colunas I-A/I-B. A taxa sobre o excedente, a Tabela I-C/II e os regimes especiais continuam a exigir registo manual.
+
+**Decreto-Lei n.º 164/2026:** a entrada em vigor ocorre em 01-12-2026 (artigo 9.º); por força do artigo 8.º, n.º 3, a nova redacção do artigo 6.º do RCP apenas se aplica a ações propostas após a entrada em vigor, ao passo que outras disposições podem depender da data do acto. A falta de data exacta é sinalizada, sem presumir o regime.
+
+**Integridade e compatibilidade:** a interface recusa a repetição da mesma referência de taxa para o mesmo responsável; os projectos JSON v1 continuam importáveis sem datas, ficando os campos novos vazios. A dispensa de conta com diferenças positivas registadas produz um aviso de aparente incoerência, não uma decisão automática.
+
+**Fontes para conferência:** RCP, artigos 1.º, 5.º, 6.º, 13.º, 14.º-A, 29.º, 30.º e Tabela I; Decreto-Lei n.º 164/2026, artigos 8.º e 9.º; Lei n.º 7/2012 e respectivas regras transitórias; guião da DGAJ «Como fazer uma conta em 6 passos», páginas 24 a 37. Aplicação experimental, sem emissão de conta oficial.
