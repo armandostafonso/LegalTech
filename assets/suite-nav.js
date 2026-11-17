@@ -6,6 +6,7 @@ const entries=[
  ["index.html","Início"],
  ["flow.html","Flow"],
  ["workspace.html","Painel"],
+ ["sobre.html","Sobre"],
  ["citacheck.html","CitaCheck"],
  ["anonimizador.html","PDF"],
  ["minutas.html","Docs"],
