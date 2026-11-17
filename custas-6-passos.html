@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Assistente experimental de conferência de custas processuais em seis passos, com cálculo por responsável e verificação documental.">
+<title>Conta de Custas em 6 Passos · LegalTech Suite</title>
+<script id="lt-theme-bootstrap">(function(){try{var t=localStorage.getItem("legaltech_theme")||localStorage.getItem("theme");if(t!=="dark"&&t!=="light")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch(e){}})();</script>
+<link rel="stylesheet" href="assets/brand.css">
+<style>
+:root{color-scheme:light;--bg:#f6f7fa;--paper:#fff;--ink:#162337;--muted:#5c6c80;--line:#dfe5ed;--primary:#143b6c;--focus:#b8873d;--soft:#eef2f8;--good:#236b54;--bad:#9c472f}
+:root[data-theme=dark]{color-scheme:dark;--bg:#101620;--paper:#1a2431;--ink:#f2f6fc;--muted:#bdc8d6;--line:#334255;--primary:#a5c5ef;--soft:#243142;--good:#8ae0bf;--bad:#ffba9f}
+*{box-sizing:border-box}body{background:var(--bg);color:var(--ink);margin:0;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+[hidden]{display:none!important}button,input,select,textarea{font:inherit}button{cursor:pointer}
+a{color:var(--primary)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.container{max-width:1180px;margin:0 auto;padding:24px 22px 72px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-size:17px;font-weight:800;letter-spacing:-.5px;text-decoration:none;color:var(--ink)}
+.topnav{display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:13px;font-weight:650}
+.kicker{display:inline-block;font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--primary);margin:26px 0 8px}
+h1{font-size:clamp(30px,5vw,45px);line-height:1.12;letter-spacing:-1.45px;margin:0 0 10px}
+.lead{color:var(--muted);max-width:780px;line-height:1.65;margin:0 0 20px}
+.toprow{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.micro{font-size:12px;color:var(--muted);line-height:1.55}
+.progress{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin:18px 0}
+.progress span{display:block;background:var(--primary);height:100%;width:16.6667%;transition:width .2s}
+.steps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;margin-bottom:18px}
+.step-tab{border:1px solid var(--line);border-radius:13px;background:var(--paper);color:var(--ink);min-height:82px;text-align:left;padding:11px;display:flex;flex-direction:column;gap:6px}
+.step-tab b{background:var(--soft);color:var(--ink);width:25px;height:25px;display:grid;place-items:center;border-radius:8px;font-size:12px}
+.step-tab span{font-size:11px;line-height:1.26;font-weight:680}
+.step-tab[aria-current=step]{background:var(--soft);border-color:var(--primary)}
+.step-tab[aria-current=step] b{background:var(--primary);color:var(--bg)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:28px;box-shadow:0 5px 32px rgba(8,22,42,.035)}
+.step-heading{display:flex;gap:13px;align-items:flex-start;margin-bottom:18px}
+.step-round{display:grid;place-items:center;flex:none;width:41px;height:41px;border-radius:12px;background:var(--soft);font-weight:800}
+h2{font-size:24px;letter-spacing:-.7px;margin:0 0 5px;line-height:1.25}
+h3{font-size:16px;margin:0 0 10px}
+p{margin:0 0 12px}.sub{color:var(--muted);font-size:13px;line-height:1.6}
+.box{border:1px solid var(--line);border-radius:14px;padding:18px;margin:16px 0}
+.box.soft{background:var(--soft);border-color:transparent}
+.box h3{margin-bottom:7px}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:16px 0}
+.fields.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-size:13px;font-weight:690}
+.field small{font-size:12px;color:var(--muted);line-height:1.45}
+input:not([type=checkbox]),select,textarea{border:1px solid var(--line);border-radius:10px;min-height:45px;padding:10px 12px;background:var(--paper);color:var(--ink);width:100%}
+textarea{min-height:82px;resize:vertical}
+input[type=checkbox]{accent-color:#1d4d86;width:18px;height:18px;margin:2px 0 0;flex:none}
+.check{display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.5}
+.primary,.secondary,.danger{border-radius:10px;padding:10px 15px;min-height:43px;font-weight:700;border:1px solid transparent}
+.primary{background:#173e70;color:white}.secondary{background:var(--soft);border-color:var(--line);color:var(--ink)}
+.danger{background:transparent;color:var(--bad);border-color:var(--line)}
+.primary:hover{background:#245c99}.secondary:hover{filter:brightness(.985)}
+.actionrow{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:14px 0}
+.note{background:var(--soft);border-radius:12px;padding:13px 15px;color:var(--muted);font-size:13px;line-height:1.6;margin:14px 0}
+.warning{border:1px solid #b78f4b;border-left:4px solid #b78f4b;border-radius:12px;padding:12px 14px;font-size:13px;margin:12px 0;background:var(--paper)}
+.record-list{display:grid;gap:8px}
+.record{border:1px solid var(--line);border-radius:12px;padding:13px 15px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.record strong{display:block;font-size:14px}.record small{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.empty{border:1px dashed var(--line);padding:18px;border-radius:12px;color:var(--muted);font-size:13px}
+.pill{display:inline-block;background:var(--soft);border-radius:99px;padding:3px 9px;font-size:12px}
+.status{min-height:22px;margin:14px 0;color:var(--muted);font-size:13px}
+.footer-nav{border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:18px;margin-top:20px}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin:16px 0}
+.metric{background:var(--soft);border-radius:13px;padding:16px}
+.metric small{display:block;color:var(--muted);font-size:12px}
+.metric strong{display:block;margin-top:6px;font-size:20px;letter-spacing:-.6px;font-variant-numeric:tabular-nums}
+.overflow{overflow:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:680px}
+th,td{text-align:left;padding:12px 13px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}
+th{background:var(--soft);color:var(--muted);font-size:12px}
+tr:last-child td{border-bottom:0}.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+details{margin-top:15px;border:1px solid var(--line);border-radius:13px;padding:13px 15px}
+summary{cursor:pointer;font-weight:720}
+footer{margin-top:24px;color:var(--muted);font-size:12px;line-height:1.6}
+@media(max-width:940px){.steps{grid-template-columns:repeat(3,minmax(0,1fr))}.fields.three{grid-template-columns:repeat(2,minmax(0,1fr))}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.container{padding:16px 13px 50px}.panel{padding:18px}.fields,.fields.three{grid-template-columns:1fr}.steps{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.step-tab{padding:8px;min-height:86px}.step-tab span{font-size:10px}.metrics{grid-template-columns:1fr 1fr}.metric strong{font-size:16px}h2{font-size:20px}.topnav{gap:8px}}
+@media print{body{background:white;color:#111}.topnav,.steps,.progress,.footer-nav,.actionrow,.not-print,header,.lead,.kicker,.toprow{display:none!important}.container{max-width:none;padding:0}.panel{border:0;box-shadow:none;padding:0}section[data-step-panel]:not([data-step-panel="5"]){display:none!important}section[data-step-panel="5"]{display:block!important}.box,.metric{break-inside:avoid}.overflow{overflow:visible}table{min-width:0}th,td{font-size:10pt}.metrics{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<main class="container">
+<header>
+ <a class="brand" href="index.html">LegalTech <span class="lt-suite">Suite</span></a>
+ <nav class="topnav" aria-label="Navegação do módulo">
+  <a href="custas.html">Conta simples</a>
+  <a href="custas-tecnico.html">Motor técnico</a>
+  <button type="button" class="secondary" id="theme">Claro-Escuro</button>
+ </nav>
+</header>
+<span class="kicker">Custas processuais · Método de seis etapas</span>
+<h1>Fazer a conta, em seis passos.</h1>
+<p class="lead">Um percurso orientado, inspirado no guião de formação da DGAJ enviado pelo utilizador. Selecciona a informação relevante, identifica os responsáveis e confere as quantias até obteres uma proposta de conferência. Não é o SCJ nem emite uma conta oficial.</p>
+<div class="toprow"><strong id="stepLabel">Passo 1 de 6</strong><span class="micro">Dados apenas na memória desta página. Não são enviados pelo módulo.</span></div>
+<div class="progress" role="progressbar" aria-label="Progresso no assistente" aria-valuemin="1" aria-valuemax="6" aria-valuenow="1" id="progress"><span id="progressFill"></span></div>
+<nav class="steps" aria-label="Os seis passos">
+ <button class="step-tab" data-step-tab="0" type="button" aria-current="step"><b>01</b><span>Informação relevante</span></button>
+ <button class="step-tab" data-step-tab="1" type="button"><b>02</b><span>Responsabilidade</span></button>
+ <button class="step-tab" data-step-tab="2" type="button"><b>03</b><span>Processos e taxas</span></button>
+ <button class="step-tab" data-step-tab="3" type="button"><b>04</b><span>Encargos e pagamentos</span></button>
+ <button class="step-tab" data-step-tab="4" type="button"><b>05</b><span>Multas e coimas</span></button>
+ <button class="step-tab" data-step-tab="5" type="button"><b>06</b><span>Finalização</span></button>
+</nav>
+<div class="panel">
+<section data-step-panel="0" aria-labelledby="title1">
+ <div class="step-heading"><span class="step-round">01</span><div><h2 id="title1">Seleção da informação relevante</h2><p class="sub">Estuda o processo e verifica a situação das partes antes de efectuar cálculos.</p></div></div>
+ <div class="box soft">
+  <h3>Verificação prévia: há dispensa de elaboração da conta?</h3>
+  <p class="sub">Artigo 29.º, n.º 1, do RCP. A dispensa tem de ficar documentada nos autos, nos termos do artigo 7.º-A da Portaria n.º 419-A/2009.</p>
+  <div class="fields">
+   <div class="field"><label for="dispensa">Dispensa de conta</label><select id="dispensa"><option value="unknown">Por verificar</option><option value="no">Não: proceder à conferência</option><option value="yes">Sim: pressupostos confirmados</option></select></div>
+   <div class="field"><label for="dispensaReason">Pressuposto a conferir</label><select id="dispensaReason"><option value="none">Seleccionar, se aplicável</option><option value="noDebt">Sem quantias em dívida</option><option value="aid">Apoio judiciário, dispensa de taxa e encargos</option><option value="insolvency">Insolvência: sem verba na massa</option><option value="execution">Execução sem valores a levar à conta</option></select></div>
+  </div>
+ </div>
+ <div class="fields">
+  <div class="field"><label for="processRef">Referência interna (fictícia)</label><input id="processRef" maxlength="80" autocomplete="off" placeholder="Ex.: PROCESSO-TESTE"></div>
+  <div class="field"><label for="jurisdiction">Jurisdição / espécie</label><select id="jurisdiction"><option value="administrativo">Acção administrativa (A01)</option><option value="tributario">Tributário (conferência parcial)</option><option value="civil">Cível (conferência parcial)</option><option value="outro">Outra (conferência parcial)</option></select></div>
+  <div class="field"><label for="filingYear">Ano de propositura</label><input id="filingYear" type="number" min="2009" max="2099" step="1" placeholder="2025" inputmode="numeric"></div>
+  <div class="field"><label for="ucValue">UC desse ano (€)</label><input id="ucValue" type="number" min="0.01" step="0.01" placeholder="Preenchimento automático"><small id="ucHelp">Selecciona o ano. A UC pode ser corrigida mediante confirmação legal.</small></div>
+  <div class="field"><label for="caseValue">Valor fixado da causa (€)</label><input id="caseValue" type="number" min="0.01" step="0.01" placeholder="Ex.: 30000"></div>
+  <div class="field"><label for="caseDecision">Decisão final / data do trânsito (opcional)</label><input id="caseDecision" maxlength="180" placeholder="Ex.: acórdão transitado em ..."></div>
+ </div>
+ <div class="note" id="yearNote">A UC de cada processo autónomo fixa-se no momento do seu início (RCP, artigo 5.º, n.º 3). Em recursos e incidentes, o ano pode ser diferente.</div>
+</section>
+<section data-step-panel="1" aria-labelledby="title2" hidden>
+ <div class="step-heading"><span class="step-round">02</span><div><h2 id="title2">Responsabilidade</h2><p class="sub">Regista os responsáveis e a decisão judicial. A percentagem de decaimento é informativa: não é aplicada automaticamente às taxas de impulso.</p></div></div>
+ <div class="fields">
+  <div class="field"><label for="partyLabel">Designação do interveniente</label><input id="partyLabel" maxlength="70" placeholder="Ex.: Contrainteressado 1"></div>
+  <div class="field"><label for="partyRole">Posição processual</label><select id="partyRole"><option value="Autor">Autor / requerente</option><option value="Demandado">Réu / entidade demandada</option><option value="Contrainteressado">Contrainteressado</option><option value="Outro">Outro sujeito</option></select></div>
+  <div class="field"><label for="partyExemption">Isenção</label><select id="partyExemption"><option value="unknown">Por verificar</option><option value="no">Não identificada</option><option value="yes">Isenção invocada ou confirmada: conferir norma</option></select></div>
+  <div class="field"><label for="partyAid">Apoio judiciário</label><select id="partyAid"><option value="unknown">Por verificar</option><option value="none">Sem apoio conhecido</option><option value="full">Dispensa de taxa e encargos</option><option value="instalments">Pagamento faseado</option><option value="other">Outra modalidade / pendente</option></select></div>
+  <div class="field"><label for="partyShare">Responsabilidade final indicada (%)</label><input id="partyShare" type="number" min="0" max="100" step="0.01" placeholder="Deixar vazio se desconhecida"></div>
+ </div>
+ <div class="actionrow"><button type="button" class="secondary" id="partyAdd">Adicionar interveniente</button></div>
+ <div class="record-list" id="partyList"></div>
+ <div class="field" style="margin-top:18px"><label for="ruling">Decisão sobre custas / fundamento</label><textarea id="ruling" maxlength="600" placeholder="Regista a condenação em custas e a proporção fixada na decisão judicial."></textarea></div>
+ <div class="note">Fundamentos indicados no guião: artigos 527.º e 607.º, n.º 6, do CPC, artigo 94.º, n.º 2, do CPTA, e artigo 30.º do RCP. A conta deve ser individualizada por sujeito responsável.</div>
+</section>
+<section data-step-panel="2" aria-labelledby="title3" hidden>
+ <div class="step-heading"><span class="step-round">03</span><div><h2 id="title3">Processo autónomo e taxa de justiça</h2><p class="sub">Regista a acção, cada recurso, incidente ou procedimento com tributação própria. A taxa é associada a um interveniente e à UC do ano de início desse impulso.</p></div></div>
+ <div class="fields three">
+  <div class="field"><label for="chargePerson">Interveniente</label><select id="chargePerson"></select></div>
+  <div class="field"><label for="chargeOrigin">Origem</label><select id="chargeOrigin"><option value="Acção principal">Acção principal</option><option value="Recurso">Recurso</option><option value="Incidente">Incidente</option><option value="Procedimento cautelar">Procedimento cautelar</option><option value="Outro processo autónomo">Outro processo autónomo</option></select></div>
+  <div class="field"><label for="chargeImpulse">Impulso</label><select id="chargeImpulse"><option value="Petição inicial">Petição inicial</option><option value="Contestação">Contestação</option><option value="Recurso">Recurso</option><option value="Incidente">Incidente</option><option value="Outro">Outro</option></select></div>
+  <div class="field"><label for="chargeYear">Ano de início deste processo autónomo</label><input id="chargeYear" type="number" min="2009" max="2099" step="1" inputmode="numeric"></div>
+  <div class="field"><label for="chargeValue">Base tributável (€)</label><input id="chargeValue" type="number" min="0.01" step="0.01" placeholder="Ex.: 30000"></div>
+  <div class="field"><label for="chargeTable">Tabela aplicável</label><select id="chargeTable"><option value="IA">I-A · regra geral</option><option value="IB">I-B · recursos e casos especiais</option><option value="IC">I-C · especial complexidade</option><option value="IIA">II-A · incidentes e outros</option><option value="IIB">II-B · regimes específicos</option><option value="other">Outra norma / tabela</option></select></div>
+  <div class="field"><label for="chargeAmount">Taxa a considerar (€)</label><input id="chargeAmount" type="number" min="0" step="0.01" placeholder="Montante confirmado"></div>
+  <div class="field"><label for="chargeRef">Referência do impulso</label><input id="chargeRef" maxlength="75" placeholder="Ex.: PI, REC-1, INC-1"></div>
+  <div class="field"><label for="chargeBasis">Fundamento / observações</label><input id="chargeBasis" maxlength="180" placeholder="Tabela, despacho, dispensa ..."></div>
+ </div>
+ <div class="actionrow"><button class="secondary" id="suggestIA" type="button">Sugerir I-A até 275 000 €</button><label class="check"><input id="chargeVerified" type="checkbox">Valor e fundamento conferidos nos autos</label></div>
+ <div class="note" id="chargeHint">A sugestão I-A é apenas aritmética. Não aplica automaticamente segunda prestação, reduções, isenções, remanescente ou alterações históricas.</div>
+ <div class="actionrow"><button type="button" class="primary" id="chargeAdd">Adicionar processo / taxa</button></div>
+ <div class="record-list" id="chargeList"></div>
+</section>
+<section data-step-panel="3" aria-labelledby="title4" hidden>
+ <div class="step-heading"><span class="step-round">04</span><div><h2 id="title4">Encargos e outros pagamentos</h2><p class="sub">Separa os encargos devidos dos movimentos de caixa. Uma guia emitida não é prova de pagamento.</p></div></div>
+ <div class="box"><h3>Encargos e quantias a outras entidades</h3>
+  <div class="fields">
+   <div class="field"><label for="expensePerson">Responsável</label><select id="expensePerson"></select></div>
+   <div class="field"><label for="expenseKind">Natureza</label><select id="expenseKind"><option value="igfej">Adiantamento do IGFEJ</option><option value="honorarios">Honorários / factura</option><option value="entidade">Pagamento a outra entidade</option><option value="outro">Outro encargo</option></select></div>
+   <div class="field"><label for="expenseLabel">Descrição</label><input id="expenseLabel" maxlength="110" placeholder="Ex.: perícia"></div>
+   <div class="field"><label for="expenseAmount">Valor a considerar (€)</label><input id="expenseAmount" type="number" min="0" step="0.01"></div>
+   <div class="field"><label for="expenseBasis">Fundamento / documento</label><input id="expenseBasis" maxlength="160" placeholder="Ex.: nota de honorários"></div>
+  </div>
+  <div class="actionrow"><label class="check"><input type="checkbox" id="expenseVerified">Documento e imputação conferidos</label><button type="button" id="expenseAdd" class="secondary">Adicionar encargo</button></div>
+  <div class="record-list" id="expenseList"></div>
+ </div>
+ <div class="box"><h3>Guias, pagamentos e restituições</h3>
+  <div class="fields three">
+   <div class="field"><label for="movePerson">Interveniente</label><select id="movePerson"></select></div>
+   <div class="field"><label for="moveKind">Movimento</label><select id="moveKind"><option value="guide">Guia emitida</option><option value="payment">Pagamento</option><option value="cancel">Anulação de guia</option><option value="refund">Restituição</option></select></div>
+   <div class="field"><label for="moveStatus">Conferência</label><select id="moveStatus"><option value="pending">Pendente</option><option value="confirmed">Comprovado</option></select></div>
+   <div class="field"><label for="moveRef">Referência (fictícia)</label><input id="moveRef" maxlength="80" placeholder="Ex.: DUC-TESTE-1"></div>
+   <div class="field"><label for="moveAmount">Montante (€)</label><input id="moveAmount" type="number" min="0.01" step="0.01"></div>
+   <div class="field"><label for="moveDate">Data</label><input id="moveDate" type="date"></div>
+  </div>
+  <div class="actionrow"><button type="button" id="moveAdd" class="secondary">Registar movimento</button></div>
+  <div class="record-list" id="moveList"></div>
+  <div class="note">Só pagamentos e restituições <strong>comprovados</strong> entram nos saldos. Guias emitidas ou anuladas nunca são contabilizadas como pagamento. Restituições são ligadas à referência dos pagamentos comprovados.</div>
+ </div>
+</section>
+<section data-step-panel="4" aria-labelledby="title5" hidden>
+ <div class="step-heading"><span class="step-round">05</span><div><h2 id="title5">Multas, penalidades e coimas</h2><p class="sub">Regista as quantias fixadas, a decisão e o responsável. As liquidações penais e contraordenacionais podem exigir formulário próprio.</p></div></div>
+ <div class="fields">
+  <div class="field"><label for="sanctionPerson">Responsável</label><select id="sanctionPerson"></select></div>
+  <div class="field"><label for="sanctionKind">Natureza</label><select id="sanctionKind"><option value="processual">Multa processual</option><option value="penalidade">Outra penalidade</option><option value="coima">Coima</option><option value="penal">Multa penal</option></select></div>
+  <div class="field"><label for="sanctionLabel">Identificação</label><input id="sanctionLabel" maxlength="120" placeholder="Ex.: multa de despacho"></div>
+  <div class="field"><label for="sanctionAmount">Quantia fixada (€)</label><input id="sanctionAmount" type="number" min="0.01" step="0.01"></div>
+  <div class="field"><label for="sanctionBasis">Despacho / fundamento legal</label><input id="sanctionBasis" maxlength="160" placeholder="Ex.: despacho de ..."></div>
+ </div>
+ <div class="actionrow"><label class="check"><input id="sanctionVerified" type="checkbox">Decisão e falta de liquidação conferidas</label><button id="sanctionAdd" type="button" class="secondary">Adicionar multa ou penalidade</button></div>
+ <div class="record-list" id="sanctionList"></div>
+ <div class="note">O guião distingue as multas processuais, as penalidades e as coimas. O registo nestes campos não substitui as funcionalidades específicas de liquidação/conta-crime.</div>
+</section>
+<section data-step-panel="5" aria-labelledby="title6" hidden>
+ <div class="step-heading"><span class="step-round">06</span><div><h2 id="title6">Finalização</h2><p class="sub">Confere o que foi registado, as quantias por responsável e as ressalvas necessárias antes de qualquer conta no sistema oficial.</p></div></div>
+ <label class="check not-print"><input type="checkbox" id="reviewed"> Conferi os autos, a decisão, os documentos de pagamento e as versões legais aplicáveis.</label>
+ <div class="actionrow not-print"><button class="primary" type="button" id="finish">Preparar quadro de conferência</button><button type="button" class="secondary" id="copyReport" disabled>Copiar relatório</button><button type="button" class="secondary" id="printReport" disabled>Imprimir / guardar PDF</button></div>
+ <div id="finalResult" hidden>
+  <div class="metrics">
+   <div class="metric"><small>Taxas de justiça</small><strong id="sumFees">—</strong></div>
+   <div class="metric"><small>Encargos e penalidades</small><strong id="sumExtra">—</strong></div>
+   <div class="metric"><small>Pagamentos líquidos confirmados</small><strong id="sumPaid">—</strong></div>
+   <div class="metric"><small>Diferenças positivas por responsável</small><strong id="sumDiff">—</strong></div>
+  </div>
+  <h3>Conferência individual de responsabilidades</h3>
+  <div class="overflow"><table aria-label="Saldos por responsável"><thead><tr><th>Responsável</th><th>Taxas</th><th>Encargos</th><th>Multas</th><th>Pagamento líquido</th><th>Diferença positiva</th><th>Excesso potencial</th></tr></thead><tbody id="finalRows"></tbody></table></div>
+  <div id="accountConclusion" class="note"></div>
+  <details open><summary>Pontos a confirmar</summary><ul id="warningList"></ul></details>
+  <div class="note">A diferença positiva é aritmética, não uma dívida exigível confirmada. A eventual dispensa de conta, as isenções, o apoio judiciário, a repartição de custas e os documentos têm de ser validados no processo. Não existe compensação automática entre pessoas distintas.</div>
+ </div>
+</section>
+<p class="status" id="message" role="status" aria-live="polite">Preenche o processo e escolhe «Seguinte».</p>
+<div class="footer-nav not-print">
+ <button type="button" id="previous" class="secondary" disabled>Anterior</button>
+ <span id="footerCount" class="micro">1 / 6</span>
+ <button type="button" id="next" class="primary">Seguinte</button>
+</div>
+</div>
+<footer>Assistente experimental independente. Base metodológica: guião «Como fazer a conta em seis passos», Centro de Formação da DGAJ, fornecido pelo utilizador. Fontes jurídicas: <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2008-34454975" target="_blank" rel="noopener noreferrer">RCP</a> e <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/portaria/2009-116457551" target="_blank" rel="noopener noreferrer">Portaria n.º 419-A/2009</a>. Os dados introduzidos não são guardados por este módulo; se actualizares a página, perdem-se.</footer>
+</main>
+<script src="assets/custas-6-core.js"></script>
+<script>
+(function(){
+ "use strict";
+ const core=window.Custas6Core;
+ const byId=id=>document.getElementById(id);
+ const eur=c=>new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR"}).format(c/100);
+ const data={parties:[
+  {id:1,label:"Autor",role:"Autor",aid:"unknown",exemption:"unknown",share:null},
+  {id:2,label:"Entidade demandada",role:"Demandado",aid:"unknown",exemption:"unknown",share:null}
+ ],charges:[],expenses:[],movements:[],sanctions:[]};
+ let seq=3,step=0,maxVisited=0,lastReport="",lastSummary=null;
+ const labels=["Informação relevante","Responsabilidade","Processo autónomo e taxa de justiça","Encargos e outros pagamentos","Multas, penalidades e coimas","Finalização"];
+ function note(text){byId("message").textContent=text}
+ function el(tag,cls,content){
+  const x=document.createElement(tag);if(cls)x.className=cls;
+  if(content!==undefined)x.textContent=String(content);return x;
+ }
+ function appendOptions(select,items){
+  const prev=select.value;select.replaceChildren();
+  for(const p of items){const op=document.createElement("option");op.value=String(p.id);op.textContent=p.label;select.appendChild(op)}
+  if(items.some(x=>String(x.id)===prev))select.value=prev;
+ }
+ function refreshPeople(){
+  for(const id of ["chargePerson","expensePerson","movePerson","sanctionPerson"])
+   appendOptions(byId(id),data.parties);
+ }
+ function rowLine(head,details,onRemove){
+  const item=el("div","record");const left=el("div");left.appendChild(el("strong","",head));left.appendChild(el("small","",details));item.appendChild(left);
+  const btn=el("button","danger","Retirar");btn.type="button";btn.addEventListener("click",onRemove);item.appendChild(btn);return item;
+ }
+ function renderList(target,list,describe){
+  const parent=byId(target);parent.replaceChildren();
+  if(!list.length){parent.appendChild(el("div","empty","Ainda sem registos nesta secção."));return}
+  for(const obj of list){
+   parent.appendChild(rowLine(describe(obj).head,describe(obj).details,()=>{
+    list.splice(list.findIndex(i=>i.id===obj.id),1);renderAll();invalidate();
+   }));
+  }
+ }
+ function personName(id){return data.parties.find(p=>p.id===id)?.label||"Interveniente não identificado"}
+ function renderAll(){
+  renderList("partyList",data.parties,p=>({head:p.label+" · "+p.role,details:
+   "Isenção: "+(p.exemption==="yes"?"assinalada":p.exemption==="no"?"não identificada":"por verificar")+" · Apoio: "+p.aid+
+   (p.share===null?" · Responsabilidade por conferir":" · Responsabilidade "+p.share+"%")}));
+  renderList("chargeList",data.charges,x=>({head:x.impulse+" · "+eur(x.cents),details:personName(x.personId)+" · "+x.origin+" · "+x.table+" · início "+x.year+
+   " · "+(x.verified?"Documentação conferida":"A conferir")+(x.ref?" · "+x.ref:"")}));
+  renderList("expenseList",data.expenses,x=>({head:x.label+" · "+eur(x.cents),details:personName(x.personId)+" · "+x.kind+
+   " · "+(x.verified?"Verificado":"A conferir")}));
+  renderList("moveList",data.movements,x=>({head:(x.kind==="guide"?"Guia emitida":x.kind==="cancel"?"Guia anulada":x.kind==="payment"?"Pagamento":"Restituição")+" · "+eur(x.cents),
+   details:personName(x.personId)+" · "+x.ref+" · "+(x.kind==="guide"||x.kind==="cancel"?"registo documental":x.status==="confirmed"?"Comprovado":"Pendente")+
+   (x.date?" · "+x.date:"")}));
+  renderList("sanctionList",data.sanctions,x=>({head:x.label+" · "+eur(x.cents),details:personName(x.personId)+" · "+x.kind+
+   " · "+(x.verified?"Verificado":"A conferir")}));
+  refreshPeople();
+ }
+ function invalidate(){
+  lastReport="";lastSummary=null;byId("finalResult").hidden=true;
+  byId("copyReport").disabled=true;byId("printReport").disabled=true;
+ }
+ function dateYear(){
+  const raw=byId("filingYear").value;
+  return /^\d{4}$/.test(raw)?Number(raw):null;
+ }
+ function updateYear(){
+  const year=dateYear();const u=core.ucForYear(year);
+  byId("ucValue").value=u===null?"":String(u);
+  if(year===2009)byId("ucHelp").textContent="Em 2009 a UC teve valores de 96 € e 102 €: confirmar a data exacta.";
+  else if(u!==null)byId("ucHelp").textContent="UC histórica de "+year+": 102,00 € (valor corrigível mediante prova).";
+  else byId("ucHelp").textContent=year?"UC não confirmada para "+year+"; introduz apenas após consultar a norma.":"Selecciona o ano para preencher a UC.";
+  byId("chargeYear").value=year||"";
+  if(byId("caseValue").value&&!byId("chargeValue").value)byId("chargeValue").value=byId("caseValue").value;
+  let warning="A UC de cada processo autónomo fixa-se no momento do seu início, mesmo quando o recurso ou incidente é posterior à acção.";
+  if(year===2009)warning+=" Em 2009 é imprescindível confirmar a data.";
+  if(year===2012)warning+=" Em 2012 houve alterações legislativas a meio do ano.";
+  if(year===2026)warning+=" Em 2026 existem alterações legislativas com entrada em vigor em datas distintas.";
+  if(year>2026)warning+=" Não se deve presumir a UC futura.";
+  byId("yearNote").textContent=warning;invalidate();
+ }
+ function navigate(target){
+  if(target<0||target>5)return;
+  if(target>step&&step===0){
+   const y=dateYear(),value=core.parseCents(byId("caseValue").value),uc=core.parseCents(byId("ucValue").value);
+   if(y===null||y<2009||y>2099||value===null||value<=0||uc===null||uc<=0){
+    note("Para avançar, indica ano, valor da causa e UC válidos. A UC de 2009 exige verificação manual.");return
+   }
+  }
+  if(target>maxVisited+1){note("Segue as etapas pela ordem indicada.");return}
+  step=target;maxVisited=Math.max(maxVisited,step);
+  for(const panel of document.querySelectorAll("[data-step-panel]"))panel.hidden=Number(panel.dataset.stepPanel)!==step;
+  for(const tab of document.querySelectorAll("[data-step-tab]")){
+   const active=Number(tab.dataset.stepTab)===step;
+   if(active)tab.setAttribute("aria-current","step");else tab.removeAttribute("aria-current");
+  }
+  byId("stepLabel").textContent="Passo "+(step+1)+" de 6 · "+labels[step];
+  byId("footerCount").textContent=(step+1)+" / 6";
+  byId("progressFill").style.width=(((step+1)/6)*100)+"%";
+  byId("progress").setAttribute("aria-valuenow",String(step+1));
+  byId("previous").disabled=step===0;byId("next").hidden=step===5;
+  if(step===2){if(!byId("chargeYear").value)byId("chargeYear").value=dateYear()||"";if(!byId("chargeValue").value)byId("chargeValue").value=byId("caseValue").value}
+  if(step===5)invalidate();
+  note(step===5?"Confere os dados e prepara o quadro.":"Etapa "+(step+1)+" de 6. Os registos continuam disponíveis até saíres da página.");
+  document.querySelector(".panel").scrollIntoView({block:"start",behavior:"smooth"});
+ }
+ function inputMoney(id,positive){
+  const c=core.parseCents(byId(id).value);
+  if(c===null||(positive&&c<=0)){note("Verifica o montante indicado no campo «"+id+"» (valor em euros, até duas casas decimais).");return null}
+  return c;
+ }
+ function who(id){
+  const x=Number(byId(id).value);
+  if(!data.parties.some(p=>p.id===x)){note("Selecciona um interveniente registado no passo 2.");return null}
+  return x;
+ }
+ function addParty(){
+  const label=byId("partyLabel").value.trim(),shareRaw=byId("partyShare").value.trim();
+  const share=shareRaw===""?null:Number(shareRaw);
+  if(!label){note("Indica uma designação para o interveniente.");return}
+  if(label.length>70||data.parties.some(p=>p.label.toLowerCase()===label.toLowerCase())){note("A designação deve ser única e ter no máximo 70 caracteres.");return}
+  if(share!==null&&(!Number.isFinite(share)||share<0||share>100||Math.round(share*100)!==share*100)){note("A percentagem de responsabilidade deve situar-se entre 0 e 100, com duas casas decimais.");return}
+  data.parties.push({id:seq++,label,role:byId("partyRole").value,aid:byId("partyAid").value,
+   exemption:byId("partyExemption").value,share});
+  byId("partyLabel").value="";byId("partyShare").value="";renderAll();invalidate();
+  note("Interveniente acrescentado. As percentagens de responsabilidade são apenas informativas.");
+ }
+ function suggestIA(){
+  if(byId("chargeTable").value!=="IA"){note("A sugestão aritmética está disponível apenas para a Tabela I-A.");return}
+  const base=inputMoney("chargeValue",true),year=Number(byId("chargeYear").value);
+  if(base===null)return;
+  const uc=core.ucForYear(year);
+  if(uc===null){note("Para este ano, é necessário confirmar manualmente a UC do processo autónomo.");return}
+  const result=core.suggestIA(base,uc*100);
+  if(!result){note("Não há sugestão automática para valores acima de 275 000 €, remanescentes ou valores inválidos.");return}
+  byId("chargeAmount").value=(result.cents/100).toFixed(2);
+  byId("chargeHint").textContent="Sugestão: "+result.units+" UC × "+uc.toFixed(2)+" € = "+eur(result.cents)+
+   ". Valor a verificar; não compreende reduções, prestações adicionais nem remanescente.";
+  invalidate();
+ }
+ function addCharge(){
+  const personId=who("chargePerson"),base=inputMoney("chargeValue",true),cents=inputMoney("chargeAmount",false);
+  const year=Number(byId("chargeYear").value),basis=byId("chargeBasis").value.trim();
+  if(personId===null||base===null||cents===null)return;
+  if(!Number.isInteger(year)||year<2009||year>2099){note("Indica um ano válido para este processo autónomo.");return}
+  if(!basis){note("Regista a base legal, decisão ou observação relativa à taxa de justiça.");return}
+  data.charges.push({id:seq++,personId,origin:byId("chargeOrigin").value,impulse:byId("chargeImpulse").value,
+   table:byId("chargeTable").value,year,baseCents:base,cents,basis,
+   ref:byId("chargeRef").value.trim().slice(0,75),verified:byId("chargeVerified").checked});
+  byId("chargeAmount").value="";byId("chargeRef").value="";byId("chargeBasis").value="";
+  byId("chargeVerified").checked=false;renderAll();invalidate();note("Processo autónomo e taxa registados.");
+ }
+ function addExpense(){
+  const personId=who("expensePerson"),cents=inputMoney("expenseAmount",true),label=byId("expenseLabel").value.trim(),basis=byId("expenseBasis").value.trim();
+  if(personId===null||cents===null)return;
+  if(!label||!basis){note("Identifica o encargo e o respectivo fundamento ou documento.");return}
+  data.expenses.push({id:seq++,personId,cents,label,basis,kind:byId("expenseKind").value,verified:byId("expenseVerified").checked});
+  for(const id of ["expenseAmount","expenseLabel","expenseBasis"])byId(id).value="";
+  byId("expenseVerified").checked=false;renderAll();invalidate();note("Encargo acrescentado.");
+ }
+ function addMovement(){
+  const personId=who("movePerson"),cents=inputMoney("moveAmount",true),kind=byId("moveKind").value,
+   status=byId("moveStatus").value,ref=byId("moveRef").value.trim(),date=byId("moveDate").value;
+  if(personId===null||cents===null)return;
+  if(!ref||ref.length>80){note("Indica uma referência da guia ou movimento, com até 80 caracteres.");return}
+  if(data.movements.some(x=>x.personId===personId&&x.kind===kind&&x.ref===ref&&x.cents===cents&&x.date===date)){
+   note("Movimento aparentemente duplicado: já existe com estes dados.");return
+  }
+  if(kind==="cancel"){
+   const issued=data.movements.find(x=>x.personId===personId&&x.kind==="guide"&&x.ref===ref&&x.cents===cents);
+   if(!issued){note("A anulação necessita de uma guia emitida com a mesma parte, referência e valor.");return}
+   if(data.movements.some(x=>x.personId===personId&&x.kind==="cancel"&&x.ref===ref)){note("Esta guia já tem uma anulação registada.");return}
+  }
+  if(kind==="refund"&&status==="confirmed"){
+   const sum=type=>data.movements.filter(x=>x.personId===personId&&x.kind===type&&x.status==="confirmed"&&x.ref===ref)
+    .reduce((a,x)=>a+x.cents,0);
+   if(cents>sum("payment")-sum("refund")){note("Restituição superior aos pagamentos confirmados dessa referência e parte.");return}
+  }
+  data.movements.push({id:seq++,personId,kind,status,ref,cents,date});
+  byId("moveRef").value="";byId("moveAmount").value="";renderAll();invalidate();note("Movimento registado. Guias não são contabilizadas como pagamento.");
+ }
+ function addSanction(){
+  const personId=who("sanctionPerson"),cents=inputMoney("sanctionAmount",true),label=byId("sanctionLabel").value.trim(),basis=byId("sanctionBasis").value.trim();
+  if(personId===null||cents===null)return;
+  if(!label||!basis){note("Identifica a sanção e o despacho ou fundamento legal.");return}
+  data.sanctions.push({id:seq++,personId,cents,label,basis,kind:byId("sanctionKind").value,
+   verified:byId("sanctionVerified").checked});
+  for(const id of ["sanctionAmount","sanctionLabel","sanctionBasis"])byId(id).value="";
+  byId("sanctionVerified").checked=false;renderAll();invalidate();note("Multa, penalidade ou coima registada.");
+ }
+ function tr(values){
+  const row=document.createElement("tr");
+  values.forEach((v,i)=>{const cell=el("td",i?"num":"",v);row.appendChild(cell)});
+  return row;
+ }
+ function makeReport(result){
+  const lines=["LEGALTECH SUITE | CONFERÊNCIA DE CUSTAS EM SEIS PASSOS","PROPOSTA NÃO OFICIAL",
+   "Processo: "+(byId("processRef").value.trim()||"Sem identificação"),
+   "Ano da acção principal: "+dateYear(),
+   "UC indicada: "+(byId("ucValue").value||"por verificar")+" €",
+   "Valor fixado: "+(byId("caseValue").value||"por verificar")+" €",
+   "Decisão sobre custas: "+(byId("ruling").value.trim()||"não transcrita"),"",
+   "PASSO 2 · RESPONSÁVEIS"];
+  for(const p of data.parties)lines.push(p.label+" · "+p.role+" · responsabilidade "+(p.share===null?"por conferir":p.share+"%")+
+   " · isenção "+p.exemption+" · apoio "+p.aid);
+  lines.push("","PASSO 3 · TAXAS DE JUSTIÇA");
+  for(const x of data.charges)lines.push(personNameForReport(x.personId)+" | "+x.origin+" | "+x.impulse+" | "+x.table+" | ano "+x.year+" | "+eur(x.cents)+" | "+x.basis);
+  lines.push("","PASSO 4 · ENCARGOS");
+  for(const x of data.expenses)lines.push(personNameForReport(x.personId)+" | "+x.label+" | "+eur(x.cents)+" | "+x.basis);
+  lines.push("","MOVIMENTOS DE PAGAMENTO");
+  for(const x of data.movements)lines.push(personNameForReport(x.personId)+" | "+x.kind+" | "+x.status+" | "+x.ref+" | "+eur(x.cents));
+  lines.push("","PASSO 5 · MULTAS / PENALIDADES / COIMAS");
+  for(const x of data.sanctions)lines.push(personNameForReport(x.personId)+" | "+x.kind+" | "+x.label+" | "+eur(x.cents)+" | "+x.basis);
+  lines.push("","PASSO 6 · RESUMO INDIVIDUAL");
+  for(const a of result.accounts)lines.push(a.label+" | taxa "+eur(a.charges)+" | encargos "+eur(a.expenses)+" | multas "+eur(a.sanctions)+
+   " | pagamentos líquidos "+eur(a.netPayments)+" | diferença positiva "+eur(a.positive)+" | excesso potencial "+eur(a.excess));
+  lines.push("","Total de diferenças positivas sem compensar entre responsáveis: "+eur(result.sums.positive));
+  lines.push(result.accountRequired?"Necessidade de conta a validar (RCP 29.º).":"Dispensa de conta indicada: verificar e documentar pressupostos (RCP 29.º e Portaria 419-A/2009, 7.º-A).");
+  lines.push("","PONTOS POR CONFERIR",...result.warnings.map(x=>"• "+x));
+  lines.push("A diferença aritmética não é uma dívida oficial; o resultado depende de verificação legal e documental.");
+  return lines.join("\n");
+ }
+ function personNameForReport(id){return personName(id)}
+ function finish(){
+  const state={...data,year:dateYear(),dispensa:byId("dispensa").value,agreement:byId("reviewed").checked};
+  const result=core.summary(state);lastSummary=result;
+  const body=byId("finalRows");body.replaceChildren();
+  for(const a of result.accounts)body.appendChild(tr([a.label,eur(a.charges),eur(a.expenses),eur(a.sanctions),
+   eur(a.netPayments),eur(a.positive),eur(a.excess)]));
+  byId("sumFees").textContent=eur(result.sums.charges);
+  byId("sumExtra").textContent=eur(result.sums.expenses+result.sums.sanctions);
+  byId("sumPaid").textContent=eur(result.sums.payments-result.sums.refunds);
+  byId("sumDiff").textContent=eur(result.sums.positive);
+  byId("accountConclusion").textContent=result.accountRequired?
+   "A conta pode ser necessária, mas a exigibilidade e a responsabilidade final não são estabelecidas por este cálculo. Verificar o artigo 29.º do RCP.":
+   "Foi indicada dispensa de conta. Não elaborar conta sem antes confirmar e documentar os pressupostos legais.";
+  const warnings=byId("warningList");warnings.replaceChildren();
+  if(result.warnings.length)for(const warn of result.warnings)warnings.appendChild(el("li","",warn));
+  else warnings.appendChild(el("li","","Sem advertências aritméticas básicas; a conferência jurídica é sempre necessária."));
+  lastReport=makeReport(result);byId("finalResult").hidden=false;
+  byId("copyReport").disabled=false;byId("printReport").disabled=false;
+  note("Quadro preparado. "+result.warnings.length+" ponto(s) para conferir antes de qualquer acto oficial.");
+ }
+ byId("filingYear").addEventListener("input",updateYear);
+ byId("caseValue").addEventListener("change",()=>{if(!byId("chargeValue").value)byId("chargeValue").value=byId("caseValue").value;invalidate()});
+ for(const id of ["dispensa","dispensaReason","processRef","jurisdiction","ucValue","caseValue","caseDecision","ruling","reviewed"])
+  byId(id).addEventListener("change",invalidate);
+ byId("partyAdd").addEventListener("click",addParty);
+ byId("suggestIA").addEventListener("click",suggestIA);
+ byId("chargeAdd").addEventListener("click",addCharge);
+ byId("expenseAdd").addEventListener("click",addExpense);
+ byId("moveAdd").addEventListener("click",addMovement);
+ byId("sanctionAdd").addEventListener("click",addSanction);
+ byId("finish").addEventListener("click",finish);
+ byId("previous").addEventListener("click",()=>navigate(step-1));
+ byId("next").addEventListener("click",()=>navigate(step+1));
+ for(const tab of document.querySelectorAll("[data-step-tab]"))tab.addEventListener("click",()=>navigate(Number(tab.dataset.stepTab)));
+ byId("copyReport").addEventListener("click",async()=>{if(!lastReport)return;
+  try{await navigator.clipboard.writeText(lastReport);note("Relatório copiado para a área de transferência.")}
+  catch(e){note("Não foi possível copiar automaticamente. Podes imprimir / guardar o quadro.");}
+ });
+ byId("printReport").addEventListener("click",()=>{if(lastReport)window.print()});
+ byId("theme").addEventListener("click",()=>{const mode=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=mode;
+  try{localStorage.setItem("legaltech_theme",mode)}catch(e){}
+ });
+ refreshPeople();renderAll();navigate(0);
+})();
+</script>
+<script src="assets/theme.js"></script>
+<script src="assets/suite-nav.js"></script>
+</body>
+</html>
