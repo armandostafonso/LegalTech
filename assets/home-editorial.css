@@ -47,3 +47,12 @@
 @media(max-width:740px){.home-hero{grid-template-columns:1fr;padding:42px 0 26px;gap:24px}.home-hero h1{font-size:clamp(37px,8.7vw,56px)}.home-orbit{min-height:300px}.home-orbit-ring.one{width:190px;height:190px}.home-orbit-ring.two{width:265px;height:265px}.home-orbit-ring.three{width:340px;height:340px}.home-orbit-center{width:116px;height:116px}.home-orbit-point.p1{top:9%;left:4%}.home-orbit-point.p2{top:11%;right:3%}.home-orbit-point.p3{bottom:17%;left:3%}.home-orbit-point.p4{bottom:13%;right:3%}.home-ecosystem-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.home-section-heading{align-items:start;flex-direction:column;gap:6px}}
 @media(max-width:480px){.home-ecosystem-grid{grid-template-columns:1fr}.home-domain{min-height:150px}.home-orbit-point{font-size:10px}.home-hero-actions a{flex:1 1 165px}.home-hero .search{width:100%}}
 @media(prefers-reduced-motion:reduce){.home-hero-actions a,.home-domain{transition:none}}
+
+/* Entrada editorial para o diretório de recursos, mantendo as seis áreas de ferramentas. */
+.home-portal-feature{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:22px;padding:25px 28px;margin:8px 0 30px;border:1px solid var(--line);border-radius:19px;background:var(--paper);box-shadow:var(--shadow)}
+.home-portal-feature .eyebrow{font-size:11px;letter-spacing:.12em}
+.home-portal-feature h2{margin:6px 0 8px;font-size:24px;letter-spacing:-.04em}
+.home-portal-feature p{margin:0;font-size:13px;line-height:1.6;color:var(--muted);max-width:73ch}
+.home-portal-feature a{display:inline-flex;align-items:center;justify-content:center;min-height:47px;padding:12px 17px;border-radius:12px;background:var(--stamp);color:var(--stamp-ink);font-size:13px;font-weight:700;white-space:nowrap}
+.home-portal-feature a:hover{background:var(--stamp-hover);color:var(--stamp-ink)}
+@media(max-width:740px){.home-portal-feature{grid-template-columns:1fr;padding:21px}.home-portal-feature a{white-space:normal}}
