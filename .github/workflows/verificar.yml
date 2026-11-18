@@ -16,6 +16,8 @@ jobs:
           node-version: '22'
       - name: Verificar páginas, scripts e recursos
         run: node scripts/validate-site.mjs
+      - name: Validar catálogo e segurança básica do LegalTech Portal
+        run: node scripts/portal-contract.mjs
       - name: Validar LegalTech Flow sem navegador
         run: node scripts/flow-contract.mjs
       - name: Validar calendário comum
