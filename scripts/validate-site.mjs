@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
 
-const pages=["sobre.html","workspace.html","flow.html","index.html","anonimizador.html","citacheck.html","minutas.html","roteiros.html","tramitação-taf.html","regimes.html","agenda.html","expediente.html","fontes.html","assistant.html","notify.html","hearing.html","compare.html","remessas.html","appeals.html","pa.html","termos.html","lex-monitor.html","privacy-check.html","audit-despacho.html","mapa-taf.html","instalar.html","privacidade.html","custas.html","custas-6-passos.html"];
+const pages=["sobre.html","workspace.html","portal.html","flow.html","index.html","anonimizador.html","citacheck.html","minutas.html","roteiros.html","tramitação-taf.html","regimes.html","agenda.html","expediente.html","fontes.html","assistant.html","notify.html","hearing.html","compare.html","remessas.html","appeals.html","pa.html","termos.html","lex-monitor.html","privacy-check.html","audit-despacho.html","mapa-taf.html","instalar.html","privacidade.html","custas.html","custas-6-passos.html"];
 const errors=[];
 let scriptsChecked=0,linksChecked=0,idsChecked=0;
 for(const file of pages){
@@ -39,7 +39,7 @@ for(const file of pages){
  }
  if(!html.includes("</html>"))errors.push(file+": HTML incompleto");
 }
-for(const asset of ["assets/brand.css","assets/ux.css","assets/next.css","assets/flow.css","assets/flow-core.js","assets/flow.js","assets/next.js","assets/pa-pdf.js","assets/prazo-core.js","assets/theme.js","assets/legaltech-mark.svg","favicon.svg","site.webmanifest"]){
+for(const asset of ["assets/portal.css","assets/portal-data.js","assets/portal.js","assets/brand.css","assets/ux.css","assets/next.css","assets/flow.css","assets/flow-core.js","assets/flow.js","assets/next.js","assets/pa-pdf.js","assets/prazo-core.js","assets/theme.js","assets/legaltech-mark.svg","favicon.svg","site.webmanifest"]){
  if(!fs.existsSync(asset))errors.push("Recurso de identidade em falta: "+asset);
 }
 const manifest=JSON.parse(fs.readFileSync("site.webmanifest","utf8"));
@@ -50,6 +50,9 @@ try{new vm.Script(fs.readFileSync("assets/pa-pdf.js","utf8"),{filename:"assets/p
 try{new vm.Script(fs.readFileSync("assets/prazo-core.js","utf8"),{filename:"assets/prazo-core.js"});scriptsChecked++}catch(e){errors.push("assets/prazo-core.js: "+e.message)}
 for(const file of ["citacheck.html","regimes.html"]){
  if(!fs.readFileSync(file,"utf8").includes('src="assets/prazo-core.js"'))errors.push(file+": motor puro de prazos ausente");
+}
+for(const file of ["assets/portal-data.js","assets/portal.js"]){
+ try{new vm.Script(fs.readFileSync(file,"utf8"),{filename:file});scriptsChecked++}catch(e){errors.push(file+": "+e.message)}
 }
 const themeCode=fs.readFileSync("assets/theme.js","utf8");
 try { new vm.Script(themeCode,{filename:"assets/theme.js"}); scriptsChecked++ }
