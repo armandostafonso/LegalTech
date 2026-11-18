@@ -27,6 +27,26 @@ await check("Sobre: proposta de valor, privacidade e navegação",async()=>{
  await page.reload();
  if(await page.evaluate(()=>document.documentElement.dataset.theme)!==next)throw Error("Preferência de tema não conservada");
 });
+await check("Portal jurídico: pesquisa, filtros, favoritos e abertura segura",async()=>{
+ await open("portal.html");
+ if(await page.locator(".portal-card").count()<24)throw Error("Catálogo incompleto");
+ await page.locator("#portal-search").fill("acordaos");
+ if(await page.locator(".portal-card").count()<2)throw Error("Pesquisa sem normalização de acentos");
+ await page.locator("#portal-clear").click();
+ await page.locator('#portal-filters button[data-category="tribunais"]').click();
+ if(await page.locator(".portal-card").count()!==5)throw Error("Filtro Tribunais incorreto");
+ const first=page.locator(".portal-card").first();
+ if(await first.locator("a").getAttribute("rel")!=="noopener noreferrer")throw Error("Link externo sem proteção");
+ await first.locator(".portal-star").click();
+ await page.locator("#portal-only").click();
+ if(await page.locator(".portal-card").count()!==1)throw Error("Filtro de favoritos incorreto");
+ await page.locator("#portal-only").click();
+ await page.locator("#portal-clear").click();
+ if(await page.locator(".portal-card").count()<24)throw Error("Repor catálogo falhou");
+ const prev=await page.evaluate(()=>document.documentElement.dataset.theme);
+ await page.locator(".lt-theme-control").first().click();
+ if(await page.evaluate(()=>document.documentElement.dataset.theme)===prev)throw Error("Tema não alterado no Portal");
+});
 await check("Painel de trabalho: pesquisa, filtros e privacidade",async()=>{
  await open("workspace.html");
  if(await page.locator(".workspace-tool").count()!==22)throw Error("Catálogo do painel incompleto");
