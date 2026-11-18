@@ -12,7 +12,7 @@ const normal=s=>String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").to
 let selected="all",favoritesOnly=false,favorites=new Set();
 try{const saved=JSON.parse(localStorage.getItem(key)||"[]");if(Array.isArray(saved))favorites=new Set(saved.filter(x=>typeof x==="string"&&ids.has(x)));}catch(_){}
 const el=(tag,css,text)=>{const node=document.createElement(tag);if(css)node.className=css;if(text!==undefined)node.textContent=text;return node};
-const validUrl=url=>/^(https:\/\/|[a-z0-9-]+\.html$)/i.test(url);
+const validUrl=url=>/^(https:\/\/|[\p{L}\p{N}-]+\.html$)/iu.test(url);
 function store(){try{localStorage.setItem(key,JSON.stringify([...favorites]));}catch(_){}}
 function createCard(item){
  const card=el("article","portal-card");
