@@ -20,7 +20,7 @@ else{
   if(!item.title||!item.description||!item.source||!item.keywords)errors.push("Entrada incompleta: "+item.id);
   if(item.url.startsWith("https://")){
    try{const u=new URL(item.url);if(u.protocol!=="https:"||u.username||u.password||u.hash)errors.push("Ligação insegura: "+item.id)}catch(_){errors.push("URL inválido: "+item.id)}
-  }else if(!/^[a-z0-9-]+\.html$/.test(item.url)||!exists(item.url))errors.push("Ligação interna inexistente: "+item.id);
+  }else if(!/^[\p{L}\p{N}-]+\.html$/u.test(item.url)||!exists(item.url))errors.push("Ligação interna inexistente: "+item.id);
  }
  if(!categories.has("tribunais")||!categories.has("jurisprudencia")||!categories.has("ferramentas"))errors.push("Categorias essenciais em falta");
 }
