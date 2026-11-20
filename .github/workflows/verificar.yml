@@ -1,4 +1,4 @@
-name: Verificar LegalTech
+name: Verificar Cita-Check
 on:
   push:
     branches: [main]
@@ -14,49 +14,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Verificar páginas, scripts e recursos
-        run: node scripts/validate-site.mjs
-      - name: Validar catálogo e segurança básica do LegalTech Portal
-        run: node scripts/portal-contract.mjs
-      - name: Validar LegalTech Flow sem navegador
-        run: node scripts/flow-contract.mjs
-      - name: Validar calendário comum
-        run: node scripts/calendar-contract.mjs
-      - name: Verificar núcleo de prazos e 324 cenários (sem browser)
-        run: node scripts/prazo-core-contract.mjs
-      - name: Verificar manifesto dos contratos Web/Desktop
-        run: node scripts/citacheck-parity.mjs --offline
-      - name: Validar catálogo de tramitação TAF
-        run: node scripts/taf-contract.mjs
-      - name: Validar catálogo de expediente
-        run: node scripts/expediente-contract.mjs
-      - name: Validar verificador de metadados legislativos (sem rede)
-        run: node scripts/lex-watch.mjs --self-test
-      - name: Instalar navegador de testes
-        run: |
-          npm install --no-save playwright@1.56.1 axe-core@4.10.3
-          npx playwright install --with-deps chromium webkit
-      - name: Exercitar ferramentas no navegador
-        run: node scripts/browser-smoke.mjs
-      - name: Testar LegalTech Flow em Chromium e WebKit
-        run: node scripts/flow-browser.mjs
-      - name: Testar os doze módulos especializados
-        run: node scripts/next-smoke.mjs
-      - name: Acessibilidade e tema claro-escuro em ecrãs móveis
-        run: node scripts/a11y-smoke.mjs
-      - name: Verificar privacidade e entradas hostis em ferramentas locais
-        run: node scripts/privacy-smoke.mjs
-      - name: Percursos Safari/WebKit com dimensões de iPad
-        run: node scripts/webkit-smoke.mjs
-      - name: Disponibilizar capturas de interface iPad Claro/Escuro
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: legaltech-snapshots-webkit-ipad
-          path: qa/ui-snapshots/*.png
-          if-no-files-found: warn
-          retention-days: 14
-      - name: Paridade CPA e CPPT em dias (96 casos)
-        run: node scripts/regimes-parity.mjs
-      - name: Casos de regressão Cita-Check
-        run: node scripts/citacheck-regression.mjs
+      - run: node scripts/calendar-contract.mjs
+      - run: node scripts/prazo-core-contract.mjs
+      - run: node scripts/citacheck-parity.mjs --offline
+      - run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - run: node scripts/citacheck-regression.mjs

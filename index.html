@@ -1,119 +1,26 @@
 <!doctype html>
 <html lang="pt-PT">
 <head>
-<link rel="manifest" href="site.webmanifest"><meta name="apple-mobile-web-app-title" content="LegalTech Suite"><meta name="application-name" content="LegalTech Suite">
-<script id="lt-theme-bootstrap">(function(){try{var a=localStorage.getItem("legaltech_theme"),b=localStorage.getItem("theme"),t=(a==="light"||a==="dark")?a:(b==="light"||b==="dark")?b:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;localStorage.setItem("legaltech_theme",t);localStorage.setItem("theme",t)}catch(e){}})();</script>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="LegalTech Suite: nove ferramentas de produtividade jurídica, tramitação, documentos, prazos e privacidade, com revisão humana obrigatória.">
-<meta name="theme-color" content="#f7f8fb"><title>LegalTech Suite · Ferramentas jurídicas</title>
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<style>
-:root{color-scheme:light;--bg:#f7f8fb;--paper:#fff;--ink:#152035;--muted:#5c6b7d;--line:#e2e7ee;--accent:#2554a6;--soft:#eef4ff;--shadow:0 14px 42px rgba(16,31,56,.05)}
-:root[data-theme="dark"]{color-scheme:dark;--bg:#11151d;--paper:#1a202b;--ink:#f3f6fc;--muted:#bbc7d7;--line:#313949;--accent:#94baff;--soft:#222d41;--shadow:none}
-[hidden]{display:none!important}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,a{font:inherit}a{color:inherit;text-decoration:none}
-.wrap{max-width:1150px;margin:auto;padding:0 26px}header{background:var(--paper);border-bottom:1px solid var(--line)}.top{height:74px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{font-weight:750;letter-spacing:-.8px;font-size:22px;display:flex;align-items:center;gap:10px}.logo{width:35px;height:35px;border-radius:11px;background:#15356d;color:#fff;display:grid;place-items:center;font-family:Georgia,serif}.nav{display:flex;align-items:center;gap:18px;color:var(--muted);font-size:14px}.nav a:hover,.nav a:focus{color:var(--accent)}.theme{border:1px solid var(--line);background:var(--paper);padding:8px 11px;border-radius:10px;color:var(--ink);cursor:pointer}
-.hero{padding:74px 0 42px;max-width:780px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-weight:750}.hero h1{font-size:clamp(35px,5vw,58px);letter-spacing:-2px;line-height:1.09;margin:14px 0 20px;font-weight:750}.hero p{font-size:18px;color:var(--muted);margin:0 0 24px}.search{width:100%;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:15px;padding:16px 20px;box-shadow:var(--shadow);outline-offset:4px}
-.heading{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:18px 0 20px}.heading h2{font-size:22px;letter-spacing:-.6px;margin:0}.heading span{color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.tool{border:1px solid var(--line);background:var(--paper);border-radius:18px;padding:26px;min-height:205px;display:flex;flex-direction:column;gap:8px;transition:transform .15s,border-color .15s;box-shadow:var(--shadow)}.tool:hover,.tool:focus-visible{transform:translateY(-2px);border-color:var(--accent);outline:none}.tool b{font-size:21px;letter-spacing:-.4px}.tool p{margin:0;color:var(--muted);font-size:14px;max-width:48ch}.tool small{margin-top:auto;color:var(--accent);font-weight:650}.filters{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 20px}
-.filters button{border:1px solid var(--line);border-radius:24px;background:var(--paper);color:var(--muted);padding:9px 14px;min-height:43px;cursor:pointer;font-size:13px;font-weight:650}
-.filters button[aria-pressed="true"]{background:var(--stamp);border-color:var(--stamp);color:var(--stamp-ink)}
-.filters button:focus-visible{outline:3px solid var(--lt-gold);outline-offset:2px}.tool .glyph{width:42px;height:42px;border-radius:12px;background:var(--soft);color:var(--accent);display:grid;place-items:center;font-size:21px;margin-bottom:10px}.notice{margin:34px 0 52px;padding:22px 25px;border:1px solid var(--line);border-radius:16px;background:var(--paper);font-size:14px;color:var(--muted)}.notice strong{color:var(--ink)}footer{padding:28px 0 45px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}.empty{color:var(--muted);padding:20px 0}.skip{position:absolute;left:-9999px}.skip:focus{left:16px;top:12px;background:var(--paper);padding:10px;z-index:9}
-@media(max-width:740px){.nav{gap:8px;flex-wrap:wrap;justify-content:end}.nav a{font-size:12px}.top{height:auto;min-height:75px;padding:12px 0}.hero{padding-top:42px}.grid{grid-template-columns:1fr}.tool{min-height:175px}}
-</style>
-<script>
-try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme")||((matchMedia("(prefers-color-scheme:dark)").matches)?"dark":"light")}catch(e){}
-</script><link rel="stylesheet" href="assets/brand.css">
-<link rel="stylesheet" href="assets/ux.css">
-<link rel="stylesheet" href="assets/home-editorial.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Cita-Check e Anonimizador de PDF</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="site.webmanifest">
+  <style>
+    body { max-width: 40rem; margin: 12vh auto 0; padding: 0 1.5rem; font: 1rem/1.5 system-ui, sans-serif; }
+    h1 { font-size: clamp(1.75rem, 5vw, 2.5rem); }
+    ul { padding-left: 1.5rem; }
+    a { display: inline-block; padding: .65rem 0; }
+  </style>
 </head>
 <body>
-<a href="#ferramentas" class="skip">Ir para as ferramentas</a>
-<header><div class="wrap top"><a class="brand" href="index.html"><span class="logo" aria-hidden="true">L</span>LegalTech <span class="lt-suite">Suite</span></a>
-<nav class="nav" aria-label="Navegação principal"><a href="anonimizador.html">Anonimizador</a><a href="citacheck.html">Cita-Check</a><a href="minutas.html">Minutas</a></nav>
-<button class="theme" id="theme" type="button" aria-label="Alternar tema claro e escuro">◐</button></div></header>
-<main class="wrap">
-<section class="hero home-hero" aria-labelledby="home-title">
- <div class="home-hero-copy">
-  <div class="eyebrow">Um ecossistema para a prática jurídica</div>
-  <h1 id="home-title">Menos tarefas repetitivas.<br>Mais tempo para o essencial.</h1>
-  <p>Ferramentas jurídicas organizadas num só lugar. Do despacho à conferência, com uma experiência clara e privacidade em primeiro lugar.</p>
-  <div class="home-hero-actions">
-   <a class="home-primary" href="workspace.html">Explorar o ecossistema <span aria-hidden="true">&nbsp;↗</span></a>
-   
-  </div>
-  <div class="home-search-wrap"><label for="search">Encontrar ferramenta</label><input class="search" id="search" type="search" placeholder="Pesquisar por prazo, PDF, minuta, tramitação…" autocomplete="off"></div>
- </div>
- <div class="home-orbit" aria-hidden="true">
-  <div class="home-orbit-ring one"></div><div class="home-orbit-ring two"></div><div class="home-orbit-ring three"></div>
-  <div class="home-orbit-center"><b>LT</b><span>LegalTech Suite</span></div>
-  <div class="home-orbit-point p1">Expediente</div><div class="home-orbit-point p2">Prazos</div>
-  <div class="home-orbit-point p3">Documentos</div><div class="home-orbit-point p4">Tramitação</div>
-  <div class="home-orbit-foot">Ferramentas interligadas por um método de trabalho</div>
- </div>
-</section>
-<section class="home-ecosystem" aria-labelledby="ecosystem-heading">
- <div class="home-section-heading">
-  <div><div class="eyebrow">O ecossistema</div><h2 id="ecosystem-heading">Cada tarefa no seu lugar.</h2><p>Escolhe uma área para começar. Todas as ferramentas continuam acessíveis no painel.</p></div>
-  <a href="workspace.html">Ver o painel completo <span aria-hidden="true">&nbsp;↗</span></a>
- </div>
- <div class="home-ecosystem-grid">
-  <a class="home-domain" href="expediente.html"><span class="home-domain-number">01</span><strong>Atos e expediente</strong><p>Preparação e conferência de notificações, comunicações e diligências.</p><small>Explorar expediente ↗</small></a>
-  <a class="home-domain" href="citacheck.html"><span class="home-domain-number">02</span><strong>Prazos e agenda</strong><p>Consulta e conferência de prazos processuais e eventos.</p><small>Abrir Cita-Check ↗</small></a>
-  <a class="home-domain" href="tramitação-taf.html"><span class="home-domain-number">03</span><strong>Tramitação</strong><p>Roteiros auxiliares por espécie e fase do processo.</p><small>Explorar roteiros ↗</small></a>
-  <a class="home-domain" href="minutas.html"><span class="home-domain-number">04</span><strong>Documentos</strong><p>Minutas editáveis, termos e instrumentos de apoio à redação.</p><small>Abrir LegalTech Docs ↗</small></a>
-  <a class="home-domain" href="anonimizador.html"><span class="home-domain-number">05</span><strong>Privacidade</strong><p>Apoio à anonimização e conferência da exposição de dados.</p><small>Explorar ferramentas ↗</small></a>
-  <a class="home-domain" href="fontes.html"><span class="home-domain-number">06</span><strong>Fontes e legislação</strong><p>Referências normativas para verificação e consulta manual.</p><small>Consultar fontes ↗</small></a>
- </div>
-</section>
-<section class="home-portal-feature" aria-labelledby="home-portal-heading">
-<div><span class="eyebrow">NOVO · PORTAL DE RECURSOS</span><h2 id="home-portal-heading">Tribunais, legislação e jurisprudência num só lugar.</h2><p>Diretório de fontes institucionais, serviços digitais e ferramentas LegalTech, com pesquisa por palavra-chave, filtros e favoritos locais.</p></div>
-<a href="portal.html">Explorar LegalTech Portal <span aria-hidden="true">&nbsp;↗</span></a>
-</section>
-<div class="home-proof" aria-label="Dimensão e limites da plataforma">
- <strong>9 ferramentas · 6 áreas</strong><span>Um catálogo de recursos auxiliares, sem promessas de automatização judicial. Os resultados devem ser sempre confirmados por quem os utiliza.</span><a href="privacidade.html">Privacidade e limites ↗</a>
-</div>
-
-<div class="filters" role="group" aria-label="Filtrar ferramentas por categoria">
-<button type="button" data-filter="all" aria-pressed="true">Todas</button>
-<button type="button" data-filter="atos" aria-pressed="false">Atos e expediente</button>
-<button type="button" data-filter="prazos" aria-pressed="false">Prazos e agenda</button>
-<button type="button" data-filter="documentos" aria-pressed="false">Documentos</button>
-<button type="button" data-filter="tramitação" aria-pressed="false">Tramitação</button>
-<button type="button" data-filter="privacidade" aria-pressed="false">Privacidade</button>
-<button type="button" data-filter="legislação" aria-pressed="false">Legislação</button>
-</div>
-<section id="ferramentas" aria-label="Ferramentas disponíveis"><div class="heading"><h2>Ferramentas disponíveis</h2><span id="count" aria-live="polite">9 ferramentas</span></div>
-<div class="grid" id="grid">
-<a class="tool" href="citacheck.html" data-search="cita check prazo prazo processual citação notificação dilação férias judiciais"><span class="glyph" aria-hidden="true">◷</span><b>Cita-Check</b><p>Simula a perfeição da citação ou notificação, os prazos e as dilações e gera uma proposta de cota.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="anonimizador.html" data-search="anonimizar pdf documento tarja proteção dados pessoais expurgo"><span class="glyph" aria-hidden="true">▣</span><b>LegalTech PDF</b><span class="lt-module-subtitle">Anonimizador de PDF</span><p>Oculta ou substitui dados identificativos em PDFs, com processamento no navegador e revisão obrigatória.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="minutas.html" data-search="minuta cota certidão notificação ofício tribunal secretaria texto"><span class="glyph" aria-hidden="true">▤</span><b>LegalTech Docs</b><span class="lt-module-subtitle">Minutas de secretaria</span><p>Cria rascunhos editáveis de cotas, certidões e ofícios a partir de campos simples. Sem guardar dados.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="tramitação-taf.html" data-search="tribunal administrativo fiscal taf tramitação intimação certidão informação direitos liberdades garantias cppt cpta"><span class="glyph" aria-hidden="true">§</span><b>LegalTech Workflow</b><span class="lt-module-subtitle">Tramitação TAF</span><p>Roteiros por espécie e fase processual, com atos a conferir e referências legais.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="expediente.html" data-search="conferir conferir expediente citação notificação certidão ofício conclusão remessa checklist"><span class="glyph" aria-hidden="true">✓</span><b>LegalTech Check</b><span class="lt-module-subtitle">Conferência de expediente</span><p>Verifica os elementos formais de citações, notificações, ofícios, certidões, conclusões e remessas.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="fontes.html" data-search="fontes normas artigos CPTA CPPT legislação referências validar conferir oficial"><span class="glyph" aria-hidden="true">§</span><b>Fontes normativas</b><p>Consulta as referências dos roteiros TAF e assinala a conferência manual da legislação vigente.</p><small>Abrir ferramenta ↗</small></a>
-</div>
-<div class="heading" style="margin-top:34px"><h2>Mais ferramentas especializadas</h2><span>Instrumentos auxiliares com revisão humana</span></div>
-<div class="grid" id="advanced">
-<a class="tool" href="notify.html" data-search="notificações citacao renuncia mandato rfp mp contraditório"><span class="glyph" aria-hidden="true">✉</span><b>LegalTech Notify</b><span class="lt-module-subtitle">Citações e notificações</span><p>Checklists e rascunhos de comunicações sem pressupor prazo ou destinatário.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="termos.html" data-search="prazo termo decurso cota calendário"><span class="glyph" aria-hidden="true">◷</span><b>LegalTech Termos</b><span class="lt-module-subtitle">Conferência do decurso</span><p>Prepara uma cota auxiliar para datas previamente validadas e exporta ICS.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="privacy-check.html" data-search="privacidade dados pessoais nif niss iban email expurgo"><span class="glyph" aria-hidden="true">▣</span><b>LegalTech Privacy Check</b><span class="lt-module-subtitle">Padrões de dados pessoais</span><p>Deteta emails, NIF, NISS, IBAN e outros padrões em texto local.</p><small>Abrir ferramenta ↗</small></a>
-</div><p class="empty" id="empty" hidden>Nenhuma ferramenta corresponde à pesquisa.</p></section>
-<section class="notice"><strong>Segurança e responsabilidade.</strong> As ferramentas são auxiliares. Confirma sempre a legislação aplicável, os despachos judiciais, a integridade dos documentos e os prazos antes de os utilizar num processo. As ferramentas sem comunicação externa tratam dados localmente; o anonimizador pode necessitar de descarregar bibliotecas e modelos ao carregar.</section>
-</main><footer><div class="wrap"><span>LegalTech Suite · Ferramentas jurídicas independentes</span><span><a href="instalar.html">No iPad/iPhone</a> · <a href="sobre.html">Sobre a plataforma</a> · <a href="privacidade.html">Privacidade e limites</a> · Projeto em evolução · Interface em português de Portugal</span></div></footer>
-<script>
-const input=document.getElementById("search"),cards=[...document.querySelectorAll(".tool")];
-const categories={
-"citacheck.html":"prazos","anonimizador.html":"privacidade","minutas.html":"atos",
-"tramitação-taf.html":"tramitação","expediente.html":"atos","fontes.html":"legislação",
-
-"notify.html":"atos",
-"termos.html":"prazos",
-"privacy-check.html":"privacidade",
-};
-const chips=[...document.querySelectorAll(".filters button")];let currentCategory="all";
-for(const card of cards)card.dataset.category=categories[card.getAttribute("href")]||"documentos";
-for(const button of chips)button.addEventListener("click",()=>{currentCategory=button.dataset.filter;for(const other of chips)other.setAttribute("aria-pressed",String(other===button));filter()});
-
-function filter(){const q=input.value.trim().toLocaleLowerCase("pt-PT");let n=0;for(const card of cards){let ok=(currentCategory==="all"||card.dataset.category===currentCategory)&&(card.textContent+" "+card.dataset.search).toLocaleLowerCase("pt-PT").includes(q);card.hidden=!ok;if(ok)n++}document.getElementById("count").textContent=n+" "+(n===1?"ferramenta":"ferramentas");document.getElementById("empty").hidden=n!==0}
-input.addEventListener("input",filter);
-document.getElementById("theme").addEventListener("click",()=>{const t=document.documentElement.dataset.theme==="dark"?"light":"dark";document.documentElement.dataset.theme=t;try{localStorage.setItem("legaltech_theme",t)}catch(e){}});
-</script><script src="assets/suite-nav.js"></script><script src="assets/theme.js"></script>
-</body></html>
+  <main>
+    <h1>Ferramentas jurídicas</h1>
+    <ul>
+      <li><a href="citacheck.html">Cita-Check</a></li>
+      <li><a href="anonimizador.html">Anonimizador de PDF</a></li>
+    </ul>
+  </main>
+</body>
+</html>

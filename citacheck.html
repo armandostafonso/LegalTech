@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-PT" data-theme="light">
 <head>
-<link rel="manifest" href="site.webmanifest"><meta name="apple-mobile-web-app-title" content="LegalTech Suite"><meta name="application-name" content="LegalTech Suite">
+<link rel="manifest" href="site.webmanifest"><meta name="apple-mobile-web-app-title" content="Cita-Check"><meta name="application-name" content="Cita-Check">
 <script id="lt-theme-bootstrap">(function(){try{var a=localStorage.getItem("legaltech_theme"),b=localStorage.getItem("theme"),t=(a==="light"||a==="dark")?a:(b==="light"||b==="dark")?b:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;localStorage.setItem("legaltech_theme",t);localStorage.setItem("theme",t)}catch(e){}})();</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ebe8e8">
-<title>Cita-Check | LegalTech Suite</title>
+<title>Cita-Check</title>
   <meta name="description" content="Simulador auxiliar de prazos processuais, citações e notificações. Confirme sempre os efeitos legais e os despachos.">
   <script>
     (function () {
@@ -192,14 +192,11 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
 <body>
 
 <nav class="top-nav">
-  <span class="brand">LegalTech <span class="lt-suite">Suite</span></span>
+  <span class="brand">LegalTech</span>
   <div class="nav-links">
     <a href="index.html" class="nav-inactive">Início</a>
     <a href="anonimizador.html" class="nav-inactive">Anonimizador PDF</a>
     <a href="citacheck.html" class="nav-active" aria-current="page">Cita-Check (Prazos)</a>
-    <a href="regimes.html" class="nav-inactive">Prazos CPA/CPPT</a>
-    <a href="minutas.html" class="nav-inactive">Minutas</a>
-    <a href="roteiros.html" class="nav-inactive">Roteiros</a>
 
   </div>
   <button id="themeToggle" class="theme-btn" type="button" aria-label="Mudar tema" title="Alternar modo claro/escuro">
@@ -212,7 +209,7 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
   <header>
     <h1>Cita-Check</h1>
     <p>Diga o que aconteceu. A ferramenta calcula o último dia do prazo e escreve a cota.</p>
-    <p style="margin-top:8px;font-size:14px">Para prazos de procedimento administrativo ou tributário em dias, utilize a <a href="regimes.html">calculadora específica CPA/CPPT</a>; não confunda com prazos de atos no processo judicial.</p>
+    <p style="margin-top:8px;font-size:14px">Os prazos de procedimento administrativo ou tributário seguem regras próprias, distintas dos prazos de atos no processo judicial.</p>
     <details style="margin-top:12px;font:14px/1.6 system-ui,-apple-system,'Segoe UI',sans-serif">
       <summary style="cursor:pointer;font-weight:650">Âmbito da simulação e verificações necessárias</summary>
       <p style="margin-top:9px">O resultado é auxiliar e não certifica a perfeição de uma citação, o regime do processo ou o termo do prazo. Confirme a modalidade de citação/notificação, a data certificada, o despacho, os artigos aplicáveis, as férias judiciais, os feriados e eventuais regras especiais do CPTA ou do CPPT. Alguns cenários encontram-se ainda em validação jurídica.</p>
@@ -1218,7 +1215,7 @@ footer .dev-credit{font-family:var(--sans);font-style:normal;font-size:.8rem}
   })();
 </script>
 
-<script src="assets/suite-nav.js"></script><script src="assets/theme.js"></script>
+<script src="assets/theme.js"></script>
 </body>
 </html>
 

@@ -1,8 +1,8 @@
 {
   "id": "./index.html",
-  "name": "LegalTech Suite · Ferramentas Jurídicas",
-  "short_name": "LegalTech Suite",
-  "description": "Suite integrada de ferramentas jurídicas auxiliares, com validação humana obrigatória.",
+  "name": "Cita-Check e Anonimizador de PDF",
+  "short_name": "Ferramentas jurídicas",
+  "description": "Cita-Check e Anonimizador de PDF.",
   "lang": "pt-PT",
   "start_url": "./index.html",
   "scope": "./",

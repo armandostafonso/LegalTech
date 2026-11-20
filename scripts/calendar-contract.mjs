@@ -34,7 +34,8 @@ for(const [iso,expected] of dates){
  const value=api.isVacation(new Date(y,m-1,d));
  if(value!==expected)throw Error("Férias judiciais incorretas em "+iso);
 }
-if(api.easter(2026).toISOString().slice(0,10)!=="2026-04-05"){
+const easter = api.easter(2026);
+if(easter.getFullYear() !== 2026 || easter.getMonth() !== 3 || easter.getDate() !== 5){
  throw Error("Páscoa 2026 incorreta");
 }
 console.log("Contrato JSON↔JavaScript e "+dates.length+" datas de férias judiciais: aprovado.");
