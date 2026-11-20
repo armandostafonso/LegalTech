@@ -4,7 +4,7 @@
 <link rel="manifest" href="site.webmanifest"><meta name="apple-mobile-web-app-title" content="LegalTech Suite"><meta name="application-name" content="LegalTech Suite">
 <script id="lt-theme-bootstrap">(function(){try{var a=localStorage.getItem("legaltech_theme"),b=localStorage.getItem("theme"),t=(a==="light"||a==="dark")?a:(b==="light"||b==="dark")?b:(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;localStorage.setItem("legaltech_theme",t);localStorage.setItem("theme",t)}catch(e){}})();</script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="LegalTech Suite: vinte e duas ferramentas de produtividade jurídica, tramitação, documentos, prazos e privacidade, com revisão humana obrigatória.">
+<meta name="description" content="LegalTech Suite: dez ferramentas de produtividade jurídica, tramitação, documentos, prazos e privacidade, com revisão humana obrigatória.">
 <meta name="theme-color" content="#f7f8fb"><title>LegalTech Suite · Ferramentas jurídicas</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <style>
@@ -28,7 +28,7 @@ try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme
 <body>
 <a href="#ferramentas" class="skip">Ir para as ferramentas</a>
 <header><div class="wrap top"><a class="brand" href="index.html"><span class="logo" aria-hidden="true">L</span>LegalTech <span class="lt-suite">Suite</span></a>
-<nav class="nav" aria-label="Navegação principal"><a href="anonimizador.html">Anonimizador</a><a href="citacheck.html">Cita-Check</a><a href="minutas.html">Minutas</a><a href="roteiros.html">Roteiros</a><a href="agenda.html">Agenda</a></nav>
+<nav class="nav" aria-label="Navegação principal"><a href="anonimizador.html">Anonimizador</a><a href="citacheck.html">Cita-Check</a><a href="minutas.html">Minutas</a></nav>
 <button class="theme" id="theme" type="button" aria-label="Alternar tema claro e escuro">◐</button></div></header>
 <main class="wrap">
 <section class="hero home-hero" aria-labelledby="home-title">
@@ -69,14 +69,13 @@ try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme
 <a href="portal.html">Explorar LegalTech Portal <span aria-hidden="true">&nbsp;↗</span></a>
 </section>
 <div class="home-proof" aria-label="Dimensão e limites da plataforma">
- <strong>22 ferramentas · 6 áreas</strong><span>Um catálogo de recursos auxiliares, sem promessas de automatização judicial. Os resultados devem ser sempre confirmados por quem os utiliza.</span><a href="privacidade.html">Privacidade e limites ↗</a>
+ <strong>10 ferramentas · 6 áreas</strong><span>Um catálogo de recursos auxiliares, sem promessas de automatização judicial. Os resultados devem ser sempre confirmados por quem os utiliza.</span><a href="privacidade.html">Privacidade e limites ↗</a>
 </div>
 <section class="suite-start" aria-label="Começar uma tarefa">
   <div class="suite-start-copy"><span class="suite-start-tag">NOVO · FLUXO DE TRABALHO</span>
   <h2>Do despacho ao expediente, com um roteiro de conferência.</h2>
   <p>Prepara uma tarefa, assinala verificações, revê o relatório e abre as ferramentas relacionadas. Sem execução automática ou dados guardados.</p></div>
-  <a href="flow.html" class="suite-start-action">Iniciar no LegalTech Flow <span aria-hidden="true">↗</span></a>
-</section>
+  </section>
 <div class="filters" role="group" aria-label="Filtrar ferramentas por categoria">
 <button type="button" data-filter="all" aria-pressed="true">Todas</button>
 <button type="button" data-filter="atos" aria-pressed="false">Atos e expediente</button>
@@ -86,45 +85,32 @@ try{document.documentElement.dataset.theme=localStorage.getItem("legaltech_theme
 <button type="button" data-filter="privacidade" aria-pressed="false">Privacidade</button>
 <button type="button" data-filter="legislação" aria-pressed="false">Legislação</button>
 </div>
-<section id="ferramentas" aria-label="Ferramentas disponíveis"><div class="heading"><h2>Ferramentas disponíveis</h2><span id="count" aria-live="polite">22 ferramentas</span></div>
+<section id="ferramentas" aria-label="Ferramentas disponíveis"><div class="heading"><h2>Ferramentas disponíveis</h2><span id="count" aria-live="polite">10 ferramentas</span></div>
 <div class="grid" id="grid">
-<a class="tool" href="flow.html" data-search="flow despacho roteiro tarefas conferir checklist preparação cumprimento execução minuta expedição"><span class="glyph" aria-hidden="true">◇</span><b>LegalTech Flow</b><span class="lt-module-subtitle">Preparação e conferência de tarefas</span><p>Organiza um ato de secretaria em verificações, relatório editável e ferramentas de apoio. Sem IA externa nem execução de atos.</p><small>Abrir ferramenta ↗</small></a>
 <a class="tool" href="citacheck.html" data-search="cita check prazo prazo processual citação notificação dilação férias judiciais"><span class="glyph" aria-hidden="true">◷</span><b>Cita-Check</b><p>Simula a perfeição da citação ou notificação, os prazos e as dilações e gera uma proposta de cota.</p><small>Abrir ferramenta ↗</small></a>
 <a class="tool" href="anonimizador.html" data-search="anonimizar pdf documento tarja proteção dados pessoais expurgo"><span class="glyph" aria-hidden="true">▣</span><b>LegalTech PDF</b><span class="lt-module-subtitle">Anonimizador de PDF</span><p>Oculta ou substitui dados identificativos em PDFs, com processamento no navegador e revisão obrigatória.</p><small>Abrir ferramenta ↗</small></a>
 <a class="tool" href="minutas.html" data-search="minuta cota certidão notificação ofício tribunal secretaria texto"><span class="glyph" aria-hidden="true">▤</span><b>LegalTech Docs</b><span class="lt-module-subtitle">Minutas de secretaria</span><p>Cria rascunhos editáveis de cotas, certidões e ofícios a partir de campos simples. Sem guardar dados.</p><small>Abrir ferramenta ↗</small></a>
 <a class="tool" href="tramitação-taf.html" data-search="tribunal administrativo fiscal taf tramitação intimação certidão informação direitos liberdades garantias cppt cpta"><span class="glyph" aria-hidden="true">§</span><b>LegalTech Workflow</b><span class="lt-module-subtitle">Tramitação TAF</span><p>Roteiros por espécie e fase processual, com atos a conferir e referências legais.</p><small>Abrir ferramenta ↗</small></a>
 <a class="tool" href="expediente.html" data-search="conferir conferir expediente citação notificação certidão ofício conclusão remessa checklist"><span class="glyph" aria-hidden="true">✓</span><b>LegalTech Check</b><span class="lt-module-subtitle">Conferência de expediente</span><p>Verifica os elementos formais de citações, notificações, ofícios, certidões, conclusões e remessas.</p><small>Abrir ferramenta ↗</small></a>
 <a class="tool" href="fontes.html" data-search="fontes normas artigos CPTA CPPT legislação referências validar conferir oficial"><span class="glyph" aria-hidden="true">§</span><b>Fontes normativas</b><p>Consulta as referências dos roteiros TAF e assinala a conferência manual da legislação vigente.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="roteiros.html" data-search="roteiro checklist tramitação secretaria atos verificação processo"><span class="glyph" aria-hidden="true">☷</span><b>Roteiros de verificação</b><p>Listas operacionais para conferência de atos de secretaria, documentação e prazos, sem decisões automáticas.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="agenda.html" data-search="agenda calendário compromisso prazo evento ICS Outlook iPad exportação CSV"><span class="glyph" aria-hidden="true">▦</span><b>Agenda local de prazos</b><p>Organiza datas previamente verificadas e exporta-as para o Calendário, sem guardar informações de processos.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="regimes.html" data-search="prazo procedimento administrativo CPA procedimento tributário CPPT impugnação judicial dias úteis corridos"><span class="glyph" aria-hidden="true">▦</span><b>Prazos CPA e CPPT</b><p>Calcula prazos procedimentais em dias com regras diferenciadas, cronologia e referências legais.</p><small>Abrir ferramenta ↗</small></a>
 </div>
 <div class="heading" style="margin-top:34px"><h2>Mais ferramentas especializadas</h2><span>Instrumentos auxiliares com revisão humana</span></div>
 <div class="grid" id="advanced">
-<a class="tool" href="assistant.html" data-search="despacho tarefas identificar concluir notificar assistente"><span class="glyph" aria-hidden="true">✧</span><b>LegalTech Assistant</b><span class="lt-module-subtitle">Despacho para tarefas</span><p>Identifica ações numa instrução fictícia e cria um plano orientador. Sem IA externa.</p><small>Abrir ferramenta ↗</small></a>
 <a class="tool" href="notify.html" data-search="notificações citacao renuncia mandato rfp mp contraditório"><span class="glyph" aria-hidden="true">✉</span><b>LegalTech Notify</b><span class="lt-module-subtitle">Citações e notificações</span><p>Checklists e rascunhos de comunicações sem pressupor prazo ou destinatário.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="hearing.html" data-search="inquirição audiência ata juiz testemunha diligência"><span class="glyph" aria-hidden="true">▤</span><b>LegalTech Hearing</b><span class="lt-module-subtitle">Atas e audiências</span><p>Prepara e edita rascunhos de atas com exportação RTF para Word e Pages.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="compare.html" data-search="comparador versões texto alteração diferenças"><span class="glyph" aria-hidden="true">⇄</span><b>LegalTech Compare</b><span class="lt-module-subtitle">Comparação de textos</span><p>Mostra diferenças de linhas entre duas versões de um documento.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="remessas.html" data-search="remessa auto tribunal superior anexos apensos"><span class="glyph" aria-hidden="true">⇧</span><b>LegalTech Remessas</b><span class="lt-module-subtitle">Preparação de remessas</span><p>Conferência de peças, anexos, apensos, destino e expediente.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="appeals.html" data-search="recurso apelação jurisdicional cpta cppt"><span class="glyph" aria-hidden="true">§</span><b>LegalTech Appeals</b><span class="lt-module-subtitle">Recursos jurisdicionais</span><p>Checklists por regime CPTA e CPPT, com fontes legais e ressalvas.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="pa.html" data-search="processo administrativo PA documentos índice cronologia datas"><span class="glyph" aria-hidden="true">▥</span><b>LegalTech PA</b><span class="lt-module-subtitle">Índice cronológico de texto</span><p>Extrai datas de texto ou PDF com camada de texto, produzindo um índice preliminar com referência à página. Sem OCR.</p><small>Abrir ferramenta ↗</small></a>
 <a class="tool" href="termos.html" data-search="prazo termo decurso cota calendário"><span class="glyph" aria-hidden="true">◷</span><b>LegalTech Termos</b><span class="lt-module-subtitle">Conferência do decurso</span><p>Prepara uma cota auxiliar para datas previamente validadas e exporta ICS.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="lex-monitor.html" data-search="legislação norma alteração legislativa monitor revisão CPA CPTA CPPT"><span class="glyph" aria-hidden="true">⌘</span><b>LegalTech Lex Audit</b><span class="lt-module-subtitle">Revisão legislativa manual</span><p>Regista verificações temporárias dos códigos. Não faz monitorização automática.</p><small>Abrir ferramenta ↗</small></a>
 <a class="tool" href="privacy-check.html" data-search="privacidade dados pessoais nif niss iban email expurgo"><span class="glyph" aria-hidden="true">▣</span><b>LegalTech Privacy Check</b><span class="lt-module-subtitle">Padrões de dados pessoais</span><p>Deteta emails, NIF, NISS, IBAN e outros padrões em texto local.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="audit-despacho.html" data-search="despacho minuta auditor conformidade comparador instrução"><span class="glyph" aria-hidden="true">◎</span><b>Auditor despacho/minuta</b><span class="lt-module-subtitle">Correspondência textual</span><p>Assinala possíveis diferenças de instruções, datas e prazos entre dois textos.</p><small>Abrir ferramenta ↗</small></a>
-<a class="tool" href="mapa-taf.html" data-search="mapa processo judicial fase fluxo tramitação visual"><span class="glyph" aria-hidden="true">◇</span><b>Mapa visual do processo</b><span class="lt-module-subtitle">Fases da Tramitação TAF</span><p>Mostra as etapas dos nove roteiros processuais numa linha de evolução.</p><small>Abrir ferramenta ↗</small></a>
 </div><p class="empty" id="empty" hidden>Nenhuma ferramenta corresponde à pesquisa.</p></section>
 <section class="notice"><strong>Segurança e responsabilidade.</strong> As ferramentas são auxiliares. Confirma sempre a legislação aplicável, os despachos judiciais, a integridade dos documentos e os prazos antes de os utilizar num processo. As ferramentas sem comunicação externa tratam dados localmente; o anonimizador pode necessitar de descarregar bibliotecas e modelos ao carregar.</section>
 </main><footer><div class="wrap"><span>LegalTech Suite · Ferramentas jurídicas independentes</span><span><a href="instalar.html">No iPad/iPhone</a> · <a href="sobre.html">Sobre a plataforma</a> · <a href="privacidade.html">Privacidade e limites</a> · Projeto em evolução · Interface em português de Portugal</span></div></footer>
 <script>
 const input=document.getElementById("search"),cards=[...document.querySelectorAll(".tool")];
 const categories={
-"flow.html":"atos","citacheck.html":"prazos","anonimizador.html":"privacidade","minutas.html":"atos",
+"citacheck.html":"prazos","anonimizador.html":"privacidade","minutas.html":"atos",
 "tramitação-taf.html":"tramitação","expediente.html":"atos","fontes.html":"legislação",
-"roteiros.html":"tramitação","agenda.html":"prazos","regimes.html":"prazos",
-"assistant.html":"atos","notify.html":"atos","hearing.html":"atos","compare.html":"documentos",
-"remessas.html":"atos","appeals.html":"atos","pa.html":"documentos","termos.html":"prazos",
-"lex-monitor.html":"legislação","privacy-check.html":"privacidade","audit-despacho.html":"documentos","mapa-taf.html":"tramitação"
+
+"notify.html":"atos",
+"termos.html":"prazos",
+"privacy-check.html":"privacidade",
 };
 const chips=[...document.querySelectorAll(".filters button")];let currentCategory="all";
 for(const card of cards)card.dataset.category=categories[card.getAttribute("href")]||"documentos";
